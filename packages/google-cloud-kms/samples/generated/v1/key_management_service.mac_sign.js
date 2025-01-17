@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ function main(name, data) {
    *  Required. The data to sign. The MAC tag is computed over this data field
    *  based on the specific algorithm.
    */
-  // const data = 'Buffer.from('string')'
+  // const data = Buffer.from('string')
   /**
    *  Optional. An optional CRC32C checksum of the
    *  MacSignRequest.data google.cloud.kms.v1.MacSignRequest.data. If

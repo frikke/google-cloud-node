@@ -55,6 +55,30 @@ const MatchServiceClient = v1.MatchServiceClient;
 type MatchServiceClient = v1.MatchServiceClient;
 const ModelGardenServiceClient = v1.ModelGardenServiceClient;
 type ModelGardenServiceClient = v1.ModelGardenServiceClient;
+const ScheduleServiceClient = v1.ScheduleServiceClient;
+type ScheduleServiceClient = v1.ScheduleServiceClient;
+const FeatureOnlineStoreAdminServiceClient =
+  v1.FeatureOnlineStoreAdminServiceClient;
+type FeatureOnlineStoreAdminServiceClient =
+  v1.FeatureOnlineStoreAdminServiceClient;
+const FeatureOnlineStoreServiceClient = v1.FeatureOnlineStoreServiceClient;
+type FeatureOnlineStoreServiceClient = v1.FeatureOnlineStoreServiceClient;
+const FeatureRegistryServiceClient = v1.FeatureRegistryServiceClient;
+type FeatureRegistryServiceClient = v1.FeatureRegistryServiceClient;
+const LlmUtilityServiceClient = v1.LlmUtilityServiceClient;
+type LlmUtilityServiceClient = v1.LlmUtilityServiceClient;
+const DeploymentResourcePoolServiceClient =
+  v1.DeploymentResourcePoolServiceClient;
+type DeploymentResourcePoolServiceClient =
+  v1.DeploymentResourcePoolServiceClient;
+const GenAiTuningServiceClient = v1.GenAiTuningServiceClient;
+type GenAiTuningServiceClient = v1.GenAiTuningServiceClient;
+const NotebookServiceClient = v1.NotebookServiceClient;
+type NotebookServiceClient = v1.NotebookServiceClient;
+const PersistentResourceServiceClient = v1.PersistentResourceServiceClient;
+type PersistentResourceServiceClient = v1.PersistentResourceServiceClient;
+const EvaluationServiceClient = v1.EvaluationServiceClient;
+type EvaluationServiceClient = v1.EvaluationServiceClient;
 
 export {
   v1beta1,
@@ -76,6 +100,16 @@ export {
   TensorboardServiceClient,
   MatchServiceClient,
   ModelGardenServiceClient,
+  ScheduleServiceClient,
+  FeatureOnlineStoreAdminServiceClient,
+  FeatureOnlineStoreServiceClient,
+  FeatureRegistryServiceClient,
+  LlmUtilityServiceClient,
+  DeploymentResourcePoolServiceClient,
+  GenAiTuningServiceClient,
+  NotebookServiceClient,
+  PersistentResourceServiceClient,
+  EvaluationServiceClient,
 };
 export default {
   v1beta1,
@@ -97,6 +131,16 @@ export default {
   TensorboardServiceClient,
   MatchServiceClient,
   ModelGardenServiceClient,
+  ScheduleServiceClient,
+  FeatureOnlineStoreAdminServiceClient,
+  FeatureOnlineStoreServiceClient,
+  FeatureRegistryServiceClient,
+  LlmUtilityServiceClient,
+  DeploymentResourcePoolServiceClient,
+  GenAiTuningServiceClient,
+  NotebookServiceClient,
+  PersistentResourceServiceClient,
+  EvaluationServiceClient,
 };
 import * as protos from '../protos/protos';
 export {protos};

@@ -134,20 +134,50 @@
         },
         "CreateLiveConfig": {
           "timeout_millis": 60000,
-          "retry_codes_name": "unavailable",
-          "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
         },
         "ListLiveConfigs": {
           "timeout_millis": 60000,
-          "retry_codes_name": "unavailable",
-          "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
         },
         "GetLiveConfig": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "DeleteLiveConfig": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "non_idempotent",
+          "retry_params_name": "default"
+        },
+        "UpdateLiveConfig": {
           "timeout_millis": 60000,
           "retry_codes_name": "unavailable",
           "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
         },
-        "DeleteLiveConfig": {
+        "CreateVodConfig": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "unavailable",
+          "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
+        },
+        "ListVodConfigs": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "unavailable",
+          "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
+        },
+        "GetVodConfig": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "unavailable",
+          "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
+        },
+        "DeleteVodConfig": {
+          "timeout_millis": 60000,
+          "retry_codes_name": "unavailable",
+          "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"
+        },
+        "UpdateVodConfig": {
           "timeout_millis": 60000,
           "retry_codes_name": "unavailable",
           "retry_params_name": "ce5b960a6ed052e690863808e4f0deff3dc7d49f"

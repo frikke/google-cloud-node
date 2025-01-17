@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,12 +16,13 @@
 // ** https://github.com/googleapis/synthtool **
 // ** All changes to this file may be overwritten. **
 
+import * as v1 from './v1';
 import * as v1beta1 from './v1beta1';
 
-const GatewayServiceClient = v1beta1.GatewayServiceClient;
-type GatewayServiceClient = v1beta1.GatewayServiceClient;
+const GatewayControlClient = v1beta1.GatewayControlClient;
+type GatewayControlClient = v1beta1.GatewayControlClient;
 
-export {v1beta1, GatewayServiceClient};
-export default {v1beta1, GatewayServiceClient};
+export {v1, v1beta1, GatewayControlClient};
+export default {v1, v1beta1, GatewayControlClient};
 import * as protos from '../protos/protos';
 export {protos};

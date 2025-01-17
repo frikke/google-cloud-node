@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import type {
 import {PassThrough} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v2/routes_client_config.json`.
@@ -48,6 +49,8 @@ export class RoutesClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -87,8 +90,7 @@ export class RoutesClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -96,7 +98,7 @@ export class RoutesClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new RoutesClient({fallback: 'rest'}, gax);
+   *     const client = new RoutesClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -105,8 +107,27 @@ export class RoutesClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof RoutesClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'routes.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -121,7 +142,7 @@ export class RoutesClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -146,23 +167,23 @@ export class RoutesClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -176,7 +197,8 @@ export class RoutesClient {
     this.descriptors.stream = {
       computeRouteMatrix: new this._gaxModule.StreamDescriptor(
         this._gaxModule.StreamType.SERVER_STREAMING,
-        opts.fallback === 'rest'
+        !!opts.fallback,
+        !!opts.gaxServerStreamingRetries
       ),
     };
 
@@ -273,19 +295,50 @@ export class RoutesClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'routes.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'routes.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -332,7 +385,7 @@ export class RoutesClient {
    * the input. You can provide the response field mask by using URL parameter
    * `$fields` or `fields`, or by using an HTTP/gRPC header `X-Goog-FieldMask`
    * (see the [available URL parameters and
-   * headers](https://cloud.google.com/apis/docs/system-parameters). The value
+   * headers](https://cloud.google.com/apis/docs/system-parameters)). The value
    * is a comma separated list of field paths. See detailed documentation about
    * [how to construct the field
    * paths](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/field_mask.proto).
@@ -385,8 +438,18 @@ export class RoutesClient {
    *   Optional. Specifies the preferred encoding for the polyline.
    * @param {google.protobuf.Timestamp} [request.departureTime]
    *   Optional. The departure time. If you don't set this value, then this value
-   *   defaults to the time that you made the request. If you set this value to a
-   *   time that has already occurred, then the request fails.
+   *   defaults to the time that you made the request.
+   *   NOTE: You can only specify a `departure_time` in the past when
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|`RouteTravelMode`} is set to
+   *   `TRANSIT`. Transit trips are available for up to 7 days in the past or 100
+   *   days in the future.
+   * @param {google.protobuf.Timestamp} [request.arrivalTime]
+   *   Optional. The arrival time.
+   *   NOTE: Can only be set when
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|RouteTravelMode} is set to
+   *   `TRANSIT`. You can specify either `departure_time` or `arrival_time`, but
+   *   not both. Transit trips are available for up to 7 days in the past or 100
+   *   days in the future.
    * @param {boolean} [request.computeAlternativeRoutes]
    *   Optional. Specifies whether to calculate alternate routes in addition to
    *   the route. No alternative routes are returned for requests that have
@@ -396,39 +459,71 @@ export class RoutesClient {
    *   calculated.
    * @param {string} [request.languageCode]
    *   Optional. The BCP-47 language code, such as "en-US" or "sr-Latn". For more
-   *   information, see
-   *   http://www.unicode.org/reports/tr35/#Unicode_locale_identifier. See
-   *   [Language Support](https://developers.google.com/maps/faq#languagesupport)
+   *   information, see [Unicode Locale
+   *   Identifier](http://www.unicode.org/reports/tr35/#Unicode_locale_identifier).
+   *   See [Language
+   *   Support](https://developers.google.com/maps/faq#languagesupport)
    *   for the list of supported languages. When you don't provide this value, the
    *   display language is inferred from the location of the route request.
    * @param {string} [request.regionCode]
    *   Optional. The region code, specified as a ccTLD ("top-level domain")
-   *   two-character value. For more information see
-   *   https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains
+   *   two-character value. For more information see [Country code top-level
+   *   domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains).
    * @param {google.maps.routing.v2.Units} [request.units]
-   *   Optional. Specifies the units of measure for the display fields. This
-   *   includes the `instruction` field in
-   *   {@link google.maps.routing.v2.NavigationInstruction|NavigationInstruction}. The
-   *   units of measure used for the route, leg, step distance, and duration are
-   *   not affected by this value. If you don't provide this value, then the
-   *   display units are inferred from the location of the request.
+   *   Optional. Specifies the units of measure for the display fields. These
+   *   fields include the `instruction` field in
+   *   {@link protos.google.maps.routing.v2.NavigationInstruction|`NavigationInstruction`}.
+   *   The units of measure used for the route, leg, step distance, and duration
+   *   are not affected by this value. If you don't provide this value, then the
+   *   display units are inferred from the location of the first origin.
+   * @param {boolean} [request.optimizeWaypointOrder]
+   *   Optional. If set to true, the service attempts to minimize the overall cost
+   *   of the route by re-ordering the specified intermediate waypoints. The
+   *   request fails if any of the intermediate waypoints is a `via` waypoint. Use
+   *   `ComputeRoutesResponse.Routes.optimized_intermediate_waypoint_index` to
+   *   find the new ordering.
+   *   If `ComputeRoutesResponseroutes.optimized_intermediate_waypoint_index` is
+   *   not requested in the `X-Goog-FieldMask` header, the request fails.
+   *   If `optimize_waypoint_order` is set to false,
+   *   `ComputeRoutesResponse.optimized_intermediate_waypoint_index` will be
+   *   empty.
    * @param {number[]} [request.requestedReferenceRoutes]
    *   Optional. Specifies what reference routes to calculate as part of the
    *   request in addition to the default route. A reference route is a route with
    *   a different route calculation objective than the default route. For example
    *   a `FUEL_EFFICIENT` reference route calculation takes into account various
-   *   parameters that would generate an optimal fuel efficient route.
+   *   parameters that would generate an optimal fuel efficient route. When using
+   *   this feature, look for
+   *   {@link protos.google.maps.routing.v2.Route.route_labels|`route_labels`} on the
+   *   resulting routes.
    * @param {number[]} [request.extraComputations]
    *   Optional. A list of extra computations which may be used to complete the
    *   request. Note: These extra computations may return extra fields on the
    *   response. These extra fields must also be specified in the field mask to be
    *   returned in the response.
+   * @param {google.maps.routing.v2.TrafficModel} [request.trafficModel]
+   *   Optional. Specifies the assumptions to use when calculating time in
+   *   traffic. This setting affects the value returned in the duration field in
+   *   the
+   *   {@link protos.google.maps.routing.v2.Route|`Route`} and
+   *   {@link protos.google.maps.routing.v2.RouteLeg|`RouteLeg`} which contains the predicted
+   *   time in traffic based on historical averages.
+   *   `TrafficModel` is only available for requests that have set
+   *   {@link protos.google.maps.routing.v2.RoutingPreference|`RoutingPreference`} to
+   *   `TRAFFIC_AWARE_OPTIMAL` and
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|`RouteTravelMode`} to `DRIVE`.
+   *   Defaults to `BEST_GUESS` if traffic is requested and `TrafficModel` is not
+   *   specified.
+   * @param {google.maps.routing.v2.TransitPreferences} [request.transitPreferences]
+   *   Optional. Specifies preferences that influence the route returned for
+   *   `TRANSIT` routes. NOTE: You can only specify a `transit_preferences` when
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|`RouteTravelMode`} is set to
+   *   `TRANSIT`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.maps.routing.v2.ComputeRoutesResponse | ComputeRoutesResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.maps.routing.v2.ComputeRoutesResponse|ComputeRoutesResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/routes.compute_routes.js</caption>
    * region_tag:routes_v2_generated_Routes_ComputeRoutes_async
@@ -440,7 +535,7 @@ export class RoutesClient {
     [
       protos.google.maps.routing.v2.IComputeRoutesResponse,
       protos.google.maps.routing.v2.IComputeRoutesRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   computeRoutes(
@@ -480,7 +575,7 @@ export class RoutesClient {
     [
       protos.google.maps.routing.v2.IComputeRoutesResponse,
       protos.google.maps.routing.v2.IComputeRoutesRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -506,9 +601,9 @@ export class RoutesClient {
    * the input. You can provide the response field mask by using the URL
    * parameter `$fields` or `fields`, or by using the HTTP/gRPC header
    * `X-Goog-FieldMask` (see the [available URL parameters and
-   * headers](https://cloud.google.com/apis/docs/system-parameters). The value
-   * is a comma separated list of field paths. See this detailed documentation
-   * about [how to construct the field
+   * headers](https://cloud.google.com/apis/docs/system-parameters)).
+   * The value is a comma separated list of field paths. See this detailed
+   * documentation about [how to construct the field
    * paths](https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/field_mask.proto).
    *
    * For example, in this method:
@@ -542,12 +637,14 @@ export class RoutesClient {
    *   matrix. Several size restrictions apply to the cardinality of origins and
    *   destinations:
    *
-   *   * The number of elements (origins × destinations) must be no greater than
-   *   625 in any case.
-   *   * The number of elements (origins × destinations) must be no greater than
-   *   100 if routing_preference is set to `TRAFFIC_AWARE_OPTIMAL`.
-   *   * The number of waypoints (origins + destinations) specified as `place_id`
-   *   must be no greater than 50.
+   *   * The sum of the number of origins + the number of destinations specified
+   *   as either `place_id` or `address` must be no greater than 50.
+   *   * The product of number of origins × number of destinations must be no
+   *   greater than 625 in any case.
+   *   * The product of the number of origins × number of destinations must be no
+   *   greater than 100 if routing_preference is set to `TRAFFIC_AWARE_OPTIMAL`.
+   *   * The product of the number of origins × number of destinations must be no
+   *   greater than 100 if travel_mode is set to `TRANSIT`.
    * @param {number[]} request.destinations
    *   Required. Array of destinations, which determines the columns of the
    *   response matrix.
@@ -560,31 +657,56 @@ export class RoutesClient {
    *   returned. You can specify this option only when the `travel_mode` is
    *   `DRIVE` or `TWO_WHEELER`, otherwise the request fails.
    * @param {google.protobuf.Timestamp} [request.departureTime]
-   *   Optional. The departure time. If you don't set this value, this defaults to
-   *   the time that you made the request. If you set this value to a time that
-   *   has already occurred, the request fails.
+   *   Optional. The departure time. If you don't set this value, then this value
+   *   defaults to the time that you made the request.
+   *   NOTE: You can only specify a `departure_time` in the past when
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|`RouteTravelMode`} is set to
+   *   `TRANSIT`.
+   * @param {google.protobuf.Timestamp} [request.arrivalTime]
+   *   Optional. The arrival time.
+   *   NOTE: Can only be set when
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|`RouteTravelMode`} is set to
+   *   `TRANSIT`. You can specify either `departure_time` or `arrival_time`, but
+   *   not both.
    * @param {string} [request.languageCode]
    *   Optional. The BCP-47 language code, such as "en-US" or "sr-Latn". For more
-   *   information, see
-   *   http://www.unicode.org/reports/tr35/#Unicode_locale_identifier. See
-   *   [Language Support](https://developers.google.com/maps/faq#languagesupport)
+   *   information, see [Unicode Locale
+   *   Identifier](http://www.unicode.org/reports/tr35/#Unicode_locale_identifier).
+   *   See [Language
+   *   Support](https://developers.google.com/maps/faq#languagesupport)
    *   for the list of supported languages. When you don't provide this value, the
    *   display language is inferred from the location of the first origin.
    * @param {string} [request.regionCode]
    *   Optional. The region code, specified as a ccTLD ("top-level domain")
-   *   two-character value. For more information see
-   *   https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains
+   *   two-character value. For more information see [Country code top-level
+   *   domains](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains).
+   * @param {google.maps.routing.v2.Units} [request.units]
+   *   Optional. Specifies the units of measure for the display fields.
    * @param {number[]} [request.extraComputations]
    *   Optional. A list of extra computations which may be used to complete the
    *   request. Note: These extra computations may return extra fields on the
    *   response. These extra fields must also be specified in the field mask to be
    *   returned in the response.
+   * @param {google.maps.routing.v2.TrafficModel} [request.trafficModel]
+   *   Optional. Specifies the assumptions to use when calculating time in
+   *   traffic. This setting affects the value returned in the duration field in
+   *   the {@link protos.google.maps.routing.v2.RouteMatrixElement|RouteMatrixElement} which
+   *   contains the predicted time in traffic based on historical averages.
+   *   {@link protos.google.maps.routing.v2.RoutingPreference|RoutingPreference} to
+   *   `TRAFFIC_AWARE_OPTIMAL` and
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|RouteTravelMode} to `DRIVE`.
+   *   Defaults to `BEST_GUESS` if traffic is requested and `TrafficModel` is not
+   *   specified.
+   * @param {google.maps.routing.v2.TransitPreferences} [request.transitPreferences]
+   *   Optional. Specifies preferences that influence the route returned for
+   *   `TRANSIT` routes. NOTE: You can only specify a `transit_preferences` when
+   *   {@link protos.google.maps.routing.v2.RouteTravelMode|RouteTravelMode} is set to
+   *   `TRANSIT`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits {@link google.maps.routing.v2.RouteMatrixElement | RouteMatrixElement} on 'data' event.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#server-streaming)
+   *   An object stream which emits {@link protos.google.maps.routing.v2.RouteMatrixElement|RouteMatrixElement} on 'data' event.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#server-streaming | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/routes.compute_route_matrix.js</caption>
    * region_tag:routes_v2_generated_Routes_ComputeRouteMatrix_async

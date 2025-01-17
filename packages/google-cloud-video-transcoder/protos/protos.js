@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -94,6 +94,8 @@
                              * @property {Object.<string,string>|null} [labels] Job labels
                              * @property {google.rpc.IStatus|null} [error] Job error
                              * @property {google.cloud.video.transcoder.v1.Job.ProcessingMode|null} [mode] Job mode
+                             * @property {number|null} [batchModePriority] Job batchModePriority
+                             * @property {google.cloud.video.transcoder.v1.Job.OptimizationStrategy|null} [optimization] Job optimization
                              */
     
                             /**
@@ -216,6 +218,22 @@
                              */
                             Job.prototype.mode = 0;
     
+                            /**
+                             * Job batchModePriority.
+                             * @member {number} batchModePriority
+                             * @memberof google.cloud.video.transcoder.v1.Job
+                             * @instance
+                             */
+                            Job.prototype.batchModePriority = 0;
+    
+                            /**
+                             * Job optimization.
+                             * @member {google.cloud.video.transcoder.v1.Job.OptimizationStrategy} optimization
+                             * @memberof google.cloud.video.transcoder.v1.Job
+                             * @instance
+                             */
+                            Job.prototype.optimization = 0;
+    
                             // OneOf field names bound to virtual getters and setters
                             var $oneOfFields;
     
@@ -281,6 +299,10 @@
                                     $root.google.rpc.Status.encode(message.error, writer.uint32(/* id 17, wireType 2 =*/138).fork()).ldelim();
                                 if (message.mode != null && Object.hasOwnProperty.call(message, "mode"))
                                     writer.uint32(/* id 20, wireType 0 =*/160).int32(message.mode);
+                                if (message.batchModePriority != null && Object.hasOwnProperty.call(message, "batchModePriority"))
+                                    writer.uint32(/* id 21, wireType 0 =*/168).int32(message.batchModePriority);
+                                if (message.optimization != null && Object.hasOwnProperty.call(message, "optimization"))
+                                    writer.uint32(/* id 22, wireType 0 =*/176).int32(message.optimization);
                                 return writer;
                             };
     
@@ -384,6 +406,14 @@
                                         }
                                     case 20: {
                                             message.mode = reader.int32();
+                                            break;
+                                        }
+                                    case 21: {
+                                            message.batchModePriority = reader.int32();
+                                            break;
+                                        }
+                                    case 22: {
+                                            message.optimization = reader.int32();
                                             break;
                                         }
                                     default:
@@ -497,6 +527,18 @@
                                     case 2:
                                         break;
                                     }
+                                if (message.batchModePriority != null && message.hasOwnProperty("batchModePriority"))
+                                    if (!$util.isInteger(message.batchModePriority))
+                                        return "batchModePriority: integer expected";
+                                if (message.optimization != null && message.hasOwnProperty("optimization"))
+                                    switch (message.optimization) {
+                                    default:
+                                        return "optimization: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
                                 return null;
                             };
     
@@ -602,6 +644,28 @@
                                     message.mode = 2;
                                     break;
                                 }
+                                if (object.batchModePriority != null)
+                                    message.batchModePriority = object.batchModePriority | 0;
+                                switch (object.optimization) {
+                                default:
+                                    if (typeof object.optimization === "number") {
+                                        message.optimization = object.optimization;
+                                        break;
+                                    }
+                                    break;
+                                case "OPTIMIZATION_STRATEGY_UNSPECIFIED":
+                                case 0:
+                                    message.optimization = 0;
+                                    break;
+                                case "AUTODETECT":
+                                case 1:
+                                    message.optimization = 1;
+                                    break;
+                                case "DISABLED":
+                                case 2:
+                                    message.optimization = 2;
+                                    break;
+                                }
                                 return message;
                             };
     
@@ -631,6 +695,8 @@
                                     object.ttlAfterCompletionDays = 0;
                                     object.error = null;
                                     object.mode = options.enums === String ? "PROCESSING_MODE_UNSPECIFIED" : 0;
+                                    object.batchModePriority = 0;
+                                    object.optimization = options.enums === String ? "OPTIMIZATION_STRATEGY_UNSPECIFIED" : 0;
                                 }
                                 if (message.name != null && message.hasOwnProperty("name"))
                                     object.name = message.name;
@@ -668,6 +734,10 @@
                                     object.error = $root.google.rpc.Status.toObject(message.error, options);
                                 if (message.mode != null && message.hasOwnProperty("mode"))
                                     object.mode = options.enums === String ? $root.google.cloud.video.transcoder.v1.Job.ProcessingMode[message.mode] === undefined ? message.mode : $root.google.cloud.video.transcoder.v1.Job.ProcessingMode[message.mode] : message.mode;
+                                if (message.batchModePriority != null && message.hasOwnProperty("batchModePriority"))
+                                    object.batchModePriority = message.batchModePriority;
+                                if (message.optimization != null && message.hasOwnProperty("optimization"))
+                                    object.optimization = options.enums === String ? $root.google.cloud.video.transcoder.v1.Job.OptimizationStrategy[message.optimization] === undefined ? message.optimization : $root.google.cloud.video.transcoder.v1.Job.OptimizationStrategy[message.optimization] : message.optimization;
                                 return object;
                             };
     
@@ -730,6 +800,22 @@
                                 values[valuesById[0] = "PROCESSING_MODE_UNSPECIFIED"] = 0;
                                 values[valuesById[1] = "PROCESSING_MODE_INTERACTIVE"] = 1;
                                 values[valuesById[2] = "PROCESSING_MODE_BATCH"] = 2;
+                                return values;
+                            })();
+    
+                            /**
+                             * OptimizationStrategy enum.
+                             * @name google.cloud.video.transcoder.v1.Job.OptimizationStrategy
+                             * @enum {number}
+                             * @property {number} OPTIMIZATION_STRATEGY_UNSPECIFIED=0 OPTIMIZATION_STRATEGY_UNSPECIFIED value
+                             * @property {number} AUTODETECT=1 AUTODETECT value
+                             * @property {number} DISABLED=2 DISABLED value
+                             */
+                            Job.OptimizationStrategy = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "OPTIMIZATION_STRATEGY_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "AUTODETECT"] = 1;
+                                values[valuesById[2] = "DISABLED"] = 2;
                                 return values;
                             })();
     
@@ -1043,6 +1129,7 @@
                              * @property {google.cloud.video.transcoder.v1.IPubsubDestination|null} [pubsubDestination] JobConfig pubsubDestination
                              * @property {Array.<google.cloud.video.transcoder.v1.ISpriteSheet>|null} [spriteSheets] JobConfig spriteSheets
                              * @property {Array.<google.cloud.video.transcoder.v1.IOverlay>|null} [overlays] JobConfig overlays
+                             * @property {Array.<google.cloud.video.transcoder.v1.IEncryption>|null} [encryptions] JobConfig encryptions
                              */
     
                             /**
@@ -1062,6 +1149,7 @@
                                 this.adBreaks = [];
                                 this.spriteSheets = [];
                                 this.overlays = [];
+                                this.encryptions = [];
                                 if (properties)
                                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
@@ -1149,6 +1237,14 @@
                             JobConfig.prototype.overlays = $util.emptyArray;
     
                             /**
+                             * JobConfig encryptions.
+                             * @member {Array.<google.cloud.video.transcoder.v1.IEncryption>} encryptions
+                             * @memberof google.cloud.video.transcoder.v1.JobConfig
+                             * @instance
+                             */
+                            JobConfig.prototype.encryptions = $util.emptyArray;
+    
+                            /**
                              * Creates a new JobConfig instance using the specified properties.
                              * @function create
                              * @memberof google.cloud.video.transcoder.v1.JobConfig
@@ -1200,6 +1296,9 @@
                                 if (message.overlays != null && message.overlays.length)
                                     for (var i = 0; i < message.overlays.length; ++i)
                                         $root.google.cloud.video.transcoder.v1.Overlay.encode(message.overlays[i], writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                                if (message.encryptions != null && message.encryptions.length)
+                                    for (var i = 0; i < message.encryptions.length; ++i)
+                                        $root.google.cloud.video.transcoder.v1.Encryption.encode(message.encryptions[i], writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
                                 return writer;
                             };
     
@@ -1288,6 +1387,12 @@
                                             if (!(message.overlays && message.overlays.length))
                                                 message.overlays = [];
                                             message.overlays.push($root.google.cloud.video.transcoder.v1.Overlay.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    case 11: {
+                                            if (!(message.encryptions && message.encryptions.length))
+                                                message.encryptions = [];
+                                            message.encryptions.push($root.google.cloud.video.transcoder.v1.Encryption.decode(reader, reader.uint32()));
                                             break;
                                         }
                                     default:
@@ -1407,6 +1512,15 @@
                                             return "overlays." + error;
                                     }
                                 }
+                                if (message.encryptions != null && message.hasOwnProperty("encryptions")) {
+                                    if (!Array.isArray(message.encryptions))
+                                        return "encryptions: array expected";
+                                    for (var i = 0; i < message.encryptions.length; ++i) {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.verify(message.encryptions[i]);
+                                        if (error)
+                                            return "encryptions." + error;
+                                    }
+                                }
                                 return null;
                             };
     
@@ -1512,6 +1626,16 @@
                                         message.overlays[i] = $root.google.cloud.video.transcoder.v1.Overlay.fromObject(object.overlays[i]);
                                     }
                                 }
+                                if (object.encryptions) {
+                                    if (!Array.isArray(object.encryptions))
+                                        throw TypeError(".google.cloud.video.transcoder.v1.JobConfig.encryptions: array expected");
+                                    message.encryptions = [];
+                                    for (var i = 0; i < object.encryptions.length; ++i) {
+                                        if (typeof object.encryptions[i] !== "object")
+                                            throw TypeError(".google.cloud.video.transcoder.v1.JobConfig.encryptions: object expected");
+                                        message.encryptions[i] = $root.google.cloud.video.transcoder.v1.Encryption.fromObject(object.encryptions[i]);
+                                    }
+                                }
                                 return message;
                             };
     
@@ -1537,6 +1661,7 @@
                                     object.adBreaks = [];
                                     object.spriteSheets = [];
                                     object.overlays = [];
+                                    object.encryptions = [];
                                 }
                                 if (options.defaults) {
                                     object.output = null;
@@ -1585,6 +1710,11 @@
                                     object.overlays = [];
                                     for (var j = 0; j < message.overlays.length; ++j)
                                         object.overlays[j] = $root.google.cloud.video.transcoder.v1.Overlay.toObject(message.overlays[j], options);
+                                }
+                                if (message.encryptions && message.encryptions.length) {
+                                    object.encryptions = [];
+                                    for (var j = 0; j < message.encryptions.length; ++j)
+                                        object.encryptions[j] = $root.google.cloud.video.transcoder.v1.Encryption.toObject(message.encryptions[j], options);
                                 }
                                 return object;
                             };
@@ -2916,6 +3046,7 @@
                              * @property {string|null} [container] MuxStream container
                              * @property {Array.<string>|null} [elementaryStreams] MuxStream elementaryStreams
                              * @property {google.cloud.video.transcoder.v1.ISegmentSettings|null} [segmentSettings] MuxStream segmentSettings
+                             * @property {string|null} [encryptionId] MuxStream encryptionId
                              */
     
                             /**
@@ -2975,6 +3106,14 @@
                             MuxStream.prototype.segmentSettings = null;
     
                             /**
+                             * MuxStream encryptionId.
+                             * @member {string} encryptionId
+                             * @memberof google.cloud.video.transcoder.v1.MuxStream
+                             * @instance
+                             */
+                            MuxStream.prototype.encryptionId = "";
+    
+                            /**
                              * Creates a new MuxStream instance using the specified properties.
                              * @function create
                              * @memberof google.cloud.video.transcoder.v1.MuxStream
@@ -3009,6 +3148,8 @@
                                         writer.uint32(/* id 4, wireType 2 =*/34).string(message.elementaryStreams[i]);
                                 if (message.segmentSettings != null && Object.hasOwnProperty.call(message, "segmentSettings"))
                                     $root.google.cloud.video.transcoder.v1.SegmentSettings.encode(message.segmentSettings, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                                if (message.encryptionId != null && Object.hasOwnProperty.call(message, "encryptionId"))
+                                    writer.uint32(/* id 7, wireType 2 =*/58).string(message.encryptionId);
                                 return writer;
                             };
     
@@ -3063,6 +3204,10 @@
                                         }
                                     case 5: {
                                             message.segmentSettings = $root.google.cloud.video.transcoder.v1.SegmentSettings.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 7: {
+                                            message.encryptionId = reader.string();
                                             break;
                                         }
                                     default:
@@ -3121,6 +3266,9 @@
                                     if (error)
                                         return "segmentSettings." + error;
                                 }
+                                if (message.encryptionId != null && message.hasOwnProperty("encryptionId"))
+                                    if (!$util.isString(message.encryptionId))
+                                        return "encryptionId: string expected";
                                 return null;
                             };
     
@@ -3154,6 +3302,8 @@
                                         throw TypeError(".google.cloud.video.transcoder.v1.MuxStream.segmentSettings: object expected");
                                     message.segmentSettings = $root.google.cloud.video.transcoder.v1.SegmentSettings.fromObject(object.segmentSettings);
                                 }
+                                if (object.encryptionId != null)
+                                    message.encryptionId = String(object.encryptionId);
                                 return message;
                             };
     
@@ -3177,6 +3327,7 @@
                                     object.fileName = "";
                                     object.container = "";
                                     object.segmentSettings = null;
+                                    object.encryptionId = "";
                                 }
                                 if (message.key != null && message.hasOwnProperty("key"))
                                     object.key = message.key;
@@ -3191,6 +3342,8 @@
                                 }
                                 if (message.segmentSettings != null && message.hasOwnProperty("segmentSettings"))
                                     object.segmentSettings = $root.google.cloud.video.transcoder.v1.SegmentSettings.toObject(message.segmentSettings, options);
+                                if (message.encryptionId != null && message.hasOwnProperty("encryptionId"))
+                                    object.encryptionId = message.encryptionId;
                                 return object;
                             };
     
@@ -3232,6 +3385,7 @@
                              * @property {string|null} [fileName] Manifest fileName
                              * @property {google.cloud.video.transcoder.v1.Manifest.ManifestType|null} [type] Manifest type
                              * @property {Array.<string>|null} [muxStreams] Manifest muxStreams
+                             * @property {google.cloud.video.transcoder.v1.Manifest.IDashConfig|null} [dash] Manifest dash
                              */
     
                             /**
@@ -3275,6 +3429,28 @@
                             Manifest.prototype.muxStreams = $util.emptyArray;
     
                             /**
+                             * Manifest dash.
+                             * @member {google.cloud.video.transcoder.v1.Manifest.IDashConfig|null|undefined} dash
+                             * @memberof google.cloud.video.transcoder.v1.Manifest
+                             * @instance
+                             */
+                            Manifest.prototype.dash = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * Manifest manifestConfig.
+                             * @member {"dash"|undefined} manifestConfig
+                             * @memberof google.cloud.video.transcoder.v1.Manifest
+                             * @instance
+                             */
+                            Object.defineProperty(Manifest.prototype, "manifestConfig", {
+                                get: $util.oneOfGetter($oneOfFields = ["dash"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
                              * Creates a new Manifest instance using the specified properties.
                              * @function create
                              * @memberof google.cloud.video.transcoder.v1.Manifest
@@ -3305,6 +3481,8 @@
                                 if (message.muxStreams != null && message.muxStreams.length)
                                     for (var i = 0; i < message.muxStreams.length; ++i)
                                         writer.uint32(/* id 3, wireType 2 =*/26).string(message.muxStreams[i]);
+                                if (message.dash != null && Object.hasOwnProperty.call(message, "dash"))
+                                    $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.encode(message.dash, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                                 return writer;
                             };
     
@@ -3353,6 +3531,10 @@
                                             message.muxStreams.push(reader.string());
                                             break;
                                         }
+                                    case 4: {
+                                            message.dash = $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.decode(reader, reader.uint32());
+                                            break;
+                                        }
                                     default:
                                         reader.skipType(tag & 7);
                                         break;
@@ -3388,6 +3570,7 @@
                             Manifest.verify = function verify(message) {
                                 if (typeof message !== "object" || message === null)
                                     return "object expected";
+                                var properties = {};
                                 if (message.fileName != null && message.hasOwnProperty("fileName"))
                                     if (!$util.isString(message.fileName))
                                         return "fileName: string expected";
@@ -3406,6 +3589,14 @@
                                     for (var i = 0; i < message.muxStreams.length; ++i)
                                         if (!$util.isString(message.muxStreams[i]))
                                             return "muxStreams: string[] expected";
+                                }
+                                if (message.dash != null && message.hasOwnProperty("dash")) {
+                                    properties.manifestConfig = 1;
+                                    {
+                                        var error = $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.verify(message.dash);
+                                        if (error)
+                                            return "dash." + error;
+                                    }
                                 }
                                 return null;
                             };
@@ -3451,6 +3642,11 @@
                                     for (var i = 0; i < object.muxStreams.length; ++i)
                                         message.muxStreams[i] = String(object.muxStreams[i]);
                                 }
+                                if (object.dash != null) {
+                                    if (typeof object.dash !== "object")
+                                        throw TypeError(".google.cloud.video.transcoder.v1.Manifest.dash: object expected");
+                                    message.dash = $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.fromObject(object.dash);
+                                }
                                 return message;
                             };
     
@@ -3481,6 +3677,11 @@
                                     object.muxStreams = [];
                                     for (var j = 0; j < message.muxStreams.length; ++j)
                                         object.muxStreams[j] = message.muxStreams[j];
+                                }
+                                if (message.dash != null && message.hasOwnProperty("dash")) {
+                                    object.dash = $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.toObject(message.dash, options);
+                                    if (options.oneofs)
+                                        object.manifestConfig = "dash";
                                 }
                                 return object;
                             };
@@ -3525,6 +3726,249 @@
                                 values[valuesById[1] = "HLS"] = 1;
                                 values[valuesById[2] = "DASH"] = 2;
                                 return values;
+                            })();
+    
+                            Manifest.DashConfig = (function() {
+    
+                                /**
+                                 * Properties of a DashConfig.
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest
+                                 * @interface IDashConfig
+                                 * @property {google.cloud.video.transcoder.v1.Manifest.DashConfig.SegmentReferenceScheme|null} [segmentReferenceScheme] DashConfig segmentReferenceScheme
+                                 */
+    
+                                /**
+                                 * Constructs a new DashConfig.
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest
+                                 * @classdesc Represents a DashConfig.
+                                 * @implements IDashConfig
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Manifest.IDashConfig=} [properties] Properties to set
+                                 */
+                                function DashConfig(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * DashConfig segmentReferenceScheme.
+                                 * @member {google.cloud.video.transcoder.v1.Manifest.DashConfig.SegmentReferenceScheme} segmentReferenceScheme
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @instance
+                                 */
+                                DashConfig.prototype.segmentReferenceScheme = 0;
+    
+                                /**
+                                 * Creates a new DashConfig instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Manifest.IDashConfig=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Manifest.DashConfig} DashConfig instance
+                                 */
+                                DashConfig.create = function create(properties) {
+                                    return new DashConfig(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified DashConfig message. Does not implicitly {@link google.cloud.video.transcoder.v1.Manifest.DashConfig.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Manifest.IDashConfig} message DashConfig message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                DashConfig.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.segmentReferenceScheme != null && Object.hasOwnProperty.call(message, "segmentReferenceScheme"))
+                                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.segmentReferenceScheme);
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified DashConfig message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Manifest.DashConfig.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Manifest.IDashConfig} message DashConfig message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                DashConfig.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a DashConfig message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Manifest.DashConfig} DashConfig
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                DashConfig.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Manifest.DashConfig();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.segmentReferenceScheme = reader.int32();
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a DashConfig message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Manifest.DashConfig} DashConfig
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                DashConfig.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a DashConfig message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                DashConfig.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (message.segmentReferenceScheme != null && message.hasOwnProperty("segmentReferenceScheme"))
+                                        switch (message.segmentReferenceScheme) {
+                                        default:
+                                            return "segmentReferenceScheme: enum value expected";
+                                        case 0:
+                                        case 1:
+                                        case 2:
+                                            break;
+                                        }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a DashConfig message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Manifest.DashConfig} DashConfig
+                                 */
+                                DashConfig.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Manifest.DashConfig)
+                                        return object;
+                                    var message = new $root.google.cloud.video.transcoder.v1.Manifest.DashConfig();
+                                    switch (object.segmentReferenceScheme) {
+                                    default:
+                                        if (typeof object.segmentReferenceScheme === "number") {
+                                            message.segmentReferenceScheme = object.segmentReferenceScheme;
+                                            break;
+                                        }
+                                        break;
+                                    case "SEGMENT_REFERENCE_SCHEME_UNSPECIFIED":
+                                    case 0:
+                                        message.segmentReferenceScheme = 0;
+                                        break;
+                                    case "SEGMENT_LIST":
+                                    case 1:
+                                        message.segmentReferenceScheme = 1;
+                                        break;
+                                    case "SEGMENT_TEMPLATE_NUMBER":
+                                    case 2:
+                                        message.segmentReferenceScheme = 2;
+                                        break;
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a DashConfig message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Manifest.DashConfig} message DashConfig
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                DashConfig.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults)
+                                        object.segmentReferenceScheme = options.enums === String ? "SEGMENT_REFERENCE_SCHEME_UNSPECIFIED" : 0;
+                                    if (message.segmentReferenceScheme != null && message.hasOwnProperty("segmentReferenceScheme"))
+                                        object.segmentReferenceScheme = options.enums === String ? $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.SegmentReferenceScheme[message.segmentReferenceScheme] === undefined ? message.segmentReferenceScheme : $root.google.cloud.video.transcoder.v1.Manifest.DashConfig.SegmentReferenceScheme[message.segmentReferenceScheme] : message.segmentReferenceScheme;
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this DashConfig to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                DashConfig.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for DashConfig
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Manifest.DashConfig
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                DashConfig.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Manifest.DashConfig";
+                                };
+    
+                                /**
+                                 * SegmentReferenceScheme enum.
+                                 * @name google.cloud.video.transcoder.v1.Manifest.DashConfig.SegmentReferenceScheme
+                                 * @enum {number}
+                                 * @property {number} SEGMENT_REFERENCE_SCHEME_UNSPECIFIED=0 SEGMENT_REFERENCE_SCHEME_UNSPECIFIED value
+                                 * @property {number} SEGMENT_LIST=1 SEGMENT_LIST value
+                                 * @property {number} SEGMENT_TEMPLATE_NUMBER=2 SEGMENT_TEMPLATE_NUMBER value
+                                 */
+                                DashConfig.SegmentReferenceScheme = (function() {
+                                    var valuesById = {}, values = Object.create(valuesById);
+                                    values[valuesById[0] = "SEGMENT_REFERENCE_SCHEME_UNSPECIFIED"] = 0;
+                                    values[valuesById[1] = "SEGMENT_LIST"] = 1;
+                                    values[valuesById[2] = "SEGMENT_TEMPLATE_NUMBER"] = 2;
+                                    return values;
+                                })();
+    
+                                return DashConfig;
                             })();
     
                             return Manifest;
@@ -12235,6 +12679,2149 @@
                             return SegmentSettings;
                         })();
     
+                        v1.Encryption = (function() {
+    
+                            /**
+                             * Properties of an Encryption.
+                             * @memberof google.cloud.video.transcoder.v1
+                             * @interface IEncryption
+                             * @property {string|null} [id] Encryption id
+                             * @property {google.cloud.video.transcoder.v1.Encryption.IAes128Encryption|null} [aes_128] Encryption aes_128
+                             * @property {google.cloud.video.transcoder.v1.Encryption.ISampleAesEncryption|null} [sampleAes] Encryption sampleAes
+                             * @property {google.cloud.video.transcoder.v1.Encryption.IMpegCommonEncryption|null} [mpegCenc] Encryption mpegCenc
+                             * @property {google.cloud.video.transcoder.v1.Encryption.ISecretManagerSource|null} [secretManagerKeySource] Encryption secretManagerKeySource
+                             * @property {google.cloud.video.transcoder.v1.Encryption.IDrmSystems|null} [drmSystems] Encryption drmSystems
+                             */
+    
+                            /**
+                             * Constructs a new Encryption.
+                             * @memberof google.cloud.video.transcoder.v1
+                             * @classdesc Represents an Encryption.
+                             * @implements IEncryption
+                             * @constructor
+                             * @param {google.cloud.video.transcoder.v1.IEncryption=} [properties] Properties to set
+                             */
+                            function Encryption(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * Encryption id.
+                             * @member {string} id
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Encryption.prototype.id = "";
+    
+                            /**
+                             * Encryption aes_128.
+                             * @member {google.cloud.video.transcoder.v1.Encryption.IAes128Encryption|null|undefined} aes_128
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Encryption.prototype.aes_128 = null;
+    
+                            /**
+                             * Encryption sampleAes.
+                             * @member {google.cloud.video.transcoder.v1.Encryption.ISampleAesEncryption|null|undefined} sampleAes
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Encryption.prototype.sampleAes = null;
+    
+                            /**
+                             * Encryption mpegCenc.
+                             * @member {google.cloud.video.transcoder.v1.Encryption.IMpegCommonEncryption|null|undefined} mpegCenc
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Encryption.prototype.mpegCenc = null;
+    
+                            /**
+                             * Encryption secretManagerKeySource.
+                             * @member {google.cloud.video.transcoder.v1.Encryption.ISecretManagerSource|null|undefined} secretManagerKeySource
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Encryption.prototype.secretManagerKeySource = null;
+    
+                            /**
+                             * Encryption drmSystems.
+                             * @member {google.cloud.video.transcoder.v1.Encryption.IDrmSystems|null|undefined} drmSystems
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Encryption.prototype.drmSystems = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * Encryption encryptionMode.
+                             * @member {"aes_128"|"sampleAes"|"mpegCenc"|undefined} encryptionMode
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Object.defineProperty(Encryption.prototype, "encryptionMode", {
+                                get: $util.oneOfGetter($oneOfFields = ["aes_128", "sampleAes", "mpegCenc"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Encryption secretSource.
+                             * @member {"secretManagerKeySource"|undefined} secretSource
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             */
+                            Object.defineProperty(Encryption.prototype, "secretSource", {
+                                get: $util.oneOfGetter($oneOfFields = ["secretManagerKeySource"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Creates a new Encryption instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {google.cloud.video.transcoder.v1.IEncryption=} [properties] Properties to set
+                             * @returns {google.cloud.video.transcoder.v1.Encryption} Encryption instance
+                             */
+                            Encryption.create = function create(properties) {
+                                return new Encryption(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified Encryption message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {google.cloud.video.transcoder.v1.IEncryption} message Encryption message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            Encryption.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.aes_128 != null && Object.hasOwnProperty.call(message, "aes_128"))
+                                    $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.encode(message.aes_128, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                if (message.sampleAes != null && Object.hasOwnProperty.call(message, "sampleAes"))
+                                    $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.encode(message.sampleAes, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                                if (message.mpegCenc != null && Object.hasOwnProperty.call(message, "mpegCenc"))
+                                    $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.encode(message.mpegCenc, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.id);
+                                if (message.secretManagerKeySource != null && Object.hasOwnProperty.call(message, "secretManagerKeySource"))
+                                    $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.encode(message.secretManagerKeySource, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                                if (message.drmSystems != null && Object.hasOwnProperty.call(message, "drmSystems"))
+                                    $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems.encode(message.drmSystems, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified Encryption message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {google.cloud.video.transcoder.v1.IEncryption} message Encryption message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            Encryption.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes an Encryption message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.video.transcoder.v1.Encryption} Encryption
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            Encryption.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 6: {
+                                            message.id = reader.string();
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.aes_128 = $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.sampleAes = $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 5: {
+                                            message.mpegCenc = $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 7: {
+                                            message.secretManagerKeySource = $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 8: {
+                                            message.drmSystems = $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes an Encryption message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.video.transcoder.v1.Encryption} Encryption
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            Encryption.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies an Encryption message.
+                             * @function verify
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            Encryption.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                var properties = {};
+                                if (message.id != null && message.hasOwnProperty("id"))
+                                    if (!$util.isString(message.id))
+                                        return "id: string expected";
+                                if (message.aes_128 != null && message.hasOwnProperty("aes_128")) {
+                                    properties.encryptionMode = 1;
+                                    {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.verify(message.aes_128);
+                                        if (error)
+                                            return "aes_128." + error;
+                                    }
+                                }
+                                if (message.sampleAes != null && message.hasOwnProperty("sampleAes")) {
+                                    if (properties.encryptionMode === 1)
+                                        return "encryptionMode: multiple values";
+                                    properties.encryptionMode = 1;
+                                    {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.verify(message.sampleAes);
+                                        if (error)
+                                            return "sampleAes." + error;
+                                    }
+                                }
+                                if (message.mpegCenc != null && message.hasOwnProperty("mpegCenc")) {
+                                    if (properties.encryptionMode === 1)
+                                        return "encryptionMode: multiple values";
+                                    properties.encryptionMode = 1;
+                                    {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.verify(message.mpegCenc);
+                                        if (error)
+                                            return "mpegCenc." + error;
+                                    }
+                                }
+                                if (message.secretManagerKeySource != null && message.hasOwnProperty("secretManagerKeySource")) {
+                                    properties.secretSource = 1;
+                                    {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.verify(message.secretManagerKeySource);
+                                        if (error)
+                                            return "secretManagerKeySource." + error;
+                                    }
+                                }
+                                if (message.drmSystems != null && message.hasOwnProperty("drmSystems")) {
+                                    var error = $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems.verify(message.drmSystems);
+                                    if (error)
+                                        return "drmSystems." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates an Encryption message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.video.transcoder.v1.Encryption} Encryption
+                             */
+                            Encryption.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption)
+                                    return object;
+                                var message = new $root.google.cloud.video.transcoder.v1.Encryption();
+                                if (object.id != null)
+                                    message.id = String(object.id);
+                                if (object.aes_128 != null) {
+                                    if (typeof object.aes_128 !== "object")
+                                        throw TypeError(".google.cloud.video.transcoder.v1.Encryption.aes_128: object expected");
+                                    message.aes_128 = $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.fromObject(object.aes_128);
+                                }
+                                if (object.sampleAes != null) {
+                                    if (typeof object.sampleAes !== "object")
+                                        throw TypeError(".google.cloud.video.transcoder.v1.Encryption.sampleAes: object expected");
+                                    message.sampleAes = $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.fromObject(object.sampleAes);
+                                }
+                                if (object.mpegCenc != null) {
+                                    if (typeof object.mpegCenc !== "object")
+                                        throw TypeError(".google.cloud.video.transcoder.v1.Encryption.mpegCenc: object expected");
+                                    message.mpegCenc = $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.fromObject(object.mpegCenc);
+                                }
+                                if (object.secretManagerKeySource != null) {
+                                    if (typeof object.secretManagerKeySource !== "object")
+                                        throw TypeError(".google.cloud.video.transcoder.v1.Encryption.secretManagerKeySource: object expected");
+                                    message.secretManagerKeySource = $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.fromObject(object.secretManagerKeySource);
+                                }
+                                if (object.drmSystems != null) {
+                                    if (typeof object.drmSystems !== "object")
+                                        throw TypeError(".google.cloud.video.transcoder.v1.Encryption.drmSystems: object expected");
+                                    message.drmSystems = $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems.fromObject(object.drmSystems);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from an Encryption message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {google.cloud.video.transcoder.v1.Encryption} message Encryption
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            Encryption.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.id = "";
+                                    object.drmSystems = null;
+                                }
+                                if (message.aes_128 != null && message.hasOwnProperty("aes_128")) {
+                                    object.aes_128 = $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.toObject(message.aes_128, options);
+                                    if (options.oneofs)
+                                        object.encryptionMode = "aes_128";
+                                }
+                                if (message.sampleAes != null && message.hasOwnProperty("sampleAes")) {
+                                    object.sampleAes = $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.toObject(message.sampleAes, options);
+                                    if (options.oneofs)
+                                        object.encryptionMode = "sampleAes";
+                                }
+                                if (message.mpegCenc != null && message.hasOwnProperty("mpegCenc")) {
+                                    object.mpegCenc = $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.toObject(message.mpegCenc, options);
+                                    if (options.oneofs)
+                                        object.encryptionMode = "mpegCenc";
+                                }
+                                if (message.id != null && message.hasOwnProperty("id"))
+                                    object.id = message.id;
+                                if (message.secretManagerKeySource != null && message.hasOwnProperty("secretManagerKeySource")) {
+                                    object.secretManagerKeySource = $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.toObject(message.secretManagerKeySource, options);
+                                    if (options.oneofs)
+                                        object.secretSource = "secretManagerKeySource";
+                                }
+                                if (message.drmSystems != null && message.hasOwnProperty("drmSystems"))
+                                    object.drmSystems = $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems.toObject(message.drmSystems, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this Encryption to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            Encryption.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for Encryption
+                             * @function getTypeUrl
+                             * @memberof google.cloud.video.transcoder.v1.Encryption
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            Encryption.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption";
+                            };
+    
+                            Encryption.Aes128Encryption = (function() {
+    
+                                /**
+                                 * Properties of an Aes128Encryption.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IAes128Encryption
+                                 */
+    
+                                /**
+                                 * Constructs a new Aes128Encryption.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents an Aes128Encryption.
+                                 * @implements IAes128Encryption
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IAes128Encryption=} [properties] Properties to set
+                                 */
+                                function Aes128Encryption(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * Creates a new Aes128Encryption instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IAes128Encryption=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Aes128Encryption} Aes128Encryption instance
+                                 */
+                                Aes128Encryption.create = function create(properties) {
+                                    return new Aes128Encryption(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified Aes128Encryption message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IAes128Encryption} message Aes128Encryption message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Aes128Encryption.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified Aes128Encryption message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Aes128Encryption.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IAes128Encryption} message Aes128Encryption message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Aes128Encryption.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes an Aes128Encryption message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Aes128Encryption} Aes128Encryption
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Aes128Encryption.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes an Aes128Encryption message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Aes128Encryption} Aes128Encryption
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Aes128Encryption.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies an Aes128Encryption message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                Aes128Encryption.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates an Aes128Encryption message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Aes128Encryption} Aes128Encryption
+                                 */
+                                Aes128Encryption.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption)
+                                        return object;
+                                    return new $root.google.cloud.video.transcoder.v1.Encryption.Aes128Encryption();
+                                };
+    
+                                /**
+                                 * Creates a plain object from an Aes128Encryption message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.Aes128Encryption} message Aes128Encryption
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                Aes128Encryption.toObject = function toObject() {
+                                    return {};
+                                };
+    
+                                /**
+                                 * Converts this Aes128Encryption to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                Aes128Encryption.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for Aes128Encryption
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Aes128Encryption
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                Aes128Encryption.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.Aes128Encryption";
+                                };
+    
+                                return Aes128Encryption;
+                            })();
+    
+                            Encryption.SampleAesEncryption = (function() {
+    
+                                /**
+                                 * Properties of a SampleAesEncryption.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface ISampleAesEncryption
+                                 */
+    
+                                /**
+                                 * Constructs a new SampleAesEncryption.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a SampleAesEncryption.
+                                 * @implements ISampleAesEncryption
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISampleAesEncryption=} [properties] Properties to set
+                                 */
+                                function SampleAesEncryption(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * Creates a new SampleAesEncryption instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISampleAesEncryption=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption} SampleAesEncryption instance
+                                 */
+                                SampleAesEncryption.create = function create(properties) {
+                                    return new SampleAesEncryption(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified SampleAesEncryption message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISampleAesEncryption} message SampleAesEncryption message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                SampleAesEncryption.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified SampleAesEncryption message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISampleAesEncryption} message SampleAesEncryption message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                SampleAesEncryption.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a SampleAesEncryption message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption} SampleAesEncryption
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                SampleAesEncryption.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a SampleAesEncryption message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption} SampleAesEncryption
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                SampleAesEncryption.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a SampleAesEncryption message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                SampleAesEncryption.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a SampleAesEncryption message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption} SampleAesEncryption
+                                 */
+                                SampleAesEncryption.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption)
+                                        return object;
+                                    return new $root.google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption();
+                                };
+    
+                                /**
+                                 * Creates a plain object from a SampleAesEncryption message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption} message SampleAesEncryption
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                SampleAesEncryption.toObject = function toObject() {
+                                    return {};
+                                };
+    
+                                /**
+                                 * Converts this SampleAesEncryption to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                SampleAesEncryption.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for SampleAesEncryption
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                SampleAesEncryption.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.SampleAesEncryption";
+                                };
+    
+                                return SampleAesEncryption;
+                            })();
+    
+                            Encryption.MpegCommonEncryption = (function() {
+    
+                                /**
+                                 * Properties of a MpegCommonEncryption.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IMpegCommonEncryption
+                                 * @property {string|null} [scheme] MpegCommonEncryption scheme
+                                 */
+    
+                                /**
+                                 * Constructs a new MpegCommonEncryption.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a MpegCommonEncryption.
+                                 * @implements IMpegCommonEncryption
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IMpegCommonEncryption=} [properties] Properties to set
+                                 */
+                                function MpegCommonEncryption(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * MpegCommonEncryption scheme.
+                                 * @member {string} scheme
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @instance
+                                 */
+                                MpegCommonEncryption.prototype.scheme = "";
+    
+                                /**
+                                 * Creates a new MpegCommonEncryption instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IMpegCommonEncryption=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption} MpegCommonEncryption instance
+                                 */
+                                MpegCommonEncryption.create = function create(properties) {
+                                    return new MpegCommonEncryption(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified MpegCommonEncryption message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IMpegCommonEncryption} message MpegCommonEncryption message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                MpegCommonEncryption.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.scheme != null && Object.hasOwnProperty.call(message, "scheme"))
+                                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.scheme);
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified MpegCommonEncryption message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IMpegCommonEncryption} message MpegCommonEncryption message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                MpegCommonEncryption.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a MpegCommonEncryption message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption} MpegCommonEncryption
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                MpegCommonEncryption.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        case 2: {
+                                                message.scheme = reader.string();
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a MpegCommonEncryption message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption} MpegCommonEncryption
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                MpegCommonEncryption.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a MpegCommonEncryption message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                MpegCommonEncryption.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (message.scheme != null && message.hasOwnProperty("scheme"))
+                                        if (!$util.isString(message.scheme))
+                                            return "scheme: string expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a MpegCommonEncryption message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption} MpegCommonEncryption
+                                 */
+                                MpegCommonEncryption.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption)
+                                        return object;
+                                    var message = new $root.google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption();
+                                    if (object.scheme != null)
+                                        message.scheme = String(object.scheme);
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a MpegCommonEncryption message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption} message MpegCommonEncryption
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                MpegCommonEncryption.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults)
+                                        object.scheme = "";
+                                    if (message.scheme != null && message.hasOwnProperty("scheme"))
+                                        object.scheme = message.scheme;
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this MpegCommonEncryption to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                MpegCommonEncryption.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for MpegCommonEncryption
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                MpegCommonEncryption.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.MpegCommonEncryption";
+                                };
+    
+                                return MpegCommonEncryption;
+                            })();
+    
+                            Encryption.SecretManagerSource = (function() {
+    
+                                /**
+                                 * Properties of a SecretManagerSource.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface ISecretManagerSource
+                                 * @property {string|null} [secretVersion] SecretManagerSource secretVersion
+                                 */
+    
+                                /**
+                                 * Constructs a new SecretManagerSource.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a SecretManagerSource.
+                                 * @implements ISecretManagerSource
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISecretManagerSource=} [properties] Properties to set
+                                 */
+                                function SecretManagerSource(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * SecretManagerSource secretVersion.
+                                 * @member {string} secretVersion
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @instance
+                                 */
+                                SecretManagerSource.prototype.secretVersion = "";
+    
+                                /**
+                                 * Creates a new SecretManagerSource instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISecretManagerSource=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SecretManagerSource} SecretManagerSource instance
+                                 */
+                                SecretManagerSource.create = function create(properties) {
+                                    return new SecretManagerSource(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified SecretManagerSource message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISecretManagerSource} message SecretManagerSource message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                SecretManagerSource.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.secretVersion != null && Object.hasOwnProperty.call(message, "secretVersion"))
+                                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.secretVersion);
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified SecretManagerSource message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.SecretManagerSource.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.ISecretManagerSource} message SecretManagerSource message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                SecretManagerSource.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a SecretManagerSource message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SecretManagerSource} SecretManagerSource
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                SecretManagerSource.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.secretVersion = reader.string();
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a SecretManagerSource message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SecretManagerSource} SecretManagerSource
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                SecretManagerSource.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a SecretManagerSource message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                SecretManagerSource.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (message.secretVersion != null && message.hasOwnProperty("secretVersion"))
+                                        if (!$util.isString(message.secretVersion))
+                                            return "secretVersion: string expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a SecretManagerSource message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.SecretManagerSource} SecretManagerSource
+                                 */
+                                SecretManagerSource.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource)
+                                        return object;
+                                    var message = new $root.google.cloud.video.transcoder.v1.Encryption.SecretManagerSource();
+                                    if (object.secretVersion != null)
+                                        message.secretVersion = String(object.secretVersion);
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a SecretManagerSource message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.SecretManagerSource} message SecretManagerSource
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                SecretManagerSource.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults)
+                                        object.secretVersion = "";
+                                    if (message.secretVersion != null && message.hasOwnProperty("secretVersion"))
+                                        object.secretVersion = message.secretVersion;
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this SecretManagerSource to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                SecretManagerSource.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for SecretManagerSource
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.SecretManagerSource
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                SecretManagerSource.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.SecretManagerSource";
+                                };
+    
+                                return SecretManagerSource;
+                            })();
+    
+                            Encryption.Widevine = (function() {
+    
+                                /**
+                                 * Properties of a Widevine.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IWidevine
+                                 */
+    
+                                /**
+                                 * Constructs a new Widevine.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a Widevine.
+                                 * @implements IWidevine
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IWidevine=} [properties] Properties to set
+                                 */
+                                function Widevine(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * Creates a new Widevine instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IWidevine=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Widevine} Widevine instance
+                                 */
+                                Widevine.create = function create(properties) {
+                                    return new Widevine(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified Widevine message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Widevine.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IWidevine} message Widevine message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Widevine.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified Widevine message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Widevine.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IWidevine} message Widevine message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Widevine.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a Widevine message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Widevine} Widevine
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Widevine.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.Widevine();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a Widevine message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Widevine} Widevine
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Widevine.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a Widevine message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                Widevine.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a Widevine message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Widevine} Widevine
+                                 */
+                                Widevine.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.Widevine)
+                                        return object;
+                                    return new $root.google.cloud.video.transcoder.v1.Encryption.Widevine();
+                                };
+    
+                                /**
+                                 * Creates a plain object from a Widevine message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.Widevine} message Widevine
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                Widevine.toObject = function toObject() {
+                                    return {};
+                                };
+    
+                                /**
+                                 * Converts this Widevine to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                Widevine.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for Widevine
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Widevine
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                Widevine.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.Widevine";
+                                };
+    
+                                return Widevine;
+                            })();
+    
+                            Encryption.Fairplay = (function() {
+    
+                                /**
+                                 * Properties of a Fairplay.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IFairplay
+                                 */
+    
+                                /**
+                                 * Constructs a new Fairplay.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a Fairplay.
+                                 * @implements IFairplay
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IFairplay=} [properties] Properties to set
+                                 */
+                                function Fairplay(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * Creates a new Fairplay instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IFairplay=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Fairplay} Fairplay instance
+                                 */
+                                Fairplay.create = function create(properties) {
+                                    return new Fairplay(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified Fairplay message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Fairplay.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IFairplay} message Fairplay message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Fairplay.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified Fairplay message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Fairplay.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IFairplay} message Fairplay message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Fairplay.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a Fairplay message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Fairplay} Fairplay
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Fairplay.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.Fairplay();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a Fairplay message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Fairplay} Fairplay
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Fairplay.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a Fairplay message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                Fairplay.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a Fairplay message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Fairplay} Fairplay
+                                 */
+                                Fairplay.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.Fairplay)
+                                        return object;
+                                    return new $root.google.cloud.video.transcoder.v1.Encryption.Fairplay();
+                                };
+    
+                                /**
+                                 * Creates a plain object from a Fairplay message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.Fairplay} message Fairplay
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                Fairplay.toObject = function toObject() {
+                                    return {};
+                                };
+    
+                                /**
+                                 * Converts this Fairplay to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                Fairplay.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for Fairplay
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Fairplay
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                Fairplay.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.Fairplay";
+                                };
+    
+                                return Fairplay;
+                            })();
+    
+                            Encryption.Playready = (function() {
+    
+                                /**
+                                 * Properties of a Playready.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IPlayready
+                                 */
+    
+                                /**
+                                 * Constructs a new Playready.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a Playready.
+                                 * @implements IPlayready
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IPlayready=} [properties] Properties to set
+                                 */
+                                function Playready(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * Creates a new Playready instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IPlayready=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Playready} Playready instance
+                                 */
+                                Playready.create = function create(properties) {
+                                    return new Playready(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified Playready message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Playready.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IPlayready} message Playready message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Playready.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified Playready message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Playready.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IPlayready} message Playready message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Playready.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a Playready message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Playready} Playready
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Playready.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.Playready();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a Playready message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Playready} Playready
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Playready.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a Playready message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                Playready.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a Playready message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Playready} Playready
+                                 */
+                                Playready.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.Playready)
+                                        return object;
+                                    return new $root.google.cloud.video.transcoder.v1.Encryption.Playready();
+                                };
+    
+                                /**
+                                 * Creates a plain object from a Playready message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.Playready} message Playready
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                Playready.toObject = function toObject() {
+                                    return {};
+                                };
+    
+                                /**
+                                 * Converts this Playready to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                Playready.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for Playready
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Playready
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                Playready.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.Playready";
+                                };
+    
+                                return Playready;
+                            })();
+    
+                            Encryption.Clearkey = (function() {
+    
+                                /**
+                                 * Properties of a Clearkey.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IClearkey
+                                 */
+    
+                                /**
+                                 * Constructs a new Clearkey.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a Clearkey.
+                                 * @implements IClearkey
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IClearkey=} [properties] Properties to set
+                                 */
+                                function Clearkey(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * Creates a new Clearkey instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IClearkey=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Clearkey} Clearkey instance
+                                 */
+                                Clearkey.create = function create(properties) {
+                                    return new Clearkey(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified Clearkey message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Clearkey.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IClearkey} message Clearkey message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Clearkey.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified Clearkey message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.Clearkey.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IClearkey} message Clearkey message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                Clearkey.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a Clearkey message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Clearkey} Clearkey
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Clearkey.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.Clearkey();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a Clearkey message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Clearkey} Clearkey
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                Clearkey.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a Clearkey message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                Clearkey.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a Clearkey message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.Clearkey} Clearkey
+                                 */
+                                Clearkey.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.Clearkey)
+                                        return object;
+                                    return new $root.google.cloud.video.transcoder.v1.Encryption.Clearkey();
+                                };
+    
+                                /**
+                                 * Creates a plain object from a Clearkey message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.Clearkey} message Clearkey
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                Clearkey.toObject = function toObject() {
+                                    return {};
+                                };
+    
+                                /**
+                                 * Converts this Clearkey to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                Clearkey.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for Clearkey
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.Clearkey
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                Clearkey.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.Clearkey";
+                                };
+    
+                                return Clearkey;
+                            })();
+    
+                            Encryption.DrmSystems = (function() {
+    
+                                /**
+                                 * Properties of a DrmSystems.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @interface IDrmSystems
+                                 * @property {google.cloud.video.transcoder.v1.Encryption.IWidevine|null} [widevine] DrmSystems widevine
+                                 * @property {google.cloud.video.transcoder.v1.Encryption.IFairplay|null} [fairplay] DrmSystems fairplay
+                                 * @property {google.cloud.video.transcoder.v1.Encryption.IPlayready|null} [playready] DrmSystems playready
+                                 * @property {google.cloud.video.transcoder.v1.Encryption.IClearkey|null} [clearkey] DrmSystems clearkey
+                                 */
+    
+                                /**
+                                 * Constructs a new DrmSystems.
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption
+                                 * @classdesc Represents a DrmSystems.
+                                 * @implements IDrmSystems
+                                 * @constructor
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IDrmSystems=} [properties] Properties to set
+                                 */
+                                function DrmSystems(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * DrmSystems widevine.
+                                 * @member {google.cloud.video.transcoder.v1.Encryption.IWidevine|null|undefined} widevine
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @instance
+                                 */
+                                DrmSystems.prototype.widevine = null;
+    
+                                /**
+                                 * DrmSystems fairplay.
+                                 * @member {google.cloud.video.transcoder.v1.Encryption.IFairplay|null|undefined} fairplay
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @instance
+                                 */
+                                DrmSystems.prototype.fairplay = null;
+    
+                                /**
+                                 * DrmSystems playready.
+                                 * @member {google.cloud.video.transcoder.v1.Encryption.IPlayready|null|undefined} playready
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @instance
+                                 */
+                                DrmSystems.prototype.playready = null;
+    
+                                /**
+                                 * DrmSystems clearkey.
+                                 * @member {google.cloud.video.transcoder.v1.Encryption.IClearkey|null|undefined} clearkey
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @instance
+                                 */
+                                DrmSystems.prototype.clearkey = null;
+    
+                                /**
+                                 * Creates a new DrmSystems instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IDrmSystems=} [properties] Properties to set
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.DrmSystems} DrmSystems instance
+                                 */
+                                DrmSystems.create = function create(properties) {
+                                    return new DrmSystems(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified DrmSystems message. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.DrmSystems.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IDrmSystems} message DrmSystems message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                DrmSystems.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.widevine != null && Object.hasOwnProperty.call(message, "widevine"))
+                                        $root.google.cloud.video.transcoder.v1.Encryption.Widevine.encode(message.widevine, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                    if (message.fairplay != null && Object.hasOwnProperty.call(message, "fairplay"))
+                                        $root.google.cloud.video.transcoder.v1.Encryption.Fairplay.encode(message.fairplay, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                    if (message.playready != null && Object.hasOwnProperty.call(message, "playready"))
+                                        $root.google.cloud.video.transcoder.v1.Encryption.Playready.encode(message.playready, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                    if (message.clearkey != null && Object.hasOwnProperty.call(message, "clearkey"))
+                                        $root.google.cloud.video.transcoder.v1.Encryption.Clearkey.encode(message.clearkey, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified DrmSystems message, length delimited. Does not implicitly {@link google.cloud.video.transcoder.v1.Encryption.DrmSystems.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.IDrmSystems} message DrmSystems message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                DrmSystems.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a DrmSystems message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.DrmSystems} DrmSystems
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                DrmSystems.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.widevine = $root.google.cloud.video.transcoder.v1.Encryption.Widevine.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        case 2: {
+                                                message.fairplay = $root.google.cloud.video.transcoder.v1.Encryption.Fairplay.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        case 3: {
+                                                message.playready = $root.google.cloud.video.transcoder.v1.Encryption.Playready.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        case 4: {
+                                                message.clearkey = $root.google.cloud.video.transcoder.v1.Encryption.Clearkey.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a DrmSystems message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.DrmSystems} DrmSystems
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                DrmSystems.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a DrmSystems message.
+                                 * @function verify
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                DrmSystems.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (message.widevine != null && message.hasOwnProperty("widevine")) {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.Widevine.verify(message.widevine);
+                                        if (error)
+                                            return "widevine." + error;
+                                    }
+                                    if (message.fairplay != null && message.hasOwnProperty("fairplay")) {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.Fairplay.verify(message.fairplay);
+                                        if (error)
+                                            return "fairplay." + error;
+                                    }
+                                    if (message.playready != null && message.hasOwnProperty("playready")) {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.Playready.verify(message.playready);
+                                        if (error)
+                                            return "playready." + error;
+                                    }
+                                    if (message.clearkey != null && message.hasOwnProperty("clearkey")) {
+                                        var error = $root.google.cloud.video.transcoder.v1.Encryption.Clearkey.verify(message.clearkey);
+                                        if (error)
+                                            return "clearkey." + error;
+                                    }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a DrmSystems message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.video.transcoder.v1.Encryption.DrmSystems} DrmSystems
+                                 */
+                                DrmSystems.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems)
+                                        return object;
+                                    var message = new $root.google.cloud.video.transcoder.v1.Encryption.DrmSystems();
+                                    if (object.widevine != null) {
+                                        if (typeof object.widevine !== "object")
+                                            throw TypeError(".google.cloud.video.transcoder.v1.Encryption.DrmSystems.widevine: object expected");
+                                        message.widevine = $root.google.cloud.video.transcoder.v1.Encryption.Widevine.fromObject(object.widevine);
+                                    }
+                                    if (object.fairplay != null) {
+                                        if (typeof object.fairplay !== "object")
+                                            throw TypeError(".google.cloud.video.transcoder.v1.Encryption.DrmSystems.fairplay: object expected");
+                                        message.fairplay = $root.google.cloud.video.transcoder.v1.Encryption.Fairplay.fromObject(object.fairplay);
+                                    }
+                                    if (object.playready != null) {
+                                        if (typeof object.playready !== "object")
+                                            throw TypeError(".google.cloud.video.transcoder.v1.Encryption.DrmSystems.playready: object expected");
+                                        message.playready = $root.google.cloud.video.transcoder.v1.Encryption.Playready.fromObject(object.playready);
+                                    }
+                                    if (object.clearkey != null) {
+                                        if (typeof object.clearkey !== "object")
+                                            throw TypeError(".google.cloud.video.transcoder.v1.Encryption.DrmSystems.clearkey: object expected");
+                                        message.clearkey = $root.google.cloud.video.transcoder.v1.Encryption.Clearkey.fromObject(object.clearkey);
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a DrmSystems message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {google.cloud.video.transcoder.v1.Encryption.DrmSystems} message DrmSystems
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                DrmSystems.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults) {
+                                        object.widevine = null;
+                                        object.fairplay = null;
+                                        object.playready = null;
+                                        object.clearkey = null;
+                                    }
+                                    if (message.widevine != null && message.hasOwnProperty("widevine"))
+                                        object.widevine = $root.google.cloud.video.transcoder.v1.Encryption.Widevine.toObject(message.widevine, options);
+                                    if (message.fairplay != null && message.hasOwnProperty("fairplay"))
+                                        object.fairplay = $root.google.cloud.video.transcoder.v1.Encryption.Fairplay.toObject(message.fairplay, options);
+                                    if (message.playready != null && message.hasOwnProperty("playready"))
+                                        object.playready = $root.google.cloud.video.transcoder.v1.Encryption.Playready.toObject(message.playready, options);
+                                    if (message.clearkey != null && message.hasOwnProperty("clearkey"))
+                                        object.clearkey = $root.google.cloud.video.transcoder.v1.Encryption.Clearkey.toObject(message.clearkey, options);
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this DrmSystems to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                DrmSystems.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for DrmSystems
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.video.transcoder.v1.Encryption.DrmSystems
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                DrmSystems.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.video.transcoder.v1.Encryption.DrmSystems";
+                                };
+    
+                                return DrmSystems;
+                            })();
+    
+                            return Encryption;
+                        })();
+    
                         v1.TranscoderService = (function() {
     
                             /**
@@ -15082,6 +17669,7 @@
              * @property {number} IMMUTABLE=5 IMMUTABLE value
              * @property {number} UNORDERED_LIST=6 UNORDERED_LIST value
              * @property {number} NON_EMPTY_DEFAULT=7 NON_EMPTY_DEFAULT value
+             * @property {number} IDENTIFIER=8 IDENTIFIER value
              */
             api.FieldBehavior = (function() {
                 var valuesById = {}, values = Object.create(valuesById);
@@ -15093,6 +17681,7 @@
                 values[valuesById[5] = "IMMUTABLE"] = 5;
                 values[valuesById[6] = "UNORDERED_LIST"] = 6;
                 values[valuesById[7] = "NON_EMPTY_DEFAULT"] = 7;
+                values[valuesById[8] = "IDENTIFIER"] = 8;
                 return values;
             })();
     
@@ -16743,6 +19332,3935 @@
                 return CustomHttpPattern;
             })();
     
+            api.CommonLanguageSettings = (function() {
+    
+                /**
+                 * Properties of a CommonLanguageSettings.
+                 * @memberof google.api
+                 * @interface ICommonLanguageSettings
+                 * @property {string|null} [referenceDocsUri] CommonLanguageSettings referenceDocsUri
+                 * @property {Array.<google.api.ClientLibraryDestination>|null} [destinations] CommonLanguageSettings destinations
+                 */
+    
+                /**
+                 * Constructs a new CommonLanguageSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CommonLanguageSettings.
+                 * @implements ICommonLanguageSettings
+                 * @constructor
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 */
+                function CommonLanguageSettings(properties) {
+                    this.destinations = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CommonLanguageSettings referenceDocsUri.
+                 * @member {string} referenceDocsUri
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.referenceDocsUri = "";
+    
+                /**
+                 * CommonLanguageSettings destinations.
+                 * @member {Array.<google.api.ClientLibraryDestination>} destinations
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.destinations = $util.emptyArray;
+    
+                /**
+                 * Creates a new CommonLanguageSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings instance
+                 */
+                CommonLanguageSettings.create = function create(properties) {
+                    return new CommonLanguageSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.referenceDocsUri != null && Object.hasOwnProperty.call(message, "referenceDocsUri"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.referenceDocsUri);
+                    if (message.destinations != null && message.destinations.length) {
+                        writer.uint32(/* id 2, wireType 2 =*/18).fork();
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            writer.int32(message.destinations[i]);
+                        writer.ldelim();
+                    }
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CommonLanguageSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.referenceDocsUri = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.destinations && message.destinations.length))
+                                    message.destinations = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.destinations.push(reader.int32());
+                                } else
+                                    message.destinations.push(reader.int32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CommonLanguageSettings message.
+                 * @function verify
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CommonLanguageSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        if (!$util.isString(message.referenceDocsUri))
+                            return "referenceDocsUri: string expected";
+                    if (message.destinations != null && message.hasOwnProperty("destinations")) {
+                        if (!Array.isArray(message.destinations))
+                            return "destinations: array expected";
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            switch (message.destinations[i]) {
+                            default:
+                                return "destinations: enum value[] expected";
+                            case 0:
+                            case 10:
+                            case 20:
+                                break;
+                            }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 */
+                CommonLanguageSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CommonLanguageSettings)
+                        return object;
+                    var message = new $root.google.api.CommonLanguageSettings();
+                    if (object.referenceDocsUri != null)
+                        message.referenceDocsUri = String(object.referenceDocsUri);
+                    if (object.destinations) {
+                        if (!Array.isArray(object.destinations))
+                            throw TypeError(".google.api.CommonLanguageSettings.destinations: array expected");
+                        message.destinations = [];
+                        for (var i = 0; i < object.destinations.length; ++i)
+                            switch (object.destinations[i]) {
+                            default:
+                                if (typeof object.destinations[i] === "number") {
+                                    message.destinations[i] = object.destinations[i];
+                                    break;
+                                }
+                            case "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED":
+                            case 0:
+                                message.destinations[i] = 0;
+                                break;
+                            case "GITHUB":
+                            case 10:
+                                message.destinations[i] = 10;
+                                break;
+                            case "PACKAGE_MANAGER":
+                            case 20:
+                                message.destinations[i] = 20;
+                                break;
+                            }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.CommonLanguageSettings} message CommonLanguageSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CommonLanguageSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.destinations = [];
+                    if (options.defaults)
+                        object.referenceDocsUri = "";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        object.referenceDocsUri = message.referenceDocsUri;
+                    if (message.destinations && message.destinations.length) {
+                        object.destinations = [];
+                        for (var j = 0; j < message.destinations.length; ++j)
+                            object.destinations[j] = options.enums === String ? $root.google.api.ClientLibraryDestination[message.destinations[j]] === undefined ? message.destinations[j] : $root.google.api.ClientLibraryDestination[message.destinations[j]] : message.destinations[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this CommonLanguageSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CommonLanguageSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CommonLanguageSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CommonLanguageSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CommonLanguageSettings";
+                };
+    
+                return CommonLanguageSettings;
+            })();
+    
+            api.ClientLibrarySettings = (function() {
+    
+                /**
+                 * Properties of a ClientLibrarySettings.
+                 * @memberof google.api
+                 * @interface IClientLibrarySettings
+                 * @property {string|null} [version] ClientLibrarySettings version
+                 * @property {google.api.LaunchStage|null} [launchStage] ClientLibrarySettings launchStage
+                 * @property {boolean|null} [restNumericEnums] ClientLibrarySettings restNumericEnums
+                 * @property {google.api.IJavaSettings|null} [javaSettings] ClientLibrarySettings javaSettings
+                 * @property {google.api.ICppSettings|null} [cppSettings] ClientLibrarySettings cppSettings
+                 * @property {google.api.IPhpSettings|null} [phpSettings] ClientLibrarySettings phpSettings
+                 * @property {google.api.IPythonSettings|null} [pythonSettings] ClientLibrarySettings pythonSettings
+                 * @property {google.api.INodeSettings|null} [nodeSettings] ClientLibrarySettings nodeSettings
+                 * @property {google.api.IDotnetSettings|null} [dotnetSettings] ClientLibrarySettings dotnetSettings
+                 * @property {google.api.IRubySettings|null} [rubySettings] ClientLibrarySettings rubySettings
+                 * @property {google.api.IGoSettings|null} [goSettings] ClientLibrarySettings goSettings
+                 */
+    
+                /**
+                 * Constructs a new ClientLibrarySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a ClientLibrarySettings.
+                 * @implements IClientLibrarySettings
+                 * @constructor
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 */
+                function ClientLibrarySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ClientLibrarySettings version.
+                 * @member {string} version
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.version = "";
+    
+                /**
+                 * ClientLibrarySettings launchStage.
+                 * @member {google.api.LaunchStage} launchStage
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.launchStage = 0;
+    
+                /**
+                 * ClientLibrarySettings restNumericEnums.
+                 * @member {boolean} restNumericEnums
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.restNumericEnums = false;
+    
+                /**
+                 * ClientLibrarySettings javaSettings.
+                 * @member {google.api.IJavaSettings|null|undefined} javaSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.javaSettings = null;
+    
+                /**
+                 * ClientLibrarySettings cppSettings.
+                 * @member {google.api.ICppSettings|null|undefined} cppSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.cppSettings = null;
+    
+                /**
+                 * ClientLibrarySettings phpSettings.
+                 * @member {google.api.IPhpSettings|null|undefined} phpSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.phpSettings = null;
+    
+                /**
+                 * ClientLibrarySettings pythonSettings.
+                 * @member {google.api.IPythonSettings|null|undefined} pythonSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.pythonSettings = null;
+    
+                /**
+                 * ClientLibrarySettings nodeSettings.
+                 * @member {google.api.INodeSettings|null|undefined} nodeSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.nodeSettings = null;
+    
+                /**
+                 * ClientLibrarySettings dotnetSettings.
+                 * @member {google.api.IDotnetSettings|null|undefined} dotnetSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.dotnetSettings = null;
+    
+                /**
+                 * ClientLibrarySettings rubySettings.
+                 * @member {google.api.IRubySettings|null|undefined} rubySettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.rubySettings = null;
+    
+                /**
+                 * ClientLibrarySettings goSettings.
+                 * @member {google.api.IGoSettings|null|undefined} goSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.goSettings = null;
+    
+                /**
+                 * Creates a new ClientLibrarySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings instance
+                 */
+                ClientLibrarySettings.create = function create(properties) {
+                    return new ClientLibrarySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.version != null && Object.hasOwnProperty.call(message, "version"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.version);
+                    if (message.launchStage != null && Object.hasOwnProperty.call(message, "launchStage"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.launchStage);
+                    if (message.restNumericEnums != null && Object.hasOwnProperty.call(message, "restNumericEnums"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.restNumericEnums);
+                    if (message.javaSettings != null && Object.hasOwnProperty.call(message, "javaSettings"))
+                        $root.google.api.JavaSettings.encode(message.javaSettings, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                    if (message.cppSettings != null && Object.hasOwnProperty.call(message, "cppSettings"))
+                        $root.google.api.CppSettings.encode(message.cppSettings, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                    if (message.phpSettings != null && Object.hasOwnProperty.call(message, "phpSettings"))
+                        $root.google.api.PhpSettings.encode(message.phpSettings, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
+                    if (message.pythonSettings != null && Object.hasOwnProperty.call(message, "pythonSettings"))
+                        $root.google.api.PythonSettings.encode(message.pythonSettings, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
+                    if (message.nodeSettings != null && Object.hasOwnProperty.call(message, "nodeSettings"))
+                        $root.google.api.NodeSettings.encode(message.nodeSettings, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
+                    if (message.dotnetSettings != null && Object.hasOwnProperty.call(message, "dotnetSettings"))
+                        $root.google.api.DotnetSettings.encode(message.dotnetSettings, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
+                    if (message.rubySettings != null && Object.hasOwnProperty.call(message, "rubySettings"))
+                        $root.google.api.RubySettings.encode(message.rubySettings, writer.uint32(/* id 27, wireType 2 =*/218).fork()).ldelim();
+                    if (message.goSettings != null && Object.hasOwnProperty.call(message, "goSettings"))
+                        $root.google.api.GoSettings.encode(message.goSettings, writer.uint32(/* id 28, wireType 2 =*/226).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.ClientLibrarySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.version = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.launchStage = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.restNumericEnums = reader.bool();
+                                break;
+                            }
+                        case 21: {
+                                message.javaSettings = $root.google.api.JavaSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 22: {
+                                message.cppSettings = $root.google.api.CppSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 23: {
+                                message.phpSettings = $root.google.api.PhpSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 24: {
+                                message.pythonSettings = $root.google.api.PythonSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 25: {
+                                message.nodeSettings = $root.google.api.NodeSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 26: {
+                                message.dotnetSettings = $root.google.api.DotnetSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 27: {
+                                message.rubySettings = $root.google.api.RubySettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 28: {
+                                message.goSettings = $root.google.api.GoSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a ClientLibrarySettings message.
+                 * @function verify
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ClientLibrarySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        if (!$util.isString(message.version))
+                            return "version: string expected";
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        switch (message.launchStage) {
+                        default:
+                            return "launchStage: enum value expected";
+                        case 0:
+                        case 6:
+                        case 7:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            break;
+                        }
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        if (typeof message.restNumericEnums !== "boolean")
+                            return "restNumericEnums: boolean expected";
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings")) {
+                        var error = $root.google.api.JavaSettings.verify(message.javaSettings);
+                        if (error)
+                            return "javaSettings." + error;
+                    }
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings")) {
+                        var error = $root.google.api.CppSettings.verify(message.cppSettings);
+                        if (error)
+                            return "cppSettings." + error;
+                    }
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings")) {
+                        var error = $root.google.api.PhpSettings.verify(message.phpSettings);
+                        if (error)
+                            return "phpSettings." + error;
+                    }
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings")) {
+                        var error = $root.google.api.PythonSettings.verify(message.pythonSettings);
+                        if (error)
+                            return "pythonSettings." + error;
+                    }
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings")) {
+                        var error = $root.google.api.NodeSettings.verify(message.nodeSettings);
+                        if (error)
+                            return "nodeSettings." + error;
+                    }
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings")) {
+                        var error = $root.google.api.DotnetSettings.verify(message.dotnetSettings);
+                        if (error)
+                            return "dotnetSettings." + error;
+                    }
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings")) {
+                        var error = $root.google.api.RubySettings.verify(message.rubySettings);
+                        if (error)
+                            return "rubySettings." + error;
+                    }
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings")) {
+                        var error = $root.google.api.GoSettings.verify(message.goSettings);
+                        if (error)
+                            return "goSettings." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 */
+                ClientLibrarySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.ClientLibrarySettings)
+                        return object;
+                    var message = new $root.google.api.ClientLibrarySettings();
+                    if (object.version != null)
+                        message.version = String(object.version);
+                    switch (object.launchStage) {
+                    default:
+                        if (typeof object.launchStage === "number") {
+                            message.launchStage = object.launchStage;
+                            break;
+                        }
+                        break;
+                    case "LAUNCH_STAGE_UNSPECIFIED":
+                    case 0:
+                        message.launchStage = 0;
+                        break;
+                    case "UNIMPLEMENTED":
+                    case 6:
+                        message.launchStage = 6;
+                        break;
+                    case "PRELAUNCH":
+                    case 7:
+                        message.launchStage = 7;
+                        break;
+                    case "EARLY_ACCESS":
+                    case 1:
+                        message.launchStage = 1;
+                        break;
+                    case "ALPHA":
+                    case 2:
+                        message.launchStage = 2;
+                        break;
+                    case "BETA":
+                    case 3:
+                        message.launchStage = 3;
+                        break;
+                    case "GA":
+                    case 4:
+                        message.launchStage = 4;
+                        break;
+                    case "DEPRECATED":
+                    case 5:
+                        message.launchStage = 5;
+                        break;
+                    }
+                    if (object.restNumericEnums != null)
+                        message.restNumericEnums = Boolean(object.restNumericEnums);
+                    if (object.javaSettings != null) {
+                        if (typeof object.javaSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.javaSettings: object expected");
+                        message.javaSettings = $root.google.api.JavaSettings.fromObject(object.javaSettings);
+                    }
+                    if (object.cppSettings != null) {
+                        if (typeof object.cppSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.cppSettings: object expected");
+                        message.cppSettings = $root.google.api.CppSettings.fromObject(object.cppSettings);
+                    }
+                    if (object.phpSettings != null) {
+                        if (typeof object.phpSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.phpSettings: object expected");
+                        message.phpSettings = $root.google.api.PhpSettings.fromObject(object.phpSettings);
+                    }
+                    if (object.pythonSettings != null) {
+                        if (typeof object.pythonSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.pythonSettings: object expected");
+                        message.pythonSettings = $root.google.api.PythonSettings.fromObject(object.pythonSettings);
+                    }
+                    if (object.nodeSettings != null) {
+                        if (typeof object.nodeSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.nodeSettings: object expected");
+                        message.nodeSettings = $root.google.api.NodeSettings.fromObject(object.nodeSettings);
+                    }
+                    if (object.dotnetSettings != null) {
+                        if (typeof object.dotnetSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.dotnetSettings: object expected");
+                        message.dotnetSettings = $root.google.api.DotnetSettings.fromObject(object.dotnetSettings);
+                    }
+                    if (object.rubySettings != null) {
+                        if (typeof object.rubySettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.rubySettings: object expected");
+                        message.rubySettings = $root.google.api.RubySettings.fromObject(object.rubySettings);
+                    }
+                    if (object.goSettings != null) {
+                        if (typeof object.goSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.goSettings: object expected");
+                        message.goSettings = $root.google.api.GoSettings.fromObject(object.goSettings);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.ClientLibrarySettings} message ClientLibrarySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ClientLibrarySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.version = "";
+                        object.launchStage = options.enums === String ? "LAUNCH_STAGE_UNSPECIFIED" : 0;
+                        object.restNumericEnums = false;
+                        object.javaSettings = null;
+                        object.cppSettings = null;
+                        object.phpSettings = null;
+                        object.pythonSettings = null;
+                        object.nodeSettings = null;
+                        object.dotnetSettings = null;
+                        object.rubySettings = null;
+                        object.goSettings = null;
+                    }
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        object.version = message.version;
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        object.launchStage = options.enums === String ? $root.google.api.LaunchStage[message.launchStage] === undefined ? message.launchStage : $root.google.api.LaunchStage[message.launchStage] : message.launchStage;
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        object.restNumericEnums = message.restNumericEnums;
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings"))
+                        object.javaSettings = $root.google.api.JavaSettings.toObject(message.javaSettings, options);
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings"))
+                        object.cppSettings = $root.google.api.CppSettings.toObject(message.cppSettings, options);
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings"))
+                        object.phpSettings = $root.google.api.PhpSettings.toObject(message.phpSettings, options);
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings"))
+                        object.pythonSettings = $root.google.api.PythonSettings.toObject(message.pythonSettings, options);
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings"))
+                        object.nodeSettings = $root.google.api.NodeSettings.toObject(message.nodeSettings, options);
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings"))
+                        object.dotnetSettings = $root.google.api.DotnetSettings.toObject(message.dotnetSettings, options);
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings"))
+                        object.rubySettings = $root.google.api.RubySettings.toObject(message.rubySettings, options);
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings"))
+                        object.goSettings = $root.google.api.GoSettings.toObject(message.goSettings, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this ClientLibrarySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ClientLibrarySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for ClientLibrarySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                ClientLibrarySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.ClientLibrarySettings";
+                };
+    
+                return ClientLibrarySettings;
+            })();
+    
+            api.Publishing = (function() {
+    
+                /**
+                 * Properties of a Publishing.
+                 * @memberof google.api
+                 * @interface IPublishing
+                 * @property {Array.<google.api.IMethodSettings>|null} [methodSettings] Publishing methodSettings
+                 * @property {string|null} [newIssueUri] Publishing newIssueUri
+                 * @property {string|null} [documentationUri] Publishing documentationUri
+                 * @property {string|null} [apiShortName] Publishing apiShortName
+                 * @property {string|null} [githubLabel] Publishing githubLabel
+                 * @property {Array.<string>|null} [codeownerGithubTeams] Publishing codeownerGithubTeams
+                 * @property {string|null} [docTagPrefix] Publishing docTagPrefix
+                 * @property {google.api.ClientLibraryOrganization|null} [organization] Publishing organization
+                 * @property {Array.<google.api.IClientLibrarySettings>|null} [librarySettings] Publishing librarySettings
+                 * @property {string|null} [protoReferenceDocumentationUri] Publishing protoReferenceDocumentationUri
+                 */
+    
+                /**
+                 * Constructs a new Publishing.
+                 * @memberof google.api
+                 * @classdesc Represents a Publishing.
+                 * @implements IPublishing
+                 * @constructor
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 */
+                function Publishing(properties) {
+                    this.methodSettings = [];
+                    this.codeownerGithubTeams = [];
+                    this.librarySettings = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Publishing methodSettings.
+                 * @member {Array.<google.api.IMethodSettings>} methodSettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.methodSettings = $util.emptyArray;
+    
+                /**
+                 * Publishing newIssueUri.
+                 * @member {string} newIssueUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.newIssueUri = "";
+    
+                /**
+                 * Publishing documentationUri.
+                 * @member {string} documentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.documentationUri = "";
+    
+                /**
+                 * Publishing apiShortName.
+                 * @member {string} apiShortName
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.apiShortName = "";
+    
+                /**
+                 * Publishing githubLabel.
+                 * @member {string} githubLabel
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.githubLabel = "";
+    
+                /**
+                 * Publishing codeownerGithubTeams.
+                 * @member {Array.<string>} codeownerGithubTeams
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.codeownerGithubTeams = $util.emptyArray;
+    
+                /**
+                 * Publishing docTagPrefix.
+                 * @member {string} docTagPrefix
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.docTagPrefix = "";
+    
+                /**
+                 * Publishing organization.
+                 * @member {google.api.ClientLibraryOrganization} organization
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.organization = 0;
+    
+                /**
+                 * Publishing librarySettings.
+                 * @member {Array.<google.api.IClientLibrarySettings>} librarySettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.librarySettings = $util.emptyArray;
+    
+                /**
+                 * Publishing protoReferenceDocumentationUri.
+                 * @member {string} protoReferenceDocumentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.protoReferenceDocumentationUri = "";
+    
+                /**
+                 * Creates a new Publishing instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 * @returns {google.api.Publishing} Publishing instance
+                 */
+                Publishing.create = function create(properties) {
+                    return new Publishing(properties);
+                };
+    
+                /**
+                 * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.methodSettings != null && message.methodSettings.length)
+                        for (var i = 0; i < message.methodSettings.length; ++i)
+                            $root.google.api.MethodSettings.encode(message.methodSettings[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.newIssueUri != null && Object.hasOwnProperty.call(message, "newIssueUri"))
+                        writer.uint32(/* id 101, wireType 2 =*/810).string(message.newIssueUri);
+                    if (message.documentationUri != null && Object.hasOwnProperty.call(message, "documentationUri"))
+                        writer.uint32(/* id 102, wireType 2 =*/818).string(message.documentationUri);
+                    if (message.apiShortName != null && Object.hasOwnProperty.call(message, "apiShortName"))
+                        writer.uint32(/* id 103, wireType 2 =*/826).string(message.apiShortName);
+                    if (message.githubLabel != null && Object.hasOwnProperty.call(message, "githubLabel"))
+                        writer.uint32(/* id 104, wireType 2 =*/834).string(message.githubLabel);
+                    if (message.codeownerGithubTeams != null && message.codeownerGithubTeams.length)
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            writer.uint32(/* id 105, wireType 2 =*/842).string(message.codeownerGithubTeams[i]);
+                    if (message.docTagPrefix != null && Object.hasOwnProperty.call(message, "docTagPrefix"))
+                        writer.uint32(/* id 106, wireType 2 =*/850).string(message.docTagPrefix);
+                    if (message.organization != null && Object.hasOwnProperty.call(message, "organization"))
+                        writer.uint32(/* id 107, wireType 0 =*/856).int32(message.organization);
+                    if (message.librarySettings != null && message.librarySettings.length)
+                        for (var i = 0; i < message.librarySettings.length; ++i)
+                            $root.google.api.ClientLibrarySettings.encode(message.librarySettings[i], writer.uint32(/* id 109, wireType 2 =*/874).fork()).ldelim();
+                    if (message.protoReferenceDocumentationUri != null && Object.hasOwnProperty.call(message, "protoReferenceDocumentationUri"))
+                        writer.uint32(/* id 110, wireType 2 =*/882).string(message.protoReferenceDocumentationUri);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.Publishing();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 2: {
+                                if (!(message.methodSettings && message.methodSettings.length))
+                                    message.methodSettings = [];
+                                message.methodSettings.push($root.google.api.MethodSettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 101: {
+                                message.newIssueUri = reader.string();
+                                break;
+                            }
+                        case 102: {
+                                message.documentationUri = reader.string();
+                                break;
+                            }
+                        case 103: {
+                                message.apiShortName = reader.string();
+                                break;
+                            }
+                        case 104: {
+                                message.githubLabel = reader.string();
+                                break;
+                            }
+                        case 105: {
+                                if (!(message.codeownerGithubTeams && message.codeownerGithubTeams.length))
+                                    message.codeownerGithubTeams = [];
+                                message.codeownerGithubTeams.push(reader.string());
+                                break;
+                            }
+                        case 106: {
+                                message.docTagPrefix = reader.string();
+                                break;
+                            }
+                        case 107: {
+                                message.organization = reader.int32();
+                                break;
+                            }
+                        case 109: {
+                                if (!(message.librarySettings && message.librarySettings.length))
+                                    message.librarySettings = [];
+                                message.librarySettings.push($root.google.api.ClientLibrarySettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 110: {
+                                message.protoReferenceDocumentationUri = reader.string();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Publishing message.
+                 * @function verify
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Publishing.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.methodSettings != null && message.hasOwnProperty("methodSettings")) {
+                        if (!Array.isArray(message.methodSettings))
+                            return "methodSettings: array expected";
+                        for (var i = 0; i < message.methodSettings.length; ++i) {
+                            var error = $root.google.api.MethodSettings.verify(message.methodSettings[i]);
+                            if (error)
+                                return "methodSettings." + error;
+                        }
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        if (!$util.isString(message.newIssueUri))
+                            return "newIssueUri: string expected";
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        if (!$util.isString(message.documentationUri))
+                            return "documentationUri: string expected";
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        if (!$util.isString(message.apiShortName))
+                            return "apiShortName: string expected";
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        if (!$util.isString(message.githubLabel))
+                            return "githubLabel: string expected";
+                    if (message.codeownerGithubTeams != null && message.hasOwnProperty("codeownerGithubTeams")) {
+                        if (!Array.isArray(message.codeownerGithubTeams))
+                            return "codeownerGithubTeams: array expected";
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            if (!$util.isString(message.codeownerGithubTeams[i]))
+                                return "codeownerGithubTeams: string[] expected";
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        if (!$util.isString(message.docTagPrefix))
+                            return "docTagPrefix: string expected";
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        switch (message.organization) {
+                        default:
+                            return "organization: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                            break;
+                        }
+                    if (message.librarySettings != null && message.hasOwnProperty("librarySettings")) {
+                        if (!Array.isArray(message.librarySettings))
+                            return "librarySettings: array expected";
+                        for (var i = 0; i < message.librarySettings.length; ++i) {
+                            var error = $root.google.api.ClientLibrarySettings.verify(message.librarySettings[i]);
+                            if (error)
+                                return "librarySettings." + error;
+                        }
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        if (!$util.isString(message.protoReferenceDocumentationUri))
+                            return "protoReferenceDocumentationUri: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.Publishing} Publishing
+                 */
+                Publishing.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.Publishing)
+                        return object;
+                    var message = new $root.google.api.Publishing();
+                    if (object.methodSettings) {
+                        if (!Array.isArray(object.methodSettings))
+                            throw TypeError(".google.api.Publishing.methodSettings: array expected");
+                        message.methodSettings = [];
+                        for (var i = 0; i < object.methodSettings.length; ++i) {
+                            if (typeof object.methodSettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.methodSettings: object expected");
+                            message.methodSettings[i] = $root.google.api.MethodSettings.fromObject(object.methodSettings[i]);
+                        }
+                    }
+                    if (object.newIssueUri != null)
+                        message.newIssueUri = String(object.newIssueUri);
+                    if (object.documentationUri != null)
+                        message.documentationUri = String(object.documentationUri);
+                    if (object.apiShortName != null)
+                        message.apiShortName = String(object.apiShortName);
+                    if (object.githubLabel != null)
+                        message.githubLabel = String(object.githubLabel);
+                    if (object.codeownerGithubTeams) {
+                        if (!Array.isArray(object.codeownerGithubTeams))
+                            throw TypeError(".google.api.Publishing.codeownerGithubTeams: array expected");
+                        message.codeownerGithubTeams = [];
+                        for (var i = 0; i < object.codeownerGithubTeams.length; ++i)
+                            message.codeownerGithubTeams[i] = String(object.codeownerGithubTeams[i]);
+                    }
+                    if (object.docTagPrefix != null)
+                        message.docTagPrefix = String(object.docTagPrefix);
+                    switch (object.organization) {
+                    default:
+                        if (typeof object.organization === "number") {
+                            message.organization = object.organization;
+                            break;
+                        }
+                        break;
+                    case "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED":
+                    case 0:
+                        message.organization = 0;
+                        break;
+                    case "CLOUD":
+                    case 1:
+                        message.organization = 1;
+                        break;
+                    case "ADS":
+                    case 2:
+                        message.organization = 2;
+                        break;
+                    case "PHOTOS":
+                    case 3:
+                        message.organization = 3;
+                        break;
+                    case "STREET_VIEW":
+                    case 4:
+                        message.organization = 4;
+                        break;
+                    case "SHOPPING":
+                    case 5:
+                        message.organization = 5;
+                        break;
+                    case "GEO":
+                    case 6:
+                        message.organization = 6;
+                        break;
+                    case "GENERATIVE_AI":
+                    case 7:
+                        message.organization = 7;
+                        break;
+                    }
+                    if (object.librarySettings) {
+                        if (!Array.isArray(object.librarySettings))
+                            throw TypeError(".google.api.Publishing.librarySettings: array expected");
+                        message.librarySettings = [];
+                        for (var i = 0; i < object.librarySettings.length; ++i) {
+                            if (typeof object.librarySettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.librarySettings: object expected");
+                            message.librarySettings[i] = $root.google.api.ClientLibrarySettings.fromObject(object.librarySettings[i]);
+                        }
+                    }
+                    if (object.protoReferenceDocumentationUri != null)
+                        message.protoReferenceDocumentationUri = String(object.protoReferenceDocumentationUri);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.Publishing} message Publishing
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Publishing.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.methodSettings = [];
+                        object.codeownerGithubTeams = [];
+                        object.librarySettings = [];
+                    }
+                    if (options.defaults) {
+                        object.newIssueUri = "";
+                        object.documentationUri = "";
+                        object.apiShortName = "";
+                        object.githubLabel = "";
+                        object.docTagPrefix = "";
+                        object.organization = options.enums === String ? "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED" : 0;
+                        object.protoReferenceDocumentationUri = "";
+                    }
+                    if (message.methodSettings && message.methodSettings.length) {
+                        object.methodSettings = [];
+                        for (var j = 0; j < message.methodSettings.length; ++j)
+                            object.methodSettings[j] = $root.google.api.MethodSettings.toObject(message.methodSettings[j], options);
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        object.newIssueUri = message.newIssueUri;
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        object.documentationUri = message.documentationUri;
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        object.apiShortName = message.apiShortName;
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        object.githubLabel = message.githubLabel;
+                    if (message.codeownerGithubTeams && message.codeownerGithubTeams.length) {
+                        object.codeownerGithubTeams = [];
+                        for (var j = 0; j < message.codeownerGithubTeams.length; ++j)
+                            object.codeownerGithubTeams[j] = message.codeownerGithubTeams[j];
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        object.docTagPrefix = message.docTagPrefix;
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        object.organization = options.enums === String ? $root.google.api.ClientLibraryOrganization[message.organization] === undefined ? message.organization : $root.google.api.ClientLibraryOrganization[message.organization] : message.organization;
+                    if (message.librarySettings && message.librarySettings.length) {
+                        object.librarySettings = [];
+                        for (var j = 0; j < message.librarySettings.length; ++j)
+                            object.librarySettings[j] = $root.google.api.ClientLibrarySettings.toObject(message.librarySettings[j], options);
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        object.protoReferenceDocumentationUri = message.protoReferenceDocumentationUri;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Publishing to JSON.
+                 * @function toJSON
+                 * @memberof google.api.Publishing
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Publishing.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Publishing
+                 * @function getTypeUrl
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Publishing.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.Publishing";
+                };
+    
+                return Publishing;
+            })();
+    
+            api.JavaSettings = (function() {
+    
+                /**
+                 * Properties of a JavaSettings.
+                 * @memberof google.api
+                 * @interface IJavaSettings
+                 * @property {string|null} [libraryPackage] JavaSettings libraryPackage
+                 * @property {Object.<string,string>|null} [serviceClassNames] JavaSettings serviceClassNames
+                 * @property {google.api.ICommonLanguageSettings|null} [common] JavaSettings common
+                 */
+    
+                /**
+                 * Constructs a new JavaSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a JavaSettings.
+                 * @implements IJavaSettings
+                 * @constructor
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 */
+                function JavaSettings(properties) {
+                    this.serviceClassNames = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * JavaSettings libraryPackage.
+                 * @member {string} libraryPackage
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.libraryPackage = "";
+    
+                /**
+                 * JavaSettings serviceClassNames.
+                 * @member {Object.<string,string>} serviceClassNames
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.serviceClassNames = $util.emptyObject;
+    
+                /**
+                 * JavaSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new JavaSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 * @returns {google.api.JavaSettings} JavaSettings instance
+                 */
+                JavaSettings.create = function create(properties) {
+                    return new JavaSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.libraryPackage != null && Object.hasOwnProperty.call(message, "libraryPackage"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.libraryPackage);
+                    if (message.serviceClassNames != null && Object.hasOwnProperty.call(message, "serviceClassNames"))
+                        for (var keys = Object.keys(message.serviceClassNames), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.serviceClassNames[keys[i]]).ldelim();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.JavaSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.libraryPackage = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (message.serviceClassNames === $util.emptyObject)
+                                    message.serviceClassNames = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.serviceClassNames[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a JavaSettings message.
+                 * @function verify
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                JavaSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        if (!$util.isString(message.libraryPackage))
+                            return "libraryPackage: string expected";
+                    if (message.serviceClassNames != null && message.hasOwnProperty("serviceClassNames")) {
+                        if (!$util.isObject(message.serviceClassNames))
+                            return "serviceClassNames: object expected";
+                        var key = Object.keys(message.serviceClassNames);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.serviceClassNames[key[i]]))
+                                return "serviceClassNames: string{k:string} expected";
+                    }
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 */
+                JavaSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.JavaSettings)
+                        return object;
+                    var message = new $root.google.api.JavaSettings();
+                    if (object.libraryPackage != null)
+                        message.libraryPackage = String(object.libraryPackage);
+                    if (object.serviceClassNames) {
+                        if (typeof object.serviceClassNames !== "object")
+                            throw TypeError(".google.api.JavaSettings.serviceClassNames: object expected");
+                        message.serviceClassNames = {};
+                        for (var keys = Object.keys(object.serviceClassNames), i = 0; i < keys.length; ++i)
+                            message.serviceClassNames[keys[i]] = String(object.serviceClassNames[keys[i]]);
+                    }
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.JavaSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.JavaSettings} message JavaSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                JavaSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.serviceClassNames = {};
+                    if (options.defaults) {
+                        object.libraryPackage = "";
+                        object.common = null;
+                    }
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        object.libraryPackage = message.libraryPackage;
+                    var keys2;
+                    if (message.serviceClassNames && (keys2 = Object.keys(message.serviceClassNames)).length) {
+                        object.serviceClassNames = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.serviceClassNames[keys2[j]] = message.serviceClassNames[keys2[j]];
+                    }
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this JavaSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                JavaSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for JavaSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                JavaSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.JavaSettings";
+                };
+    
+                return JavaSettings;
+            })();
+    
+            api.CppSettings = (function() {
+    
+                /**
+                 * Properties of a CppSettings.
+                 * @memberof google.api
+                 * @interface ICppSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] CppSettings common
+                 */
+    
+                /**
+                 * Constructs a new CppSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CppSettings.
+                 * @implements ICppSettings
+                 * @constructor
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 */
+                function CppSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CppSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 */
+                CppSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new CppSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 * @returns {google.api.CppSettings} CppSettings instance
+                 */
+                CppSettings.create = function create(properties) {
+                    return new CppSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CppSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CppSettings message.
+                 * @function verify
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CppSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CppSettings} CppSettings
+                 */
+                CppSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CppSettings)
+                        return object;
+                    var message = new $root.google.api.CppSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.CppSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.CppSettings} message CppSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CppSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this CppSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CppSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CppSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CppSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CppSettings";
+                };
+    
+                return CppSettings;
+            })();
+    
+            api.PhpSettings = (function() {
+    
+                /**
+                 * Properties of a PhpSettings.
+                 * @memberof google.api
+                 * @interface IPhpSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PhpSettings common
+                 */
+    
+                /**
+                 * Constructs a new PhpSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PhpSettings.
+                 * @implements IPhpSettings
+                 * @constructor
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 */
+                function PhpSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PhpSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 */
+                PhpSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PhpSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 * @returns {google.api.PhpSettings} PhpSettings instance
+                 */
+                PhpSettings.create = function create(properties) {
+                    return new PhpSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PhpSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PhpSettings message.
+                 * @function verify
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PhpSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 */
+                PhpSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PhpSettings)
+                        return object;
+                    var message = new $root.google.api.PhpSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PhpSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.PhpSettings} message PhpSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PhpSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PhpSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PhpSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PhpSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PhpSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PhpSettings";
+                };
+    
+                return PhpSettings;
+            })();
+    
+            api.PythonSettings = (function() {
+    
+                /**
+                 * Properties of a PythonSettings.
+                 * @memberof google.api
+                 * @interface IPythonSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PythonSettings common
+                 */
+    
+                /**
+                 * Constructs a new PythonSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PythonSettings.
+                 * @implements IPythonSettings
+                 * @constructor
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 */
+                function PythonSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PythonSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 */
+                PythonSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PythonSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 * @returns {google.api.PythonSettings} PythonSettings instance
+                 */
+                PythonSettings.create = function create(properties) {
+                    return new PythonSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PythonSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PythonSettings message.
+                 * @function verify
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PythonSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 */
+                PythonSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PythonSettings)
+                        return object;
+                    var message = new $root.google.api.PythonSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PythonSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.PythonSettings} message PythonSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PythonSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PythonSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PythonSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PythonSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PythonSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PythonSettings";
+                };
+    
+                return PythonSettings;
+            })();
+    
+            api.NodeSettings = (function() {
+    
+                /**
+                 * Properties of a NodeSettings.
+                 * @memberof google.api
+                 * @interface INodeSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] NodeSettings common
+                 */
+    
+                /**
+                 * Constructs a new NodeSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a NodeSettings.
+                 * @implements INodeSettings
+                 * @constructor
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 */
+                function NodeSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * NodeSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 */
+                NodeSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new NodeSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 * @returns {google.api.NodeSettings} NodeSettings instance
+                 */
+                NodeSettings.create = function create(properties) {
+                    return new NodeSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.NodeSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a NodeSettings message.
+                 * @function verify
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                NodeSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 */
+                NodeSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.NodeSettings)
+                        return object;
+                    var message = new $root.google.api.NodeSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.NodeSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.NodeSettings} message NodeSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                NodeSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this NodeSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                NodeSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for NodeSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                NodeSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.NodeSettings";
+                };
+    
+                return NodeSettings;
+            })();
+    
+            api.DotnetSettings = (function() {
+    
+                /**
+                 * Properties of a DotnetSettings.
+                 * @memberof google.api
+                 * @interface IDotnetSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] DotnetSettings common
+                 * @property {Object.<string,string>|null} [renamedServices] DotnetSettings renamedServices
+                 * @property {Object.<string,string>|null} [renamedResources] DotnetSettings renamedResources
+                 * @property {Array.<string>|null} [ignoredResources] DotnetSettings ignoredResources
+                 * @property {Array.<string>|null} [forcedNamespaceAliases] DotnetSettings forcedNamespaceAliases
+                 * @property {Array.<string>|null} [handwrittenSignatures] DotnetSettings handwrittenSignatures
+                 */
+    
+                /**
+                 * Constructs a new DotnetSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a DotnetSettings.
+                 * @implements IDotnetSettings
+                 * @constructor
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 */
+                function DotnetSettings(properties) {
+                    this.renamedServices = {};
+                    this.renamedResources = {};
+                    this.ignoredResources = [];
+                    this.forcedNamespaceAliases = [];
+                    this.handwrittenSignatures = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * DotnetSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.common = null;
+    
+                /**
+                 * DotnetSettings renamedServices.
+                 * @member {Object.<string,string>} renamedServices
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedServices = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings renamedResources.
+                 * @member {Object.<string,string>} renamedResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedResources = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings ignoredResources.
+                 * @member {Array.<string>} ignoredResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.ignoredResources = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings forcedNamespaceAliases.
+                 * @member {Array.<string>} forcedNamespaceAliases
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.forcedNamespaceAliases = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings handwrittenSignatures.
+                 * @member {Array.<string>} handwrittenSignatures
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.handwrittenSignatures = $util.emptyArray;
+    
+                /**
+                 * Creates a new DotnetSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 * @returns {google.api.DotnetSettings} DotnetSettings instance
+                 */
+                DotnetSettings.create = function create(properties) {
+                    return new DotnetSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.renamedServices != null && Object.hasOwnProperty.call(message, "renamedServices"))
+                        for (var keys = Object.keys(message.renamedServices), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedServices[keys[i]]).ldelim();
+                    if (message.renamedResources != null && Object.hasOwnProperty.call(message, "renamedResources"))
+                        for (var keys = Object.keys(message.renamedResources), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedResources[keys[i]]).ldelim();
+                    if (message.ignoredResources != null && message.ignoredResources.length)
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            writer.uint32(/* id 4, wireType 2 =*/34).string(message.ignoredResources[i]);
+                    if (message.forcedNamespaceAliases != null && message.forcedNamespaceAliases.length)
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.forcedNamespaceAliases[i]);
+                    if (message.handwrittenSignatures != null && message.handwrittenSignatures.length)
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            writer.uint32(/* id 6, wireType 2 =*/50).string(message.handwrittenSignatures[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.DotnetSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 2: {
+                                if (message.renamedServices === $util.emptyObject)
+                                    message.renamedServices = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedServices[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                if (message.renamedResources === $util.emptyObject)
+                                    message.renamedResources = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedResources[key] = value;
+                                break;
+                            }
+                        case 4: {
+                                if (!(message.ignoredResources && message.ignoredResources.length))
+                                    message.ignoredResources = [];
+                                message.ignoredResources.push(reader.string());
+                                break;
+                            }
+                        case 5: {
+                                if (!(message.forcedNamespaceAliases && message.forcedNamespaceAliases.length))
+                                    message.forcedNamespaceAliases = [];
+                                message.forcedNamespaceAliases.push(reader.string());
+                                break;
+                            }
+                        case 6: {
+                                if (!(message.handwrittenSignatures && message.handwrittenSignatures.length))
+                                    message.handwrittenSignatures = [];
+                                message.handwrittenSignatures.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a DotnetSettings message.
+                 * @function verify
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                DotnetSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    if (message.renamedServices != null && message.hasOwnProperty("renamedServices")) {
+                        if (!$util.isObject(message.renamedServices))
+                            return "renamedServices: object expected";
+                        var key = Object.keys(message.renamedServices);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedServices[key[i]]))
+                                return "renamedServices: string{k:string} expected";
+                    }
+                    if (message.renamedResources != null && message.hasOwnProperty("renamedResources")) {
+                        if (!$util.isObject(message.renamedResources))
+                            return "renamedResources: object expected";
+                        var key = Object.keys(message.renamedResources);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedResources[key[i]]))
+                                return "renamedResources: string{k:string} expected";
+                    }
+                    if (message.ignoredResources != null && message.hasOwnProperty("ignoredResources")) {
+                        if (!Array.isArray(message.ignoredResources))
+                            return "ignoredResources: array expected";
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            if (!$util.isString(message.ignoredResources[i]))
+                                return "ignoredResources: string[] expected";
+                    }
+                    if (message.forcedNamespaceAliases != null && message.hasOwnProperty("forcedNamespaceAliases")) {
+                        if (!Array.isArray(message.forcedNamespaceAliases))
+                            return "forcedNamespaceAliases: array expected";
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            if (!$util.isString(message.forcedNamespaceAliases[i]))
+                                return "forcedNamespaceAliases: string[] expected";
+                    }
+                    if (message.handwrittenSignatures != null && message.hasOwnProperty("handwrittenSignatures")) {
+                        if (!Array.isArray(message.handwrittenSignatures))
+                            return "handwrittenSignatures: array expected";
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            if (!$util.isString(message.handwrittenSignatures[i]))
+                                return "handwrittenSignatures: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 */
+                DotnetSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.DotnetSettings)
+                        return object;
+                    var message = new $root.google.api.DotnetSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.DotnetSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    if (object.renamedServices) {
+                        if (typeof object.renamedServices !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedServices: object expected");
+                        message.renamedServices = {};
+                        for (var keys = Object.keys(object.renamedServices), i = 0; i < keys.length; ++i)
+                            message.renamedServices[keys[i]] = String(object.renamedServices[keys[i]]);
+                    }
+                    if (object.renamedResources) {
+                        if (typeof object.renamedResources !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedResources: object expected");
+                        message.renamedResources = {};
+                        for (var keys = Object.keys(object.renamedResources), i = 0; i < keys.length; ++i)
+                            message.renamedResources[keys[i]] = String(object.renamedResources[keys[i]]);
+                    }
+                    if (object.ignoredResources) {
+                        if (!Array.isArray(object.ignoredResources))
+                            throw TypeError(".google.api.DotnetSettings.ignoredResources: array expected");
+                        message.ignoredResources = [];
+                        for (var i = 0; i < object.ignoredResources.length; ++i)
+                            message.ignoredResources[i] = String(object.ignoredResources[i]);
+                    }
+                    if (object.forcedNamespaceAliases) {
+                        if (!Array.isArray(object.forcedNamespaceAliases))
+                            throw TypeError(".google.api.DotnetSettings.forcedNamespaceAliases: array expected");
+                        message.forcedNamespaceAliases = [];
+                        for (var i = 0; i < object.forcedNamespaceAliases.length; ++i)
+                            message.forcedNamespaceAliases[i] = String(object.forcedNamespaceAliases[i]);
+                    }
+                    if (object.handwrittenSignatures) {
+                        if (!Array.isArray(object.handwrittenSignatures))
+                            throw TypeError(".google.api.DotnetSettings.handwrittenSignatures: array expected");
+                        message.handwrittenSignatures = [];
+                        for (var i = 0; i < object.handwrittenSignatures.length; ++i)
+                            message.handwrittenSignatures[i] = String(object.handwrittenSignatures[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.DotnetSettings} message DotnetSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                DotnetSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.ignoredResources = [];
+                        object.forcedNamespaceAliases = [];
+                        object.handwrittenSignatures = [];
+                    }
+                    if (options.objects || options.defaults) {
+                        object.renamedServices = {};
+                        object.renamedResources = {};
+                    }
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    var keys2;
+                    if (message.renamedServices && (keys2 = Object.keys(message.renamedServices)).length) {
+                        object.renamedServices = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedServices[keys2[j]] = message.renamedServices[keys2[j]];
+                    }
+                    if (message.renamedResources && (keys2 = Object.keys(message.renamedResources)).length) {
+                        object.renamedResources = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedResources[keys2[j]] = message.renamedResources[keys2[j]];
+                    }
+                    if (message.ignoredResources && message.ignoredResources.length) {
+                        object.ignoredResources = [];
+                        for (var j = 0; j < message.ignoredResources.length; ++j)
+                            object.ignoredResources[j] = message.ignoredResources[j];
+                    }
+                    if (message.forcedNamespaceAliases && message.forcedNamespaceAliases.length) {
+                        object.forcedNamespaceAliases = [];
+                        for (var j = 0; j < message.forcedNamespaceAliases.length; ++j)
+                            object.forcedNamespaceAliases[j] = message.forcedNamespaceAliases[j];
+                    }
+                    if (message.handwrittenSignatures && message.handwrittenSignatures.length) {
+                        object.handwrittenSignatures = [];
+                        for (var j = 0; j < message.handwrittenSignatures.length; ++j)
+                            object.handwrittenSignatures[j] = message.handwrittenSignatures[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this DotnetSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                DotnetSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for DotnetSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                DotnetSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.DotnetSettings";
+                };
+    
+                return DotnetSettings;
+            })();
+    
+            api.RubySettings = (function() {
+    
+                /**
+                 * Properties of a RubySettings.
+                 * @memberof google.api
+                 * @interface IRubySettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] RubySettings common
+                 */
+    
+                /**
+                 * Constructs a new RubySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a RubySettings.
+                 * @implements IRubySettings
+                 * @constructor
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 */
+                function RubySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * RubySettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 */
+                RubySettings.prototype.common = null;
+    
+                /**
+                 * Creates a new RubySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 * @returns {google.api.RubySettings} RubySettings instance
+                 */
+                RubySettings.create = function create(properties) {
+                    return new RubySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RubySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a RubySettings message.
+                 * @function verify
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                RubySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.RubySettings} RubySettings
+                 */
+                RubySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.RubySettings)
+                        return object;
+                    var message = new $root.google.api.RubySettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.RubySettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.RubySettings} message RubySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                RubySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this RubySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                RubySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for RubySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                RubySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.RubySettings";
+                };
+    
+                return RubySettings;
+            })();
+    
+            api.GoSettings = (function() {
+    
+                /**
+                 * Properties of a GoSettings.
+                 * @memberof google.api
+                 * @interface IGoSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] GoSettings common
+                 */
+    
+                /**
+                 * Constructs a new GoSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a GoSettings.
+                 * @implements IGoSettings
+                 * @constructor
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 */
+                function GoSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * GoSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 */
+                GoSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new GoSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 * @returns {google.api.GoSettings} GoSettings instance
+                 */
+                GoSettings.create = function create(properties) {
+                    return new GoSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.GoSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a GoSettings message.
+                 * @function verify
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                GoSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.GoSettings} GoSettings
+                 */
+                GoSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.GoSettings)
+                        return object;
+                    var message = new $root.google.api.GoSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.GoSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.GoSettings} message GoSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                GoSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this GoSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                GoSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for GoSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                GoSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.GoSettings";
+                };
+    
+                return GoSettings;
+            })();
+    
+            api.MethodSettings = (function() {
+    
+                /**
+                 * Properties of a MethodSettings.
+                 * @memberof google.api
+                 * @interface IMethodSettings
+                 * @property {string|null} [selector] MethodSettings selector
+                 * @property {google.api.MethodSettings.ILongRunning|null} [longRunning] MethodSettings longRunning
+                 * @property {Array.<string>|null} [autoPopulatedFields] MethodSettings autoPopulatedFields
+                 */
+    
+                /**
+                 * Constructs a new MethodSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a MethodSettings.
+                 * @implements IMethodSettings
+                 * @constructor
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 */
+                function MethodSettings(properties) {
+                    this.autoPopulatedFields = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MethodSettings selector.
+                 * @member {string} selector
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.selector = "";
+    
+                /**
+                 * MethodSettings longRunning.
+                 * @member {google.api.MethodSettings.ILongRunning|null|undefined} longRunning
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.longRunning = null;
+    
+                /**
+                 * MethodSettings autoPopulatedFields.
+                 * @member {Array.<string>} autoPopulatedFields
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.autoPopulatedFields = $util.emptyArray;
+    
+                /**
+                 * Creates a new MethodSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 * @returns {google.api.MethodSettings} MethodSettings instance
+                 */
+                MethodSettings.create = function create(properties) {
+                    return new MethodSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.selector != null && Object.hasOwnProperty.call(message, "selector"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.selector);
+                    if (message.longRunning != null && Object.hasOwnProperty.call(message, "longRunning"))
+                        $root.google.api.MethodSettings.LongRunning.encode(message.longRunning, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.autoPopulatedFields != null && message.autoPopulatedFields.length)
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.autoPopulatedFields[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.selector = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.longRunning = $root.google.api.MethodSettings.LongRunning.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                if (!(message.autoPopulatedFields && message.autoPopulatedFields.length))
+                                    message.autoPopulatedFields = [];
+                                message.autoPopulatedFields.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MethodSettings message.
+                 * @function verify
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MethodSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        if (!$util.isString(message.selector))
+                            return "selector: string expected";
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning")) {
+                        var error = $root.google.api.MethodSettings.LongRunning.verify(message.longRunning);
+                        if (error)
+                            return "longRunning." + error;
+                    }
+                    if (message.autoPopulatedFields != null && message.hasOwnProperty("autoPopulatedFields")) {
+                        if (!Array.isArray(message.autoPopulatedFields))
+                            return "autoPopulatedFields: array expected";
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            if (!$util.isString(message.autoPopulatedFields[i]))
+                                return "autoPopulatedFields: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 */
+                MethodSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MethodSettings)
+                        return object;
+                    var message = new $root.google.api.MethodSettings();
+                    if (object.selector != null)
+                        message.selector = String(object.selector);
+                    if (object.longRunning != null) {
+                        if (typeof object.longRunning !== "object")
+                            throw TypeError(".google.api.MethodSettings.longRunning: object expected");
+                        message.longRunning = $root.google.api.MethodSettings.LongRunning.fromObject(object.longRunning);
+                    }
+                    if (object.autoPopulatedFields) {
+                        if (!Array.isArray(object.autoPopulatedFields))
+                            throw TypeError(".google.api.MethodSettings.autoPopulatedFields: array expected");
+                        message.autoPopulatedFields = [];
+                        for (var i = 0; i < object.autoPopulatedFields.length; ++i)
+                            message.autoPopulatedFields[i] = String(object.autoPopulatedFields[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.MethodSettings} message MethodSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MethodSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.autoPopulatedFields = [];
+                    if (options.defaults) {
+                        object.selector = "";
+                        object.longRunning = null;
+                    }
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        object.selector = message.selector;
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning"))
+                        object.longRunning = $root.google.api.MethodSettings.LongRunning.toObject(message.longRunning, options);
+                    if (message.autoPopulatedFields && message.autoPopulatedFields.length) {
+                        object.autoPopulatedFields = [];
+                        for (var j = 0; j < message.autoPopulatedFields.length; ++j)
+                            object.autoPopulatedFields[j] = message.autoPopulatedFields[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this MethodSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MethodSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MethodSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MethodSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MethodSettings";
+                };
+    
+                MethodSettings.LongRunning = (function() {
+    
+                    /**
+                     * Properties of a LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @interface ILongRunning
+                     * @property {google.protobuf.IDuration|null} [initialPollDelay] LongRunning initialPollDelay
+                     * @property {number|null} [pollDelayMultiplier] LongRunning pollDelayMultiplier
+                     * @property {google.protobuf.IDuration|null} [maxPollDelay] LongRunning maxPollDelay
+                     * @property {google.protobuf.IDuration|null} [totalPollTimeout] LongRunning totalPollTimeout
+                     */
+    
+                    /**
+                     * Constructs a new LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @classdesc Represents a LongRunning.
+                     * @implements ILongRunning
+                     * @constructor
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     */
+                    function LongRunning(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * LongRunning initialPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} initialPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.initialPollDelay = null;
+    
+                    /**
+                     * LongRunning pollDelayMultiplier.
+                     * @member {number} pollDelayMultiplier
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.pollDelayMultiplier = 0;
+    
+                    /**
+                     * LongRunning maxPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} maxPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.maxPollDelay = null;
+    
+                    /**
+                     * LongRunning totalPollTimeout.
+                     * @member {google.protobuf.IDuration|null|undefined} totalPollTimeout
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.totalPollTimeout = null;
+    
+                    /**
+                     * Creates a new LongRunning instance using the specified properties.
+                     * @function create
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning instance
+                     */
+                    LongRunning.create = function create(properties) {
+                        return new LongRunning(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.initialPollDelay != null && Object.hasOwnProperty.call(message, "initialPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.initialPollDelay, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.pollDelayMultiplier != null && Object.hasOwnProperty.call(message, "pollDelayMultiplier"))
+                            writer.uint32(/* id 2, wireType 5 =*/21).float(message.pollDelayMultiplier);
+                        if (message.maxPollDelay != null && Object.hasOwnProperty.call(message, "maxPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.maxPollDelay, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.totalPollTimeout != null && Object.hasOwnProperty.call(message, "totalPollTimeout"))
+                            $root.google.protobuf.Duration.encode(message.totalPollTimeout, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings.LongRunning();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.initialPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.pollDelayMultiplier = reader.float();
+                                    break;
+                                }
+                            case 3: {
+                                    message.maxPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 4: {
+                                    message.totalPollTimeout = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a LongRunning message.
+                     * @function verify
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    LongRunning.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.initialPollDelay);
+                            if (error)
+                                return "initialPollDelay." + error;
+                        }
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            if (typeof message.pollDelayMultiplier !== "number")
+                                return "pollDelayMultiplier: number expected";
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.maxPollDelay);
+                            if (error)
+                                return "maxPollDelay." + error;
+                        }
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout")) {
+                            var error = $root.google.protobuf.Duration.verify(message.totalPollTimeout);
+                            if (error)
+                                return "totalPollTimeout." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     */
+                    LongRunning.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.api.MethodSettings.LongRunning)
+                            return object;
+                        var message = new $root.google.api.MethodSettings.LongRunning();
+                        if (object.initialPollDelay != null) {
+                            if (typeof object.initialPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.initialPollDelay: object expected");
+                            message.initialPollDelay = $root.google.protobuf.Duration.fromObject(object.initialPollDelay);
+                        }
+                        if (object.pollDelayMultiplier != null)
+                            message.pollDelayMultiplier = Number(object.pollDelayMultiplier);
+                        if (object.maxPollDelay != null) {
+                            if (typeof object.maxPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.maxPollDelay: object expected");
+                            message.maxPollDelay = $root.google.protobuf.Duration.fromObject(object.maxPollDelay);
+                        }
+                        if (object.totalPollTimeout != null) {
+                            if (typeof object.totalPollTimeout !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.totalPollTimeout: object expected");
+                            message.totalPollTimeout = $root.google.protobuf.Duration.fromObject(object.totalPollTimeout);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.LongRunning} message LongRunning
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    LongRunning.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.initialPollDelay = null;
+                            object.pollDelayMultiplier = 0;
+                            object.maxPollDelay = null;
+                            object.totalPollTimeout = null;
+                        }
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay"))
+                            object.initialPollDelay = $root.google.protobuf.Duration.toObject(message.initialPollDelay, options);
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            object.pollDelayMultiplier = options.json && !isFinite(message.pollDelayMultiplier) ? String(message.pollDelayMultiplier) : message.pollDelayMultiplier;
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay"))
+                            object.maxPollDelay = $root.google.protobuf.Duration.toObject(message.maxPollDelay, options);
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout"))
+                            object.totalPollTimeout = $root.google.protobuf.Duration.toObject(message.totalPollTimeout, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this LongRunning to JSON.
+                     * @function toJSON
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    LongRunning.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for LongRunning
+                     * @function getTypeUrl
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    LongRunning.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.api.MethodSettings.LongRunning";
+                    };
+    
+                    return LongRunning;
+                })();
+    
+                return MethodSettings;
+            })();
+    
+            /**
+             * ClientLibraryOrganization enum.
+             * @name google.api.ClientLibraryOrganization
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED=0 CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED value
+             * @property {number} CLOUD=1 CLOUD value
+             * @property {number} ADS=2 ADS value
+             * @property {number} PHOTOS=3 PHOTOS value
+             * @property {number} STREET_VIEW=4 STREET_VIEW value
+             * @property {number} SHOPPING=5 SHOPPING value
+             * @property {number} GEO=6 GEO value
+             * @property {number} GENERATIVE_AI=7 GENERATIVE_AI value
+             */
+            api.ClientLibraryOrganization = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED"] = 0;
+                values[valuesById[1] = "CLOUD"] = 1;
+                values[valuesById[2] = "ADS"] = 2;
+                values[valuesById[3] = "PHOTOS"] = 3;
+                values[valuesById[4] = "STREET_VIEW"] = 4;
+                values[valuesById[5] = "SHOPPING"] = 5;
+                values[valuesById[6] = "GEO"] = 6;
+                values[valuesById[7] = "GENERATIVE_AI"] = 7;
+                return values;
+            })();
+    
+            /**
+             * ClientLibraryDestination enum.
+             * @name google.api.ClientLibraryDestination
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_DESTINATION_UNSPECIFIED=0 CLIENT_LIBRARY_DESTINATION_UNSPECIFIED value
+             * @property {number} GITHUB=10 GITHUB value
+             * @property {number} PACKAGE_MANAGER=20 PACKAGE_MANAGER value
+             */
+            api.ClientLibraryDestination = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED"] = 0;
+                values[valuesById[10] = "GITHUB"] = 10;
+                values[valuesById[20] = "PACKAGE_MANAGER"] = 20;
+                return values;
+            })();
+    
+            /**
+             * LaunchStage enum.
+             * @name google.api.LaunchStage
+             * @enum {number}
+             * @property {number} LAUNCH_STAGE_UNSPECIFIED=0 LAUNCH_STAGE_UNSPECIFIED value
+             * @property {number} UNIMPLEMENTED=6 UNIMPLEMENTED value
+             * @property {number} PRELAUNCH=7 PRELAUNCH value
+             * @property {number} EARLY_ACCESS=1 EARLY_ACCESS value
+             * @property {number} ALPHA=2 ALPHA value
+             * @property {number} BETA=3 BETA value
+             * @property {number} GA=4 GA value
+             * @property {number} DEPRECATED=5 DEPRECATED value
+             */
+            api.LaunchStage = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "LAUNCH_STAGE_UNSPECIFIED"] = 0;
+                values[valuesById[6] = "UNIMPLEMENTED"] = 6;
+                values[valuesById[7] = "PRELAUNCH"] = 7;
+                values[valuesById[1] = "EARLY_ACCESS"] = 1;
+                values[valuesById[2] = "ALPHA"] = 2;
+                values[valuesById[3] = "BETA"] = 3;
+                values[valuesById[4] = "GA"] = 4;
+                values[valuesById[5] = "DEPRECATED"] = 5;
+                return values;
+            })();
+    
             return api;
         })();
     
@@ -16979,6 +23497,38 @@
                 return FileDescriptorSet;
             })();
     
+            /**
+             * Edition enum.
+             * @name google.protobuf.Edition
+             * @enum {number}
+             * @property {number} EDITION_UNKNOWN=0 EDITION_UNKNOWN value
+             * @property {number} EDITION_PROTO2=998 EDITION_PROTO2 value
+             * @property {number} EDITION_PROTO3=999 EDITION_PROTO3 value
+             * @property {number} EDITION_2023=1000 EDITION_2023 value
+             * @property {number} EDITION_2024=1001 EDITION_2024 value
+             * @property {number} EDITION_1_TEST_ONLY=1 EDITION_1_TEST_ONLY value
+             * @property {number} EDITION_2_TEST_ONLY=2 EDITION_2_TEST_ONLY value
+             * @property {number} EDITION_99997_TEST_ONLY=99997 EDITION_99997_TEST_ONLY value
+             * @property {number} EDITION_99998_TEST_ONLY=99998 EDITION_99998_TEST_ONLY value
+             * @property {number} EDITION_99999_TEST_ONLY=99999 EDITION_99999_TEST_ONLY value
+             * @property {number} EDITION_MAX=2147483647 EDITION_MAX value
+             */
+            protobuf.Edition = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "EDITION_UNKNOWN"] = 0;
+                values[valuesById[998] = "EDITION_PROTO2"] = 998;
+                values[valuesById[999] = "EDITION_PROTO3"] = 999;
+                values[valuesById[1000] = "EDITION_2023"] = 1000;
+                values[valuesById[1001] = "EDITION_2024"] = 1001;
+                values[valuesById[1] = "EDITION_1_TEST_ONLY"] = 1;
+                values[valuesById[2] = "EDITION_2_TEST_ONLY"] = 2;
+                values[valuesById[99997] = "EDITION_99997_TEST_ONLY"] = 99997;
+                values[valuesById[99998] = "EDITION_99998_TEST_ONLY"] = 99998;
+                values[valuesById[99999] = "EDITION_99999_TEST_ONLY"] = 99999;
+                values[valuesById[2147483647] = "EDITION_MAX"] = 2147483647;
+                return values;
+            })();
+    
             protobuf.FileDescriptorProto = (function() {
     
                 /**
@@ -16997,7 +23547,7 @@
                  * @property {google.protobuf.IFileOptions|null} [options] FileDescriptorProto options
                  * @property {google.protobuf.ISourceCodeInfo|null} [sourceCodeInfo] FileDescriptorProto sourceCodeInfo
                  * @property {string|null} [syntax] FileDescriptorProto syntax
-                 * @property {string|null} [edition] FileDescriptorProto edition
+                 * @property {google.protobuf.Edition|null} [edition] FileDescriptorProto edition
                  */
     
                 /**
@@ -17120,11 +23670,11 @@
     
                 /**
                  * FileDescriptorProto edition.
-                 * @member {string} edition
+                 * @member {google.protobuf.Edition} edition
                  * @memberof google.protobuf.FileDescriptorProto
                  * @instance
                  */
-                FileDescriptorProto.prototype.edition = "";
+                FileDescriptorProto.prototype.edition = 0;
     
                 /**
                  * Creates a new FileDescriptorProto instance using the specified properties.
@@ -17182,7 +23732,7 @@
                     if (message.syntax != null && Object.hasOwnProperty.call(message, "syntax"))
                         writer.uint32(/* id 12, wireType 2 =*/98).string(message.syntax);
                     if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
-                        writer.uint32(/* id 13, wireType 2 =*/106).string(message.edition);
+                        writer.uint32(/* id 14, wireType 0 =*/112).int32(message.edition);
                     return writer;
                 };
     
@@ -17289,8 +23839,8 @@
                                 message.syntax = reader.string();
                                 break;
                             }
-                        case 13: {
-                                message.edition = reader.string();
+                        case 14: {
+                                message.edition = reader.int32();
                                 break;
                             }
                         default:
@@ -17405,8 +23955,22 @@
                         if (!$util.isString(message.syntax))
                             return "syntax: string expected";
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        if (!$util.isString(message.edition))
-                            return "edition: string expected";
+                        switch (message.edition) {
+                        default:
+                            return "edition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
                     return null;
                 };
     
@@ -17499,8 +24063,58 @@
                     }
                     if (object.syntax != null)
                         message.syntax = String(object.syntax);
-                    if (object.edition != null)
-                        message.edition = String(object.edition);
+                    switch (object.edition) {
+                    default:
+                        if (typeof object.edition === "number") {
+                            message.edition = object.edition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.edition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.edition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.edition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.edition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.edition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.edition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.edition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.edition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.edition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.edition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.edition = 2147483647;
+                        break;
+                    }
                     return message;
                 };
     
@@ -17532,7 +24146,7 @@
                         object.options = null;
                         object.sourceCodeInfo = null;
                         object.syntax = "";
-                        object.edition = "";
+                        object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
                     }
                     if (message.name != null && message.hasOwnProperty("name"))
                         object.name = message.name;
@@ -17580,7 +24194,7 @@
                     if (message.syntax != null && message.hasOwnProperty("syntax"))
                         object.syntax = message.syntax;
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        object.edition = message.edition;
+                        object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
                     return object;
                 };
     
@@ -18683,6 +25297,9 @@
                  * @memberof google.protobuf
                  * @interface IExtensionRangeOptions
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ExtensionRangeOptions uninterpretedOption
+                 * @property {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>|null} [declaration] ExtensionRangeOptions declaration
+                 * @property {google.protobuf.IFeatureSet|null} [features] ExtensionRangeOptions features
+                 * @property {google.protobuf.ExtensionRangeOptions.VerificationState|null} [verification] ExtensionRangeOptions verification
                  */
     
                 /**
@@ -18695,6 +25312,7 @@
                  */
                 function ExtensionRangeOptions(properties) {
                     this.uninterpretedOption = [];
+                    this.declaration = [];
                     if (properties)
                         for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                             if (properties[keys[i]] != null)
@@ -18708,6 +25326,30 @@
                  * @instance
                  */
                 ExtensionRangeOptions.prototype.uninterpretedOption = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions declaration.
+                 * @member {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>} declaration
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.declaration = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.features = null;
+    
+                /**
+                 * ExtensionRangeOptions verification.
+                 * @member {google.protobuf.ExtensionRangeOptions.VerificationState} verification
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.verification = 1;
     
                 /**
                  * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -18733,6 +25375,13 @@
                 ExtensionRangeOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.declaration != null && message.declaration.length)
+                        for (var i = 0; i < message.declaration.length; ++i)
+                            $root.google.protobuf.ExtensionRangeOptions.Declaration.encode(message.declaration[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.verification != null && Object.hasOwnProperty.call(message, "verification"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.verification);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -18774,6 +25423,20 @@
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
                                 message.uninterpretedOption.push($root.google.protobuf.UninterpretedOption.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.declaration && message.declaration.length))
+                                    message.declaration = [];
+                                message.declaration.push($root.google.protobuf.ExtensionRangeOptions.Declaration.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.verification = reader.int32();
                                 break;
                             }
                         default:
@@ -18820,6 +25483,28 @@
                                 return "uninterpretedOption." + error;
                         }
                     }
+                    if (message.declaration != null && message.hasOwnProperty("declaration")) {
+                        if (!Array.isArray(message.declaration))
+                            return "declaration: array expected";
+                        for (var i = 0; i < message.declaration.length; ++i) {
+                            var error = $root.google.protobuf.ExtensionRangeOptions.Declaration.verify(message.declaration[i]);
+                            if (error)
+                                return "declaration." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        switch (message.verification) {
+                        default:
+                            return "verification: enum value expected";
+                        case 0:
+                        case 1:
+                            break;
+                        }
                     return null;
                 };
     
@@ -18845,6 +25530,37 @@
                             message.uninterpretedOption[i] = $root.google.protobuf.UninterpretedOption.fromObject(object.uninterpretedOption[i]);
                         }
                     }
+                    if (object.declaration) {
+                        if (!Array.isArray(object.declaration))
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: array expected");
+                        message.declaration = [];
+                        for (var i = 0; i < object.declaration.length; ++i) {
+                            if (typeof object.declaration[i] !== "object")
+                                throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: object expected");
+                            message.declaration[i] = $root.google.protobuf.ExtensionRangeOptions.Declaration.fromObject(object.declaration[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    switch (object.verification) {
+                    case "DECLARATION":
+                    case 0:
+                        message.verification = 0;
+                        break;
+                    default:
+                        if (typeof object.verification === "number") {
+                            message.verification = object.verification;
+                            break;
+                        }
+                        break;
+                    case "UNVERIFIED":
+                    case 1:
+                        message.verification = 1;
+                        break;
+                    }
                     return message;
                 };
     
@@ -18861,8 +25577,23 @@
                     if (!options)
                         options = {};
                     var object = {};
-                    if (options.arrays || options.defaults)
+                    if (options.arrays || options.defaults) {
+                        object.declaration = [];
                         object.uninterpretedOption = [];
+                    }
+                    if (options.defaults) {
+                        object.verification = options.enums === String ? "UNVERIFIED" : 1;
+                        object.features = null;
+                    }
+                    if (message.declaration && message.declaration.length) {
+                        object.declaration = [];
+                        for (var j = 0; j < message.declaration.length; ++j)
+                            object.declaration[j] = $root.google.protobuf.ExtensionRangeOptions.Declaration.toObject(message.declaration[j], options);
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        object.verification = options.enums === String ? $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] === undefined ? message.verification : $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] : message.verification;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -18896,6 +25627,316 @@
                     }
                     return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions";
                 };
+    
+                ExtensionRangeOptions.Declaration = (function() {
+    
+                    /**
+                     * Properties of a Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @interface IDeclaration
+                     * @property {number|null} [number] Declaration number
+                     * @property {string|null} [fullName] Declaration fullName
+                     * @property {string|null} [type] Declaration type
+                     * @property {boolean|null} [reserved] Declaration reserved
+                     * @property {boolean|null} [repeated] Declaration repeated
+                     */
+    
+                    /**
+                     * Constructs a new Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @classdesc Represents a Declaration.
+                     * @implements IDeclaration
+                     * @constructor
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     */
+                    function Declaration(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Declaration number.
+                     * @member {number} number
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.number = 0;
+    
+                    /**
+                     * Declaration fullName.
+                     * @member {string} fullName
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.fullName = "";
+    
+                    /**
+                     * Declaration type.
+                     * @member {string} type
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.type = "";
+    
+                    /**
+                     * Declaration reserved.
+                     * @member {boolean} reserved
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.reserved = false;
+    
+                    /**
+                     * Declaration repeated.
+                     * @member {boolean} repeated
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.repeated = false;
+    
+                    /**
+                     * Creates a new Declaration instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration instance
+                     */
+                    Declaration.create = function create(properties) {
+                        return new Declaration(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.number != null && Object.hasOwnProperty.call(message, "number"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.number);
+                        if (message.fullName != null && Object.hasOwnProperty.call(message, "fullName"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.fullName);
+                        if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
+                        if (message.reserved != null && Object.hasOwnProperty.call(message, "reserved"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).bool(message.reserved);
+                        if (message.repeated != null && Object.hasOwnProperty.call(message, "repeated"))
+                            writer.uint32(/* id 6, wireType 0 =*/48).bool(message.repeated);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.number = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.fullName = reader.string();
+                                    break;
+                                }
+                            case 3: {
+                                    message.type = reader.string();
+                                    break;
+                                }
+                            case 5: {
+                                    message.reserved = reader.bool();
+                                    break;
+                                }
+                            case 6: {
+                                    message.repeated = reader.bool();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a Declaration message.
+                     * @function verify
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    Declaration.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            if (!$util.isInteger(message.number))
+                                return "number: integer expected";
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            if (!$util.isString(message.fullName))
+                                return "fullName: string expected";
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            if (!$util.isString(message.type))
+                                return "type: string expected";
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            if (typeof message.reserved !== "boolean")
+                                return "reserved: boolean expected";
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            if (typeof message.repeated !== "boolean")
+                                return "repeated: boolean expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     */
+                    Declaration.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.ExtensionRangeOptions.Declaration)
+                            return object;
+                        var message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        if (object.number != null)
+                            message.number = object.number | 0;
+                        if (object.fullName != null)
+                            message.fullName = String(object.fullName);
+                        if (object.type != null)
+                            message.type = String(object.type);
+                        if (object.reserved != null)
+                            message.reserved = Boolean(object.reserved);
+                        if (object.repeated != null)
+                            message.repeated = Boolean(object.repeated);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.Declaration} message Declaration
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    Declaration.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.number = 0;
+                            object.fullName = "";
+                            object.type = "";
+                            object.reserved = false;
+                            object.repeated = false;
+                        }
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            object.number = message.number;
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            object.fullName = message.fullName;
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            object.type = message.type;
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            object.reserved = message.reserved;
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            object.repeated = message.repeated;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this Declaration to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    Declaration.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for Declaration
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    Declaration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions.Declaration";
+                    };
+    
+                    return Declaration;
+                })();
+    
+                /**
+                 * VerificationState enum.
+                 * @name google.protobuf.ExtensionRangeOptions.VerificationState
+                 * @enum {number}
+                 * @property {number} DECLARATION=0 DECLARATION value
+                 * @property {number} UNVERIFIED=1 UNVERIFIED value
+                 */
+                ExtensionRangeOptions.VerificationState = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "DECLARATION"] = 0;
+                    values[valuesById[1] = "UNVERIFIED"] = 1;
+                    return values;
+                })();
     
                 return ExtensionRangeOptions;
             })();
@@ -19192,8 +26233,8 @@
                         default:
                             return "label: enum value expected";
                         case 1:
-                        case 2:
                         case 3:
+                        case 2:
                             break;
                         }
                     if (message.type != null && message.hasOwnProperty("type"))
@@ -19273,13 +26314,13 @@
                     case 1:
                         message.label = 1;
                         break;
-                    case "LABEL_REQUIRED":
-                    case 2:
-                        message.label = 2;
-                        break;
                     case "LABEL_REPEATED":
                     case 3:
                         message.label = 3;
+                        break;
+                    case "LABEL_REQUIRED":
+                    case 2:
+                        message.label = 2;
                         break;
                     }
                     switch (object.type) {
@@ -19510,14 +26551,14 @@
                  * @name google.protobuf.FieldDescriptorProto.Label
                  * @enum {number}
                  * @property {number} LABEL_OPTIONAL=1 LABEL_OPTIONAL value
-                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  * @property {number} LABEL_REPEATED=3 LABEL_REPEATED value
+                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  */
                 FieldDescriptorProto.Label = (function() {
                     var valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[1] = "LABEL_OPTIONAL"] = 1;
-                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     values[valuesById[3] = "LABEL_REPEATED"] = 3;
+                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     return values;
                 })();
     
@@ -21216,7 +28257,6 @@
                  * @property {boolean|null} [ccGenericServices] FileOptions ccGenericServices
                  * @property {boolean|null} [javaGenericServices] FileOptions javaGenericServices
                  * @property {boolean|null} [pyGenericServices] FileOptions pyGenericServices
-                 * @property {boolean|null} [phpGenericServices] FileOptions phpGenericServices
                  * @property {boolean|null} [deprecated] FileOptions deprecated
                  * @property {boolean|null} [ccEnableArenas] FileOptions ccEnableArenas
                  * @property {string|null} [objcClassPrefix] FileOptions objcClassPrefix
@@ -21226,6 +28266,7 @@
                  * @property {string|null} [phpNamespace] FileOptions phpNamespace
                  * @property {string|null} [phpMetadataNamespace] FileOptions phpMetadataNamespace
                  * @property {string|null} [rubyPackage] FileOptions rubyPackage
+                 * @property {google.protobuf.IFeatureSet|null} [features] FileOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FileOptions uninterpretedOption
                  * @property {Array.<google.api.IResourceDescriptor>|null} [".google.api.resourceDefinition"] FileOptions .google.api.resourceDefinition
                  */
@@ -21328,14 +28369,6 @@
                 FileOptions.prototype.pyGenericServices = false;
     
                 /**
-                 * FileOptions phpGenericServices.
-                 * @member {boolean} phpGenericServices
-                 * @memberof google.protobuf.FileOptions
-                 * @instance
-                 */
-                FileOptions.prototype.phpGenericServices = false;
-    
-                /**
                  * FileOptions deprecated.
                  * @member {boolean} deprecated
                  * @memberof google.protobuf.FileOptions
@@ -21406,6 +28439,14 @@
                  * @instance
                  */
                 FileOptions.prototype.rubyPackage = "";
+    
+                /**
+                 * FileOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FileOptions
+                 * @instance
+                 */
+                FileOptions.prototype.features = null;
     
                 /**
                  * FileOptions uninterpretedOption.
@@ -21481,12 +28522,12 @@
                         writer.uint32(/* id 40, wireType 2 =*/322).string(message.phpClassPrefix);
                     if (message.phpNamespace != null && Object.hasOwnProperty.call(message, "phpNamespace"))
                         writer.uint32(/* id 41, wireType 2 =*/330).string(message.phpNamespace);
-                    if (message.phpGenericServices != null && Object.hasOwnProperty.call(message, "phpGenericServices"))
-                        writer.uint32(/* id 42, wireType 0 =*/336).bool(message.phpGenericServices);
                     if (message.phpMetadataNamespace != null && Object.hasOwnProperty.call(message, "phpMetadataNamespace"))
                         writer.uint32(/* id 44, wireType 2 =*/354).string(message.phpMetadataNamespace);
                     if (message.rubyPackage != null && Object.hasOwnProperty.call(message, "rubyPackage"))
                         writer.uint32(/* id 45, wireType 2 =*/362).string(message.rubyPackage);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -21567,10 +28608,6 @@
                                 message.pyGenericServices = reader.bool();
                                 break;
                             }
-                        case 42: {
-                                message.phpGenericServices = reader.bool();
-                                break;
-                            }
                         case 23: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -21605,6 +28642,10 @@
                             }
                         case 45: {
                                 message.rubyPackage = reader.string();
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -21690,9 +28731,6 @@
                     if (message.pyGenericServices != null && message.hasOwnProperty("pyGenericServices"))
                         if (typeof message.pyGenericServices !== "boolean")
                             return "pyGenericServices: boolean expected";
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        if (typeof message.phpGenericServices !== "boolean")
-                            return "phpGenericServices: boolean expected";
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -21720,6 +28758,11 @@
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         if (!$util.isString(message.rubyPackage))
                             return "rubyPackage: string expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -21791,8 +28834,6 @@
                         message.javaGenericServices = Boolean(object.javaGenericServices);
                     if (object.pyGenericServices != null)
                         message.pyGenericServices = Boolean(object.pyGenericServices);
-                    if (object.phpGenericServices != null)
-                        message.phpGenericServices = Boolean(object.phpGenericServices);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.ccEnableArenas != null)
@@ -21811,6 +28852,11 @@
                         message.phpMetadataNamespace = String(object.phpMetadataNamespace);
                     if (object.rubyPackage != null)
                         message.rubyPackage = String(object.rubyPackage);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FileOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FileOptions.uninterpretedOption: array expected");
@@ -21869,9 +28915,9 @@
                         object.swiftPrefix = "";
                         object.phpClassPrefix = "";
                         object.phpNamespace = "";
-                        object.phpGenericServices = false;
                         object.phpMetadataNamespace = "";
                         object.rubyPackage = "";
+                        object.features = null;
                     }
                     if (message.javaPackage != null && message.hasOwnProperty("javaPackage"))
                         object.javaPackage = message.javaPackage;
@@ -21907,12 +28953,12 @@
                         object.phpClassPrefix = message.phpClassPrefix;
                     if (message.phpNamespace != null && message.hasOwnProperty("phpNamespace"))
                         object.phpNamespace = message.phpNamespace;
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        object.phpGenericServices = message.phpGenericServices;
                     if (message.phpMetadataNamespace != null && message.hasOwnProperty("phpMetadataNamespace"))
                         object.phpMetadataNamespace = message.phpMetadataNamespace;
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         object.rubyPackage = message.rubyPackage;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -21981,6 +29027,8 @@
                  * @property {boolean|null} [noStandardDescriptorAccessor] MessageOptions noStandardDescriptorAccessor
                  * @property {boolean|null} [deprecated] MessageOptions deprecated
                  * @property {boolean|null} [mapEntry] MessageOptions mapEntry
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] MessageOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] MessageOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MessageOptions uninterpretedOption
                  * @property {google.api.IResourceDescriptor|null} [".google.api.resource"] MessageOptions .google.api.resource
                  */
@@ -22034,6 +29082,22 @@
                 MessageOptions.prototype.mapEntry = false;
     
                 /**
+                 * MessageOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * MessageOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.features = null;
+    
+                /**
                  * MessageOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.MessageOptions
@@ -22081,6 +29145,10 @@
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
                     if (message.mapEntry != null && Object.hasOwnProperty.call(message, "mapEntry"))
                         writer.uint32(/* id 7, wireType 0 =*/56).bool(message.mapEntry);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 11, wireType 0 =*/88).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -22134,6 +29202,14 @@
                             }
                         case 7: {
                                 message.mapEntry = reader.bool();
+                                break;
+                            }
+                        case 11: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 12: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -22193,6 +29269,14 @@
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         if (typeof message.mapEntry !== "boolean")
                             return "mapEntry: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -22230,6 +29314,13 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.mapEntry != null)
                         message.mapEntry = Boolean(object.mapEntry);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MessageOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MessageOptions.uninterpretedOption: array expected");
@@ -22268,6 +29359,8 @@
                         object.noStandardDescriptorAccessor = false;
                         object.deprecated = false;
                         object.mapEntry = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                         object[".google.api.resource"] = null;
                     }
                     if (message.messageSetWireFormat != null && message.hasOwnProperty("messageSetWireFormat"))
@@ -22278,6 +29371,10 @@
                         object.deprecated = message.deprecated;
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         object.mapEntry = message.mapEntry;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -22330,6 +29427,11 @@
                  * @property {boolean|null} [unverifiedLazy] FieldOptions unverifiedLazy
                  * @property {boolean|null} [deprecated] FieldOptions deprecated
                  * @property {boolean|null} [weak] FieldOptions weak
+                 * @property {boolean|null} [debugRedact] FieldOptions debugRedact
+                 * @property {google.protobuf.FieldOptions.OptionRetention|null} [retention] FieldOptions retention
+                 * @property {Array.<google.protobuf.FieldOptions.OptionTargetType>|null} [targets] FieldOptions targets
+                 * @property {Array.<google.protobuf.FieldOptions.IEditionDefault>|null} [editionDefaults] FieldOptions editionDefaults
+                 * @property {google.protobuf.IFeatureSet|null} [features] FieldOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FieldOptions uninterpretedOption
                  * @property {Array.<google.api.FieldBehavior>|null} [".google.api.fieldBehavior"] FieldOptions .google.api.fieldBehavior
                  * @property {google.api.IResourceReference|null} [".google.api.resourceReference"] FieldOptions .google.api.resourceReference
@@ -22344,6 +29446,8 @@
                  * @param {google.protobuf.IFieldOptions=} [properties] Properties to set
                  */
                 function FieldOptions(properties) {
+                    this.targets = [];
+                    this.editionDefaults = [];
                     this.uninterpretedOption = [];
                     this[".google.api.fieldBehavior"] = [];
                     if (properties)
@@ -22409,6 +29513,46 @@
                 FieldOptions.prototype.weak = false;
     
                 /**
+                 * FieldOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.debugRedact = false;
+    
+                /**
+                 * FieldOptions retention.
+                 * @member {google.protobuf.FieldOptions.OptionRetention} retention
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.retention = 0;
+    
+                /**
+                 * FieldOptions targets.
+                 * @member {Array.<google.protobuf.FieldOptions.OptionTargetType>} targets
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.targets = $util.emptyArray;
+    
+                /**
+                 * FieldOptions editionDefaults.
+                 * @member {Array.<google.protobuf.FieldOptions.IEditionDefault>} editionDefaults
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.editionDefaults = $util.emptyArray;
+    
+                /**
+                 * FieldOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.features = null;
+    
+                /**
                  * FieldOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.FieldOptions
@@ -22470,6 +29614,18 @@
                         writer.uint32(/* id 10, wireType 0 =*/80).bool(message.weak);
                     if (message.unverifiedLazy != null && Object.hasOwnProperty.call(message, "unverifiedLazy"))
                         writer.uint32(/* id 15, wireType 0 =*/120).bool(message.unverifiedLazy);
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 16, wireType 0 =*/128).bool(message.debugRedact);
+                    if (message.retention != null && Object.hasOwnProperty.call(message, "retention"))
+                        writer.uint32(/* id 17, wireType 0 =*/136).int32(message.retention);
+                    if (message.targets != null && message.targets.length)
+                        for (var i = 0; i < message.targets.length; ++i)
+                            writer.uint32(/* id 19, wireType 0 =*/152).int32(message.targets[i]);
+                    if (message.editionDefaults != null && message.editionDefaults.length)
+                        for (var i = 0; i < message.editionDefaults.length; ++i)
+                            $root.google.protobuf.FieldOptions.EditionDefault.encode(message.editionDefaults[i], writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -22541,6 +29697,35 @@
                             }
                         case 10: {
                                 message.weak = reader.bool();
+                                break;
+                            }
+                        case 16: {
+                                message.debugRedact = reader.bool();
+                                break;
+                            }
+                        case 17: {
+                                message.retention = reader.int32();
+                                break;
+                            }
+                        case 19: {
+                                if (!(message.targets && message.targets.length))
+                                    message.targets = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.targets.push(reader.int32());
+                                } else
+                                    message.targets.push(reader.int32());
+                                break;
+                            }
+                        case 20: {
+                                if (!(message.editionDefaults && message.editionDefaults.length))
+                                    message.editionDefaults = [];
+                                message.editionDefaults.push($root.google.protobuf.FieldOptions.EditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 21: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -22632,6 +29817,52 @@
                     if (message.weak != null && message.hasOwnProperty("weak"))
                         if (typeof message.weak !== "boolean")
                             return "weak: boolean expected";
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        switch (message.retention) {
+                        default:
+                            return "retention: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.targets != null && message.hasOwnProperty("targets")) {
+                        if (!Array.isArray(message.targets))
+                            return "targets: array expected";
+                        for (var i = 0; i < message.targets.length; ++i)
+                            switch (message.targets[i]) {
+                            default:
+                                return "targets: enum value[] expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6:
+                            case 7:
+                            case 8:
+                            case 9:
+                                break;
+                            }
+                    }
+                    if (message.editionDefaults != null && message.hasOwnProperty("editionDefaults")) {
+                        if (!Array.isArray(message.editionDefaults))
+                            return "editionDefaults: array expected";
+                        for (var i = 0; i < message.editionDefaults.length; ++i) {
+                            var error = $root.google.protobuf.FieldOptions.EditionDefault.verify(message.editionDefaults[i]);
+                            if (error)
+                                return "editionDefaults." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -22656,6 +29887,7 @@
                             case 5:
                             case 6:
                             case 7:
+                            case 8:
                                 break;
                             }
                     }
@@ -22729,6 +29961,96 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.weak != null)
                         message.weak = Boolean(object.weak);
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
+                    switch (object.retention) {
+                    default:
+                        if (typeof object.retention === "number") {
+                            message.retention = object.retention;
+                            break;
+                        }
+                        break;
+                    case "RETENTION_UNKNOWN":
+                    case 0:
+                        message.retention = 0;
+                        break;
+                    case "RETENTION_RUNTIME":
+                    case 1:
+                        message.retention = 1;
+                        break;
+                    case "RETENTION_SOURCE":
+                    case 2:
+                        message.retention = 2;
+                        break;
+                    }
+                    if (object.targets) {
+                        if (!Array.isArray(object.targets))
+                            throw TypeError(".google.protobuf.FieldOptions.targets: array expected");
+                        message.targets = [];
+                        for (var i = 0; i < object.targets.length; ++i)
+                            switch (object.targets[i]) {
+                            default:
+                                if (typeof object.targets[i] === "number") {
+                                    message.targets[i] = object.targets[i];
+                                    break;
+                                }
+                            case "TARGET_TYPE_UNKNOWN":
+                            case 0:
+                                message.targets[i] = 0;
+                                break;
+                            case "TARGET_TYPE_FILE":
+                            case 1:
+                                message.targets[i] = 1;
+                                break;
+                            case "TARGET_TYPE_EXTENSION_RANGE":
+                            case 2:
+                                message.targets[i] = 2;
+                                break;
+                            case "TARGET_TYPE_MESSAGE":
+                            case 3:
+                                message.targets[i] = 3;
+                                break;
+                            case "TARGET_TYPE_FIELD":
+                            case 4:
+                                message.targets[i] = 4;
+                                break;
+                            case "TARGET_TYPE_ONEOF":
+                            case 5:
+                                message.targets[i] = 5;
+                                break;
+                            case "TARGET_TYPE_ENUM":
+                            case 6:
+                                message.targets[i] = 6;
+                                break;
+                            case "TARGET_TYPE_ENUM_ENTRY":
+                            case 7:
+                                message.targets[i] = 7;
+                                break;
+                            case "TARGET_TYPE_SERVICE":
+                            case 8:
+                                message.targets[i] = 8;
+                                break;
+                            case "TARGET_TYPE_METHOD":
+                            case 9:
+                                message.targets[i] = 9;
+                                break;
+                            }
+                    }
+                    if (object.editionDefaults) {
+                        if (!Array.isArray(object.editionDefaults))
+                            throw TypeError(".google.protobuf.FieldOptions.editionDefaults: array expected");
+                        message.editionDefaults = [];
+                        for (var i = 0; i < object.editionDefaults.length; ++i) {
+                            if (typeof object.editionDefaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FieldOptions.editionDefaults: object expected");
+                            message.editionDefaults[i] = $root.google.protobuf.FieldOptions.EditionDefault.fromObject(object.editionDefaults[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FieldOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FieldOptions.uninterpretedOption: array expected");
@@ -22782,6 +30104,10 @@
                             case 7:
                                 message[".google.api.fieldBehavior"][i] = 7;
                                 break;
+                            case "IDENTIFIER":
+                            case 8:
+                                message[".google.api.fieldBehavior"][i] = 8;
+                                break;
                             }
                     }
                     if (object[".google.api.resourceReference"] != null) {
@@ -22806,6 +30132,8 @@
                         options = {};
                     var object = {};
                     if (options.arrays || options.defaults) {
+                        object.targets = [];
+                        object.editionDefaults = [];
                         object.uninterpretedOption = [];
                         object[".google.api.fieldBehavior"] = [];
                     }
@@ -22817,6 +30145,9 @@
                         object.jstype = options.enums === String ? "JS_NORMAL" : 0;
                         object.weak = false;
                         object.unverifiedLazy = false;
+                        object.debugRedact = false;
+                        object.retention = options.enums === String ? "RETENTION_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.api.resourceReference"] = null;
                     }
                     if (message.ctype != null && message.hasOwnProperty("ctype"))
@@ -22833,6 +30164,22 @@
                         object.weak = message.weak;
                     if (message.unverifiedLazy != null && message.hasOwnProperty("unverifiedLazy"))
                         object.unverifiedLazy = message.unverifiedLazy;
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        object.retention = options.enums === String ? $root.google.protobuf.FieldOptions.OptionRetention[message.retention] === undefined ? message.retention : $root.google.protobuf.FieldOptions.OptionRetention[message.retention] : message.retention;
+                    if (message.targets && message.targets.length) {
+                        object.targets = [];
+                        for (var j = 0; j < message.targets.length; ++j)
+                            object.targets[j] = options.enums === String ? $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] === undefined ? message.targets[j] : $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] : message.targets[j];
+                    }
+                    if (message.editionDefaults && message.editionDefaults.length) {
+                        object.editionDefaults = [];
+                        for (var j = 0; j < message.editionDefaults.length; ++j)
+                            object.editionDefaults[j] = $root.google.protobuf.FieldOptions.EditionDefault.toObject(message.editionDefaults[j], options);
+                    }
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -22906,6 +30253,343 @@
                     return values;
                 })();
     
+                /**
+                 * OptionRetention enum.
+                 * @name google.protobuf.FieldOptions.OptionRetention
+                 * @enum {number}
+                 * @property {number} RETENTION_UNKNOWN=0 RETENTION_UNKNOWN value
+                 * @property {number} RETENTION_RUNTIME=1 RETENTION_RUNTIME value
+                 * @property {number} RETENTION_SOURCE=2 RETENTION_SOURCE value
+                 */
+                FieldOptions.OptionRetention = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "RETENTION_UNKNOWN"] = 0;
+                    values[valuesById[1] = "RETENTION_RUNTIME"] = 1;
+                    values[valuesById[2] = "RETENTION_SOURCE"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * OptionTargetType enum.
+                 * @name google.protobuf.FieldOptions.OptionTargetType
+                 * @enum {number}
+                 * @property {number} TARGET_TYPE_UNKNOWN=0 TARGET_TYPE_UNKNOWN value
+                 * @property {number} TARGET_TYPE_FILE=1 TARGET_TYPE_FILE value
+                 * @property {number} TARGET_TYPE_EXTENSION_RANGE=2 TARGET_TYPE_EXTENSION_RANGE value
+                 * @property {number} TARGET_TYPE_MESSAGE=3 TARGET_TYPE_MESSAGE value
+                 * @property {number} TARGET_TYPE_FIELD=4 TARGET_TYPE_FIELD value
+                 * @property {number} TARGET_TYPE_ONEOF=5 TARGET_TYPE_ONEOF value
+                 * @property {number} TARGET_TYPE_ENUM=6 TARGET_TYPE_ENUM value
+                 * @property {number} TARGET_TYPE_ENUM_ENTRY=7 TARGET_TYPE_ENUM_ENTRY value
+                 * @property {number} TARGET_TYPE_SERVICE=8 TARGET_TYPE_SERVICE value
+                 * @property {number} TARGET_TYPE_METHOD=9 TARGET_TYPE_METHOD value
+                 */
+                FieldOptions.OptionTargetType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "TARGET_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "TARGET_TYPE_FILE"] = 1;
+                    values[valuesById[2] = "TARGET_TYPE_EXTENSION_RANGE"] = 2;
+                    values[valuesById[3] = "TARGET_TYPE_MESSAGE"] = 3;
+                    values[valuesById[4] = "TARGET_TYPE_FIELD"] = 4;
+                    values[valuesById[5] = "TARGET_TYPE_ONEOF"] = 5;
+                    values[valuesById[6] = "TARGET_TYPE_ENUM"] = 6;
+                    values[valuesById[7] = "TARGET_TYPE_ENUM_ENTRY"] = 7;
+                    values[valuesById[8] = "TARGET_TYPE_SERVICE"] = 8;
+                    values[valuesById[9] = "TARGET_TYPE_METHOD"] = 9;
+                    return values;
+                })();
+    
+                FieldOptions.EditionDefault = (function() {
+    
+                    /**
+                     * Properties of an EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @interface IEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] EditionDefault edition
+                     * @property {string|null} [value] EditionDefault value
+                     */
+    
+                    /**
+                     * Constructs a new EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @classdesc Represents an EditionDefault.
+                     * @implements IEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     */
+                    function EditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * EditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * EditionDefault value.
+                     * @member {string} value
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.value = "";
+    
+                    /**
+                     * Creates a new EditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault instance
+                     */
+                    EditionDefault.create = function create(properties) {
+                        return new EditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.value);
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.value = reader.string();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an EditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    EditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            if (!$util.isString(message.value))
+                                return "value: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     */
+                    EditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FieldOptions.EditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.value != null)
+                            message.value = String(object.value);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.EditionDefault} message EditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    EditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.value = "";
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            object.value = message.value;
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this EditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    EditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for EditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    EditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FieldOptions.EditionDefault";
+                    };
+    
+                    return EditionDefault;
+                })();
+    
                 return FieldOptions;
             })();
     
@@ -22915,6 +30599,7 @@
                  * Properties of an OneofOptions.
                  * @memberof google.protobuf
                  * @interface IOneofOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] OneofOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] OneofOptions uninterpretedOption
                  */
     
@@ -22933,6 +30618,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * OneofOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.OneofOptions
+                 * @instance
+                 */
+                OneofOptions.prototype.features = null;
     
                 /**
                  * OneofOptions uninterpretedOption.
@@ -22966,6 +30659,8 @@
                 OneofOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -23003,6 +30698,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 1: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 999: {
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
@@ -23044,6 +30743,11 @@
                 OneofOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -23068,6 +30772,11 @@
                     if (object instanceof $root.google.protobuf.OneofOptions)
                         return object;
                     var message = new $root.google.protobuf.OneofOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.OneofOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.OneofOptions.uninterpretedOption: array expected");
@@ -23096,6 +30805,10 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
+                    if (options.defaults)
+                        object.features = null;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23141,6 +30854,8 @@
                  * @interface IEnumOptions
                  * @property {boolean|null} [allowAlias] EnumOptions allowAlias
                  * @property {boolean|null} [deprecated] EnumOptions deprecated
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] EnumOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumOptions uninterpretedOption
                  */
     
@@ -23175,6 +30890,22 @@
                  * @instance
                  */
                 EnumOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * EnumOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.features = null;
     
                 /**
                  * EnumOptions uninterpretedOption.
@@ -23212,6 +30943,10 @@
                         writer.uint32(/* id 2, wireType 0 =*/16).bool(message.allowAlias);
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -23255,6 +30990,14 @@
                             }
                         case 3: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 6: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 7: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -23304,6 +31047,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -23332,6 +31083,13 @@
                         message.allowAlias = Boolean(object.allowAlias);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumOptions.uninterpretedOption: array expected");
@@ -23363,11 +31121,17 @@
                     if (options.defaults) {
                         object.allowAlias = false;
                         object.deprecated = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                     }
                     if (message.allowAlias != null && message.hasOwnProperty("allowAlias"))
                         object.allowAlias = message.allowAlias;
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23412,6 +31176,8 @@
                  * @memberof google.protobuf
                  * @interface IEnumValueOptions
                  * @property {boolean|null} [deprecated] EnumValueOptions deprecated
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumValueOptions features
+                 * @property {boolean|null} [debugRedact] EnumValueOptions debugRedact
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumValueOptions uninterpretedOption
                  */
     
@@ -23438,6 +31204,22 @@
                  * @instance
                  */
                 EnumValueOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumValueOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.features = null;
+    
+                /**
+                 * EnumValueOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.debugRedact = false;
     
                 /**
                  * EnumValueOptions uninterpretedOption.
@@ -23473,6 +31255,10 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 1, wireType 0 =*/8).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.debugRedact);
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -23512,6 +31298,14 @@
                         switch (tag >>> 3) {
                         case 1: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 2: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.debugRedact = reader.bool();
                                 break;
                             }
                         case 999: {
@@ -23558,6 +31352,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -23584,6 +31386,13 @@
                     var message = new $root.google.protobuf.EnumValueOptions();
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumValueOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumValueOptions.uninterpretedOption: array expected");
@@ -23612,10 +31421,17 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
-                    if (options.defaults)
+                    if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
+                        object.debugRedact = false;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23659,6 +31475,7 @@
                  * Properties of a ServiceOptions.
                  * @memberof google.protobuf
                  * @interface IServiceOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] ServiceOptions features
                  * @property {boolean|null} [deprecated] ServiceOptions deprecated
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ServiceOptions uninterpretedOption
                  * @property {string|null} [".google.api.defaultHost"] ServiceOptions .google.api.defaultHost
@@ -23680,6 +31497,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * ServiceOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ServiceOptions
+                 * @instance
+                 */
+                ServiceOptions.prototype.features = null;
     
                 /**
                  * ServiceOptions deprecated.
@@ -23739,6 +31564,8 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 34, wireType 2 =*/274).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -23780,6 +31607,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 34: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 33: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -23833,6 +31664,11 @@
                 ServiceOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -23866,6 +31702,11 @@
                     if (object instanceof $root.google.protobuf.ServiceOptions)
                         return object;
                     var message = new $root.google.protobuf.ServiceOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ServiceOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.uninterpretedOption) {
@@ -23902,11 +31743,14 @@
                         object.uninterpretedOption = [];
                     if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
                         object[".google.api.defaultHost"] = "";
                         object[".google.api.oauthScopes"] = "";
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23956,6 +31800,7 @@
                  * @interface IMethodOptions
                  * @property {boolean|null} [deprecated] MethodOptions deprecated
                  * @property {google.protobuf.MethodOptions.IdempotencyLevel|null} [idempotencyLevel] MethodOptions idempotencyLevel
+                 * @property {google.protobuf.IFeatureSet|null} [features] MethodOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MethodOptions uninterpretedOption
                  * @property {google.api.IHttpRule|null} [".google.api.http"] MethodOptions .google.api.http
                  * @property {Array.<string>|null} [".google.api.methodSignature"] MethodOptions .google.api.methodSignature
@@ -23993,6 +31838,14 @@
                  * @instance
                  */
                 MethodOptions.prototype.idempotencyLevel = 0;
+    
+                /**
+                 * MethodOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MethodOptions
+                 * @instance
+                 */
+                MethodOptions.prototype.features = null;
     
                 /**
                  * MethodOptions uninterpretedOption.
@@ -24046,6 +31899,8 @@
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
                     if (message.idempotencyLevel != null && Object.hasOwnProperty.call(message, "idempotencyLevel"))
                         writer.uint32(/* id 34, wireType 0 =*/272).int32(message.idempotencyLevel);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 35, wireType 2 =*/282).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -24094,6 +31949,10 @@
                             }
                         case 34: {
                                 message.idempotencyLevel = reader.int32();
+                                break;
+                            }
+                        case 35: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -24159,6 +32018,11 @@
                         case 2:
                             break;
                         }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -24217,6 +32081,11 @@
                         message.idempotencyLevel = 2;
                         break;
                     }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MethodOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MethodOptions.uninterpretedOption: array expected");
@@ -24262,12 +32131,15 @@
                     if (options.defaults) {
                         object.deprecated = false;
                         object.idempotencyLevel = options.enums === String ? "IDEMPOTENCY_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.api.http"] = null;
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
                     if (message.idempotencyLevel != null && message.hasOwnProperty("idempotencyLevel"))
                         object.idempotencyLevel = options.enums === String ? $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] === undefined ? message.idempotencyLevel : $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] : message.idempotencyLevel;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -24954,6 +32826,1268 @@
                 })();
     
                 return UninterpretedOption;
+            })();
+    
+            protobuf.FeatureSet = (function() {
+    
+                /**
+                 * Properties of a FeatureSet.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSet
+                 * @property {google.protobuf.FeatureSet.FieldPresence|null} [fieldPresence] FeatureSet fieldPresence
+                 * @property {google.protobuf.FeatureSet.EnumType|null} [enumType] FeatureSet enumType
+                 * @property {google.protobuf.FeatureSet.RepeatedFieldEncoding|null} [repeatedFieldEncoding] FeatureSet repeatedFieldEncoding
+                 * @property {google.protobuf.FeatureSet.Utf8Validation|null} [utf8Validation] FeatureSet utf8Validation
+                 * @property {google.protobuf.FeatureSet.MessageEncoding|null} [messageEncoding] FeatureSet messageEncoding
+                 * @property {google.protobuf.FeatureSet.JsonFormat|null} [jsonFormat] FeatureSet jsonFormat
+                 */
+    
+                /**
+                 * Constructs a new FeatureSet.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSet.
+                 * @implements IFeatureSet
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 */
+                function FeatureSet(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSet fieldPresence.
+                 * @member {google.protobuf.FeatureSet.FieldPresence} fieldPresence
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.fieldPresence = 0;
+    
+                /**
+                 * FeatureSet enumType.
+                 * @member {google.protobuf.FeatureSet.EnumType} enumType
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.enumType = 0;
+    
+                /**
+                 * FeatureSet repeatedFieldEncoding.
+                 * @member {google.protobuf.FeatureSet.RepeatedFieldEncoding} repeatedFieldEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.repeatedFieldEncoding = 0;
+    
+                /**
+                 * FeatureSet utf8Validation.
+                 * @member {google.protobuf.FeatureSet.Utf8Validation} utf8Validation
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.utf8Validation = 0;
+    
+                /**
+                 * FeatureSet messageEncoding.
+                 * @member {google.protobuf.FeatureSet.MessageEncoding} messageEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.messageEncoding = 0;
+    
+                /**
+                 * FeatureSet jsonFormat.
+                 * @member {google.protobuf.FeatureSet.JsonFormat} jsonFormat
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.jsonFormat = 0;
+    
+                /**
+                 * Creates a new FeatureSet instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSet} FeatureSet instance
+                 */
+                FeatureSet.create = function create(properties) {
+                    return new FeatureSet(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.fieldPresence != null && Object.hasOwnProperty.call(message, "fieldPresence"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.fieldPresence);
+                    if (message.enumType != null && Object.hasOwnProperty.call(message, "enumType"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.enumType);
+                    if (message.repeatedFieldEncoding != null && Object.hasOwnProperty.call(message, "repeatedFieldEncoding"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.repeatedFieldEncoding);
+                    if (message.utf8Validation != null && Object.hasOwnProperty.call(message, "utf8Validation"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.utf8Validation);
+                    if (message.messageEncoding != null && Object.hasOwnProperty.call(message, "messageEncoding"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.messageEncoding);
+                    if (message.jsonFormat != null && Object.hasOwnProperty.call(message, "jsonFormat"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).int32(message.jsonFormat);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSet();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.fieldPresence = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.enumType = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.repeatedFieldEncoding = reader.int32();
+                                break;
+                            }
+                        case 4: {
+                                message.utf8Validation = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.messageEncoding = reader.int32();
+                                break;
+                            }
+                        case 6: {
+                                message.jsonFormat = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSet message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSet.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        switch (message.fieldPresence) {
+                        default:
+                            return "fieldPresence: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        switch (message.enumType) {
+                        default:
+                            return "enumType: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        switch (message.repeatedFieldEncoding) {
+                        default:
+                            return "repeatedFieldEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        switch (message.utf8Validation) {
+                        default:
+                            return "utf8Validation: enum value expected";
+                        case 0:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        switch (message.messageEncoding) {
+                        default:
+                            return "messageEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        switch (message.jsonFormat) {
+                        default:
+                            return "jsonFormat: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 */
+                FeatureSet.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSet)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSet();
+                    switch (object.fieldPresence) {
+                    default:
+                        if (typeof object.fieldPresence === "number") {
+                            message.fieldPresence = object.fieldPresence;
+                            break;
+                        }
+                        break;
+                    case "FIELD_PRESENCE_UNKNOWN":
+                    case 0:
+                        message.fieldPresence = 0;
+                        break;
+                    case "EXPLICIT":
+                    case 1:
+                        message.fieldPresence = 1;
+                        break;
+                    case "IMPLICIT":
+                    case 2:
+                        message.fieldPresence = 2;
+                        break;
+                    case "LEGACY_REQUIRED":
+                    case 3:
+                        message.fieldPresence = 3;
+                        break;
+                    }
+                    switch (object.enumType) {
+                    default:
+                        if (typeof object.enumType === "number") {
+                            message.enumType = object.enumType;
+                            break;
+                        }
+                        break;
+                    case "ENUM_TYPE_UNKNOWN":
+                    case 0:
+                        message.enumType = 0;
+                        break;
+                    case "OPEN":
+                    case 1:
+                        message.enumType = 1;
+                        break;
+                    case "CLOSED":
+                    case 2:
+                        message.enumType = 2;
+                        break;
+                    }
+                    switch (object.repeatedFieldEncoding) {
+                    default:
+                        if (typeof object.repeatedFieldEncoding === "number") {
+                            message.repeatedFieldEncoding = object.repeatedFieldEncoding;
+                            break;
+                        }
+                        break;
+                    case "REPEATED_FIELD_ENCODING_UNKNOWN":
+                    case 0:
+                        message.repeatedFieldEncoding = 0;
+                        break;
+                    case "PACKED":
+                    case 1:
+                        message.repeatedFieldEncoding = 1;
+                        break;
+                    case "EXPANDED":
+                    case 2:
+                        message.repeatedFieldEncoding = 2;
+                        break;
+                    }
+                    switch (object.utf8Validation) {
+                    default:
+                        if (typeof object.utf8Validation === "number") {
+                            message.utf8Validation = object.utf8Validation;
+                            break;
+                        }
+                        break;
+                    case "UTF8_VALIDATION_UNKNOWN":
+                    case 0:
+                        message.utf8Validation = 0;
+                        break;
+                    case "VERIFY":
+                    case 2:
+                        message.utf8Validation = 2;
+                        break;
+                    case "NONE":
+                    case 3:
+                        message.utf8Validation = 3;
+                        break;
+                    }
+                    switch (object.messageEncoding) {
+                    default:
+                        if (typeof object.messageEncoding === "number") {
+                            message.messageEncoding = object.messageEncoding;
+                            break;
+                        }
+                        break;
+                    case "MESSAGE_ENCODING_UNKNOWN":
+                    case 0:
+                        message.messageEncoding = 0;
+                        break;
+                    case "LENGTH_PREFIXED":
+                    case 1:
+                        message.messageEncoding = 1;
+                        break;
+                    case "DELIMITED":
+                    case 2:
+                        message.messageEncoding = 2;
+                        break;
+                    }
+                    switch (object.jsonFormat) {
+                    default:
+                        if (typeof object.jsonFormat === "number") {
+                            message.jsonFormat = object.jsonFormat;
+                            break;
+                        }
+                        break;
+                    case "JSON_FORMAT_UNKNOWN":
+                    case 0:
+                        message.jsonFormat = 0;
+                        break;
+                    case "ALLOW":
+                    case 1:
+                        message.jsonFormat = 1;
+                        break;
+                    case "LEGACY_BEST_EFFORT":
+                    case 2:
+                        message.jsonFormat = 2;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.FeatureSet} message FeatureSet
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSet.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.fieldPresence = options.enums === String ? "FIELD_PRESENCE_UNKNOWN" : 0;
+                        object.enumType = options.enums === String ? "ENUM_TYPE_UNKNOWN" : 0;
+                        object.repeatedFieldEncoding = options.enums === String ? "REPEATED_FIELD_ENCODING_UNKNOWN" : 0;
+                        object.utf8Validation = options.enums === String ? "UTF8_VALIDATION_UNKNOWN" : 0;
+                        object.messageEncoding = options.enums === String ? "MESSAGE_ENCODING_UNKNOWN" : 0;
+                        object.jsonFormat = options.enums === String ? "JSON_FORMAT_UNKNOWN" : 0;
+                    }
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        object.fieldPresence = options.enums === String ? $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] === undefined ? message.fieldPresence : $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] : message.fieldPresence;
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        object.enumType = options.enums === String ? $root.google.protobuf.FeatureSet.EnumType[message.enumType] === undefined ? message.enumType : $root.google.protobuf.FeatureSet.EnumType[message.enumType] : message.enumType;
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        object.repeatedFieldEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] === undefined ? message.repeatedFieldEncoding : $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] : message.repeatedFieldEncoding;
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        object.utf8Validation = options.enums === String ? $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] === undefined ? message.utf8Validation : $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] : message.utf8Validation;
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        object.messageEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] === undefined ? message.messageEncoding : $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] : message.messageEncoding;
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        object.jsonFormat = options.enums === String ? $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] === undefined ? message.jsonFormat : $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] : message.jsonFormat;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSet to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSet.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSet
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSet.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSet";
+                };
+    
+                /**
+                 * FieldPresence enum.
+                 * @name google.protobuf.FeatureSet.FieldPresence
+                 * @enum {number}
+                 * @property {number} FIELD_PRESENCE_UNKNOWN=0 FIELD_PRESENCE_UNKNOWN value
+                 * @property {number} EXPLICIT=1 EXPLICIT value
+                 * @property {number} IMPLICIT=2 IMPLICIT value
+                 * @property {number} LEGACY_REQUIRED=3 LEGACY_REQUIRED value
+                 */
+                FeatureSet.FieldPresence = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "FIELD_PRESENCE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "EXPLICIT"] = 1;
+                    values[valuesById[2] = "IMPLICIT"] = 2;
+                    values[valuesById[3] = "LEGACY_REQUIRED"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * EnumType enum.
+                 * @name google.protobuf.FeatureSet.EnumType
+                 * @enum {number}
+                 * @property {number} ENUM_TYPE_UNKNOWN=0 ENUM_TYPE_UNKNOWN value
+                 * @property {number} OPEN=1 OPEN value
+                 * @property {number} CLOSED=2 CLOSED value
+                 */
+                FeatureSet.EnumType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "ENUM_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "OPEN"] = 1;
+                    values[valuesById[2] = "CLOSED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * RepeatedFieldEncoding enum.
+                 * @name google.protobuf.FeatureSet.RepeatedFieldEncoding
+                 * @enum {number}
+                 * @property {number} REPEATED_FIELD_ENCODING_UNKNOWN=0 REPEATED_FIELD_ENCODING_UNKNOWN value
+                 * @property {number} PACKED=1 PACKED value
+                 * @property {number} EXPANDED=2 EXPANDED value
+                 */
+                FeatureSet.RepeatedFieldEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "REPEATED_FIELD_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "PACKED"] = 1;
+                    values[valuesById[2] = "EXPANDED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * Utf8Validation enum.
+                 * @name google.protobuf.FeatureSet.Utf8Validation
+                 * @enum {number}
+                 * @property {number} UTF8_VALIDATION_UNKNOWN=0 UTF8_VALIDATION_UNKNOWN value
+                 * @property {number} VERIFY=2 VERIFY value
+                 * @property {number} NONE=3 NONE value
+                 */
+                FeatureSet.Utf8Validation = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "UTF8_VALIDATION_UNKNOWN"] = 0;
+                    values[valuesById[2] = "VERIFY"] = 2;
+                    values[valuesById[3] = "NONE"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * MessageEncoding enum.
+                 * @name google.protobuf.FeatureSet.MessageEncoding
+                 * @enum {number}
+                 * @property {number} MESSAGE_ENCODING_UNKNOWN=0 MESSAGE_ENCODING_UNKNOWN value
+                 * @property {number} LENGTH_PREFIXED=1 LENGTH_PREFIXED value
+                 * @property {number} DELIMITED=2 DELIMITED value
+                 */
+                FeatureSet.MessageEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "MESSAGE_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "LENGTH_PREFIXED"] = 1;
+                    values[valuesById[2] = "DELIMITED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * JsonFormat enum.
+                 * @name google.protobuf.FeatureSet.JsonFormat
+                 * @enum {number}
+                 * @property {number} JSON_FORMAT_UNKNOWN=0 JSON_FORMAT_UNKNOWN value
+                 * @property {number} ALLOW=1 ALLOW value
+                 * @property {number} LEGACY_BEST_EFFORT=2 LEGACY_BEST_EFFORT value
+                 */
+                FeatureSet.JsonFormat = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "JSON_FORMAT_UNKNOWN"] = 0;
+                    values[valuesById[1] = "ALLOW"] = 1;
+                    values[valuesById[2] = "LEGACY_BEST_EFFORT"] = 2;
+                    return values;
+                })();
+    
+                return FeatureSet;
+            })();
+    
+            protobuf.FeatureSetDefaults = (function() {
+    
+                /**
+                 * Properties of a FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSetDefaults
+                 * @property {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>|null} [defaults] FeatureSetDefaults defaults
+                 * @property {google.protobuf.Edition|null} [minimumEdition] FeatureSetDefaults minimumEdition
+                 * @property {google.protobuf.Edition|null} [maximumEdition] FeatureSetDefaults maximumEdition
+                 */
+    
+                /**
+                 * Constructs a new FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSetDefaults.
+                 * @implements IFeatureSetDefaults
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 */
+                function FeatureSetDefaults(properties) {
+                    this.defaults = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSetDefaults defaults.
+                 * @member {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>} defaults
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.defaults = $util.emptyArray;
+    
+                /**
+                 * FeatureSetDefaults minimumEdition.
+                 * @member {google.protobuf.Edition} minimumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.minimumEdition = 0;
+    
+                /**
+                 * FeatureSetDefaults maximumEdition.
+                 * @member {google.protobuf.Edition} maximumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.maximumEdition = 0;
+    
+                /**
+                 * Creates a new FeatureSetDefaults instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults instance
+                 */
+                FeatureSetDefaults.create = function create(properties) {
+                    return new FeatureSetDefaults(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.defaults != null && message.defaults.length)
+                        for (var i = 0; i < message.defaults.length; ++i)
+                            $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.encode(message.defaults[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.minimumEdition != null && Object.hasOwnProperty.call(message, "minimumEdition"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.minimumEdition);
+                    if (message.maximumEdition != null && Object.hasOwnProperty.call(message, "maximumEdition"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.maximumEdition);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                if (!(message.defaults && message.defaults.length))
+                                    message.defaults = [];
+                                message.defaults.push($root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 4: {
+                                message.minimumEdition = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.maximumEdition = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSetDefaults message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSetDefaults.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.defaults != null && message.hasOwnProperty("defaults")) {
+                        if (!Array.isArray(message.defaults))
+                            return "defaults: array expected";
+                        for (var i = 0; i < message.defaults.length; ++i) {
+                            var error = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify(message.defaults[i]);
+                            if (error)
+                                return "defaults." + error;
+                        }
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        switch (message.minimumEdition) {
+                        default:
+                            return "minimumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        switch (message.maximumEdition) {
+                        default:
+                            return "maximumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 */
+                FeatureSetDefaults.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSetDefaults)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSetDefaults();
+                    if (object.defaults) {
+                        if (!Array.isArray(object.defaults))
+                            throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: array expected");
+                        message.defaults = [];
+                        for (var i = 0; i < object.defaults.length; ++i) {
+                            if (typeof object.defaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: object expected");
+                            message.defaults[i] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.fromObject(object.defaults[i]);
+                        }
+                    }
+                    switch (object.minimumEdition) {
+                    default:
+                        if (typeof object.minimumEdition === "number") {
+                            message.minimumEdition = object.minimumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.minimumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.minimumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.minimumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.minimumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.minimumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.minimumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.minimumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.minimumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.minimumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.minimumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.minimumEdition = 2147483647;
+                        break;
+                    }
+                    switch (object.maximumEdition) {
+                    default:
+                        if (typeof object.maximumEdition === "number") {
+                            message.maximumEdition = object.maximumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.maximumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.maximumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.maximumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.maximumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.maximumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.maximumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.maximumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.maximumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.maximumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.maximumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.maximumEdition = 2147483647;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.FeatureSetDefaults} message FeatureSetDefaults
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSetDefaults.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.defaults = [];
+                    if (options.defaults) {
+                        object.minimumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        object.maximumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                    }
+                    if (message.defaults && message.defaults.length) {
+                        object.defaults = [];
+                        for (var j = 0; j < message.defaults.length; ++j)
+                            object.defaults[j] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.toObject(message.defaults[j], options);
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        object.minimumEdition = options.enums === String ? $root.google.protobuf.Edition[message.minimumEdition] === undefined ? message.minimumEdition : $root.google.protobuf.Edition[message.minimumEdition] : message.minimumEdition;
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        object.maximumEdition = options.enums === String ? $root.google.protobuf.Edition[message.maximumEdition] === undefined ? message.maximumEdition : $root.google.protobuf.Edition[message.maximumEdition] : message.maximumEdition;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSetDefaults to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSetDefaults.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSetDefaults
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSetDefaults.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults";
+                };
+    
+                FeatureSetDefaults.FeatureSetEditionDefault = (function() {
+    
+                    /**
+                     * Properties of a FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @interface IFeatureSetEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] FeatureSetEditionDefault edition
+                     * @property {google.protobuf.IFeatureSet|null} [features] FeatureSetEditionDefault features
+                     */
+    
+                    /**
+                     * Constructs a new FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @classdesc Represents a FeatureSetEditionDefault.
+                     * @implements IFeatureSetEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     */
+                    function FeatureSetEditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * FeatureSetEditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * FeatureSetEditionDefault features.
+                     * @member {google.protobuf.IFeatureSet|null|undefined} features
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.features = null;
+    
+                    /**
+                     * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault instance
+                     */
+                    FeatureSetEditionDefault.create = function create(properties) {
+                        return new FeatureSetEditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                            $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a FeatureSetEditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    FeatureSetEditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.features != null && message.hasOwnProperty("features")) {
+                            var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                            if (error)
+                                return "features." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     */
+                    FeatureSetEditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.features != null) {
+                            if (typeof object.features !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.features: object expected");
+                            message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} message FeatureSetEditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    FeatureSetEditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.features = null;
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.features != null && message.hasOwnProperty("features"))
+                            object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this FeatureSetEditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    FeatureSetEditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for FeatureSetEditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    FeatureSetEditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault";
+                    };
+    
+                    return FeatureSetEditionDefault;
+                })();
+    
+                return FeatureSetDefaults;
             })();
     
             protobuf.SourceCodeInfo = (function() {

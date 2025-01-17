@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,6 +64,12 @@ message Rule {
 
     // Trigger for update document action.
     ON_UPDATE = 4;
+
+    // Trigger for create link action.
+    ON_CREATE_LINK = 7;
+
+    // Trigger for delete link action.
+    ON_DELETE_LINK = 8;
   }
 
   // Short description of the rule and its context.

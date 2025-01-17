@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function main(parent, requests) {
    *  Required. The request messages specifying the rows to update.
    *  A maximum of 500 rows can be modified in a single batch.
    */
-  // const requests = 1234
+  // const requests = [1,2,3,4]
 
   // Imports the Tables library
   const {TablesServiceClient} = require('@google/area120-tables').v1alpha1;

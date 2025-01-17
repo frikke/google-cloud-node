@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -166,18 +166,101 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1beta3.DocumentProcessorServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient
-          .servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client =
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'documentai.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient
-          .apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client =
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient
+            .servicePath;
+        assert.strictEqual(servicePath, 'documentai.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient
+            .apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'documentai.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client =
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient(
+          {universeDomain: 'example.com'}
+        );
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'documentai.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client =
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient(
+          {universe_domain: 'example.com'}
+        );
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'documentai.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'documentai.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient(
+              {universeDomain: 'configured.example.com'}
+            );
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'documentai.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient(
+          {universe_domain: 'example.com', universeDomain: 'example.net'}
+        );
+      });
     });
 
     it('has port', () => {
@@ -4050,9 +4133,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessorTypes.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4103,9 +4186,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessorTypes.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4156,9 +4239,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessorTypes.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4200,9 +4283,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessorTypes.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -4400,9 +4483,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessors.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4453,9 +4536,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessors.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4505,9 +4588,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessors.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4549,9 +4632,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listProcessors.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -5129,9 +5212,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listEvaluations.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -5182,9 +5265,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listEvaluations.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -5235,9 +5318,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listEvaluations.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -5279,9 +5362,9 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
       assert(
         (client.descriptors.page.listEvaluations.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -5838,6 +5921,140 @@ describe('v1beta3.DocumentProcessorServiceClient', () => {
   });
 
   describe('Path templates', () => {
+    describe('dataset', () => {
+      const fakePath = '/rendered/path/dataset';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        processor: 'processorValue',
+      };
+      const client =
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      client.pathTemplates.datasetPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.datasetPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('datasetPath', () => {
+        const result = client.datasetPath(
+          'projectValue',
+          'locationValue',
+          'processorValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.datasetPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromDatasetName', () => {
+        const result = client.matchProjectFromDatasetName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.datasetPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromDatasetName', () => {
+        const result = client.matchLocationFromDatasetName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.datasetPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchProcessorFromDatasetName', () => {
+        const result = client.matchProcessorFromDatasetName(fakePath);
+        assert.strictEqual(result, 'processorValue');
+        assert(
+          (client.pathTemplates.datasetPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('datasetSchema', () => {
+      const fakePath = '/rendered/path/datasetSchema';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        processor: 'processorValue',
+      };
+      const client =
+        new documentprocessorserviceModule.v1beta3.DocumentProcessorServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      client.pathTemplates.datasetSchemaPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.datasetSchemaPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('datasetSchemaPath', () => {
+        const result = client.datasetSchemaPath(
+          'projectValue',
+          'locationValue',
+          'processorValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.datasetSchemaPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromDatasetSchemaName', () => {
+        const result = client.matchProjectFromDatasetSchemaName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.datasetSchemaPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromDatasetSchemaName', () => {
+        const result = client.matchLocationFromDatasetSchemaName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.datasetSchemaPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchProcessorFromDatasetSchemaName', () => {
+        const result = client.matchProcessorFromDatasetSchemaName(fakePath);
+        assert.strictEqual(result, 'processorValue');
+        assert(
+          (client.pathTemplates.datasetSchemaPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('evaluation', () => {
       const fakePath = '/rendered/path/evaluation';
       const expectedParameters = {

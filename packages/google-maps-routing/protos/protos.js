@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -3021,247 +3021,6 @@
                 return ListValue;
             })();
     
-            protobuf.Duration = (function() {
-    
-                /**
-                 * Properties of a Duration.
-                 * @memberof google.protobuf
-                 * @interface IDuration
-                 * @property {number|Long|null} [seconds] Duration seconds
-                 * @property {number|null} [nanos] Duration nanos
-                 */
-    
-                /**
-                 * Constructs a new Duration.
-                 * @memberof google.protobuf
-                 * @classdesc Represents a Duration.
-                 * @implements IDuration
-                 * @constructor
-                 * @param {google.protobuf.IDuration=} [properties] Properties to set
-                 */
-                function Duration(properties) {
-                    if (properties)
-                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                            if (properties[keys[i]] != null)
-                                this[keys[i]] = properties[keys[i]];
-                }
-    
-                /**
-                 * Duration seconds.
-                 * @member {number|Long} seconds
-                 * @memberof google.protobuf.Duration
-                 * @instance
-                 */
-                Duration.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-    
-                /**
-                 * Duration nanos.
-                 * @member {number} nanos
-                 * @memberof google.protobuf.Duration
-                 * @instance
-                 */
-                Duration.prototype.nanos = 0;
-    
-                /**
-                 * Creates a new Duration instance using the specified properties.
-                 * @function create
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {google.protobuf.IDuration=} [properties] Properties to set
-                 * @returns {google.protobuf.Duration} Duration instance
-                 */
-                Duration.create = function create(properties) {
-                    return new Duration(properties);
-                };
-    
-                /**
-                 * Encodes the specified Duration message. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
-                 * @function encode
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {google.protobuf.IDuration} message Duration message or plain object to encode
-                 * @param {$protobuf.Writer} [writer] Writer to encode to
-                 * @returns {$protobuf.Writer} Writer
-                 */
-                Duration.encode = function encode(message, writer) {
-                    if (!writer)
-                        writer = $Writer.create();
-                    if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds"))
-                        writer.uint32(/* id 1, wireType 0 =*/8).int64(message.seconds);
-                    if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos"))
-                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.nanos);
-                    return writer;
-                };
-    
-                /**
-                 * Encodes the specified Duration message, length delimited. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
-                 * @function encodeDelimited
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {google.protobuf.IDuration} message Duration message or plain object to encode
-                 * @param {$protobuf.Writer} [writer] Writer to encode to
-                 * @returns {$protobuf.Writer} Writer
-                 */
-                Duration.encodeDelimited = function encodeDelimited(message, writer) {
-                    return this.encode(message, writer).ldelim();
-                };
-    
-                /**
-                 * Decodes a Duration message from the specified reader or buffer.
-                 * @function decode
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                 * @param {number} [length] Message length if known beforehand
-                 * @returns {google.protobuf.Duration} Duration
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                Duration.decode = function decode(reader, length) {
-                    if (!(reader instanceof $Reader))
-                        reader = $Reader.create(reader);
-                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Duration();
-                    while (reader.pos < end) {
-                        var tag = reader.uint32();
-                        switch (tag >>> 3) {
-                        case 1: {
-                                message.seconds = reader.int64();
-                                break;
-                            }
-                        case 2: {
-                                message.nanos = reader.int32();
-                                break;
-                            }
-                        default:
-                            reader.skipType(tag & 7);
-                            break;
-                        }
-                    }
-                    return message;
-                };
-    
-                /**
-                 * Decodes a Duration message from the specified reader or buffer, length delimited.
-                 * @function decodeDelimited
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                 * @returns {google.protobuf.Duration} Duration
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                Duration.decodeDelimited = function decodeDelimited(reader) {
-                    if (!(reader instanceof $Reader))
-                        reader = new $Reader(reader);
-                    return this.decode(reader, reader.uint32());
-                };
-    
-                /**
-                 * Verifies a Duration message.
-                 * @function verify
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {Object.<string,*>} message Plain object to verify
-                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                 */
-                Duration.verify = function verify(message) {
-                    if (typeof message !== "object" || message === null)
-                        return "object expected";
-                    if (message.seconds != null && message.hasOwnProperty("seconds"))
-                        if (!$util.isInteger(message.seconds) && !(message.seconds && $util.isInteger(message.seconds.low) && $util.isInteger(message.seconds.high)))
-                            return "seconds: integer|Long expected";
-                    if (message.nanos != null && message.hasOwnProperty("nanos"))
-                        if (!$util.isInteger(message.nanos))
-                            return "nanos: integer expected";
-                    return null;
-                };
-    
-                /**
-                 * Creates a Duration message from a plain object. Also converts values to their respective internal types.
-                 * @function fromObject
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {Object.<string,*>} object Plain object
-                 * @returns {google.protobuf.Duration} Duration
-                 */
-                Duration.fromObject = function fromObject(object) {
-                    if (object instanceof $root.google.protobuf.Duration)
-                        return object;
-                    var message = new $root.google.protobuf.Duration();
-                    if (object.seconds != null)
-                        if ($util.Long)
-                            (message.seconds = $util.Long.fromValue(object.seconds)).unsigned = false;
-                        else if (typeof object.seconds === "string")
-                            message.seconds = parseInt(object.seconds, 10);
-                        else if (typeof object.seconds === "number")
-                            message.seconds = object.seconds;
-                        else if (typeof object.seconds === "object")
-                            message.seconds = new $util.LongBits(object.seconds.low >>> 0, object.seconds.high >>> 0).toNumber();
-                    if (object.nanos != null)
-                        message.nanos = object.nanos | 0;
-                    return message;
-                };
-    
-                /**
-                 * Creates a plain object from a Duration message. Also converts values to other types if specified.
-                 * @function toObject
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {google.protobuf.Duration} message Duration
-                 * @param {$protobuf.IConversionOptions} [options] Conversion options
-                 * @returns {Object.<string,*>} Plain object
-                 */
-                Duration.toObject = function toObject(message, options) {
-                    if (!options)
-                        options = {};
-                    var object = {};
-                    if (options.defaults) {
-                        if ($util.Long) {
-                            var long = new $util.Long(0, 0, false);
-                            object.seconds = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                        } else
-                            object.seconds = options.longs === String ? "0" : 0;
-                        object.nanos = 0;
-                    }
-                    if (message.seconds != null && message.hasOwnProperty("seconds"))
-                        if (typeof message.seconds === "number")
-                            object.seconds = options.longs === String ? String(message.seconds) : message.seconds;
-                        else
-                            object.seconds = options.longs === String ? $util.Long.prototype.toString.call(message.seconds) : options.longs === Number ? new $util.LongBits(message.seconds.low >>> 0, message.seconds.high >>> 0).toNumber() : message.seconds;
-                    if (message.nanos != null && message.hasOwnProperty("nanos"))
-                        object.nanos = message.nanos;
-                    return object;
-                };
-    
-                /**
-                 * Converts this Duration to JSON.
-                 * @function toJSON
-                 * @memberof google.protobuf.Duration
-                 * @instance
-                 * @returns {Object.<string,*>} JSON object
-                 */
-                Duration.prototype.toJSON = function toJSON() {
-                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                };
-    
-                /**
-                 * Gets the default type url for Duration
-                 * @function getTypeUrl
-                 * @memberof google.protobuf.Duration
-                 * @static
-                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-                 * @returns {string} The default type url
-                 */
-                Duration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                    if (typeUrlPrefix === undefined) {
-                        typeUrlPrefix = "type.googleapis.com";
-                    }
-                    return typeUrlPrefix + "/google.protobuf.Duration";
-                };
-    
-                return Duration;
-            })();
-    
             protobuf.FileDescriptorSet = (function() {
     
                 /**
@@ -3486,6 +3245,38 @@
                 return FileDescriptorSet;
             })();
     
+            /**
+             * Edition enum.
+             * @name google.protobuf.Edition
+             * @enum {number}
+             * @property {number} EDITION_UNKNOWN=0 EDITION_UNKNOWN value
+             * @property {number} EDITION_PROTO2=998 EDITION_PROTO2 value
+             * @property {number} EDITION_PROTO3=999 EDITION_PROTO3 value
+             * @property {number} EDITION_2023=1000 EDITION_2023 value
+             * @property {number} EDITION_2024=1001 EDITION_2024 value
+             * @property {number} EDITION_1_TEST_ONLY=1 EDITION_1_TEST_ONLY value
+             * @property {number} EDITION_2_TEST_ONLY=2 EDITION_2_TEST_ONLY value
+             * @property {number} EDITION_99997_TEST_ONLY=99997 EDITION_99997_TEST_ONLY value
+             * @property {number} EDITION_99998_TEST_ONLY=99998 EDITION_99998_TEST_ONLY value
+             * @property {number} EDITION_99999_TEST_ONLY=99999 EDITION_99999_TEST_ONLY value
+             * @property {number} EDITION_MAX=2147483647 EDITION_MAX value
+             */
+            protobuf.Edition = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "EDITION_UNKNOWN"] = 0;
+                values[valuesById[998] = "EDITION_PROTO2"] = 998;
+                values[valuesById[999] = "EDITION_PROTO3"] = 999;
+                values[valuesById[1000] = "EDITION_2023"] = 1000;
+                values[valuesById[1001] = "EDITION_2024"] = 1001;
+                values[valuesById[1] = "EDITION_1_TEST_ONLY"] = 1;
+                values[valuesById[2] = "EDITION_2_TEST_ONLY"] = 2;
+                values[valuesById[99997] = "EDITION_99997_TEST_ONLY"] = 99997;
+                values[valuesById[99998] = "EDITION_99998_TEST_ONLY"] = 99998;
+                values[valuesById[99999] = "EDITION_99999_TEST_ONLY"] = 99999;
+                values[valuesById[2147483647] = "EDITION_MAX"] = 2147483647;
+                return values;
+            })();
+    
             protobuf.FileDescriptorProto = (function() {
     
                 /**
@@ -3504,7 +3295,7 @@
                  * @property {google.protobuf.IFileOptions|null} [options] FileDescriptorProto options
                  * @property {google.protobuf.ISourceCodeInfo|null} [sourceCodeInfo] FileDescriptorProto sourceCodeInfo
                  * @property {string|null} [syntax] FileDescriptorProto syntax
-                 * @property {string|null} [edition] FileDescriptorProto edition
+                 * @property {google.protobuf.Edition|null} [edition] FileDescriptorProto edition
                  */
     
                 /**
@@ -3627,11 +3418,11 @@
     
                 /**
                  * FileDescriptorProto edition.
-                 * @member {string} edition
+                 * @member {google.protobuf.Edition} edition
                  * @memberof google.protobuf.FileDescriptorProto
                  * @instance
                  */
-                FileDescriptorProto.prototype.edition = "";
+                FileDescriptorProto.prototype.edition = 0;
     
                 /**
                  * Creates a new FileDescriptorProto instance using the specified properties.
@@ -3689,7 +3480,7 @@
                     if (message.syntax != null && Object.hasOwnProperty.call(message, "syntax"))
                         writer.uint32(/* id 12, wireType 2 =*/98).string(message.syntax);
                     if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
-                        writer.uint32(/* id 13, wireType 2 =*/106).string(message.edition);
+                        writer.uint32(/* id 14, wireType 0 =*/112).int32(message.edition);
                     return writer;
                 };
     
@@ -3796,8 +3587,8 @@
                                 message.syntax = reader.string();
                                 break;
                             }
-                        case 13: {
-                                message.edition = reader.string();
+                        case 14: {
+                                message.edition = reader.int32();
                                 break;
                             }
                         default:
@@ -3912,8 +3703,22 @@
                         if (!$util.isString(message.syntax))
                             return "syntax: string expected";
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        if (!$util.isString(message.edition))
-                            return "edition: string expected";
+                        switch (message.edition) {
+                        default:
+                            return "edition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
                     return null;
                 };
     
@@ -4006,8 +3811,58 @@
                     }
                     if (object.syntax != null)
                         message.syntax = String(object.syntax);
-                    if (object.edition != null)
-                        message.edition = String(object.edition);
+                    switch (object.edition) {
+                    default:
+                        if (typeof object.edition === "number") {
+                            message.edition = object.edition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.edition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.edition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.edition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.edition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.edition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.edition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.edition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.edition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.edition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.edition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.edition = 2147483647;
+                        break;
+                    }
                     return message;
                 };
     
@@ -4039,7 +3894,7 @@
                         object.options = null;
                         object.sourceCodeInfo = null;
                         object.syntax = "";
-                        object.edition = "";
+                        object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
                     }
                     if (message.name != null && message.hasOwnProperty("name"))
                         object.name = message.name;
@@ -4087,7 +3942,7 @@
                     if (message.syntax != null && message.hasOwnProperty("syntax"))
                         object.syntax = message.syntax;
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        object.edition = message.edition;
+                        object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
                     return object;
                 };
     
@@ -5190,6 +5045,9 @@
                  * @memberof google.protobuf
                  * @interface IExtensionRangeOptions
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ExtensionRangeOptions uninterpretedOption
+                 * @property {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>|null} [declaration] ExtensionRangeOptions declaration
+                 * @property {google.protobuf.IFeatureSet|null} [features] ExtensionRangeOptions features
+                 * @property {google.protobuf.ExtensionRangeOptions.VerificationState|null} [verification] ExtensionRangeOptions verification
                  */
     
                 /**
@@ -5202,6 +5060,7 @@
                  */
                 function ExtensionRangeOptions(properties) {
                     this.uninterpretedOption = [];
+                    this.declaration = [];
                     if (properties)
                         for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                             if (properties[keys[i]] != null)
@@ -5215,6 +5074,30 @@
                  * @instance
                  */
                 ExtensionRangeOptions.prototype.uninterpretedOption = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions declaration.
+                 * @member {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>} declaration
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.declaration = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.features = null;
+    
+                /**
+                 * ExtensionRangeOptions verification.
+                 * @member {google.protobuf.ExtensionRangeOptions.VerificationState} verification
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.verification = 1;
     
                 /**
                  * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -5240,6 +5123,13 @@
                 ExtensionRangeOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.declaration != null && message.declaration.length)
+                        for (var i = 0; i < message.declaration.length; ++i)
+                            $root.google.protobuf.ExtensionRangeOptions.Declaration.encode(message.declaration[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.verification != null && Object.hasOwnProperty.call(message, "verification"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.verification);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -5281,6 +5171,20 @@
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
                                 message.uninterpretedOption.push($root.google.protobuf.UninterpretedOption.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.declaration && message.declaration.length))
+                                    message.declaration = [];
+                                message.declaration.push($root.google.protobuf.ExtensionRangeOptions.Declaration.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.verification = reader.int32();
                                 break;
                             }
                         default:
@@ -5327,6 +5231,28 @@
                                 return "uninterpretedOption." + error;
                         }
                     }
+                    if (message.declaration != null && message.hasOwnProperty("declaration")) {
+                        if (!Array.isArray(message.declaration))
+                            return "declaration: array expected";
+                        for (var i = 0; i < message.declaration.length; ++i) {
+                            var error = $root.google.protobuf.ExtensionRangeOptions.Declaration.verify(message.declaration[i]);
+                            if (error)
+                                return "declaration." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        switch (message.verification) {
+                        default:
+                            return "verification: enum value expected";
+                        case 0:
+                        case 1:
+                            break;
+                        }
                     return null;
                 };
     
@@ -5352,6 +5278,37 @@
                             message.uninterpretedOption[i] = $root.google.protobuf.UninterpretedOption.fromObject(object.uninterpretedOption[i]);
                         }
                     }
+                    if (object.declaration) {
+                        if (!Array.isArray(object.declaration))
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: array expected");
+                        message.declaration = [];
+                        for (var i = 0; i < object.declaration.length; ++i) {
+                            if (typeof object.declaration[i] !== "object")
+                                throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: object expected");
+                            message.declaration[i] = $root.google.protobuf.ExtensionRangeOptions.Declaration.fromObject(object.declaration[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    switch (object.verification) {
+                    case "DECLARATION":
+                    case 0:
+                        message.verification = 0;
+                        break;
+                    default:
+                        if (typeof object.verification === "number") {
+                            message.verification = object.verification;
+                            break;
+                        }
+                        break;
+                    case "UNVERIFIED":
+                    case 1:
+                        message.verification = 1;
+                        break;
+                    }
                     return message;
                 };
     
@@ -5368,8 +5325,23 @@
                     if (!options)
                         options = {};
                     var object = {};
-                    if (options.arrays || options.defaults)
+                    if (options.arrays || options.defaults) {
+                        object.declaration = [];
                         object.uninterpretedOption = [];
+                    }
+                    if (options.defaults) {
+                        object.verification = options.enums === String ? "UNVERIFIED" : 1;
+                        object.features = null;
+                    }
+                    if (message.declaration && message.declaration.length) {
+                        object.declaration = [];
+                        for (var j = 0; j < message.declaration.length; ++j)
+                            object.declaration[j] = $root.google.protobuf.ExtensionRangeOptions.Declaration.toObject(message.declaration[j], options);
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        object.verification = options.enums === String ? $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] === undefined ? message.verification : $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] : message.verification;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -5403,6 +5375,316 @@
                     }
                     return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions";
                 };
+    
+                ExtensionRangeOptions.Declaration = (function() {
+    
+                    /**
+                     * Properties of a Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @interface IDeclaration
+                     * @property {number|null} [number] Declaration number
+                     * @property {string|null} [fullName] Declaration fullName
+                     * @property {string|null} [type] Declaration type
+                     * @property {boolean|null} [reserved] Declaration reserved
+                     * @property {boolean|null} [repeated] Declaration repeated
+                     */
+    
+                    /**
+                     * Constructs a new Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @classdesc Represents a Declaration.
+                     * @implements IDeclaration
+                     * @constructor
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     */
+                    function Declaration(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Declaration number.
+                     * @member {number} number
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.number = 0;
+    
+                    /**
+                     * Declaration fullName.
+                     * @member {string} fullName
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.fullName = "";
+    
+                    /**
+                     * Declaration type.
+                     * @member {string} type
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.type = "";
+    
+                    /**
+                     * Declaration reserved.
+                     * @member {boolean} reserved
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.reserved = false;
+    
+                    /**
+                     * Declaration repeated.
+                     * @member {boolean} repeated
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.repeated = false;
+    
+                    /**
+                     * Creates a new Declaration instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration instance
+                     */
+                    Declaration.create = function create(properties) {
+                        return new Declaration(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.number != null && Object.hasOwnProperty.call(message, "number"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.number);
+                        if (message.fullName != null && Object.hasOwnProperty.call(message, "fullName"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.fullName);
+                        if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
+                        if (message.reserved != null && Object.hasOwnProperty.call(message, "reserved"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).bool(message.reserved);
+                        if (message.repeated != null && Object.hasOwnProperty.call(message, "repeated"))
+                            writer.uint32(/* id 6, wireType 0 =*/48).bool(message.repeated);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.number = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.fullName = reader.string();
+                                    break;
+                                }
+                            case 3: {
+                                    message.type = reader.string();
+                                    break;
+                                }
+                            case 5: {
+                                    message.reserved = reader.bool();
+                                    break;
+                                }
+                            case 6: {
+                                    message.repeated = reader.bool();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a Declaration message.
+                     * @function verify
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    Declaration.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            if (!$util.isInteger(message.number))
+                                return "number: integer expected";
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            if (!$util.isString(message.fullName))
+                                return "fullName: string expected";
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            if (!$util.isString(message.type))
+                                return "type: string expected";
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            if (typeof message.reserved !== "boolean")
+                                return "reserved: boolean expected";
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            if (typeof message.repeated !== "boolean")
+                                return "repeated: boolean expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     */
+                    Declaration.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.ExtensionRangeOptions.Declaration)
+                            return object;
+                        var message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        if (object.number != null)
+                            message.number = object.number | 0;
+                        if (object.fullName != null)
+                            message.fullName = String(object.fullName);
+                        if (object.type != null)
+                            message.type = String(object.type);
+                        if (object.reserved != null)
+                            message.reserved = Boolean(object.reserved);
+                        if (object.repeated != null)
+                            message.repeated = Boolean(object.repeated);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.Declaration} message Declaration
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    Declaration.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.number = 0;
+                            object.fullName = "";
+                            object.type = "";
+                            object.reserved = false;
+                            object.repeated = false;
+                        }
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            object.number = message.number;
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            object.fullName = message.fullName;
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            object.type = message.type;
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            object.reserved = message.reserved;
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            object.repeated = message.repeated;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this Declaration to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    Declaration.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for Declaration
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    Declaration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions.Declaration";
+                    };
+    
+                    return Declaration;
+                })();
+    
+                /**
+                 * VerificationState enum.
+                 * @name google.protobuf.ExtensionRangeOptions.VerificationState
+                 * @enum {number}
+                 * @property {number} DECLARATION=0 DECLARATION value
+                 * @property {number} UNVERIFIED=1 UNVERIFIED value
+                 */
+                ExtensionRangeOptions.VerificationState = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "DECLARATION"] = 0;
+                    values[valuesById[1] = "UNVERIFIED"] = 1;
+                    return values;
+                })();
     
                 return ExtensionRangeOptions;
             })();
@@ -5699,8 +5981,8 @@
                         default:
                             return "label: enum value expected";
                         case 1:
-                        case 2:
                         case 3:
+                        case 2:
                             break;
                         }
                     if (message.type != null && message.hasOwnProperty("type"))
@@ -5780,13 +6062,13 @@
                     case 1:
                         message.label = 1;
                         break;
-                    case "LABEL_REQUIRED":
-                    case 2:
-                        message.label = 2;
-                        break;
                     case "LABEL_REPEATED":
                     case 3:
                         message.label = 3;
+                        break;
+                    case "LABEL_REQUIRED":
+                    case 2:
+                        message.label = 2;
                         break;
                     }
                     switch (object.type) {
@@ -6017,14 +6299,14 @@
                  * @name google.protobuf.FieldDescriptorProto.Label
                  * @enum {number}
                  * @property {number} LABEL_OPTIONAL=1 LABEL_OPTIONAL value
-                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  * @property {number} LABEL_REPEATED=3 LABEL_REPEATED value
+                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  */
                 FieldDescriptorProto.Label = (function() {
                     var valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[1] = "LABEL_OPTIONAL"] = 1;
-                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     values[valuesById[3] = "LABEL_REPEATED"] = 3;
+                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     return values;
                 })();
     
@@ -7723,7 +8005,6 @@
                  * @property {boolean|null} [ccGenericServices] FileOptions ccGenericServices
                  * @property {boolean|null} [javaGenericServices] FileOptions javaGenericServices
                  * @property {boolean|null} [pyGenericServices] FileOptions pyGenericServices
-                 * @property {boolean|null} [phpGenericServices] FileOptions phpGenericServices
                  * @property {boolean|null} [deprecated] FileOptions deprecated
                  * @property {boolean|null} [ccEnableArenas] FileOptions ccEnableArenas
                  * @property {string|null} [objcClassPrefix] FileOptions objcClassPrefix
@@ -7733,6 +8014,7 @@
                  * @property {string|null} [phpNamespace] FileOptions phpNamespace
                  * @property {string|null} [phpMetadataNamespace] FileOptions phpMetadataNamespace
                  * @property {string|null} [rubyPackage] FileOptions rubyPackage
+                 * @property {google.protobuf.IFeatureSet|null} [features] FileOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FileOptions uninterpretedOption
                  */
     
@@ -7833,14 +8115,6 @@
                 FileOptions.prototype.pyGenericServices = false;
     
                 /**
-                 * FileOptions phpGenericServices.
-                 * @member {boolean} phpGenericServices
-                 * @memberof google.protobuf.FileOptions
-                 * @instance
-                 */
-                FileOptions.prototype.phpGenericServices = false;
-    
-                /**
                  * FileOptions deprecated.
                  * @member {boolean} deprecated
                  * @memberof google.protobuf.FileOptions
@@ -7913,6 +8187,14 @@
                 FileOptions.prototype.rubyPackage = "";
     
                 /**
+                 * FileOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FileOptions
+                 * @instance
+                 */
+                FileOptions.prototype.features = null;
+    
+                /**
                  * FileOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.FileOptions
@@ -7978,12 +8260,12 @@
                         writer.uint32(/* id 40, wireType 2 =*/322).string(message.phpClassPrefix);
                     if (message.phpNamespace != null && Object.hasOwnProperty.call(message, "phpNamespace"))
                         writer.uint32(/* id 41, wireType 2 =*/330).string(message.phpNamespace);
-                    if (message.phpGenericServices != null && Object.hasOwnProperty.call(message, "phpGenericServices"))
-                        writer.uint32(/* id 42, wireType 0 =*/336).bool(message.phpGenericServices);
                     if (message.phpMetadataNamespace != null && Object.hasOwnProperty.call(message, "phpMetadataNamespace"))
                         writer.uint32(/* id 44, wireType 2 =*/354).string(message.phpMetadataNamespace);
                     if (message.rubyPackage != null && Object.hasOwnProperty.call(message, "rubyPackage"))
                         writer.uint32(/* id 45, wireType 2 =*/362).string(message.rubyPackage);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -8061,10 +8343,6 @@
                                 message.pyGenericServices = reader.bool();
                                 break;
                             }
-                        case 42: {
-                                message.phpGenericServices = reader.bool();
-                                break;
-                            }
                         case 23: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -8099,6 +8377,10 @@
                             }
                         case 45: {
                                 message.rubyPackage = reader.string();
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -8178,9 +8460,6 @@
                     if (message.pyGenericServices != null && message.hasOwnProperty("pyGenericServices"))
                         if (typeof message.pyGenericServices !== "boolean")
                             return "pyGenericServices: boolean expected";
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        if (typeof message.phpGenericServices !== "boolean")
-                            return "phpGenericServices: boolean expected";
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -8208,6 +8487,11 @@
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         if (!$util.isString(message.rubyPackage))
                             return "rubyPackage: string expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -8270,8 +8554,6 @@
                         message.javaGenericServices = Boolean(object.javaGenericServices);
                     if (object.pyGenericServices != null)
                         message.pyGenericServices = Boolean(object.pyGenericServices);
-                    if (object.phpGenericServices != null)
-                        message.phpGenericServices = Boolean(object.phpGenericServices);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.ccEnableArenas != null)
@@ -8290,6 +8572,11 @@
                         message.phpMetadataNamespace = String(object.phpMetadataNamespace);
                     if (object.rubyPackage != null)
                         message.rubyPackage = String(object.rubyPackage);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FileOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FileOptions.uninterpretedOption: array expected");
@@ -8336,9 +8623,9 @@
                         object.swiftPrefix = "";
                         object.phpClassPrefix = "";
                         object.phpNamespace = "";
-                        object.phpGenericServices = false;
                         object.phpMetadataNamespace = "";
                         object.rubyPackage = "";
+                        object.features = null;
                     }
                     if (message.javaPackage != null && message.hasOwnProperty("javaPackage"))
                         object.javaPackage = message.javaPackage;
@@ -8374,12 +8661,12 @@
                         object.phpClassPrefix = message.phpClassPrefix;
                     if (message.phpNamespace != null && message.hasOwnProperty("phpNamespace"))
                         object.phpNamespace = message.phpNamespace;
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        object.phpGenericServices = message.phpGenericServices;
                     if (message.phpMetadataNamespace != null && message.hasOwnProperty("phpMetadataNamespace"))
                         object.phpMetadataNamespace = message.phpMetadataNamespace;
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         object.rubyPackage = message.rubyPackage;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -8443,6 +8730,8 @@
                  * @property {boolean|null} [noStandardDescriptorAccessor] MessageOptions noStandardDescriptorAccessor
                  * @property {boolean|null} [deprecated] MessageOptions deprecated
                  * @property {boolean|null} [mapEntry] MessageOptions mapEntry
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] MessageOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] MessageOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MessageOptions uninterpretedOption
                  */
     
@@ -8495,6 +8784,22 @@
                 MessageOptions.prototype.mapEntry = false;
     
                 /**
+                 * MessageOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * MessageOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.features = null;
+    
+                /**
                  * MessageOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.MessageOptions
@@ -8534,6 +8839,10 @@
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
                     if (message.mapEntry != null && Object.hasOwnProperty.call(message, "mapEntry"))
                         writer.uint32(/* id 7, wireType 0 =*/56).bool(message.mapEntry);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 11, wireType 0 =*/88).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -8585,6 +8894,14 @@
                             }
                         case 7: {
                                 message.mapEntry = reader.bool();
+                                break;
+                            }
+                        case 11: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 12: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -8640,6 +8957,14 @@
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         if (typeof message.mapEntry !== "boolean")
                             return "mapEntry: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -8672,6 +8997,13 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.mapEntry != null)
                         message.mapEntry = Boolean(object.mapEntry);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MessageOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MessageOptions.uninterpretedOption: array expected");
@@ -8705,6 +9037,8 @@
                         object.noStandardDescriptorAccessor = false;
                         object.deprecated = false;
                         object.mapEntry = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                     }
                     if (message.messageSetWireFormat != null && message.hasOwnProperty("messageSetWireFormat"))
                         object.messageSetWireFormat = message.messageSetWireFormat;
@@ -8714,6 +9048,10 @@
                         object.deprecated = message.deprecated;
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         object.mapEntry = message.mapEntry;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -8764,6 +9102,11 @@
                  * @property {boolean|null} [unverifiedLazy] FieldOptions unverifiedLazy
                  * @property {boolean|null} [deprecated] FieldOptions deprecated
                  * @property {boolean|null} [weak] FieldOptions weak
+                 * @property {boolean|null} [debugRedact] FieldOptions debugRedact
+                 * @property {google.protobuf.FieldOptions.OptionRetention|null} [retention] FieldOptions retention
+                 * @property {Array.<google.protobuf.FieldOptions.OptionTargetType>|null} [targets] FieldOptions targets
+                 * @property {Array.<google.protobuf.FieldOptions.IEditionDefault>|null} [editionDefaults] FieldOptions editionDefaults
+                 * @property {google.protobuf.IFeatureSet|null} [features] FieldOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FieldOptions uninterpretedOption
                  * @property {Array.<google.api.FieldBehavior>|null} [".google.api.fieldBehavior"] FieldOptions .google.api.fieldBehavior
                  */
@@ -8777,6 +9120,8 @@
                  * @param {google.protobuf.IFieldOptions=} [properties] Properties to set
                  */
                 function FieldOptions(properties) {
+                    this.targets = [];
+                    this.editionDefaults = [];
                     this.uninterpretedOption = [];
                     this[".google.api.fieldBehavior"] = [];
                     if (properties)
@@ -8842,6 +9187,46 @@
                 FieldOptions.prototype.weak = false;
     
                 /**
+                 * FieldOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.debugRedact = false;
+    
+                /**
+                 * FieldOptions retention.
+                 * @member {google.protobuf.FieldOptions.OptionRetention} retention
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.retention = 0;
+    
+                /**
+                 * FieldOptions targets.
+                 * @member {Array.<google.protobuf.FieldOptions.OptionTargetType>} targets
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.targets = $util.emptyArray;
+    
+                /**
+                 * FieldOptions editionDefaults.
+                 * @member {Array.<google.protobuf.FieldOptions.IEditionDefault>} editionDefaults
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.editionDefaults = $util.emptyArray;
+    
+                /**
+                 * FieldOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.features = null;
+    
+                /**
                  * FieldOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.FieldOptions
@@ -8895,6 +9280,18 @@
                         writer.uint32(/* id 10, wireType 0 =*/80).bool(message.weak);
                     if (message.unverifiedLazy != null && Object.hasOwnProperty.call(message, "unverifiedLazy"))
                         writer.uint32(/* id 15, wireType 0 =*/120).bool(message.unverifiedLazy);
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 16, wireType 0 =*/128).bool(message.debugRedact);
+                    if (message.retention != null && Object.hasOwnProperty.call(message, "retention"))
+                        writer.uint32(/* id 17, wireType 0 =*/136).int32(message.retention);
+                    if (message.targets != null && message.targets.length)
+                        for (var i = 0; i < message.targets.length; ++i)
+                            writer.uint32(/* id 19, wireType 0 =*/152).int32(message.targets[i]);
+                    if (message.editionDefaults != null && message.editionDefaults.length)
+                        for (var i = 0; i < message.editionDefaults.length; ++i)
+                            $root.google.protobuf.FieldOptions.EditionDefault.encode(message.editionDefaults[i], writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -8964,6 +9361,35 @@
                             }
                         case 10: {
                                 message.weak = reader.bool();
+                                break;
+                            }
+                        case 16: {
+                                message.debugRedact = reader.bool();
+                                break;
+                            }
+                        case 17: {
+                                message.retention = reader.int32();
+                                break;
+                            }
+                        case 19: {
+                                if (!(message.targets && message.targets.length))
+                                    message.targets = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.targets.push(reader.int32());
+                                } else
+                                    message.targets.push(reader.int32());
+                                break;
+                            }
+                        case 20: {
+                                if (!(message.editionDefaults && message.editionDefaults.length))
+                                    message.editionDefaults = [];
+                                message.editionDefaults.push($root.google.protobuf.FieldOptions.EditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 21: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -9051,6 +9477,52 @@
                     if (message.weak != null && message.hasOwnProperty("weak"))
                         if (typeof message.weak !== "boolean")
                             return "weak: boolean expected";
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        switch (message.retention) {
+                        default:
+                            return "retention: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.targets != null && message.hasOwnProperty("targets")) {
+                        if (!Array.isArray(message.targets))
+                            return "targets: array expected";
+                        for (var i = 0; i < message.targets.length; ++i)
+                            switch (message.targets[i]) {
+                            default:
+                                return "targets: enum value[] expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6:
+                            case 7:
+                            case 8:
+                            case 9:
+                                break;
+                            }
+                    }
+                    if (message.editionDefaults != null && message.hasOwnProperty("editionDefaults")) {
+                        if (!Array.isArray(message.editionDefaults))
+                            return "editionDefaults: array expected";
+                        for (var i = 0; i < message.editionDefaults.length; ++i) {
+                            var error = $root.google.protobuf.FieldOptions.EditionDefault.verify(message.editionDefaults[i]);
+                            if (error)
+                                return "editionDefaults." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -9075,6 +9547,7 @@
                             case 5:
                             case 6:
                             case 7:
+                            case 8:
                                 break;
                             }
                     }
@@ -9143,6 +9616,96 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.weak != null)
                         message.weak = Boolean(object.weak);
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
+                    switch (object.retention) {
+                    default:
+                        if (typeof object.retention === "number") {
+                            message.retention = object.retention;
+                            break;
+                        }
+                        break;
+                    case "RETENTION_UNKNOWN":
+                    case 0:
+                        message.retention = 0;
+                        break;
+                    case "RETENTION_RUNTIME":
+                    case 1:
+                        message.retention = 1;
+                        break;
+                    case "RETENTION_SOURCE":
+                    case 2:
+                        message.retention = 2;
+                        break;
+                    }
+                    if (object.targets) {
+                        if (!Array.isArray(object.targets))
+                            throw TypeError(".google.protobuf.FieldOptions.targets: array expected");
+                        message.targets = [];
+                        for (var i = 0; i < object.targets.length; ++i)
+                            switch (object.targets[i]) {
+                            default:
+                                if (typeof object.targets[i] === "number") {
+                                    message.targets[i] = object.targets[i];
+                                    break;
+                                }
+                            case "TARGET_TYPE_UNKNOWN":
+                            case 0:
+                                message.targets[i] = 0;
+                                break;
+                            case "TARGET_TYPE_FILE":
+                            case 1:
+                                message.targets[i] = 1;
+                                break;
+                            case "TARGET_TYPE_EXTENSION_RANGE":
+                            case 2:
+                                message.targets[i] = 2;
+                                break;
+                            case "TARGET_TYPE_MESSAGE":
+                            case 3:
+                                message.targets[i] = 3;
+                                break;
+                            case "TARGET_TYPE_FIELD":
+                            case 4:
+                                message.targets[i] = 4;
+                                break;
+                            case "TARGET_TYPE_ONEOF":
+                            case 5:
+                                message.targets[i] = 5;
+                                break;
+                            case "TARGET_TYPE_ENUM":
+                            case 6:
+                                message.targets[i] = 6;
+                                break;
+                            case "TARGET_TYPE_ENUM_ENTRY":
+                            case 7:
+                                message.targets[i] = 7;
+                                break;
+                            case "TARGET_TYPE_SERVICE":
+                            case 8:
+                                message.targets[i] = 8;
+                                break;
+                            case "TARGET_TYPE_METHOD":
+                            case 9:
+                                message.targets[i] = 9;
+                                break;
+                            }
+                    }
+                    if (object.editionDefaults) {
+                        if (!Array.isArray(object.editionDefaults))
+                            throw TypeError(".google.protobuf.FieldOptions.editionDefaults: array expected");
+                        message.editionDefaults = [];
+                        for (var i = 0; i < object.editionDefaults.length; ++i) {
+                            if (typeof object.editionDefaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FieldOptions.editionDefaults: object expected");
+                            message.editionDefaults[i] = $root.google.protobuf.FieldOptions.EditionDefault.fromObject(object.editionDefaults[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FieldOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FieldOptions.uninterpretedOption: array expected");
@@ -9196,6 +9759,10 @@
                             case 7:
                                 message[".google.api.fieldBehavior"][i] = 7;
                                 break;
+                            case "IDENTIFIER":
+                            case 8:
+                                message[".google.api.fieldBehavior"][i] = 8;
+                                break;
                             }
                     }
                     return message;
@@ -9215,6 +9782,8 @@
                         options = {};
                     var object = {};
                     if (options.arrays || options.defaults) {
+                        object.targets = [];
+                        object.editionDefaults = [];
                         object.uninterpretedOption = [];
                         object[".google.api.fieldBehavior"] = [];
                     }
@@ -9226,6 +9795,9 @@
                         object.jstype = options.enums === String ? "JS_NORMAL" : 0;
                         object.weak = false;
                         object.unverifiedLazy = false;
+                        object.debugRedact = false;
+                        object.retention = options.enums === String ? "RETENTION_UNKNOWN" : 0;
+                        object.features = null;
                     }
                     if (message.ctype != null && message.hasOwnProperty("ctype"))
                         object.ctype = options.enums === String ? $root.google.protobuf.FieldOptions.CType[message.ctype] === undefined ? message.ctype : $root.google.protobuf.FieldOptions.CType[message.ctype] : message.ctype;
@@ -9241,6 +9813,22 @@
                         object.weak = message.weak;
                     if (message.unverifiedLazy != null && message.hasOwnProperty("unverifiedLazy"))
                         object.unverifiedLazy = message.unverifiedLazy;
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        object.retention = options.enums === String ? $root.google.protobuf.FieldOptions.OptionRetention[message.retention] === undefined ? message.retention : $root.google.protobuf.FieldOptions.OptionRetention[message.retention] : message.retention;
+                    if (message.targets && message.targets.length) {
+                        object.targets = [];
+                        for (var j = 0; j < message.targets.length; ++j)
+                            object.targets[j] = options.enums === String ? $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] === undefined ? message.targets[j] : $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] : message.targets[j];
+                    }
+                    if (message.editionDefaults && message.editionDefaults.length) {
+                        object.editionDefaults = [];
+                        for (var j = 0; j < message.editionDefaults.length; ++j)
+                            object.editionDefaults[j] = $root.google.protobuf.FieldOptions.EditionDefault.toObject(message.editionDefaults[j], options);
+                    }
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -9312,6 +9900,343 @@
                     return values;
                 })();
     
+                /**
+                 * OptionRetention enum.
+                 * @name google.protobuf.FieldOptions.OptionRetention
+                 * @enum {number}
+                 * @property {number} RETENTION_UNKNOWN=0 RETENTION_UNKNOWN value
+                 * @property {number} RETENTION_RUNTIME=1 RETENTION_RUNTIME value
+                 * @property {number} RETENTION_SOURCE=2 RETENTION_SOURCE value
+                 */
+                FieldOptions.OptionRetention = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "RETENTION_UNKNOWN"] = 0;
+                    values[valuesById[1] = "RETENTION_RUNTIME"] = 1;
+                    values[valuesById[2] = "RETENTION_SOURCE"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * OptionTargetType enum.
+                 * @name google.protobuf.FieldOptions.OptionTargetType
+                 * @enum {number}
+                 * @property {number} TARGET_TYPE_UNKNOWN=0 TARGET_TYPE_UNKNOWN value
+                 * @property {number} TARGET_TYPE_FILE=1 TARGET_TYPE_FILE value
+                 * @property {number} TARGET_TYPE_EXTENSION_RANGE=2 TARGET_TYPE_EXTENSION_RANGE value
+                 * @property {number} TARGET_TYPE_MESSAGE=3 TARGET_TYPE_MESSAGE value
+                 * @property {number} TARGET_TYPE_FIELD=4 TARGET_TYPE_FIELD value
+                 * @property {number} TARGET_TYPE_ONEOF=5 TARGET_TYPE_ONEOF value
+                 * @property {number} TARGET_TYPE_ENUM=6 TARGET_TYPE_ENUM value
+                 * @property {number} TARGET_TYPE_ENUM_ENTRY=7 TARGET_TYPE_ENUM_ENTRY value
+                 * @property {number} TARGET_TYPE_SERVICE=8 TARGET_TYPE_SERVICE value
+                 * @property {number} TARGET_TYPE_METHOD=9 TARGET_TYPE_METHOD value
+                 */
+                FieldOptions.OptionTargetType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "TARGET_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "TARGET_TYPE_FILE"] = 1;
+                    values[valuesById[2] = "TARGET_TYPE_EXTENSION_RANGE"] = 2;
+                    values[valuesById[3] = "TARGET_TYPE_MESSAGE"] = 3;
+                    values[valuesById[4] = "TARGET_TYPE_FIELD"] = 4;
+                    values[valuesById[5] = "TARGET_TYPE_ONEOF"] = 5;
+                    values[valuesById[6] = "TARGET_TYPE_ENUM"] = 6;
+                    values[valuesById[7] = "TARGET_TYPE_ENUM_ENTRY"] = 7;
+                    values[valuesById[8] = "TARGET_TYPE_SERVICE"] = 8;
+                    values[valuesById[9] = "TARGET_TYPE_METHOD"] = 9;
+                    return values;
+                })();
+    
+                FieldOptions.EditionDefault = (function() {
+    
+                    /**
+                     * Properties of an EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @interface IEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] EditionDefault edition
+                     * @property {string|null} [value] EditionDefault value
+                     */
+    
+                    /**
+                     * Constructs a new EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @classdesc Represents an EditionDefault.
+                     * @implements IEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     */
+                    function EditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * EditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * EditionDefault value.
+                     * @member {string} value
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.value = "";
+    
+                    /**
+                     * Creates a new EditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault instance
+                     */
+                    EditionDefault.create = function create(properties) {
+                        return new EditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.value);
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.value = reader.string();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an EditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    EditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            if (!$util.isString(message.value))
+                                return "value: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     */
+                    EditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FieldOptions.EditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.value != null)
+                            message.value = String(object.value);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.EditionDefault} message EditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    EditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.value = "";
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            object.value = message.value;
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this EditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    EditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for EditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    EditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FieldOptions.EditionDefault";
+                    };
+    
+                    return EditionDefault;
+                })();
+    
                 return FieldOptions;
             })();
     
@@ -9321,6 +10246,7 @@
                  * Properties of an OneofOptions.
                  * @memberof google.protobuf
                  * @interface IOneofOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] OneofOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] OneofOptions uninterpretedOption
                  */
     
@@ -9339,6 +10265,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * OneofOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.OneofOptions
+                 * @instance
+                 */
+                OneofOptions.prototype.features = null;
     
                 /**
                  * OneofOptions uninterpretedOption.
@@ -9372,6 +10306,8 @@
                 OneofOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -9409,6 +10345,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 1: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 999: {
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
@@ -9450,6 +10390,11 @@
                 OneofOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -9474,6 +10419,11 @@
                     if (object instanceof $root.google.protobuf.OneofOptions)
                         return object;
                     var message = new $root.google.protobuf.OneofOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.OneofOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.OneofOptions.uninterpretedOption: array expected");
@@ -9502,6 +10452,10 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
+                    if (options.defaults)
+                        object.features = null;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -9547,6 +10501,8 @@
                  * @interface IEnumOptions
                  * @property {boolean|null} [allowAlias] EnumOptions allowAlias
                  * @property {boolean|null} [deprecated] EnumOptions deprecated
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] EnumOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumOptions uninterpretedOption
                  */
     
@@ -9581,6 +10537,22 @@
                  * @instance
                  */
                 EnumOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * EnumOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.features = null;
     
                 /**
                  * EnumOptions uninterpretedOption.
@@ -9618,6 +10590,10 @@
                         writer.uint32(/* id 2, wireType 0 =*/16).bool(message.allowAlias);
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -9661,6 +10637,14 @@
                             }
                         case 3: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 6: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 7: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -9710,6 +10694,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -9738,6 +10730,13 @@
                         message.allowAlias = Boolean(object.allowAlias);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumOptions.uninterpretedOption: array expected");
@@ -9769,11 +10768,17 @@
                     if (options.defaults) {
                         object.allowAlias = false;
                         object.deprecated = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                     }
                     if (message.allowAlias != null && message.hasOwnProperty("allowAlias"))
                         object.allowAlias = message.allowAlias;
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -9818,6 +10823,8 @@
                  * @memberof google.protobuf
                  * @interface IEnumValueOptions
                  * @property {boolean|null} [deprecated] EnumValueOptions deprecated
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumValueOptions features
+                 * @property {boolean|null} [debugRedact] EnumValueOptions debugRedact
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumValueOptions uninterpretedOption
                  */
     
@@ -9844,6 +10851,22 @@
                  * @instance
                  */
                 EnumValueOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumValueOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.features = null;
+    
+                /**
+                 * EnumValueOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.debugRedact = false;
     
                 /**
                  * EnumValueOptions uninterpretedOption.
@@ -9879,6 +10902,10 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 1, wireType 0 =*/8).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.debugRedact);
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -9918,6 +10945,14 @@
                         switch (tag >>> 3) {
                         case 1: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 2: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.debugRedact = reader.bool();
                                 break;
                             }
                         case 999: {
@@ -9964,6 +10999,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -9990,6 +11033,13 @@
                     var message = new $root.google.protobuf.EnumValueOptions();
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumValueOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumValueOptions.uninterpretedOption: array expected");
@@ -10018,10 +11068,17 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
-                    if (options.defaults)
+                    if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
+                        object.debugRedact = false;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -10065,6 +11122,7 @@
                  * Properties of a ServiceOptions.
                  * @memberof google.protobuf
                  * @interface IServiceOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] ServiceOptions features
                  * @property {boolean|null} [deprecated] ServiceOptions deprecated
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ServiceOptions uninterpretedOption
                  * @property {string|null} [".google.api.defaultHost"] ServiceOptions .google.api.defaultHost
@@ -10086,6 +11144,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * ServiceOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ServiceOptions
+                 * @instance
+                 */
+                ServiceOptions.prototype.features = null;
     
                 /**
                  * ServiceOptions deprecated.
@@ -10145,6 +11211,8 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 34, wireType 2 =*/274).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -10186,6 +11254,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 34: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 33: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -10239,6 +11311,11 @@
                 ServiceOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -10272,6 +11349,11 @@
                     if (object instanceof $root.google.protobuf.ServiceOptions)
                         return object;
                     var message = new $root.google.protobuf.ServiceOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ServiceOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.uninterpretedOption) {
@@ -10308,11 +11390,14 @@
                         object.uninterpretedOption = [];
                     if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
                         object[".google.api.defaultHost"] = "";
                         object[".google.api.oauthScopes"] = "";
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -10362,6 +11447,7 @@
                  * @interface IMethodOptions
                  * @property {boolean|null} [deprecated] MethodOptions deprecated
                  * @property {google.protobuf.MethodOptions.IdempotencyLevel|null} [idempotencyLevel] MethodOptions idempotencyLevel
+                 * @property {google.protobuf.IFeatureSet|null} [features] MethodOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MethodOptions uninterpretedOption
                  * @property {google.api.IHttpRule|null} [".google.api.http"] MethodOptions .google.api.http
                  * @property {Array.<string>|null} [".google.api.methodSignature"] MethodOptions .google.api.methodSignature
@@ -10399,6 +11485,14 @@
                  * @instance
                  */
                 MethodOptions.prototype.idempotencyLevel = 0;
+    
+                /**
+                 * MethodOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MethodOptions
+                 * @instance
+                 */
+                MethodOptions.prototype.features = null;
     
                 /**
                  * MethodOptions uninterpretedOption.
@@ -10452,6 +11546,8 @@
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
                     if (message.idempotencyLevel != null && Object.hasOwnProperty.call(message, "idempotencyLevel"))
                         writer.uint32(/* id 34, wireType 0 =*/272).int32(message.idempotencyLevel);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 35, wireType 2 =*/282).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -10500,6 +11596,10 @@
                             }
                         case 34: {
                                 message.idempotencyLevel = reader.int32();
+                                break;
+                            }
+                        case 35: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -10565,6 +11665,11 @@
                         case 2:
                             break;
                         }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -10623,6 +11728,11 @@
                         message.idempotencyLevel = 2;
                         break;
                     }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MethodOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MethodOptions.uninterpretedOption: array expected");
@@ -10668,12 +11778,15 @@
                     if (options.defaults) {
                         object.deprecated = false;
                         object.idempotencyLevel = options.enums === String ? "IDEMPOTENCY_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.api.http"] = null;
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
                     if (message.idempotencyLevel != null && message.hasOwnProperty("idempotencyLevel"))
                         object.idempotencyLevel = options.enums === String ? $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] === undefined ? message.idempotencyLevel : $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] : message.idempotencyLevel;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -11360,6 +12473,1268 @@
                 })();
     
                 return UninterpretedOption;
+            })();
+    
+            protobuf.FeatureSet = (function() {
+    
+                /**
+                 * Properties of a FeatureSet.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSet
+                 * @property {google.protobuf.FeatureSet.FieldPresence|null} [fieldPresence] FeatureSet fieldPresence
+                 * @property {google.protobuf.FeatureSet.EnumType|null} [enumType] FeatureSet enumType
+                 * @property {google.protobuf.FeatureSet.RepeatedFieldEncoding|null} [repeatedFieldEncoding] FeatureSet repeatedFieldEncoding
+                 * @property {google.protobuf.FeatureSet.Utf8Validation|null} [utf8Validation] FeatureSet utf8Validation
+                 * @property {google.protobuf.FeatureSet.MessageEncoding|null} [messageEncoding] FeatureSet messageEncoding
+                 * @property {google.protobuf.FeatureSet.JsonFormat|null} [jsonFormat] FeatureSet jsonFormat
+                 */
+    
+                /**
+                 * Constructs a new FeatureSet.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSet.
+                 * @implements IFeatureSet
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 */
+                function FeatureSet(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSet fieldPresence.
+                 * @member {google.protobuf.FeatureSet.FieldPresence} fieldPresence
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.fieldPresence = 0;
+    
+                /**
+                 * FeatureSet enumType.
+                 * @member {google.protobuf.FeatureSet.EnumType} enumType
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.enumType = 0;
+    
+                /**
+                 * FeatureSet repeatedFieldEncoding.
+                 * @member {google.protobuf.FeatureSet.RepeatedFieldEncoding} repeatedFieldEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.repeatedFieldEncoding = 0;
+    
+                /**
+                 * FeatureSet utf8Validation.
+                 * @member {google.protobuf.FeatureSet.Utf8Validation} utf8Validation
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.utf8Validation = 0;
+    
+                /**
+                 * FeatureSet messageEncoding.
+                 * @member {google.protobuf.FeatureSet.MessageEncoding} messageEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.messageEncoding = 0;
+    
+                /**
+                 * FeatureSet jsonFormat.
+                 * @member {google.protobuf.FeatureSet.JsonFormat} jsonFormat
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.jsonFormat = 0;
+    
+                /**
+                 * Creates a new FeatureSet instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSet} FeatureSet instance
+                 */
+                FeatureSet.create = function create(properties) {
+                    return new FeatureSet(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.fieldPresence != null && Object.hasOwnProperty.call(message, "fieldPresence"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.fieldPresence);
+                    if (message.enumType != null && Object.hasOwnProperty.call(message, "enumType"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.enumType);
+                    if (message.repeatedFieldEncoding != null && Object.hasOwnProperty.call(message, "repeatedFieldEncoding"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.repeatedFieldEncoding);
+                    if (message.utf8Validation != null && Object.hasOwnProperty.call(message, "utf8Validation"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.utf8Validation);
+                    if (message.messageEncoding != null && Object.hasOwnProperty.call(message, "messageEncoding"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.messageEncoding);
+                    if (message.jsonFormat != null && Object.hasOwnProperty.call(message, "jsonFormat"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).int32(message.jsonFormat);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSet();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.fieldPresence = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.enumType = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.repeatedFieldEncoding = reader.int32();
+                                break;
+                            }
+                        case 4: {
+                                message.utf8Validation = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.messageEncoding = reader.int32();
+                                break;
+                            }
+                        case 6: {
+                                message.jsonFormat = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSet message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSet.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        switch (message.fieldPresence) {
+                        default:
+                            return "fieldPresence: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        switch (message.enumType) {
+                        default:
+                            return "enumType: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        switch (message.repeatedFieldEncoding) {
+                        default:
+                            return "repeatedFieldEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        switch (message.utf8Validation) {
+                        default:
+                            return "utf8Validation: enum value expected";
+                        case 0:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        switch (message.messageEncoding) {
+                        default:
+                            return "messageEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        switch (message.jsonFormat) {
+                        default:
+                            return "jsonFormat: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 */
+                FeatureSet.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSet)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSet();
+                    switch (object.fieldPresence) {
+                    default:
+                        if (typeof object.fieldPresence === "number") {
+                            message.fieldPresence = object.fieldPresence;
+                            break;
+                        }
+                        break;
+                    case "FIELD_PRESENCE_UNKNOWN":
+                    case 0:
+                        message.fieldPresence = 0;
+                        break;
+                    case "EXPLICIT":
+                    case 1:
+                        message.fieldPresence = 1;
+                        break;
+                    case "IMPLICIT":
+                    case 2:
+                        message.fieldPresence = 2;
+                        break;
+                    case "LEGACY_REQUIRED":
+                    case 3:
+                        message.fieldPresence = 3;
+                        break;
+                    }
+                    switch (object.enumType) {
+                    default:
+                        if (typeof object.enumType === "number") {
+                            message.enumType = object.enumType;
+                            break;
+                        }
+                        break;
+                    case "ENUM_TYPE_UNKNOWN":
+                    case 0:
+                        message.enumType = 0;
+                        break;
+                    case "OPEN":
+                    case 1:
+                        message.enumType = 1;
+                        break;
+                    case "CLOSED":
+                    case 2:
+                        message.enumType = 2;
+                        break;
+                    }
+                    switch (object.repeatedFieldEncoding) {
+                    default:
+                        if (typeof object.repeatedFieldEncoding === "number") {
+                            message.repeatedFieldEncoding = object.repeatedFieldEncoding;
+                            break;
+                        }
+                        break;
+                    case "REPEATED_FIELD_ENCODING_UNKNOWN":
+                    case 0:
+                        message.repeatedFieldEncoding = 0;
+                        break;
+                    case "PACKED":
+                    case 1:
+                        message.repeatedFieldEncoding = 1;
+                        break;
+                    case "EXPANDED":
+                    case 2:
+                        message.repeatedFieldEncoding = 2;
+                        break;
+                    }
+                    switch (object.utf8Validation) {
+                    default:
+                        if (typeof object.utf8Validation === "number") {
+                            message.utf8Validation = object.utf8Validation;
+                            break;
+                        }
+                        break;
+                    case "UTF8_VALIDATION_UNKNOWN":
+                    case 0:
+                        message.utf8Validation = 0;
+                        break;
+                    case "VERIFY":
+                    case 2:
+                        message.utf8Validation = 2;
+                        break;
+                    case "NONE":
+                    case 3:
+                        message.utf8Validation = 3;
+                        break;
+                    }
+                    switch (object.messageEncoding) {
+                    default:
+                        if (typeof object.messageEncoding === "number") {
+                            message.messageEncoding = object.messageEncoding;
+                            break;
+                        }
+                        break;
+                    case "MESSAGE_ENCODING_UNKNOWN":
+                    case 0:
+                        message.messageEncoding = 0;
+                        break;
+                    case "LENGTH_PREFIXED":
+                    case 1:
+                        message.messageEncoding = 1;
+                        break;
+                    case "DELIMITED":
+                    case 2:
+                        message.messageEncoding = 2;
+                        break;
+                    }
+                    switch (object.jsonFormat) {
+                    default:
+                        if (typeof object.jsonFormat === "number") {
+                            message.jsonFormat = object.jsonFormat;
+                            break;
+                        }
+                        break;
+                    case "JSON_FORMAT_UNKNOWN":
+                    case 0:
+                        message.jsonFormat = 0;
+                        break;
+                    case "ALLOW":
+                    case 1:
+                        message.jsonFormat = 1;
+                        break;
+                    case "LEGACY_BEST_EFFORT":
+                    case 2:
+                        message.jsonFormat = 2;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.FeatureSet} message FeatureSet
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSet.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.fieldPresence = options.enums === String ? "FIELD_PRESENCE_UNKNOWN" : 0;
+                        object.enumType = options.enums === String ? "ENUM_TYPE_UNKNOWN" : 0;
+                        object.repeatedFieldEncoding = options.enums === String ? "REPEATED_FIELD_ENCODING_UNKNOWN" : 0;
+                        object.utf8Validation = options.enums === String ? "UTF8_VALIDATION_UNKNOWN" : 0;
+                        object.messageEncoding = options.enums === String ? "MESSAGE_ENCODING_UNKNOWN" : 0;
+                        object.jsonFormat = options.enums === String ? "JSON_FORMAT_UNKNOWN" : 0;
+                    }
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        object.fieldPresence = options.enums === String ? $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] === undefined ? message.fieldPresence : $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] : message.fieldPresence;
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        object.enumType = options.enums === String ? $root.google.protobuf.FeatureSet.EnumType[message.enumType] === undefined ? message.enumType : $root.google.protobuf.FeatureSet.EnumType[message.enumType] : message.enumType;
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        object.repeatedFieldEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] === undefined ? message.repeatedFieldEncoding : $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] : message.repeatedFieldEncoding;
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        object.utf8Validation = options.enums === String ? $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] === undefined ? message.utf8Validation : $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] : message.utf8Validation;
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        object.messageEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] === undefined ? message.messageEncoding : $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] : message.messageEncoding;
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        object.jsonFormat = options.enums === String ? $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] === undefined ? message.jsonFormat : $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] : message.jsonFormat;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSet to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSet.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSet
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSet.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSet";
+                };
+    
+                /**
+                 * FieldPresence enum.
+                 * @name google.protobuf.FeatureSet.FieldPresence
+                 * @enum {number}
+                 * @property {number} FIELD_PRESENCE_UNKNOWN=0 FIELD_PRESENCE_UNKNOWN value
+                 * @property {number} EXPLICIT=1 EXPLICIT value
+                 * @property {number} IMPLICIT=2 IMPLICIT value
+                 * @property {number} LEGACY_REQUIRED=3 LEGACY_REQUIRED value
+                 */
+                FeatureSet.FieldPresence = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "FIELD_PRESENCE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "EXPLICIT"] = 1;
+                    values[valuesById[2] = "IMPLICIT"] = 2;
+                    values[valuesById[3] = "LEGACY_REQUIRED"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * EnumType enum.
+                 * @name google.protobuf.FeatureSet.EnumType
+                 * @enum {number}
+                 * @property {number} ENUM_TYPE_UNKNOWN=0 ENUM_TYPE_UNKNOWN value
+                 * @property {number} OPEN=1 OPEN value
+                 * @property {number} CLOSED=2 CLOSED value
+                 */
+                FeatureSet.EnumType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "ENUM_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "OPEN"] = 1;
+                    values[valuesById[2] = "CLOSED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * RepeatedFieldEncoding enum.
+                 * @name google.protobuf.FeatureSet.RepeatedFieldEncoding
+                 * @enum {number}
+                 * @property {number} REPEATED_FIELD_ENCODING_UNKNOWN=0 REPEATED_FIELD_ENCODING_UNKNOWN value
+                 * @property {number} PACKED=1 PACKED value
+                 * @property {number} EXPANDED=2 EXPANDED value
+                 */
+                FeatureSet.RepeatedFieldEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "REPEATED_FIELD_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "PACKED"] = 1;
+                    values[valuesById[2] = "EXPANDED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * Utf8Validation enum.
+                 * @name google.protobuf.FeatureSet.Utf8Validation
+                 * @enum {number}
+                 * @property {number} UTF8_VALIDATION_UNKNOWN=0 UTF8_VALIDATION_UNKNOWN value
+                 * @property {number} VERIFY=2 VERIFY value
+                 * @property {number} NONE=3 NONE value
+                 */
+                FeatureSet.Utf8Validation = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "UTF8_VALIDATION_UNKNOWN"] = 0;
+                    values[valuesById[2] = "VERIFY"] = 2;
+                    values[valuesById[3] = "NONE"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * MessageEncoding enum.
+                 * @name google.protobuf.FeatureSet.MessageEncoding
+                 * @enum {number}
+                 * @property {number} MESSAGE_ENCODING_UNKNOWN=0 MESSAGE_ENCODING_UNKNOWN value
+                 * @property {number} LENGTH_PREFIXED=1 LENGTH_PREFIXED value
+                 * @property {number} DELIMITED=2 DELIMITED value
+                 */
+                FeatureSet.MessageEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "MESSAGE_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "LENGTH_PREFIXED"] = 1;
+                    values[valuesById[2] = "DELIMITED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * JsonFormat enum.
+                 * @name google.protobuf.FeatureSet.JsonFormat
+                 * @enum {number}
+                 * @property {number} JSON_FORMAT_UNKNOWN=0 JSON_FORMAT_UNKNOWN value
+                 * @property {number} ALLOW=1 ALLOW value
+                 * @property {number} LEGACY_BEST_EFFORT=2 LEGACY_BEST_EFFORT value
+                 */
+                FeatureSet.JsonFormat = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "JSON_FORMAT_UNKNOWN"] = 0;
+                    values[valuesById[1] = "ALLOW"] = 1;
+                    values[valuesById[2] = "LEGACY_BEST_EFFORT"] = 2;
+                    return values;
+                })();
+    
+                return FeatureSet;
+            })();
+    
+            protobuf.FeatureSetDefaults = (function() {
+    
+                /**
+                 * Properties of a FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSetDefaults
+                 * @property {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>|null} [defaults] FeatureSetDefaults defaults
+                 * @property {google.protobuf.Edition|null} [minimumEdition] FeatureSetDefaults minimumEdition
+                 * @property {google.protobuf.Edition|null} [maximumEdition] FeatureSetDefaults maximumEdition
+                 */
+    
+                /**
+                 * Constructs a new FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSetDefaults.
+                 * @implements IFeatureSetDefaults
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 */
+                function FeatureSetDefaults(properties) {
+                    this.defaults = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSetDefaults defaults.
+                 * @member {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>} defaults
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.defaults = $util.emptyArray;
+    
+                /**
+                 * FeatureSetDefaults minimumEdition.
+                 * @member {google.protobuf.Edition} minimumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.minimumEdition = 0;
+    
+                /**
+                 * FeatureSetDefaults maximumEdition.
+                 * @member {google.protobuf.Edition} maximumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.maximumEdition = 0;
+    
+                /**
+                 * Creates a new FeatureSetDefaults instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults instance
+                 */
+                FeatureSetDefaults.create = function create(properties) {
+                    return new FeatureSetDefaults(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.defaults != null && message.defaults.length)
+                        for (var i = 0; i < message.defaults.length; ++i)
+                            $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.encode(message.defaults[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.minimumEdition != null && Object.hasOwnProperty.call(message, "minimumEdition"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.minimumEdition);
+                    if (message.maximumEdition != null && Object.hasOwnProperty.call(message, "maximumEdition"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.maximumEdition);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                if (!(message.defaults && message.defaults.length))
+                                    message.defaults = [];
+                                message.defaults.push($root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 4: {
+                                message.minimumEdition = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.maximumEdition = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSetDefaults message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSetDefaults.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.defaults != null && message.hasOwnProperty("defaults")) {
+                        if (!Array.isArray(message.defaults))
+                            return "defaults: array expected";
+                        for (var i = 0; i < message.defaults.length; ++i) {
+                            var error = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify(message.defaults[i]);
+                            if (error)
+                                return "defaults." + error;
+                        }
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        switch (message.minimumEdition) {
+                        default:
+                            return "minimumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        switch (message.maximumEdition) {
+                        default:
+                            return "maximumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 */
+                FeatureSetDefaults.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSetDefaults)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSetDefaults();
+                    if (object.defaults) {
+                        if (!Array.isArray(object.defaults))
+                            throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: array expected");
+                        message.defaults = [];
+                        for (var i = 0; i < object.defaults.length; ++i) {
+                            if (typeof object.defaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: object expected");
+                            message.defaults[i] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.fromObject(object.defaults[i]);
+                        }
+                    }
+                    switch (object.minimumEdition) {
+                    default:
+                        if (typeof object.minimumEdition === "number") {
+                            message.minimumEdition = object.minimumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.minimumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.minimumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.minimumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.minimumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.minimumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.minimumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.minimumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.minimumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.minimumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.minimumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.minimumEdition = 2147483647;
+                        break;
+                    }
+                    switch (object.maximumEdition) {
+                    default:
+                        if (typeof object.maximumEdition === "number") {
+                            message.maximumEdition = object.maximumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.maximumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.maximumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.maximumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.maximumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.maximumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.maximumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.maximumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.maximumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.maximumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.maximumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.maximumEdition = 2147483647;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.FeatureSetDefaults} message FeatureSetDefaults
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSetDefaults.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.defaults = [];
+                    if (options.defaults) {
+                        object.minimumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        object.maximumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                    }
+                    if (message.defaults && message.defaults.length) {
+                        object.defaults = [];
+                        for (var j = 0; j < message.defaults.length; ++j)
+                            object.defaults[j] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.toObject(message.defaults[j], options);
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        object.minimumEdition = options.enums === String ? $root.google.protobuf.Edition[message.minimumEdition] === undefined ? message.minimumEdition : $root.google.protobuf.Edition[message.minimumEdition] : message.minimumEdition;
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        object.maximumEdition = options.enums === String ? $root.google.protobuf.Edition[message.maximumEdition] === undefined ? message.maximumEdition : $root.google.protobuf.Edition[message.maximumEdition] : message.maximumEdition;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSetDefaults to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSetDefaults.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSetDefaults
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSetDefaults.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults";
+                };
+    
+                FeatureSetDefaults.FeatureSetEditionDefault = (function() {
+    
+                    /**
+                     * Properties of a FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @interface IFeatureSetEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] FeatureSetEditionDefault edition
+                     * @property {google.protobuf.IFeatureSet|null} [features] FeatureSetEditionDefault features
+                     */
+    
+                    /**
+                     * Constructs a new FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @classdesc Represents a FeatureSetEditionDefault.
+                     * @implements IFeatureSetEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     */
+                    function FeatureSetEditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * FeatureSetEditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * FeatureSetEditionDefault features.
+                     * @member {google.protobuf.IFeatureSet|null|undefined} features
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.features = null;
+    
+                    /**
+                     * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault instance
+                     */
+                    FeatureSetEditionDefault.create = function create(properties) {
+                        return new FeatureSetEditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                            $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a FeatureSetEditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    FeatureSetEditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.features != null && message.hasOwnProperty("features")) {
+                            var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                            if (error)
+                                return "features." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     */
+                    FeatureSetEditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.features != null) {
+                            if (typeof object.features !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.features: object expected");
+                            message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} message FeatureSetEditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    FeatureSetEditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.features = null;
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.features != null && message.hasOwnProperty("features"))
+                            object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this FeatureSetEditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    FeatureSetEditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for FeatureSetEditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    FeatureSetEditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault";
+                    };
+    
+                    return FeatureSetEditionDefault;
+                })();
+    
+                return FeatureSetDefaults;
             })();
     
             protobuf.SourceCodeInfo = (function() {
@@ -12533,6 +14908,247 @@
                 return GeneratedCodeInfo;
             })();
     
+            protobuf.Duration = (function() {
+    
+                /**
+                 * Properties of a Duration.
+                 * @memberof google.protobuf
+                 * @interface IDuration
+                 * @property {number|Long|null} [seconds] Duration seconds
+                 * @property {number|null} [nanos] Duration nanos
+                 */
+    
+                /**
+                 * Constructs a new Duration.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a Duration.
+                 * @implements IDuration
+                 * @constructor
+                 * @param {google.protobuf.IDuration=} [properties] Properties to set
+                 */
+                function Duration(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Duration seconds.
+                 * @member {number|Long} seconds
+                 * @memberof google.protobuf.Duration
+                 * @instance
+                 */
+                Duration.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                /**
+                 * Duration nanos.
+                 * @member {number} nanos
+                 * @memberof google.protobuf.Duration
+                 * @instance
+                 */
+                Duration.prototype.nanos = 0;
+    
+                /**
+                 * Creates a new Duration instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {google.protobuf.IDuration=} [properties] Properties to set
+                 * @returns {google.protobuf.Duration} Duration instance
+                 */
+                Duration.create = function create(properties) {
+                    return new Duration(properties);
+                };
+    
+                /**
+                 * Encodes the specified Duration message. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {google.protobuf.IDuration} message Duration message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Duration.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int64(message.seconds);
+                    if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.nanos);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Duration message, length delimited. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {google.protobuf.IDuration} message Duration message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Duration.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Duration message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.Duration} Duration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Duration.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Duration();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.seconds = reader.int64();
+                                break;
+                            }
+                        case 2: {
+                                message.nanos = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Duration message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.Duration} Duration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Duration.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Duration message.
+                 * @function verify
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Duration.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.seconds != null && message.hasOwnProperty("seconds"))
+                        if (!$util.isInteger(message.seconds) && !(message.seconds && $util.isInteger(message.seconds.low) && $util.isInteger(message.seconds.high)))
+                            return "seconds: integer|Long expected";
+                    if (message.nanos != null && message.hasOwnProperty("nanos"))
+                        if (!$util.isInteger(message.nanos))
+                            return "nanos: integer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Duration message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.Duration} Duration
+                 */
+                Duration.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.Duration)
+                        return object;
+                    var message = new $root.google.protobuf.Duration();
+                    if (object.seconds != null)
+                        if ($util.Long)
+                            (message.seconds = $util.Long.fromValue(object.seconds)).unsigned = false;
+                        else if (typeof object.seconds === "string")
+                            message.seconds = parseInt(object.seconds, 10);
+                        else if (typeof object.seconds === "number")
+                            message.seconds = object.seconds;
+                        else if (typeof object.seconds === "object")
+                            message.seconds = new $util.LongBits(object.seconds.low >>> 0, object.seconds.high >>> 0).toNumber();
+                    if (object.nanos != null)
+                        message.nanos = object.nanos | 0;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Duration message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {google.protobuf.Duration} message Duration
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Duration.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        if ($util.Long) {
+                            var long = new $util.Long(0, 0, false);
+                            object.seconds = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                        } else
+                            object.seconds = options.longs === String ? "0" : 0;
+                        object.nanos = 0;
+                    }
+                    if (message.seconds != null && message.hasOwnProperty("seconds"))
+                        if (typeof message.seconds === "number")
+                            object.seconds = options.longs === String ? String(message.seconds) : message.seconds;
+                        else
+                            object.seconds = options.longs === String ? $util.Long.prototype.toString.call(message.seconds) : options.longs === Number ? new $util.LongBits(message.seconds.low >>> 0, message.seconds.high >>> 0).toNumber() : message.seconds;
+                    if (message.nanos != null && message.hasOwnProperty("nanos"))
+                        object.nanos = message.nanos;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Duration to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.Duration
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Duration.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Duration
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.Duration
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Duration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.Duration";
+                };
+    
+                return Duration;
+            })();
+    
             protobuf.Timestamp = (function() {
     
                 /**
@@ -13272,6 +15888,233 @@
                 };
     
                 return LatLng;
+            })();
+    
+            type.LocalizedText = (function() {
+    
+                /**
+                 * Properties of a LocalizedText.
+                 * @memberof google.type
+                 * @interface ILocalizedText
+                 * @property {string|null} [text] LocalizedText text
+                 * @property {string|null} [languageCode] LocalizedText languageCode
+                 */
+    
+                /**
+                 * Constructs a new LocalizedText.
+                 * @memberof google.type
+                 * @classdesc Represents a LocalizedText.
+                 * @implements ILocalizedText
+                 * @constructor
+                 * @param {google.type.ILocalizedText=} [properties] Properties to set
+                 */
+                function LocalizedText(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * LocalizedText text.
+                 * @member {string} text
+                 * @memberof google.type.LocalizedText
+                 * @instance
+                 */
+                LocalizedText.prototype.text = "";
+    
+                /**
+                 * LocalizedText languageCode.
+                 * @member {string} languageCode
+                 * @memberof google.type.LocalizedText
+                 * @instance
+                 */
+                LocalizedText.prototype.languageCode = "";
+    
+                /**
+                 * Creates a new LocalizedText instance using the specified properties.
+                 * @function create
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {google.type.ILocalizedText=} [properties] Properties to set
+                 * @returns {google.type.LocalizedText} LocalizedText instance
+                 */
+                LocalizedText.create = function create(properties) {
+                    return new LocalizedText(properties);
+                };
+    
+                /**
+                 * Encodes the specified LocalizedText message. Does not implicitly {@link google.type.LocalizedText.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {google.type.ILocalizedText} message LocalizedText message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                LocalizedText.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.text != null && Object.hasOwnProperty.call(message, "text"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.text);
+                    if (message.languageCode != null && Object.hasOwnProperty.call(message, "languageCode"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.languageCode);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified LocalizedText message, length delimited. Does not implicitly {@link google.type.LocalizedText.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {google.type.ILocalizedText} message LocalizedText message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                LocalizedText.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a LocalizedText message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.type.LocalizedText} LocalizedText
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                LocalizedText.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.type.LocalizedText();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.text = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.languageCode = reader.string();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a LocalizedText message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.type.LocalizedText} LocalizedText
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                LocalizedText.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a LocalizedText message.
+                 * @function verify
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                LocalizedText.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.text != null && message.hasOwnProperty("text"))
+                        if (!$util.isString(message.text))
+                            return "text: string expected";
+                    if (message.languageCode != null && message.hasOwnProperty("languageCode"))
+                        if (!$util.isString(message.languageCode))
+                            return "languageCode: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a LocalizedText message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.type.LocalizedText} LocalizedText
+                 */
+                LocalizedText.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.type.LocalizedText)
+                        return object;
+                    var message = new $root.google.type.LocalizedText();
+                    if (object.text != null)
+                        message.text = String(object.text);
+                    if (object.languageCode != null)
+                        message.languageCode = String(object.languageCode);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a LocalizedText message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {google.type.LocalizedText} message LocalizedText
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                LocalizedText.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.text = "";
+                        object.languageCode = "";
+                    }
+                    if (message.text != null && message.hasOwnProperty("text"))
+                        object.text = message.text;
+                    if (message.languageCode != null && message.hasOwnProperty("languageCode"))
+                        object.languageCode = message.languageCode;
+                    return object;
+                };
+    
+                /**
+                 * Converts this LocalizedText to JSON.
+                 * @function toJSON
+                 * @memberof google.type.LocalizedText
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                LocalizedText.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for LocalizedText
+                 * @function getTypeUrl
+                 * @memberof google.type.LocalizedText
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                LocalizedText.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.type.LocalizedText";
+                };
+    
+                return LocalizedText;
             })();
     
             type.Money = (function() {
@@ -14494,6 +17337,238 @@
                         return GeocodedWaypoint;
                     })();
     
+                    v2.LocalizedTime = (function() {
+    
+                        /**
+                         * Properties of a LocalizedTime.
+                         * @memberof google.maps.routing.v2
+                         * @interface ILocalizedTime
+                         * @property {google.type.ILocalizedText|null} [time] LocalizedTime time
+                         * @property {string|null} [timeZone] LocalizedTime timeZone
+                         */
+    
+                        /**
+                         * Constructs a new LocalizedTime.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a LocalizedTime.
+                         * @implements ILocalizedTime
+                         * @constructor
+                         * @param {google.maps.routing.v2.ILocalizedTime=} [properties] Properties to set
+                         */
+                        function LocalizedTime(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * LocalizedTime time.
+                         * @member {google.type.ILocalizedText|null|undefined} time
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @instance
+                         */
+                        LocalizedTime.prototype.time = null;
+    
+                        /**
+                         * LocalizedTime timeZone.
+                         * @member {string} timeZone
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @instance
+                         */
+                        LocalizedTime.prototype.timeZone = "";
+    
+                        /**
+                         * Creates a new LocalizedTime instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {google.maps.routing.v2.ILocalizedTime=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.LocalizedTime} LocalizedTime instance
+                         */
+                        LocalizedTime.create = function create(properties) {
+                            return new LocalizedTime(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified LocalizedTime message. Does not implicitly {@link google.maps.routing.v2.LocalizedTime.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {google.maps.routing.v2.ILocalizedTime} message LocalizedTime message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        LocalizedTime.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.time != null && Object.hasOwnProperty.call(message, "time"))
+                                $root.google.type.LocalizedText.encode(message.time, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.timeZone != null && Object.hasOwnProperty.call(message, "timeZone"))
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.timeZone);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified LocalizedTime message, length delimited. Does not implicitly {@link google.maps.routing.v2.LocalizedTime.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {google.maps.routing.v2.ILocalizedTime} message LocalizedTime message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        LocalizedTime.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a LocalizedTime message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.LocalizedTime} LocalizedTime
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        LocalizedTime.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.LocalizedTime();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.time = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 2: {
+                                        message.timeZone = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a LocalizedTime message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.LocalizedTime} LocalizedTime
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        LocalizedTime.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a LocalizedTime message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        LocalizedTime.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.time != null && message.hasOwnProperty("time")) {
+                                var error = $root.google.type.LocalizedText.verify(message.time);
+                                if (error)
+                                    return "time." + error;
+                            }
+                            if (message.timeZone != null && message.hasOwnProperty("timeZone"))
+                                if (!$util.isString(message.timeZone))
+                                    return "timeZone: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a LocalizedTime message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.LocalizedTime} LocalizedTime
+                         */
+                        LocalizedTime.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.LocalizedTime)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.LocalizedTime();
+                            if (object.time != null) {
+                                if (typeof object.time !== "object")
+                                    throw TypeError(".google.maps.routing.v2.LocalizedTime.time: object expected");
+                                message.time = $root.google.type.LocalizedText.fromObject(object.time);
+                            }
+                            if (object.timeZone != null)
+                                message.timeZone = String(object.timeZone);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a LocalizedTime message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {google.maps.routing.v2.LocalizedTime} message LocalizedTime
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        LocalizedTime.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.time = null;
+                                object.timeZone = "";
+                            }
+                            if (message.time != null && message.hasOwnProperty("time"))
+                                object.time = $root.google.type.LocalizedText.toObject(message.time, options);
+                            if (message.timeZone != null && message.hasOwnProperty("timeZone"))
+                                object.timeZone = message.timeZone;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this LocalizedTime to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        LocalizedTime.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for LocalizedTime
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.LocalizedTime
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        LocalizedTime.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.LocalizedTime";
+                        };
+    
+                        return LocalizedTime;
+                    })();
+    
                     v2.Location = (function() {
     
                         /**
@@ -14754,6 +17829,8 @@
                      * @property {number} FERRY_TRAIN=16 FERRY_TRAIN value
                      * @property {number} ROUNDABOUT_LEFT=17 ROUNDABOUT_LEFT value
                      * @property {number} ROUNDABOUT_RIGHT=18 ROUNDABOUT_RIGHT value
+                     * @property {number} DEPART=19 DEPART value
+                     * @property {number} NAME_CHANGE=20 NAME_CHANGE value
                      */
                     v2.Maneuver = (function() {
                         var valuesById = {}, values = Object.create(valuesById);
@@ -14776,6 +17853,8 @@
                         values[valuesById[16] = "FERRY_TRAIN"] = 16;
                         values[valuesById[17] = "ROUNDABOUT_LEFT"] = 17;
                         values[valuesById[18] = "ROUNDABOUT_RIGHT"] = 18;
+                        values[valuesById[19] = "DEPART"] = 19;
+                        values[valuesById[20] = "NAME_CHANGE"] = 20;
                         return values;
                     })();
     
@@ -14948,6 +18027,8 @@
                                 case 16:
                                 case 17:
                                 case 18:
+                                case 19:
+                                case 20:
                                     break;
                                 }
                             if (message.instructions != null && message.hasOwnProperty("instructions"))
@@ -15050,6 +18131,14 @@
                             case "ROUNDABOUT_RIGHT":
                             case 18:
                                 message.maneuver = 18;
+                                break;
+                            case "DEPART":
+                            case 19:
+                                message.maneuver = 19;
+                                break;
+                            case "NAME_CHANGE":
+                            case 20:
+                                message.maneuver = 20;
                                 break;
                             }
                             if (object.instructions != null)
@@ -15398,6 +18487,1062 @@
                         return values;
                     })();
     
+                    v2.PolylineDetails = (function() {
+    
+                        /**
+                         * Properties of a PolylineDetails.
+                         * @memberof google.maps.routing.v2
+                         * @interface IPolylineDetails
+                         * @property {Array.<google.maps.routing.v2.PolylineDetails.IFlyoverInfo>|null} [flyoverInfo] PolylineDetails flyoverInfo
+                         * @property {Array.<google.maps.routing.v2.PolylineDetails.INarrowRoadInfo>|null} [narrowRoadInfo] PolylineDetails narrowRoadInfo
+                         */
+    
+                        /**
+                         * Constructs a new PolylineDetails.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a PolylineDetails.
+                         * @implements IPolylineDetails
+                         * @constructor
+                         * @param {google.maps.routing.v2.IPolylineDetails=} [properties] Properties to set
+                         */
+                        function PolylineDetails(properties) {
+                            this.flyoverInfo = [];
+                            this.narrowRoadInfo = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * PolylineDetails flyoverInfo.
+                         * @member {Array.<google.maps.routing.v2.PolylineDetails.IFlyoverInfo>} flyoverInfo
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @instance
+                         */
+                        PolylineDetails.prototype.flyoverInfo = $util.emptyArray;
+    
+                        /**
+                         * PolylineDetails narrowRoadInfo.
+                         * @member {Array.<google.maps.routing.v2.PolylineDetails.INarrowRoadInfo>} narrowRoadInfo
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @instance
+                         */
+                        PolylineDetails.prototype.narrowRoadInfo = $util.emptyArray;
+    
+                        /**
+                         * Creates a new PolylineDetails instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {google.maps.routing.v2.IPolylineDetails=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.PolylineDetails} PolylineDetails instance
+                         */
+                        PolylineDetails.create = function create(properties) {
+                            return new PolylineDetails(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified PolylineDetails message. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {google.maps.routing.v2.IPolylineDetails} message PolylineDetails message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        PolylineDetails.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.flyoverInfo != null && message.flyoverInfo.length)
+                                for (var i = 0; i < message.flyoverInfo.length; ++i)
+                                    $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo.encode(message.flyoverInfo[i], writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                            if (message.narrowRoadInfo != null && message.narrowRoadInfo.length)
+                                for (var i = 0; i < message.narrowRoadInfo.length; ++i)
+                                    $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.encode(message.narrowRoadInfo[i], writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified PolylineDetails message, length delimited. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {google.maps.routing.v2.IPolylineDetails} message PolylineDetails message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        PolylineDetails.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a PolylineDetails message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.PolylineDetails} PolylineDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        PolylineDetails.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.PolylineDetails();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 12: {
+                                        if (!(message.flyoverInfo && message.flyoverInfo.length))
+                                            message.flyoverInfo = [];
+                                        message.flyoverInfo.push($root.google.maps.routing.v2.PolylineDetails.FlyoverInfo.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 13: {
+                                        if (!(message.narrowRoadInfo && message.narrowRoadInfo.length))
+                                            message.narrowRoadInfo = [];
+                                        message.narrowRoadInfo.push($root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a PolylineDetails message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.PolylineDetails} PolylineDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        PolylineDetails.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a PolylineDetails message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        PolylineDetails.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.flyoverInfo != null && message.hasOwnProperty("flyoverInfo")) {
+                                if (!Array.isArray(message.flyoverInfo))
+                                    return "flyoverInfo: array expected";
+                                for (var i = 0; i < message.flyoverInfo.length; ++i) {
+                                    var error = $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo.verify(message.flyoverInfo[i]);
+                                    if (error)
+                                        return "flyoverInfo." + error;
+                                }
+                            }
+                            if (message.narrowRoadInfo != null && message.hasOwnProperty("narrowRoadInfo")) {
+                                if (!Array.isArray(message.narrowRoadInfo))
+                                    return "narrowRoadInfo: array expected";
+                                for (var i = 0; i < message.narrowRoadInfo.length; ++i) {
+                                    var error = $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.verify(message.narrowRoadInfo[i]);
+                                    if (error)
+                                        return "narrowRoadInfo." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a PolylineDetails message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.PolylineDetails} PolylineDetails
+                         */
+                        PolylineDetails.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.PolylineDetails)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.PolylineDetails();
+                            if (object.flyoverInfo) {
+                                if (!Array.isArray(object.flyoverInfo))
+                                    throw TypeError(".google.maps.routing.v2.PolylineDetails.flyoverInfo: array expected");
+                                message.flyoverInfo = [];
+                                for (var i = 0; i < object.flyoverInfo.length; ++i) {
+                                    if (typeof object.flyoverInfo[i] !== "object")
+                                        throw TypeError(".google.maps.routing.v2.PolylineDetails.flyoverInfo: object expected");
+                                    message.flyoverInfo[i] = $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo.fromObject(object.flyoverInfo[i]);
+                                }
+                            }
+                            if (object.narrowRoadInfo) {
+                                if (!Array.isArray(object.narrowRoadInfo))
+                                    throw TypeError(".google.maps.routing.v2.PolylineDetails.narrowRoadInfo: array expected");
+                                message.narrowRoadInfo = [];
+                                for (var i = 0; i < object.narrowRoadInfo.length; ++i) {
+                                    if (typeof object.narrowRoadInfo[i] !== "object")
+                                        throw TypeError(".google.maps.routing.v2.PolylineDetails.narrowRoadInfo: object expected");
+                                    message.narrowRoadInfo[i] = $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.fromObject(object.narrowRoadInfo[i]);
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a PolylineDetails message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {google.maps.routing.v2.PolylineDetails} message PolylineDetails
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        PolylineDetails.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults) {
+                                object.flyoverInfo = [];
+                                object.narrowRoadInfo = [];
+                            }
+                            if (message.flyoverInfo && message.flyoverInfo.length) {
+                                object.flyoverInfo = [];
+                                for (var j = 0; j < message.flyoverInfo.length; ++j)
+                                    object.flyoverInfo[j] = $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo.toObject(message.flyoverInfo[j], options);
+                            }
+                            if (message.narrowRoadInfo && message.narrowRoadInfo.length) {
+                                object.narrowRoadInfo = [];
+                                for (var j = 0; j < message.narrowRoadInfo.length; ++j)
+                                    object.narrowRoadInfo[j] = $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.toObject(message.narrowRoadInfo[j], options);
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this PolylineDetails to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        PolylineDetails.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for PolylineDetails
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.PolylineDetails
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        PolylineDetails.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.PolylineDetails";
+                        };
+    
+                        PolylineDetails.PolylinePointIndex = (function() {
+    
+                            /**
+                             * Properties of a PolylinePointIndex.
+                             * @memberof google.maps.routing.v2.PolylineDetails
+                             * @interface IPolylinePointIndex
+                             * @property {number|null} [startIndex] PolylinePointIndex startIndex
+                             * @property {number|null} [endIndex] PolylinePointIndex endIndex
+                             */
+    
+                            /**
+                             * Constructs a new PolylinePointIndex.
+                             * @memberof google.maps.routing.v2.PolylineDetails
+                             * @classdesc Represents a PolylinePointIndex.
+                             * @implements IPolylinePointIndex
+                             * @constructor
+                             * @param {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex=} [properties] Properties to set
+                             */
+                            function PolylinePointIndex(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * PolylinePointIndex startIndex.
+                             * @member {number|null|undefined} startIndex
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @instance
+                             */
+                            PolylinePointIndex.prototype.startIndex = null;
+    
+                            /**
+                             * PolylinePointIndex endIndex.
+                             * @member {number|null|undefined} endIndex
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @instance
+                             */
+                            PolylinePointIndex.prototype.endIndex = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * PolylinePointIndex _startIndex.
+                             * @member {"startIndex"|undefined} _startIndex
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @instance
+                             */
+                            Object.defineProperty(PolylinePointIndex.prototype, "_startIndex", {
+                                get: $util.oneOfGetter($oneOfFields = ["startIndex"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * PolylinePointIndex _endIndex.
+                             * @member {"endIndex"|undefined} _endIndex
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @instance
+                             */
+                            Object.defineProperty(PolylinePointIndex.prototype, "_endIndex", {
+                                get: $util.oneOfGetter($oneOfFields = ["endIndex"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Creates a new PolylinePointIndex instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.PolylineDetails.PolylinePointIndex} PolylinePointIndex instance
+                             */
+                            PolylinePointIndex.create = function create(properties) {
+                                return new PolylinePointIndex(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified PolylinePointIndex message. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.PolylinePointIndex.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex} message PolylinePointIndex message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PolylinePointIndex.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.startIndex != null && Object.hasOwnProperty.call(message, "startIndex"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.startIndex);
+                                if (message.endIndex != null && Object.hasOwnProperty.call(message, "endIndex"))
+                                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.endIndex);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified PolylinePointIndex message, length delimited. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.PolylinePointIndex.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex} message PolylinePointIndex message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PolylinePointIndex.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a PolylinePointIndex message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.PolylineDetails.PolylinePointIndex} PolylinePointIndex
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PolylinePointIndex.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.startIndex = reader.int32();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.endIndex = reader.int32();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a PolylinePointIndex message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.PolylineDetails.PolylinePointIndex} PolylinePointIndex
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PolylinePointIndex.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a PolylinePointIndex message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            PolylinePointIndex.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                var properties = {};
+                                if (message.startIndex != null && message.hasOwnProperty("startIndex")) {
+                                    properties._startIndex = 1;
+                                    if (!$util.isInteger(message.startIndex))
+                                        return "startIndex: integer expected";
+                                }
+                                if (message.endIndex != null && message.hasOwnProperty("endIndex")) {
+                                    properties._endIndex = 1;
+                                    if (!$util.isInteger(message.endIndex))
+                                        return "endIndex: integer expected";
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a PolylinePointIndex message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.PolylineDetails.PolylinePointIndex} PolylinePointIndex
+                             */
+                            PolylinePointIndex.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex();
+                                if (object.startIndex != null)
+                                    message.startIndex = object.startIndex | 0;
+                                if (object.endIndex != null)
+                                    message.endIndex = object.endIndex | 0;
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a PolylinePointIndex message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.PolylinePointIndex} message PolylinePointIndex
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            PolylinePointIndex.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (message.startIndex != null && message.hasOwnProperty("startIndex")) {
+                                    object.startIndex = message.startIndex;
+                                    if (options.oneofs)
+                                        object._startIndex = "startIndex";
+                                }
+                                if (message.endIndex != null && message.hasOwnProperty("endIndex")) {
+                                    object.endIndex = message.endIndex;
+                                    if (options.oneofs)
+                                        object._endIndex = "endIndex";
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this PolylinePointIndex to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            PolylinePointIndex.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for PolylinePointIndex
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.PolylineDetails.PolylinePointIndex
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            PolylinePointIndex.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.PolylineDetails.PolylinePointIndex";
+                            };
+    
+                            return PolylinePointIndex;
+                        })();
+    
+                        /**
+                         * RoadFeatureState enum.
+                         * @name google.maps.routing.v2.PolylineDetails.RoadFeatureState
+                         * @enum {number}
+                         * @property {number} ROAD_FEATURE_STATE_UNSPECIFIED=0 ROAD_FEATURE_STATE_UNSPECIFIED value
+                         * @property {number} EXISTS=1 EXISTS value
+                         * @property {number} DOES_NOT_EXIST=2 DOES_NOT_EXIST value
+                         */
+                        PolylineDetails.RoadFeatureState = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "ROAD_FEATURE_STATE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "EXISTS"] = 1;
+                            values[valuesById[2] = "DOES_NOT_EXIST"] = 2;
+                            return values;
+                        })();
+    
+                        PolylineDetails.FlyoverInfo = (function() {
+    
+                            /**
+                             * Properties of a FlyoverInfo.
+                             * @memberof google.maps.routing.v2.PolylineDetails
+                             * @interface IFlyoverInfo
+                             * @property {google.maps.routing.v2.PolylineDetails.RoadFeatureState|null} [flyoverPresence] FlyoverInfo flyoverPresence
+                             * @property {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex|null} [polylinePointIndex] FlyoverInfo polylinePointIndex
+                             */
+    
+                            /**
+                             * Constructs a new FlyoverInfo.
+                             * @memberof google.maps.routing.v2.PolylineDetails
+                             * @classdesc Represents a FlyoverInfo.
+                             * @implements IFlyoverInfo
+                             * @constructor
+                             * @param {google.maps.routing.v2.PolylineDetails.IFlyoverInfo=} [properties] Properties to set
+                             */
+                            function FlyoverInfo(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * FlyoverInfo flyoverPresence.
+                             * @member {google.maps.routing.v2.PolylineDetails.RoadFeatureState} flyoverPresence
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @instance
+                             */
+                            FlyoverInfo.prototype.flyoverPresence = 0;
+    
+                            /**
+                             * FlyoverInfo polylinePointIndex.
+                             * @member {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex|null|undefined} polylinePointIndex
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @instance
+                             */
+                            FlyoverInfo.prototype.polylinePointIndex = null;
+    
+                            /**
+                             * Creates a new FlyoverInfo instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.IFlyoverInfo=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.PolylineDetails.FlyoverInfo} FlyoverInfo instance
+                             */
+                            FlyoverInfo.create = function create(properties) {
+                                return new FlyoverInfo(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified FlyoverInfo message. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.FlyoverInfo.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.IFlyoverInfo} message FlyoverInfo message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            FlyoverInfo.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.flyoverPresence != null && Object.hasOwnProperty.call(message, "flyoverPresence"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.flyoverPresence);
+                                if (message.polylinePointIndex != null && Object.hasOwnProperty.call(message, "polylinePointIndex"))
+                                    $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.encode(message.polylinePointIndex, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified FlyoverInfo message, length delimited. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.FlyoverInfo.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.IFlyoverInfo} message FlyoverInfo message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            FlyoverInfo.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a FlyoverInfo message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.PolylineDetails.FlyoverInfo} FlyoverInfo
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            FlyoverInfo.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.flyoverPresence = reader.int32();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.polylinePointIndex = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a FlyoverInfo message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.PolylineDetails.FlyoverInfo} FlyoverInfo
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            FlyoverInfo.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a FlyoverInfo message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            FlyoverInfo.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.flyoverPresence != null && message.hasOwnProperty("flyoverPresence"))
+                                    switch (message.flyoverPresence) {
+                                    default:
+                                        return "flyoverPresence: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
+                                if (message.polylinePointIndex != null && message.hasOwnProperty("polylinePointIndex")) {
+                                    var error = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.verify(message.polylinePointIndex);
+                                    if (error)
+                                        return "polylinePointIndex." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a FlyoverInfo message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.PolylineDetails.FlyoverInfo} FlyoverInfo
+                             */
+                            FlyoverInfo.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.PolylineDetails.FlyoverInfo();
+                                switch (object.flyoverPresence) {
+                                default:
+                                    if (typeof object.flyoverPresence === "number") {
+                                        message.flyoverPresence = object.flyoverPresence;
+                                        break;
+                                    }
+                                    break;
+                                case "ROAD_FEATURE_STATE_UNSPECIFIED":
+                                case 0:
+                                    message.flyoverPresence = 0;
+                                    break;
+                                case "EXISTS":
+                                case 1:
+                                    message.flyoverPresence = 1;
+                                    break;
+                                case "DOES_NOT_EXIST":
+                                case 2:
+                                    message.flyoverPresence = 2;
+                                    break;
+                                }
+                                if (object.polylinePointIndex != null) {
+                                    if (typeof object.polylinePointIndex !== "object")
+                                        throw TypeError(".google.maps.routing.v2.PolylineDetails.FlyoverInfo.polylinePointIndex: object expected");
+                                    message.polylinePointIndex = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.fromObject(object.polylinePointIndex);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a FlyoverInfo message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.FlyoverInfo} message FlyoverInfo
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            FlyoverInfo.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.flyoverPresence = options.enums === String ? "ROAD_FEATURE_STATE_UNSPECIFIED" : 0;
+                                    object.polylinePointIndex = null;
+                                }
+                                if (message.flyoverPresence != null && message.hasOwnProperty("flyoverPresence"))
+                                    object.flyoverPresence = options.enums === String ? $root.google.maps.routing.v2.PolylineDetails.RoadFeatureState[message.flyoverPresence] === undefined ? message.flyoverPresence : $root.google.maps.routing.v2.PolylineDetails.RoadFeatureState[message.flyoverPresence] : message.flyoverPresence;
+                                if (message.polylinePointIndex != null && message.hasOwnProperty("polylinePointIndex"))
+                                    object.polylinePointIndex = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.toObject(message.polylinePointIndex, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this FlyoverInfo to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            FlyoverInfo.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for FlyoverInfo
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.PolylineDetails.FlyoverInfo
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            FlyoverInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.PolylineDetails.FlyoverInfo";
+                            };
+    
+                            return FlyoverInfo;
+                        })();
+    
+                        PolylineDetails.NarrowRoadInfo = (function() {
+    
+                            /**
+                             * Properties of a NarrowRoadInfo.
+                             * @memberof google.maps.routing.v2.PolylineDetails
+                             * @interface INarrowRoadInfo
+                             * @property {google.maps.routing.v2.PolylineDetails.RoadFeatureState|null} [narrowRoadPresence] NarrowRoadInfo narrowRoadPresence
+                             * @property {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex|null} [polylinePointIndex] NarrowRoadInfo polylinePointIndex
+                             */
+    
+                            /**
+                             * Constructs a new NarrowRoadInfo.
+                             * @memberof google.maps.routing.v2.PolylineDetails
+                             * @classdesc Represents a NarrowRoadInfo.
+                             * @implements INarrowRoadInfo
+                             * @constructor
+                             * @param {google.maps.routing.v2.PolylineDetails.INarrowRoadInfo=} [properties] Properties to set
+                             */
+                            function NarrowRoadInfo(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * NarrowRoadInfo narrowRoadPresence.
+                             * @member {google.maps.routing.v2.PolylineDetails.RoadFeatureState} narrowRoadPresence
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @instance
+                             */
+                            NarrowRoadInfo.prototype.narrowRoadPresence = 0;
+    
+                            /**
+                             * NarrowRoadInfo polylinePointIndex.
+                             * @member {google.maps.routing.v2.PolylineDetails.IPolylinePointIndex|null|undefined} polylinePointIndex
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @instance
+                             */
+                            NarrowRoadInfo.prototype.polylinePointIndex = null;
+    
+                            /**
+                             * Creates a new NarrowRoadInfo instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.INarrowRoadInfo=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.PolylineDetails.NarrowRoadInfo} NarrowRoadInfo instance
+                             */
+                            NarrowRoadInfo.create = function create(properties) {
+                                return new NarrowRoadInfo(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified NarrowRoadInfo message. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.INarrowRoadInfo} message NarrowRoadInfo message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            NarrowRoadInfo.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.narrowRoadPresence != null && Object.hasOwnProperty.call(message, "narrowRoadPresence"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.narrowRoadPresence);
+                                if (message.polylinePointIndex != null && Object.hasOwnProperty.call(message, "polylinePointIndex"))
+                                    $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.encode(message.polylinePointIndex, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified NarrowRoadInfo message, length delimited. Does not implicitly {@link google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.INarrowRoadInfo} message NarrowRoadInfo message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            NarrowRoadInfo.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a NarrowRoadInfo message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.PolylineDetails.NarrowRoadInfo} NarrowRoadInfo
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            NarrowRoadInfo.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.narrowRoadPresence = reader.int32();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.polylinePointIndex = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a NarrowRoadInfo message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.PolylineDetails.NarrowRoadInfo} NarrowRoadInfo
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            NarrowRoadInfo.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a NarrowRoadInfo message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            NarrowRoadInfo.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.narrowRoadPresence != null && message.hasOwnProperty("narrowRoadPresence"))
+                                    switch (message.narrowRoadPresence) {
+                                    default:
+                                        return "narrowRoadPresence: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
+                                if (message.polylinePointIndex != null && message.hasOwnProperty("polylinePointIndex")) {
+                                    var error = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.verify(message.polylinePointIndex);
+                                    if (error)
+                                        return "polylinePointIndex." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a NarrowRoadInfo message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.PolylineDetails.NarrowRoadInfo} NarrowRoadInfo
+                             */
+                            NarrowRoadInfo.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.PolylineDetails.NarrowRoadInfo();
+                                switch (object.narrowRoadPresence) {
+                                default:
+                                    if (typeof object.narrowRoadPresence === "number") {
+                                        message.narrowRoadPresence = object.narrowRoadPresence;
+                                        break;
+                                    }
+                                    break;
+                                case "ROAD_FEATURE_STATE_UNSPECIFIED":
+                                case 0:
+                                    message.narrowRoadPresence = 0;
+                                    break;
+                                case "EXISTS":
+                                case 1:
+                                    message.narrowRoadPresence = 1;
+                                    break;
+                                case "DOES_NOT_EXIST":
+                                case 2:
+                                    message.narrowRoadPresence = 2;
+                                    break;
+                                }
+                                if (object.polylinePointIndex != null) {
+                                    if (typeof object.polylinePointIndex !== "object")
+                                        throw TypeError(".google.maps.routing.v2.PolylineDetails.NarrowRoadInfo.polylinePointIndex: object expected");
+                                    message.polylinePointIndex = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.fromObject(object.polylinePointIndex);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a NarrowRoadInfo message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {google.maps.routing.v2.PolylineDetails.NarrowRoadInfo} message NarrowRoadInfo
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            NarrowRoadInfo.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.narrowRoadPresence = options.enums === String ? "ROAD_FEATURE_STATE_UNSPECIFIED" : 0;
+                                    object.polylinePointIndex = null;
+                                }
+                                if (message.narrowRoadPresence != null && message.hasOwnProperty("narrowRoadPresence"))
+                                    object.narrowRoadPresence = options.enums === String ? $root.google.maps.routing.v2.PolylineDetails.RoadFeatureState[message.narrowRoadPresence] === undefined ? message.narrowRoadPresence : $root.google.maps.routing.v2.PolylineDetails.RoadFeatureState[message.narrowRoadPresence] : message.narrowRoadPresence;
+                                if (message.polylinePointIndex != null && message.hasOwnProperty("polylinePointIndex"))
+                                    object.polylinePointIndex = $root.google.maps.routing.v2.PolylineDetails.PolylinePointIndex.toObject(message.polylinePointIndex, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this NarrowRoadInfo to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            NarrowRoadInfo.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for NarrowRoadInfo
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.PolylineDetails.NarrowRoadInfo
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            NarrowRoadInfo.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.PolylineDetails.NarrowRoadInfo";
+                            };
+    
+                            return NarrowRoadInfo;
+                        })();
+    
+                        return PolylineDetails;
+                    })();
+    
                     v2.Route = (function() {
     
                         /**
@@ -15414,7 +19559,10 @@
                          * @property {Array.<string>|null} [warnings] Route warnings
                          * @property {google.geo.type.IViewport|null} [viewport] Route viewport
                          * @property {google.maps.routing.v2.IRouteTravelAdvisory|null} [travelAdvisory] Route travelAdvisory
+                         * @property {Array.<number>|null} [optimizedIntermediateWaypointIndex] Route optimizedIntermediateWaypointIndex
+                         * @property {google.maps.routing.v2.Route.IRouteLocalizedValues|null} [localizedValues] Route localizedValues
                          * @property {string|null} [routeToken] Route routeToken
+                         * @property {google.maps.routing.v2.IPolylineDetails|null} [polylineDetails] Route polylineDetails
                          */
     
                         /**
@@ -15429,6 +19577,7 @@
                             this.routeLabels = [];
                             this.legs = [];
                             this.warnings = [];
+                            this.optimizedIntermediateWaypointIndex = [];
                             if (properties)
                                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                     if (properties[keys[i]] != null)
@@ -15516,12 +19665,36 @@
                         Route.prototype.travelAdvisory = null;
     
                         /**
+                         * Route optimizedIntermediateWaypointIndex.
+                         * @member {Array.<number>} optimizedIntermediateWaypointIndex
+                         * @memberof google.maps.routing.v2.Route
+                         * @instance
+                         */
+                        Route.prototype.optimizedIntermediateWaypointIndex = $util.emptyArray;
+    
+                        /**
+                         * Route localizedValues.
+                         * @member {google.maps.routing.v2.Route.IRouteLocalizedValues|null|undefined} localizedValues
+                         * @memberof google.maps.routing.v2.Route
+                         * @instance
+                         */
+                        Route.prototype.localizedValues = null;
+    
+                        /**
                          * Route routeToken.
                          * @member {string} routeToken
                          * @memberof google.maps.routing.v2.Route
                          * @instance
                          */
                         Route.prototype.routeToken = "";
+    
+                        /**
+                         * Route polylineDetails.
+                         * @member {google.maps.routing.v2.IPolylineDetails|null|undefined} polylineDetails
+                         * @memberof google.maps.routing.v2.Route
+                         * @instance
+                         */
+                        Route.prototype.polylineDetails = null;
     
                         /**
                          * Creates a new Route instance using the specified properties.
@@ -15567,6 +19740,14 @@
                                 $root.google.geo.type.Viewport.encode(message.viewport, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                             if (message.travelAdvisory != null && Object.hasOwnProperty.call(message, "travelAdvisory"))
                                 $root.google.maps.routing.v2.RouteTravelAdvisory.encode(message.travelAdvisory, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                            if (message.optimizedIntermediateWaypointIndex != null && message.optimizedIntermediateWaypointIndex.length) {
+                                writer.uint32(/* id 10, wireType 2 =*/82).fork();
+                                for (var i = 0; i < message.optimizedIntermediateWaypointIndex.length; ++i)
+                                    writer.int32(message.optimizedIntermediateWaypointIndex[i]);
+                                writer.ldelim();
+                            }
+                            if (message.localizedValues != null && Object.hasOwnProperty.call(message, "localizedValues"))
+                                $root.google.maps.routing.v2.Route.RouteLocalizedValues.encode(message.localizedValues, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
                             if (message.routeToken != null && Object.hasOwnProperty.call(message, "routeToken"))
                                 writer.uint32(/* id 12, wireType 2 =*/98).string(message.routeToken);
                             if (message.routeLabels != null && message.routeLabels.length) {
@@ -15575,6 +19756,8 @@
                                     writer.int32(message.routeLabels[i]);
                                 writer.ldelim();
                             }
+                            if (message.polylineDetails != null && Object.hasOwnProperty.call(message, "polylineDetails"))
+                                $root.google.maps.routing.v2.PolylineDetails.encode(message.polylineDetails, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
                             return writer;
                         };
     
@@ -15660,8 +19843,27 @@
                                         message.travelAdvisory = $root.google.maps.routing.v2.RouteTravelAdvisory.decode(reader, reader.uint32());
                                         break;
                                     }
+                                case 10: {
+                                        if (!(message.optimizedIntermediateWaypointIndex && message.optimizedIntermediateWaypointIndex.length))
+                                            message.optimizedIntermediateWaypointIndex = [];
+                                        if ((tag & 7) === 2) {
+                                            var end2 = reader.uint32() + reader.pos;
+                                            while (reader.pos < end2)
+                                                message.optimizedIntermediateWaypointIndex.push(reader.int32());
+                                        } else
+                                            message.optimizedIntermediateWaypointIndex.push(reader.int32());
+                                        break;
+                                    }
+                                case 11: {
+                                        message.localizedValues = $root.google.maps.routing.v2.Route.RouteLocalizedValues.decode(reader, reader.uint32());
+                                        break;
+                                    }
                                 case 12: {
                                         message.routeToken = reader.string();
+                                        break;
+                                    }
+                                case 14: {
+                                        message.polylineDetails = $root.google.maps.routing.v2.PolylineDetails.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -15710,6 +19912,7 @@
                                     case 1:
                                     case 2:
                                     case 3:
+                                    case 4:
                                         break;
                                     }
                             }
@@ -15760,9 +19963,26 @@
                                 if (error)
                                     return "travelAdvisory." + error;
                             }
+                            if (message.optimizedIntermediateWaypointIndex != null && message.hasOwnProperty("optimizedIntermediateWaypointIndex")) {
+                                if (!Array.isArray(message.optimizedIntermediateWaypointIndex))
+                                    return "optimizedIntermediateWaypointIndex: array expected";
+                                for (var i = 0; i < message.optimizedIntermediateWaypointIndex.length; ++i)
+                                    if (!$util.isInteger(message.optimizedIntermediateWaypointIndex[i]))
+                                        return "optimizedIntermediateWaypointIndex: integer[] expected";
+                            }
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues")) {
+                                var error = $root.google.maps.routing.v2.Route.RouteLocalizedValues.verify(message.localizedValues);
+                                if (error)
+                                    return "localizedValues." + error;
+                            }
                             if (message.routeToken != null && message.hasOwnProperty("routeToken"))
                                 if (!$util.isString(message.routeToken))
                                     return "routeToken: string expected";
+                            if (message.polylineDetails != null && message.hasOwnProperty("polylineDetails")) {
+                                var error = $root.google.maps.routing.v2.PolylineDetails.verify(message.polylineDetails);
+                                if (error)
+                                    return "polylineDetails." + error;
+                            }
                             return null;
                         };
     
@@ -15804,6 +20024,10 @@
                                     case "FUEL_EFFICIENT":
                                     case 3:
                                         message.routeLabels[i] = 3;
+                                        break;
+                                    case "SHORTER_DISTANCE":
+                                    case 4:
+                                        message.routeLabels[i] = 4;
                                         break;
                                     }
                             }
@@ -15853,8 +20077,25 @@
                                     throw TypeError(".google.maps.routing.v2.Route.travelAdvisory: object expected");
                                 message.travelAdvisory = $root.google.maps.routing.v2.RouteTravelAdvisory.fromObject(object.travelAdvisory);
                             }
+                            if (object.optimizedIntermediateWaypointIndex) {
+                                if (!Array.isArray(object.optimizedIntermediateWaypointIndex))
+                                    throw TypeError(".google.maps.routing.v2.Route.optimizedIntermediateWaypointIndex: array expected");
+                                message.optimizedIntermediateWaypointIndex = [];
+                                for (var i = 0; i < object.optimizedIntermediateWaypointIndex.length; ++i)
+                                    message.optimizedIntermediateWaypointIndex[i] = object.optimizedIntermediateWaypointIndex[i] | 0;
+                            }
+                            if (object.localizedValues != null) {
+                                if (typeof object.localizedValues !== "object")
+                                    throw TypeError(".google.maps.routing.v2.Route.localizedValues: object expected");
+                                message.localizedValues = $root.google.maps.routing.v2.Route.RouteLocalizedValues.fromObject(object.localizedValues);
+                            }
                             if (object.routeToken != null)
                                 message.routeToken = String(object.routeToken);
+                            if (object.polylineDetails != null) {
+                                if (typeof object.polylineDetails !== "object")
+                                    throw TypeError(".google.maps.routing.v2.Route.polylineDetails: object expected");
+                                message.polylineDetails = $root.google.maps.routing.v2.PolylineDetails.fromObject(object.polylineDetails);
+                            }
                             return message;
                         };
     
@@ -15874,6 +20115,7 @@
                             if (options.arrays || options.defaults) {
                                 object.legs = [];
                                 object.warnings = [];
+                                object.optimizedIntermediateWaypointIndex = [];
                                 object.routeLabels = [];
                             }
                             if (options.defaults) {
@@ -15884,7 +20126,9 @@
                                 object.description = "";
                                 object.viewport = null;
                                 object.travelAdvisory = null;
+                                object.localizedValues = null;
                                 object.routeToken = "";
+                                object.polylineDetails = null;
                             }
                             if (message.legs && message.legs.length) {
                                 object.legs = [];
@@ -15910,6 +20154,13 @@
                                 object.viewport = $root.google.geo.type.Viewport.toObject(message.viewport, options);
                             if (message.travelAdvisory != null && message.hasOwnProperty("travelAdvisory"))
                                 object.travelAdvisory = $root.google.maps.routing.v2.RouteTravelAdvisory.toObject(message.travelAdvisory, options);
+                            if (message.optimizedIntermediateWaypointIndex && message.optimizedIntermediateWaypointIndex.length) {
+                                object.optimizedIntermediateWaypointIndex = [];
+                                for (var j = 0; j < message.optimizedIntermediateWaypointIndex.length; ++j)
+                                    object.optimizedIntermediateWaypointIndex[j] = message.optimizedIntermediateWaypointIndex[j];
+                            }
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues"))
+                                object.localizedValues = $root.google.maps.routing.v2.Route.RouteLocalizedValues.toObject(message.localizedValues, options);
                             if (message.routeToken != null && message.hasOwnProperty("routeToken"))
                                 object.routeToken = message.routeToken;
                             if (message.routeLabels && message.routeLabels.length) {
@@ -15917,6 +20168,8 @@
                                 for (var j = 0; j < message.routeLabels.length; ++j)
                                     object.routeLabels[j] = options.enums === String ? $root.google.maps.routing.v2.RouteLabel[message.routeLabels[j]] === undefined ? message.routeLabels[j] : $root.google.maps.routing.v2.RouteLabel[message.routeLabels[j]] : message.routeLabels[j];
                             }
+                            if (message.polylineDetails != null && message.hasOwnProperty("polylineDetails"))
+                                object.polylineDetails = $root.google.maps.routing.v2.PolylineDetails.toObject(message.polylineDetails, options);
                             return object;
                         };
     
@@ -15946,6 +20199,299 @@
                             return typeUrlPrefix + "/google.maps.routing.v2.Route";
                         };
     
+                        Route.RouteLocalizedValues = (function() {
+    
+                            /**
+                             * Properties of a RouteLocalizedValues.
+                             * @memberof google.maps.routing.v2.Route
+                             * @interface IRouteLocalizedValues
+                             * @property {google.type.ILocalizedText|null} [distance] RouteLocalizedValues distance
+                             * @property {google.type.ILocalizedText|null} [duration] RouteLocalizedValues duration
+                             * @property {google.type.ILocalizedText|null} [staticDuration] RouteLocalizedValues staticDuration
+                             * @property {google.type.ILocalizedText|null} [transitFare] RouteLocalizedValues transitFare
+                             */
+    
+                            /**
+                             * Constructs a new RouteLocalizedValues.
+                             * @memberof google.maps.routing.v2.Route
+                             * @classdesc Represents a RouteLocalizedValues.
+                             * @implements IRouteLocalizedValues
+                             * @constructor
+                             * @param {google.maps.routing.v2.Route.IRouteLocalizedValues=} [properties] Properties to set
+                             */
+                            function RouteLocalizedValues(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * RouteLocalizedValues distance.
+                             * @member {google.type.ILocalizedText|null|undefined} distance
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @instance
+                             */
+                            RouteLocalizedValues.prototype.distance = null;
+    
+                            /**
+                             * RouteLocalizedValues duration.
+                             * @member {google.type.ILocalizedText|null|undefined} duration
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @instance
+                             */
+                            RouteLocalizedValues.prototype.duration = null;
+    
+                            /**
+                             * RouteLocalizedValues staticDuration.
+                             * @member {google.type.ILocalizedText|null|undefined} staticDuration
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @instance
+                             */
+                            RouteLocalizedValues.prototype.staticDuration = null;
+    
+                            /**
+                             * RouteLocalizedValues transitFare.
+                             * @member {google.type.ILocalizedText|null|undefined} transitFare
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @instance
+                             */
+                            RouteLocalizedValues.prototype.transitFare = null;
+    
+                            /**
+                             * Creates a new RouteLocalizedValues instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.Route.IRouteLocalizedValues=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.Route.RouteLocalizedValues} RouteLocalizedValues instance
+                             */
+                            RouteLocalizedValues.create = function create(properties) {
+                                return new RouteLocalizedValues(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified RouteLocalizedValues message. Does not implicitly {@link google.maps.routing.v2.Route.RouteLocalizedValues.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.Route.IRouteLocalizedValues} message RouteLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RouteLocalizedValues.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.distance != null && Object.hasOwnProperty.call(message, "distance"))
+                                    $root.google.type.LocalizedText.encode(message.distance, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.duration != null && Object.hasOwnProperty.call(message, "duration"))
+                                    $root.google.type.LocalizedText.encode(message.duration, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.staticDuration != null && Object.hasOwnProperty.call(message, "staticDuration"))
+                                    $root.google.type.LocalizedText.encode(message.staticDuration, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                if (message.transitFare != null && Object.hasOwnProperty.call(message, "transitFare"))
+                                    $root.google.type.LocalizedText.encode(message.transitFare, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified RouteLocalizedValues message, length delimited. Does not implicitly {@link google.maps.routing.v2.Route.RouteLocalizedValues.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.Route.IRouteLocalizedValues} message RouteLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RouteLocalizedValues.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a RouteLocalizedValues message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.Route.RouteLocalizedValues} RouteLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RouteLocalizedValues.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.Route.RouteLocalizedValues();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.distance = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.duration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.staticDuration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.transitFare = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a RouteLocalizedValues message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.Route.RouteLocalizedValues} RouteLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RouteLocalizedValues.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a RouteLocalizedValues message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            RouteLocalizedValues.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.distance != null && message.hasOwnProperty("distance")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.distance);
+                                    if (error)
+                                        return "distance." + error;
+                                }
+                                if (message.duration != null && message.hasOwnProperty("duration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.duration);
+                                    if (error)
+                                        return "duration." + error;
+                                }
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.staticDuration);
+                                    if (error)
+                                        return "staticDuration." + error;
+                                }
+                                if (message.transitFare != null && message.hasOwnProperty("transitFare")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.transitFare);
+                                    if (error)
+                                        return "transitFare." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a RouteLocalizedValues message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.Route.RouteLocalizedValues} RouteLocalizedValues
+                             */
+                            RouteLocalizedValues.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.Route.RouteLocalizedValues)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.Route.RouteLocalizedValues();
+                                if (object.distance != null) {
+                                    if (typeof object.distance !== "object")
+                                        throw TypeError(".google.maps.routing.v2.Route.RouteLocalizedValues.distance: object expected");
+                                    message.distance = $root.google.type.LocalizedText.fromObject(object.distance);
+                                }
+                                if (object.duration != null) {
+                                    if (typeof object.duration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.Route.RouteLocalizedValues.duration: object expected");
+                                    message.duration = $root.google.type.LocalizedText.fromObject(object.duration);
+                                }
+                                if (object.staticDuration != null) {
+                                    if (typeof object.staticDuration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.Route.RouteLocalizedValues.staticDuration: object expected");
+                                    message.staticDuration = $root.google.type.LocalizedText.fromObject(object.staticDuration);
+                                }
+                                if (object.transitFare != null) {
+                                    if (typeof object.transitFare !== "object")
+                                        throw TypeError(".google.maps.routing.v2.Route.RouteLocalizedValues.transitFare: object expected");
+                                    message.transitFare = $root.google.type.LocalizedText.fromObject(object.transitFare);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a RouteLocalizedValues message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.Route.RouteLocalizedValues} message RouteLocalizedValues
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            RouteLocalizedValues.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.distance = null;
+                                    object.duration = null;
+                                    object.staticDuration = null;
+                                    object.transitFare = null;
+                                }
+                                if (message.distance != null && message.hasOwnProperty("distance"))
+                                    object.distance = $root.google.type.LocalizedText.toObject(message.distance, options);
+                                if (message.duration != null && message.hasOwnProperty("duration"))
+                                    object.duration = $root.google.type.LocalizedText.toObject(message.duration, options);
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration"))
+                                    object.staticDuration = $root.google.type.LocalizedText.toObject(message.staticDuration, options);
+                                if (message.transitFare != null && message.hasOwnProperty("transitFare"))
+                                    object.transitFare = $root.google.type.LocalizedText.toObject(message.transitFare, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this RouteLocalizedValues to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            RouteLocalizedValues.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for RouteLocalizedValues
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.Route.RouteLocalizedValues
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            RouteLocalizedValues.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.Route.RouteLocalizedValues";
+                            };
+    
+                            return RouteLocalizedValues;
+                        })();
+    
                         return Route;
                     })();
     
@@ -15958,6 +20504,8 @@
                          * @property {google.maps.routing.v2.ITollInfo|null} [tollInfo] RouteTravelAdvisory tollInfo
                          * @property {Array.<google.maps.routing.v2.ISpeedReadingInterval>|null} [speedReadingIntervals] RouteTravelAdvisory speedReadingIntervals
                          * @property {number|Long|null} [fuelConsumptionMicroliters] RouteTravelAdvisory fuelConsumptionMicroliters
+                         * @property {boolean|null} [routeRestrictionsPartiallyIgnored] RouteTravelAdvisory routeRestrictionsPartiallyIgnored
+                         * @property {google.type.IMoney|null} [transitFare] RouteTravelAdvisory transitFare
                          */
     
                         /**
@@ -16001,6 +20549,22 @@
                         RouteTravelAdvisory.prototype.fuelConsumptionMicroliters = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
                         /**
+                         * RouteTravelAdvisory routeRestrictionsPartiallyIgnored.
+                         * @member {boolean} routeRestrictionsPartiallyIgnored
+                         * @memberof google.maps.routing.v2.RouteTravelAdvisory
+                         * @instance
+                         */
+                        RouteTravelAdvisory.prototype.routeRestrictionsPartiallyIgnored = false;
+    
+                        /**
+                         * RouteTravelAdvisory transitFare.
+                         * @member {google.type.IMoney|null|undefined} transitFare
+                         * @memberof google.maps.routing.v2.RouteTravelAdvisory
+                         * @instance
+                         */
+                        RouteTravelAdvisory.prototype.transitFare = null;
+    
+                        /**
                          * Creates a new RouteTravelAdvisory instance using the specified properties.
                          * @function create
                          * @memberof google.maps.routing.v2.RouteTravelAdvisory
@@ -16031,6 +20595,10 @@
                                     $root.google.maps.routing.v2.SpeedReadingInterval.encode(message.speedReadingIntervals[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                             if (message.fuelConsumptionMicroliters != null && Object.hasOwnProperty.call(message, "fuelConsumptionMicroliters"))
                                 writer.uint32(/* id 5, wireType 0 =*/40).int64(message.fuelConsumptionMicroliters);
+                            if (message.routeRestrictionsPartiallyIgnored != null && Object.hasOwnProperty.call(message, "routeRestrictionsPartiallyIgnored"))
+                                writer.uint32(/* id 6, wireType 0 =*/48).bool(message.routeRestrictionsPartiallyIgnored);
+                            if (message.transitFare != null && Object.hasOwnProperty.call(message, "transitFare"))
+                                $root.google.type.Money.encode(message.transitFare, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                             return writer;
                         };
     
@@ -16077,6 +20645,14 @@
                                     }
                                 case 5: {
                                         message.fuelConsumptionMicroliters = reader.int64();
+                                        break;
+                                    }
+                                case 6: {
+                                        message.routeRestrictionsPartiallyIgnored = reader.bool();
+                                        break;
+                                    }
+                                case 7: {
+                                        message.transitFare = $root.google.type.Money.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -16131,6 +20707,14 @@
                             if (message.fuelConsumptionMicroliters != null && message.hasOwnProperty("fuelConsumptionMicroliters"))
                                 if (!$util.isInteger(message.fuelConsumptionMicroliters) && !(message.fuelConsumptionMicroliters && $util.isInteger(message.fuelConsumptionMicroliters.low) && $util.isInteger(message.fuelConsumptionMicroliters.high)))
                                     return "fuelConsumptionMicroliters: integer|Long expected";
+                            if (message.routeRestrictionsPartiallyIgnored != null && message.hasOwnProperty("routeRestrictionsPartiallyIgnored"))
+                                if (typeof message.routeRestrictionsPartiallyIgnored !== "boolean")
+                                    return "routeRestrictionsPartiallyIgnored: boolean expected";
+                            if (message.transitFare != null && message.hasOwnProperty("transitFare")) {
+                                var error = $root.google.type.Money.verify(message.transitFare);
+                                if (error)
+                                    return "transitFare." + error;
+                            }
                             return null;
                         };
     
@@ -16170,6 +20754,13 @@
                                     message.fuelConsumptionMicroliters = object.fuelConsumptionMicroliters;
                                 else if (typeof object.fuelConsumptionMicroliters === "object")
                                     message.fuelConsumptionMicroliters = new $util.LongBits(object.fuelConsumptionMicroliters.low >>> 0, object.fuelConsumptionMicroliters.high >>> 0).toNumber();
+                            if (object.routeRestrictionsPartiallyIgnored != null)
+                                message.routeRestrictionsPartiallyIgnored = Boolean(object.routeRestrictionsPartiallyIgnored);
+                            if (object.transitFare != null) {
+                                if (typeof object.transitFare !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteTravelAdvisory.transitFare: object expected");
+                                message.transitFare = $root.google.type.Money.fromObject(object.transitFare);
+                            }
                             return message;
                         };
     
@@ -16195,6 +20786,8 @@
                                     object.fuelConsumptionMicroliters = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                                 } else
                                     object.fuelConsumptionMicroliters = options.longs === String ? "0" : 0;
+                                object.routeRestrictionsPartiallyIgnored = false;
+                                object.transitFare = null;
                             }
                             if (message.tollInfo != null && message.hasOwnProperty("tollInfo"))
                                 object.tollInfo = $root.google.maps.routing.v2.TollInfo.toObject(message.tollInfo, options);
@@ -16208,6 +20801,10 @@
                                     object.fuelConsumptionMicroliters = options.longs === String ? String(message.fuelConsumptionMicroliters) : message.fuelConsumptionMicroliters;
                                 else
                                     object.fuelConsumptionMicroliters = options.longs === String ? $util.Long.prototype.toString.call(message.fuelConsumptionMicroliters) : options.longs === Number ? new $util.LongBits(message.fuelConsumptionMicroliters.low >>> 0, message.fuelConsumptionMicroliters.high >>> 0).toNumber() : message.fuelConsumptionMicroliters;
+                            if (message.routeRestrictionsPartiallyIgnored != null && message.hasOwnProperty("routeRestrictionsPartiallyIgnored"))
+                                object.routeRestrictionsPartiallyIgnored = message.routeRestrictionsPartiallyIgnored;
+                            if (message.transitFare != null && message.hasOwnProperty("transitFare"))
+                                object.transitFare = $root.google.type.Money.toObject(message.transitFare, options);
                             return object;
                         };
     
@@ -16731,6 +21328,8 @@
                          * @property {google.maps.routing.v2.ILocation|null} [endLocation] RouteLeg endLocation
                          * @property {Array.<google.maps.routing.v2.IRouteLegStep>|null} [steps] RouteLeg steps
                          * @property {google.maps.routing.v2.IRouteLegTravelAdvisory|null} [travelAdvisory] RouteLeg travelAdvisory
+                         * @property {google.maps.routing.v2.RouteLeg.IRouteLegLocalizedValues|null} [localizedValues] RouteLeg localizedValues
+                         * @property {google.maps.routing.v2.RouteLeg.IStepsOverview|null} [stepsOverview] RouteLeg stepsOverview
                          */
     
                         /**
@@ -16814,6 +21413,22 @@
                         RouteLeg.prototype.travelAdvisory = null;
     
                         /**
+                         * RouteLeg localizedValues.
+                         * @member {google.maps.routing.v2.RouteLeg.IRouteLegLocalizedValues|null|undefined} localizedValues
+                         * @memberof google.maps.routing.v2.RouteLeg
+                         * @instance
+                         */
+                        RouteLeg.prototype.localizedValues = null;
+    
+                        /**
+                         * RouteLeg stepsOverview.
+                         * @member {google.maps.routing.v2.RouteLeg.IStepsOverview|null|undefined} stepsOverview
+                         * @memberof google.maps.routing.v2.RouteLeg
+                         * @instance
+                         */
+                        RouteLeg.prototype.stepsOverview = null;
+    
+                        /**
                          * Creates a new RouteLeg instance using the specified properties.
                          * @function create
                          * @memberof google.maps.routing.v2.RouteLeg
@@ -16854,6 +21469,10 @@
                                     $root.google.maps.routing.v2.RouteLegStep.encode(message.steps[i], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                             if (message.travelAdvisory != null && Object.hasOwnProperty.call(message, "travelAdvisory"))
                                 $root.google.maps.routing.v2.RouteLegTravelAdvisory.encode(message.travelAdvisory, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                            if (message.localizedValues != null && Object.hasOwnProperty.call(message, "localizedValues"))
+                                $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.encode(message.localizedValues, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                            if (message.stepsOverview != null && Object.hasOwnProperty.call(message, "stepsOverview"))
+                                $root.google.maps.routing.v2.RouteLeg.StepsOverview.encode(message.stepsOverview, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                             return writer;
                         };
     
@@ -16920,6 +21539,14 @@
                                     }
                                 case 8: {
                                         message.travelAdvisory = $root.google.maps.routing.v2.RouteLegTravelAdvisory.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 9: {
+                                        message.localizedValues = $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 10: {
+                                        message.stepsOverview = $root.google.maps.routing.v2.RouteLeg.StepsOverview.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -16999,6 +21626,16 @@
                                 if (error)
                                     return "travelAdvisory." + error;
                             }
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues")) {
+                                var error = $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.verify(message.localizedValues);
+                                if (error)
+                                    return "localizedValues." + error;
+                            }
+                            if (message.stepsOverview != null && message.hasOwnProperty("stepsOverview")) {
+                                var error = $root.google.maps.routing.v2.RouteLeg.StepsOverview.verify(message.stepsOverview);
+                                if (error)
+                                    return "stepsOverview." + error;
+                            }
                             return null;
                         };
     
@@ -17056,6 +21693,16 @@
                                     throw TypeError(".google.maps.routing.v2.RouteLeg.travelAdvisory: object expected");
                                 message.travelAdvisory = $root.google.maps.routing.v2.RouteLegTravelAdvisory.fromObject(object.travelAdvisory);
                             }
+                            if (object.localizedValues != null) {
+                                if (typeof object.localizedValues !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLeg.localizedValues: object expected");
+                                message.localizedValues = $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.fromObject(object.localizedValues);
+                            }
+                            if (object.stepsOverview != null) {
+                                if (typeof object.stepsOverview !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLeg.stepsOverview: object expected");
+                                message.stepsOverview = $root.google.maps.routing.v2.RouteLeg.StepsOverview.fromObject(object.stepsOverview);
+                            }
                             return message;
                         };
     
@@ -17082,6 +21729,8 @@
                                 object.startLocation = null;
                                 object.endLocation = null;
                                 object.travelAdvisory = null;
+                                object.localizedValues = null;
+                                object.stepsOverview = null;
                             }
                             if (message.distanceMeters != null && message.hasOwnProperty("distanceMeters"))
                                 object.distanceMeters = message.distanceMeters;
@@ -17102,6 +21751,10 @@
                             }
                             if (message.travelAdvisory != null && message.hasOwnProperty("travelAdvisory"))
                                 object.travelAdvisory = $root.google.maps.routing.v2.RouteLegTravelAdvisory.toObject(message.travelAdvisory, options);
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues"))
+                                object.localizedValues = $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.toObject(message.localizedValues, options);
+                            if (message.stepsOverview != null && message.hasOwnProperty("stepsOverview"))
+                                object.stepsOverview = $root.google.maps.routing.v2.RouteLeg.StepsOverview.toObject(message.stepsOverview, options);
                             return object;
                         };
     
@@ -17131,6 +21784,846 @@
                             return typeUrlPrefix + "/google.maps.routing.v2.RouteLeg";
                         };
     
+                        RouteLeg.RouteLegLocalizedValues = (function() {
+    
+                            /**
+                             * Properties of a RouteLegLocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteLeg
+                             * @interface IRouteLegLocalizedValues
+                             * @property {google.type.ILocalizedText|null} [distance] RouteLegLocalizedValues distance
+                             * @property {google.type.ILocalizedText|null} [duration] RouteLegLocalizedValues duration
+                             * @property {google.type.ILocalizedText|null} [staticDuration] RouteLegLocalizedValues staticDuration
+                             */
+    
+                            /**
+                             * Constructs a new RouteLegLocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteLeg
+                             * @classdesc Represents a RouteLegLocalizedValues.
+                             * @implements IRouteLegLocalizedValues
+                             * @constructor
+                             * @param {google.maps.routing.v2.RouteLeg.IRouteLegLocalizedValues=} [properties] Properties to set
+                             */
+                            function RouteLegLocalizedValues(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * RouteLegLocalizedValues distance.
+                             * @member {google.type.ILocalizedText|null|undefined} distance
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @instance
+                             */
+                            RouteLegLocalizedValues.prototype.distance = null;
+    
+                            /**
+                             * RouteLegLocalizedValues duration.
+                             * @member {google.type.ILocalizedText|null|undefined} duration
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @instance
+                             */
+                            RouteLegLocalizedValues.prototype.duration = null;
+    
+                            /**
+                             * RouteLegLocalizedValues staticDuration.
+                             * @member {google.type.ILocalizedText|null|undefined} staticDuration
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @instance
+                             */
+                            RouteLegLocalizedValues.prototype.staticDuration = null;
+    
+                            /**
+                             * Creates a new RouteLegLocalizedValues instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.IRouteLegLocalizedValues=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues} RouteLegLocalizedValues instance
+                             */
+                            RouteLegLocalizedValues.create = function create(properties) {
+                                return new RouteLegLocalizedValues(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified RouteLegLocalizedValues message. Does not implicitly {@link google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.IRouteLegLocalizedValues} message RouteLegLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RouteLegLocalizedValues.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.distance != null && Object.hasOwnProperty.call(message, "distance"))
+                                    $root.google.type.LocalizedText.encode(message.distance, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.duration != null && Object.hasOwnProperty.call(message, "duration"))
+                                    $root.google.type.LocalizedText.encode(message.duration, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.staticDuration != null && Object.hasOwnProperty.call(message, "staticDuration"))
+                                    $root.google.type.LocalizedText.encode(message.staticDuration, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified RouteLegLocalizedValues message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.IRouteLegLocalizedValues} message RouteLegLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RouteLegLocalizedValues.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a RouteLegLocalizedValues message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues} RouteLegLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RouteLegLocalizedValues.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.distance = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.duration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.staticDuration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a RouteLegLocalizedValues message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues} RouteLegLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RouteLegLocalizedValues.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a RouteLegLocalizedValues message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            RouteLegLocalizedValues.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.distance != null && message.hasOwnProperty("distance")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.distance);
+                                    if (error)
+                                        return "distance." + error;
+                                }
+                                if (message.duration != null && message.hasOwnProperty("duration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.duration);
+                                    if (error)
+                                        return "duration." + error;
+                                }
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.staticDuration);
+                                    if (error)
+                                        return "staticDuration." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a RouteLegLocalizedValues message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues} RouteLegLocalizedValues
+                             */
+                            RouteLegLocalizedValues.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues();
+                                if (object.distance != null) {
+                                    if (typeof object.distance !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.distance: object expected");
+                                    message.distance = $root.google.type.LocalizedText.fromObject(object.distance);
+                                }
+                                if (object.duration != null) {
+                                    if (typeof object.duration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.duration: object expected");
+                                    message.duration = $root.google.type.LocalizedText.fromObject(object.duration);
+                                }
+                                if (object.staticDuration != null) {
+                                    if (typeof object.staticDuration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues.staticDuration: object expected");
+                                    message.staticDuration = $root.google.type.LocalizedText.fromObject(object.staticDuration);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a RouteLegLocalizedValues message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues} message RouteLegLocalizedValues
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            RouteLegLocalizedValues.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.distance = null;
+                                    object.duration = null;
+                                    object.staticDuration = null;
+                                }
+                                if (message.distance != null && message.hasOwnProperty("distance"))
+                                    object.distance = $root.google.type.LocalizedText.toObject(message.distance, options);
+                                if (message.duration != null && message.hasOwnProperty("duration"))
+                                    object.duration = $root.google.type.LocalizedText.toObject(message.duration, options);
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration"))
+                                    object.staticDuration = $root.google.type.LocalizedText.toObject(message.staticDuration, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this RouteLegLocalizedValues to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            RouteLegLocalizedValues.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for RouteLegLocalizedValues
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            RouteLegLocalizedValues.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.RouteLeg.RouteLegLocalizedValues";
+                            };
+    
+                            return RouteLegLocalizedValues;
+                        })();
+    
+                        RouteLeg.StepsOverview = (function() {
+    
+                            /**
+                             * Properties of a StepsOverview.
+                             * @memberof google.maps.routing.v2.RouteLeg
+                             * @interface IStepsOverview
+                             * @property {Array.<google.maps.routing.v2.RouteLeg.StepsOverview.IMultiModalSegment>|null} [multiModalSegments] StepsOverview multiModalSegments
+                             */
+    
+                            /**
+                             * Constructs a new StepsOverview.
+                             * @memberof google.maps.routing.v2.RouteLeg
+                             * @classdesc Represents a StepsOverview.
+                             * @implements IStepsOverview
+                             * @constructor
+                             * @param {google.maps.routing.v2.RouteLeg.IStepsOverview=} [properties] Properties to set
+                             */
+                            function StepsOverview(properties) {
+                                this.multiModalSegments = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * StepsOverview multiModalSegments.
+                             * @member {Array.<google.maps.routing.v2.RouteLeg.StepsOverview.IMultiModalSegment>} multiModalSegments
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @instance
+                             */
+                            StepsOverview.prototype.multiModalSegments = $util.emptyArray;
+    
+                            /**
+                             * Creates a new StepsOverview instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.IStepsOverview=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.RouteLeg.StepsOverview} StepsOverview instance
+                             */
+                            StepsOverview.create = function create(properties) {
+                                return new StepsOverview(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified StepsOverview message. Does not implicitly {@link google.maps.routing.v2.RouteLeg.StepsOverview.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.IStepsOverview} message StepsOverview message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            StepsOverview.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.multiModalSegments != null && message.multiModalSegments.length)
+                                    for (var i = 0; i < message.multiModalSegments.length; ++i)
+                                        $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.encode(message.multiModalSegments[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified StepsOverview message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLeg.StepsOverview.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.IStepsOverview} message StepsOverview message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            StepsOverview.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a StepsOverview message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.RouteLeg.StepsOverview} StepsOverview
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            StepsOverview.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLeg.StepsOverview();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            if (!(message.multiModalSegments && message.multiModalSegments.length))
+                                                message.multiModalSegments = [];
+                                            message.multiModalSegments.push($root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a StepsOverview message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.RouteLeg.StepsOverview} StepsOverview
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            StepsOverview.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a StepsOverview message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            StepsOverview.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.multiModalSegments != null && message.hasOwnProperty("multiModalSegments")) {
+                                    if (!Array.isArray(message.multiModalSegments))
+                                        return "multiModalSegments: array expected";
+                                    for (var i = 0; i < message.multiModalSegments.length; ++i) {
+                                        var error = $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.verify(message.multiModalSegments[i]);
+                                        if (error)
+                                            return "multiModalSegments." + error;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a StepsOverview message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.RouteLeg.StepsOverview} StepsOverview
+                             */
+                            StepsOverview.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.RouteLeg.StepsOverview)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.RouteLeg.StepsOverview();
+                                if (object.multiModalSegments) {
+                                    if (!Array.isArray(object.multiModalSegments))
+                                        throw TypeError(".google.maps.routing.v2.RouteLeg.StepsOverview.multiModalSegments: array expected");
+                                    message.multiModalSegments = [];
+                                    for (var i = 0; i < object.multiModalSegments.length; ++i) {
+                                        if (typeof object.multiModalSegments[i] !== "object")
+                                            throw TypeError(".google.maps.routing.v2.RouteLeg.StepsOverview.multiModalSegments: object expected");
+                                        message.multiModalSegments[i] = $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.fromObject(object.multiModalSegments[i]);
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a StepsOverview message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLeg.StepsOverview} message StepsOverview
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            StepsOverview.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults)
+                                    object.multiModalSegments = [];
+                                if (message.multiModalSegments && message.multiModalSegments.length) {
+                                    object.multiModalSegments = [];
+                                    for (var j = 0; j < message.multiModalSegments.length; ++j)
+                                        object.multiModalSegments[j] = $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.toObject(message.multiModalSegments[j], options);
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this StepsOverview to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            StepsOverview.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for StepsOverview
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            StepsOverview.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.RouteLeg.StepsOverview";
+                            };
+    
+                            StepsOverview.MultiModalSegment = (function() {
+    
+                                /**
+                                 * Properties of a MultiModalSegment.
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                                 * @interface IMultiModalSegment
+                                 * @property {number|null} [stepStartIndex] MultiModalSegment stepStartIndex
+                                 * @property {number|null} [stepEndIndex] MultiModalSegment stepEndIndex
+                                 * @property {google.maps.routing.v2.INavigationInstruction|null} [navigationInstruction] MultiModalSegment navigationInstruction
+                                 * @property {google.maps.routing.v2.RouteTravelMode|null} [travelMode] MultiModalSegment travelMode
+                                 */
+    
+                                /**
+                                 * Constructs a new MultiModalSegment.
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview
+                                 * @classdesc Represents a MultiModalSegment.
+                                 * @implements IMultiModalSegment
+                                 * @constructor
+                                 * @param {google.maps.routing.v2.RouteLeg.StepsOverview.IMultiModalSegment=} [properties] Properties to set
+                                 */
+                                function MultiModalSegment(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * MultiModalSegment stepStartIndex.
+                                 * @member {number|null|undefined} stepStartIndex
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 */
+                                MultiModalSegment.prototype.stepStartIndex = null;
+    
+                                /**
+                                 * MultiModalSegment stepEndIndex.
+                                 * @member {number|null|undefined} stepEndIndex
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 */
+                                MultiModalSegment.prototype.stepEndIndex = null;
+    
+                                /**
+                                 * MultiModalSegment navigationInstruction.
+                                 * @member {google.maps.routing.v2.INavigationInstruction|null|undefined} navigationInstruction
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 */
+                                MultiModalSegment.prototype.navigationInstruction = null;
+    
+                                /**
+                                 * MultiModalSegment travelMode.
+                                 * @member {google.maps.routing.v2.RouteTravelMode} travelMode
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 */
+                                MultiModalSegment.prototype.travelMode = 0;
+    
+                                // OneOf field names bound to virtual getters and setters
+                                var $oneOfFields;
+    
+                                /**
+                                 * MultiModalSegment _stepStartIndex.
+                                 * @member {"stepStartIndex"|undefined} _stepStartIndex
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 */
+                                Object.defineProperty(MultiModalSegment.prototype, "_stepStartIndex", {
+                                    get: $util.oneOfGetter($oneOfFields = ["stepStartIndex"]),
+                                    set: $util.oneOfSetter($oneOfFields)
+                                });
+    
+                                /**
+                                 * MultiModalSegment _stepEndIndex.
+                                 * @member {"stepEndIndex"|undefined} _stepEndIndex
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 */
+                                Object.defineProperty(MultiModalSegment.prototype, "_stepEndIndex", {
+                                    get: $util.oneOfGetter($oneOfFields = ["stepEndIndex"]),
+                                    set: $util.oneOfSetter($oneOfFields)
+                                });
+    
+                                /**
+                                 * Creates a new MultiModalSegment instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {google.maps.routing.v2.RouteLeg.StepsOverview.IMultiModalSegment=} [properties] Properties to set
+                                 * @returns {google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment} MultiModalSegment instance
+                                 */
+                                MultiModalSegment.create = function create(properties) {
+                                    return new MultiModalSegment(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified MultiModalSegment message. Does not implicitly {@link google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {google.maps.routing.v2.RouteLeg.StepsOverview.IMultiModalSegment} message MultiModalSegment message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                MultiModalSegment.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.stepStartIndex != null && Object.hasOwnProperty.call(message, "stepStartIndex"))
+                                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.stepStartIndex);
+                                    if (message.stepEndIndex != null && Object.hasOwnProperty.call(message, "stepEndIndex"))
+                                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.stepEndIndex);
+                                    if (message.navigationInstruction != null && Object.hasOwnProperty.call(message, "navigationInstruction"))
+                                        $root.google.maps.routing.v2.NavigationInstruction.encode(message.navigationInstruction, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                    if (message.travelMode != null && Object.hasOwnProperty.call(message, "travelMode"))
+                                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.travelMode);
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified MultiModalSegment message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {google.maps.routing.v2.RouteLeg.StepsOverview.IMultiModalSegment} message MultiModalSegment message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                MultiModalSegment.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a MultiModalSegment message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment} MultiModalSegment
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                MultiModalSegment.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.stepStartIndex = reader.int32();
+                                                break;
+                                            }
+                                        case 2: {
+                                                message.stepEndIndex = reader.int32();
+                                                break;
+                                            }
+                                        case 3: {
+                                                message.navigationInstruction = $root.google.maps.routing.v2.NavigationInstruction.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        case 4: {
+                                                message.travelMode = reader.int32();
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a MultiModalSegment message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment} MultiModalSegment
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                MultiModalSegment.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a MultiModalSegment message.
+                                 * @function verify
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                MultiModalSegment.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    var properties = {};
+                                    if (message.stepStartIndex != null && message.hasOwnProperty("stepStartIndex")) {
+                                        properties._stepStartIndex = 1;
+                                        if (!$util.isInteger(message.stepStartIndex))
+                                            return "stepStartIndex: integer expected";
+                                    }
+                                    if (message.stepEndIndex != null && message.hasOwnProperty("stepEndIndex")) {
+                                        properties._stepEndIndex = 1;
+                                        if (!$util.isInteger(message.stepEndIndex))
+                                            return "stepEndIndex: integer expected";
+                                    }
+                                    if (message.navigationInstruction != null && message.hasOwnProperty("navigationInstruction")) {
+                                        var error = $root.google.maps.routing.v2.NavigationInstruction.verify(message.navigationInstruction);
+                                        if (error)
+                                            return "navigationInstruction." + error;
+                                    }
+                                    if (message.travelMode != null && message.hasOwnProperty("travelMode"))
+                                        switch (message.travelMode) {
+                                        default:
+                                            return "travelMode: enum value expected";
+                                        case 0:
+                                        case 1:
+                                        case 2:
+                                        case 3:
+                                        case 4:
+                                        case 7:
+                                            break;
+                                        }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a MultiModalSegment message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment} MultiModalSegment
+                                 */
+                                MultiModalSegment.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment)
+                                        return object;
+                                    var message = new $root.google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment();
+                                    if (object.stepStartIndex != null)
+                                        message.stepStartIndex = object.stepStartIndex | 0;
+                                    if (object.stepEndIndex != null)
+                                        message.stepEndIndex = object.stepEndIndex | 0;
+                                    if (object.navigationInstruction != null) {
+                                        if (typeof object.navigationInstruction !== "object")
+                                            throw TypeError(".google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment.navigationInstruction: object expected");
+                                        message.navigationInstruction = $root.google.maps.routing.v2.NavigationInstruction.fromObject(object.navigationInstruction);
+                                    }
+                                    switch (object.travelMode) {
+                                    default:
+                                        if (typeof object.travelMode === "number") {
+                                            message.travelMode = object.travelMode;
+                                            break;
+                                        }
+                                        break;
+                                    case "TRAVEL_MODE_UNSPECIFIED":
+                                    case 0:
+                                        message.travelMode = 0;
+                                        break;
+                                    case "DRIVE":
+                                    case 1:
+                                        message.travelMode = 1;
+                                        break;
+                                    case "BICYCLE":
+                                    case 2:
+                                        message.travelMode = 2;
+                                        break;
+                                    case "WALK":
+                                    case 3:
+                                        message.travelMode = 3;
+                                        break;
+                                    case "TWO_WHEELER":
+                                    case 4:
+                                        message.travelMode = 4;
+                                        break;
+                                    case "TRANSIT":
+                                    case 7:
+                                        message.travelMode = 7;
+                                        break;
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a MultiModalSegment message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment} message MultiModalSegment
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                MultiModalSegment.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults) {
+                                        object.navigationInstruction = null;
+                                        object.travelMode = options.enums === String ? "TRAVEL_MODE_UNSPECIFIED" : 0;
+                                    }
+                                    if (message.stepStartIndex != null && message.hasOwnProperty("stepStartIndex")) {
+                                        object.stepStartIndex = message.stepStartIndex;
+                                        if (options.oneofs)
+                                            object._stepStartIndex = "stepStartIndex";
+                                    }
+                                    if (message.stepEndIndex != null && message.hasOwnProperty("stepEndIndex")) {
+                                        object.stepEndIndex = message.stepEndIndex;
+                                        if (options.oneofs)
+                                            object._stepEndIndex = "stepEndIndex";
+                                    }
+                                    if (message.navigationInstruction != null && message.hasOwnProperty("navigationInstruction"))
+                                        object.navigationInstruction = $root.google.maps.routing.v2.NavigationInstruction.toObject(message.navigationInstruction, options);
+                                    if (message.travelMode != null && message.hasOwnProperty("travelMode"))
+                                        object.travelMode = options.enums === String ? $root.google.maps.routing.v2.RouteTravelMode[message.travelMode] === undefined ? message.travelMode : $root.google.maps.routing.v2.RouteTravelMode[message.travelMode] : message.travelMode;
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this MultiModalSegment to JSON.
+                                 * @function toJSON
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                MultiModalSegment.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for MultiModalSegment
+                                 * @function getTypeUrl
+                                 * @memberof google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                MultiModalSegment.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.maps.routing.v2.RouteLeg.StepsOverview.MultiModalSegment";
+                                };
+    
+                                return MultiModalSegment;
+                            })();
+    
+                            return StepsOverview;
+                        })();
+    
                         return RouteLeg;
                     })();
     
@@ -17147,6 +22640,9 @@
                          * @property {google.maps.routing.v2.ILocation|null} [endLocation] RouteLegStep endLocation
                          * @property {google.maps.routing.v2.INavigationInstruction|null} [navigationInstruction] RouteLegStep navigationInstruction
                          * @property {google.maps.routing.v2.IRouteLegStepTravelAdvisory|null} [travelAdvisory] RouteLegStep travelAdvisory
+                         * @property {google.maps.routing.v2.RouteLegStep.IRouteLegStepLocalizedValues|null} [localizedValues] RouteLegStep localizedValues
+                         * @property {google.maps.routing.v2.IRouteLegStepTransitDetails|null} [transitDetails] RouteLegStep transitDetails
+                         * @property {google.maps.routing.v2.RouteTravelMode|null} [travelMode] RouteLegStep travelMode
                          */
     
                         /**
@@ -17221,6 +22717,30 @@
                         RouteLegStep.prototype.travelAdvisory = null;
     
                         /**
+                         * RouteLegStep localizedValues.
+                         * @member {google.maps.routing.v2.RouteLegStep.IRouteLegStepLocalizedValues|null|undefined} localizedValues
+                         * @memberof google.maps.routing.v2.RouteLegStep
+                         * @instance
+                         */
+                        RouteLegStep.prototype.localizedValues = null;
+    
+                        /**
+                         * RouteLegStep transitDetails.
+                         * @member {google.maps.routing.v2.IRouteLegStepTransitDetails|null|undefined} transitDetails
+                         * @memberof google.maps.routing.v2.RouteLegStep
+                         * @instance
+                         */
+                        RouteLegStep.prototype.transitDetails = null;
+    
+                        /**
+                         * RouteLegStep travelMode.
+                         * @member {google.maps.routing.v2.RouteTravelMode} travelMode
+                         * @memberof google.maps.routing.v2.RouteLegStep
+                         * @instance
+                         */
+                        RouteLegStep.prototype.travelMode = 0;
+    
+                        /**
                          * Creates a new RouteLegStep instance using the specified properties.
                          * @function create
                          * @memberof google.maps.routing.v2.RouteLegStep
@@ -17258,6 +22778,12 @@
                                 $root.google.maps.routing.v2.NavigationInstruction.encode(message.navigationInstruction, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
                             if (message.travelAdvisory != null && Object.hasOwnProperty.call(message, "travelAdvisory"))
                                 $root.google.maps.routing.v2.RouteLegStepTravelAdvisory.encode(message.travelAdvisory, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                            if (message.localizedValues != null && Object.hasOwnProperty.call(message, "localizedValues"))
+                                $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.encode(message.localizedValues, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                            if (message.transitDetails != null && Object.hasOwnProperty.call(message, "transitDetails"))
+                                $root.google.maps.routing.v2.RouteLegStepTransitDetails.encode(message.transitDetails, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                            if (message.travelMode != null && Object.hasOwnProperty.call(message, "travelMode"))
+                                writer.uint32(/* id 10, wireType 0 =*/80).int32(message.travelMode);
                             return writer;
                         };
     
@@ -17318,6 +22844,18 @@
                                     }
                                 case 7: {
                                         message.travelAdvisory = $root.google.maps.routing.v2.RouteLegStepTravelAdvisory.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 8: {
+                                        message.localizedValues = $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 9: {
+                                        message.transitDetails = $root.google.maps.routing.v2.RouteLegStepTransitDetails.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 10: {
+                                        message.travelMode = reader.int32();
                                         break;
                                     }
                                 default:
@@ -17388,6 +22926,28 @@
                                 if (error)
                                     return "travelAdvisory." + error;
                             }
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues")) {
+                                var error = $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.verify(message.localizedValues);
+                                if (error)
+                                    return "localizedValues." + error;
+                            }
+                            if (message.transitDetails != null && message.hasOwnProperty("transitDetails")) {
+                                var error = $root.google.maps.routing.v2.RouteLegStepTransitDetails.verify(message.transitDetails);
+                                if (error)
+                                    return "transitDetails." + error;
+                            }
+                            if (message.travelMode != null && message.hasOwnProperty("travelMode"))
+                                switch (message.travelMode) {
+                                default:
+                                    return "travelMode: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 7:
+                                    break;
+                                }
                             return null;
                         };
     
@@ -17435,6 +22995,48 @@
                                     throw TypeError(".google.maps.routing.v2.RouteLegStep.travelAdvisory: object expected");
                                 message.travelAdvisory = $root.google.maps.routing.v2.RouteLegStepTravelAdvisory.fromObject(object.travelAdvisory);
                             }
+                            if (object.localizedValues != null) {
+                                if (typeof object.localizedValues !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLegStep.localizedValues: object expected");
+                                message.localizedValues = $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.fromObject(object.localizedValues);
+                            }
+                            if (object.transitDetails != null) {
+                                if (typeof object.transitDetails !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLegStep.transitDetails: object expected");
+                                message.transitDetails = $root.google.maps.routing.v2.RouteLegStepTransitDetails.fromObject(object.transitDetails);
+                            }
+                            switch (object.travelMode) {
+                            default:
+                                if (typeof object.travelMode === "number") {
+                                    message.travelMode = object.travelMode;
+                                    break;
+                                }
+                                break;
+                            case "TRAVEL_MODE_UNSPECIFIED":
+                            case 0:
+                                message.travelMode = 0;
+                                break;
+                            case "DRIVE":
+                            case 1:
+                                message.travelMode = 1;
+                                break;
+                            case "BICYCLE":
+                            case 2:
+                                message.travelMode = 2;
+                                break;
+                            case "WALK":
+                            case 3:
+                                message.travelMode = 3;
+                                break;
+                            case "TWO_WHEELER":
+                            case 4:
+                                message.travelMode = 4;
+                                break;
+                            case "TRANSIT":
+                            case 7:
+                                message.travelMode = 7;
+                                break;
+                            }
                             return message;
                         };
     
@@ -17459,6 +23061,9 @@
                                 object.endLocation = null;
                                 object.navigationInstruction = null;
                                 object.travelAdvisory = null;
+                                object.localizedValues = null;
+                                object.transitDetails = null;
+                                object.travelMode = options.enums === String ? "TRAVEL_MODE_UNSPECIFIED" : 0;
                             }
                             if (message.distanceMeters != null && message.hasOwnProperty("distanceMeters"))
                                 object.distanceMeters = message.distanceMeters;
@@ -17474,6 +23079,12 @@
                                 object.navigationInstruction = $root.google.maps.routing.v2.NavigationInstruction.toObject(message.navigationInstruction, options);
                             if (message.travelAdvisory != null && message.hasOwnProperty("travelAdvisory"))
                                 object.travelAdvisory = $root.google.maps.routing.v2.RouteLegStepTravelAdvisory.toObject(message.travelAdvisory, options);
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues"))
+                                object.localizedValues = $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.toObject(message.localizedValues, options);
+                            if (message.transitDetails != null && message.hasOwnProperty("transitDetails"))
+                                object.transitDetails = $root.google.maps.routing.v2.RouteLegStepTransitDetails.toObject(message.transitDetails, options);
+                            if (message.travelMode != null && message.hasOwnProperty("travelMode"))
+                                object.travelMode = options.enums === String ? $root.google.maps.routing.v2.RouteTravelMode[message.travelMode] === undefined ? message.travelMode : $root.google.maps.routing.v2.RouteTravelMode[message.travelMode] : message.travelMode;
                             return object;
                         };
     
@@ -17503,7 +23114,1136 @@
                             return typeUrlPrefix + "/google.maps.routing.v2.RouteLegStep";
                         };
     
+                        RouteLegStep.RouteLegStepLocalizedValues = (function() {
+    
+                            /**
+                             * Properties of a RouteLegStepLocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteLegStep
+                             * @interface IRouteLegStepLocalizedValues
+                             * @property {google.type.ILocalizedText|null} [distance] RouteLegStepLocalizedValues distance
+                             * @property {google.type.ILocalizedText|null} [staticDuration] RouteLegStepLocalizedValues staticDuration
+                             */
+    
+                            /**
+                             * Constructs a new RouteLegStepLocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteLegStep
+                             * @classdesc Represents a RouteLegStepLocalizedValues.
+                             * @implements IRouteLegStepLocalizedValues
+                             * @constructor
+                             * @param {google.maps.routing.v2.RouteLegStep.IRouteLegStepLocalizedValues=} [properties] Properties to set
+                             */
+                            function RouteLegStepLocalizedValues(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * RouteLegStepLocalizedValues distance.
+                             * @member {google.type.ILocalizedText|null|undefined} distance
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @instance
+                             */
+                            RouteLegStepLocalizedValues.prototype.distance = null;
+    
+                            /**
+                             * RouteLegStepLocalizedValues staticDuration.
+                             * @member {google.type.ILocalizedText|null|undefined} staticDuration
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @instance
+                             */
+                            RouteLegStepLocalizedValues.prototype.staticDuration = null;
+    
+                            /**
+                             * Creates a new RouteLegStepLocalizedValues instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStep.IRouteLegStepLocalizedValues=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues} RouteLegStepLocalizedValues instance
+                             */
+                            RouteLegStepLocalizedValues.create = function create(properties) {
+                                return new RouteLegStepLocalizedValues(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified RouteLegStepLocalizedValues message. Does not implicitly {@link google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStep.IRouteLegStepLocalizedValues} message RouteLegStepLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RouteLegStepLocalizedValues.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.distance != null && Object.hasOwnProperty.call(message, "distance"))
+                                    $root.google.type.LocalizedText.encode(message.distance, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.staticDuration != null && Object.hasOwnProperty.call(message, "staticDuration"))
+                                    $root.google.type.LocalizedText.encode(message.staticDuration, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified RouteLegStepLocalizedValues message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStep.IRouteLegStepLocalizedValues} message RouteLegStepLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RouteLegStepLocalizedValues.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a RouteLegStepLocalizedValues message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues} RouteLegStepLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RouteLegStepLocalizedValues.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.distance = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.staticDuration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a RouteLegStepLocalizedValues message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues} RouteLegStepLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RouteLegStepLocalizedValues.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a RouteLegStepLocalizedValues message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            RouteLegStepLocalizedValues.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.distance != null && message.hasOwnProperty("distance")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.distance);
+                                    if (error)
+                                        return "distance." + error;
+                                }
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.staticDuration);
+                                    if (error)
+                                        return "staticDuration." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a RouteLegStepLocalizedValues message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues} RouteLegStepLocalizedValues
+                             */
+                            RouteLegStepLocalizedValues.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues();
+                                if (object.distance != null) {
+                                    if (typeof object.distance !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.distance: object expected");
+                                    message.distance = $root.google.type.LocalizedText.fromObject(object.distance);
+                                }
+                                if (object.staticDuration != null) {
+                                    if (typeof object.staticDuration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues.staticDuration: object expected");
+                                    message.staticDuration = $root.google.type.LocalizedText.fromObject(object.staticDuration);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a RouteLegStepLocalizedValues message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues} message RouteLegStepLocalizedValues
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            RouteLegStepLocalizedValues.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.distance = null;
+                                    object.staticDuration = null;
+                                }
+                                if (message.distance != null && message.hasOwnProperty("distance"))
+                                    object.distance = $root.google.type.LocalizedText.toObject(message.distance, options);
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration"))
+                                    object.staticDuration = $root.google.type.LocalizedText.toObject(message.staticDuration, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this RouteLegStepLocalizedValues to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            RouteLegStepLocalizedValues.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for RouteLegStepLocalizedValues
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            RouteLegStepLocalizedValues.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.RouteLegStep.RouteLegStepLocalizedValues";
+                            };
+    
+                            return RouteLegStepLocalizedValues;
+                        })();
+    
                         return RouteLegStep;
+                    })();
+    
+                    v2.RouteLegStepTransitDetails = (function() {
+    
+                        /**
+                         * Properties of a RouteLegStepTransitDetails.
+                         * @memberof google.maps.routing.v2
+                         * @interface IRouteLegStepTransitDetails
+                         * @property {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitStopDetails|null} [stopDetails] RouteLegStepTransitDetails stopDetails
+                         * @property {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitDetailsLocalizedValues|null} [localizedValues] RouteLegStepTransitDetails localizedValues
+                         * @property {string|null} [headsign] RouteLegStepTransitDetails headsign
+                         * @property {google.protobuf.IDuration|null} [headway] RouteLegStepTransitDetails headway
+                         * @property {google.maps.routing.v2.ITransitLine|null} [transitLine] RouteLegStepTransitDetails transitLine
+                         * @property {number|null} [stopCount] RouteLegStepTransitDetails stopCount
+                         * @property {string|null} [tripShortText] RouteLegStepTransitDetails tripShortText
+                         */
+    
+                        /**
+                         * Constructs a new RouteLegStepTransitDetails.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a RouteLegStepTransitDetails.
+                         * @implements IRouteLegStepTransitDetails
+                         * @constructor
+                         * @param {google.maps.routing.v2.IRouteLegStepTransitDetails=} [properties] Properties to set
+                         */
+                        function RouteLegStepTransitDetails(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * RouteLegStepTransitDetails stopDetails.
+                         * @member {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitStopDetails|null|undefined} stopDetails
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.stopDetails = null;
+    
+                        /**
+                         * RouteLegStepTransitDetails localizedValues.
+                         * @member {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitDetailsLocalizedValues|null|undefined} localizedValues
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.localizedValues = null;
+    
+                        /**
+                         * RouteLegStepTransitDetails headsign.
+                         * @member {string} headsign
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.headsign = "";
+    
+                        /**
+                         * RouteLegStepTransitDetails headway.
+                         * @member {google.protobuf.IDuration|null|undefined} headway
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.headway = null;
+    
+                        /**
+                         * RouteLegStepTransitDetails transitLine.
+                         * @member {google.maps.routing.v2.ITransitLine|null|undefined} transitLine
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.transitLine = null;
+    
+                        /**
+                         * RouteLegStepTransitDetails stopCount.
+                         * @member {number} stopCount
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.stopCount = 0;
+    
+                        /**
+                         * RouteLegStepTransitDetails tripShortText.
+                         * @member {string} tripShortText
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         */
+                        RouteLegStepTransitDetails.prototype.tripShortText = "";
+    
+                        /**
+                         * Creates a new RouteLegStepTransitDetails instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {google.maps.routing.v2.IRouteLegStepTransitDetails=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.RouteLegStepTransitDetails} RouteLegStepTransitDetails instance
+                         */
+                        RouteLegStepTransitDetails.create = function create(properties) {
+                            return new RouteLegStepTransitDetails(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified RouteLegStepTransitDetails message. Does not implicitly {@link google.maps.routing.v2.RouteLegStepTransitDetails.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {google.maps.routing.v2.IRouteLegStepTransitDetails} message RouteLegStepTransitDetails message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        RouteLegStepTransitDetails.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.stopDetails != null && Object.hasOwnProperty.call(message, "stopDetails"))
+                                $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.encode(message.stopDetails, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.localizedValues != null && Object.hasOwnProperty.call(message, "localizedValues"))
+                                $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.encode(message.localizedValues, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            if (message.headsign != null && Object.hasOwnProperty.call(message, "headsign"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.headsign);
+                            if (message.headway != null && Object.hasOwnProperty.call(message, "headway"))
+                                $root.google.protobuf.Duration.encode(message.headway, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                            if (message.transitLine != null && Object.hasOwnProperty.call(message, "transitLine"))
+                                $root.google.maps.routing.v2.TransitLine.encode(message.transitLine, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                            if (message.stopCount != null && Object.hasOwnProperty.call(message, "stopCount"))
+                                writer.uint32(/* id 6, wireType 0 =*/48).int32(message.stopCount);
+                            if (message.tripShortText != null && Object.hasOwnProperty.call(message, "tripShortText"))
+                                writer.uint32(/* id 7, wireType 2 =*/58).string(message.tripShortText);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified RouteLegStepTransitDetails message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLegStepTransitDetails.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {google.maps.routing.v2.IRouteLegStepTransitDetails} message RouteLegStepTransitDetails message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        RouteLegStepTransitDetails.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a RouteLegStepTransitDetails message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.RouteLegStepTransitDetails} RouteLegStepTransitDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        RouteLegStepTransitDetails.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLegStepTransitDetails();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.stopDetails = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 2: {
+                                        message.localizedValues = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 3: {
+                                        message.headsign = reader.string();
+                                        break;
+                                    }
+                                case 4: {
+                                        message.headway = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 5: {
+                                        message.transitLine = $root.google.maps.routing.v2.TransitLine.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 6: {
+                                        message.stopCount = reader.int32();
+                                        break;
+                                    }
+                                case 7: {
+                                        message.tripShortText = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a RouteLegStepTransitDetails message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.RouteLegStepTransitDetails} RouteLegStepTransitDetails
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        RouteLegStepTransitDetails.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a RouteLegStepTransitDetails message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        RouteLegStepTransitDetails.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.stopDetails != null && message.hasOwnProperty("stopDetails")) {
+                                var error = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.verify(message.stopDetails);
+                                if (error)
+                                    return "stopDetails." + error;
+                            }
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues")) {
+                                var error = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.verify(message.localizedValues);
+                                if (error)
+                                    return "localizedValues." + error;
+                            }
+                            if (message.headsign != null && message.hasOwnProperty("headsign"))
+                                if (!$util.isString(message.headsign))
+                                    return "headsign: string expected";
+                            if (message.headway != null && message.hasOwnProperty("headway")) {
+                                var error = $root.google.protobuf.Duration.verify(message.headway);
+                                if (error)
+                                    return "headway." + error;
+                            }
+                            if (message.transitLine != null && message.hasOwnProperty("transitLine")) {
+                                var error = $root.google.maps.routing.v2.TransitLine.verify(message.transitLine);
+                                if (error)
+                                    return "transitLine." + error;
+                            }
+                            if (message.stopCount != null && message.hasOwnProperty("stopCount"))
+                                if (!$util.isInteger(message.stopCount))
+                                    return "stopCount: integer expected";
+                            if (message.tripShortText != null && message.hasOwnProperty("tripShortText"))
+                                if (!$util.isString(message.tripShortText))
+                                    return "tripShortText: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a RouteLegStepTransitDetails message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.RouteLegStepTransitDetails} RouteLegStepTransitDetails
+                         */
+                        RouteLegStepTransitDetails.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.RouteLegStepTransitDetails)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.RouteLegStepTransitDetails();
+                            if (object.stopDetails != null) {
+                                if (typeof object.stopDetails !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.stopDetails: object expected");
+                                message.stopDetails = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.fromObject(object.stopDetails);
+                            }
+                            if (object.localizedValues != null) {
+                                if (typeof object.localizedValues !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.localizedValues: object expected");
+                                message.localizedValues = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.fromObject(object.localizedValues);
+                            }
+                            if (object.headsign != null)
+                                message.headsign = String(object.headsign);
+                            if (object.headway != null) {
+                                if (typeof object.headway !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.headway: object expected");
+                                message.headway = $root.google.protobuf.Duration.fromObject(object.headway);
+                            }
+                            if (object.transitLine != null) {
+                                if (typeof object.transitLine !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.transitLine: object expected");
+                                message.transitLine = $root.google.maps.routing.v2.TransitLine.fromObject(object.transitLine);
+                            }
+                            if (object.stopCount != null)
+                                message.stopCount = object.stopCount | 0;
+                            if (object.tripShortText != null)
+                                message.tripShortText = String(object.tripShortText);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a RouteLegStepTransitDetails message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {google.maps.routing.v2.RouteLegStepTransitDetails} message RouteLegStepTransitDetails
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        RouteLegStepTransitDetails.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.stopDetails = null;
+                                object.localizedValues = null;
+                                object.headsign = "";
+                                object.headway = null;
+                                object.transitLine = null;
+                                object.stopCount = 0;
+                                object.tripShortText = "";
+                            }
+                            if (message.stopDetails != null && message.hasOwnProperty("stopDetails"))
+                                object.stopDetails = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.toObject(message.stopDetails, options);
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues"))
+                                object.localizedValues = $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.toObject(message.localizedValues, options);
+                            if (message.headsign != null && message.hasOwnProperty("headsign"))
+                                object.headsign = message.headsign;
+                            if (message.headway != null && message.hasOwnProperty("headway"))
+                                object.headway = $root.google.protobuf.Duration.toObject(message.headway, options);
+                            if (message.transitLine != null && message.hasOwnProperty("transitLine"))
+                                object.transitLine = $root.google.maps.routing.v2.TransitLine.toObject(message.transitLine, options);
+                            if (message.stopCount != null && message.hasOwnProperty("stopCount"))
+                                object.stopCount = message.stopCount;
+                            if (message.tripShortText != null && message.hasOwnProperty("tripShortText"))
+                                object.tripShortText = message.tripShortText;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this RouteLegStepTransitDetails to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        RouteLegStepTransitDetails.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for RouteLegStepTransitDetails
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        RouteLegStepTransitDetails.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.RouteLegStepTransitDetails";
+                        };
+    
+                        RouteLegStepTransitDetails.TransitStopDetails = (function() {
+    
+                            /**
+                             * Properties of a TransitStopDetails.
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                             * @interface ITransitStopDetails
+                             * @property {google.maps.routing.v2.ITransitStop|null} [arrivalStop] TransitStopDetails arrivalStop
+                             * @property {google.protobuf.ITimestamp|null} [arrivalTime] TransitStopDetails arrivalTime
+                             * @property {google.maps.routing.v2.ITransitStop|null} [departureStop] TransitStopDetails departureStop
+                             * @property {google.protobuf.ITimestamp|null} [departureTime] TransitStopDetails departureTime
+                             */
+    
+                            /**
+                             * Constructs a new TransitStopDetails.
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                             * @classdesc Represents a TransitStopDetails.
+                             * @implements ITransitStopDetails
+                             * @constructor
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitStopDetails=} [properties] Properties to set
+                             */
+                            function TransitStopDetails(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * TransitStopDetails arrivalStop.
+                             * @member {google.maps.routing.v2.ITransitStop|null|undefined} arrivalStop
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @instance
+                             */
+                            TransitStopDetails.prototype.arrivalStop = null;
+    
+                            /**
+                             * TransitStopDetails arrivalTime.
+                             * @member {google.protobuf.ITimestamp|null|undefined} arrivalTime
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @instance
+                             */
+                            TransitStopDetails.prototype.arrivalTime = null;
+    
+                            /**
+                             * TransitStopDetails departureStop.
+                             * @member {google.maps.routing.v2.ITransitStop|null|undefined} departureStop
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @instance
+                             */
+                            TransitStopDetails.prototype.departureStop = null;
+    
+                            /**
+                             * TransitStopDetails departureTime.
+                             * @member {google.protobuf.ITimestamp|null|undefined} departureTime
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @instance
+                             */
+                            TransitStopDetails.prototype.departureTime = null;
+    
+                            /**
+                             * Creates a new TransitStopDetails instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitStopDetails=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails} TransitStopDetails instance
+                             */
+                            TransitStopDetails.create = function create(properties) {
+                                return new TransitStopDetails(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified TransitStopDetails message. Does not implicitly {@link google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitStopDetails} message TransitStopDetails message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransitStopDetails.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.arrivalStop != null && Object.hasOwnProperty.call(message, "arrivalStop"))
+                                    $root.google.maps.routing.v2.TransitStop.encode(message.arrivalStop, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.arrivalTime != null && Object.hasOwnProperty.call(message, "arrivalTime"))
+                                    $root.google.protobuf.Timestamp.encode(message.arrivalTime, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.departureStop != null && Object.hasOwnProperty.call(message, "departureStop"))
+                                    $root.google.maps.routing.v2.TransitStop.encode(message.departureStop, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                if (message.departureTime != null && Object.hasOwnProperty.call(message, "departureTime"))
+                                    $root.google.protobuf.Timestamp.encode(message.departureTime, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified TransitStopDetails message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitStopDetails} message TransitStopDetails message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransitStopDetails.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a TransitStopDetails message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails} TransitStopDetails
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransitStopDetails.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.arrivalStop = $root.google.maps.routing.v2.TransitStop.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.arrivalTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.departureStop = $root.google.maps.routing.v2.TransitStop.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.departureTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a TransitStopDetails message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails} TransitStopDetails
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransitStopDetails.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a TransitStopDetails message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            TransitStopDetails.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.arrivalStop != null && message.hasOwnProperty("arrivalStop")) {
+                                    var error = $root.google.maps.routing.v2.TransitStop.verify(message.arrivalStop);
+                                    if (error)
+                                        return "arrivalStop." + error;
+                                }
+                                if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime")) {
+                                    var error = $root.google.protobuf.Timestamp.verify(message.arrivalTime);
+                                    if (error)
+                                        return "arrivalTime." + error;
+                                }
+                                if (message.departureStop != null && message.hasOwnProperty("departureStop")) {
+                                    var error = $root.google.maps.routing.v2.TransitStop.verify(message.departureStop);
+                                    if (error)
+                                        return "departureStop." + error;
+                                }
+                                if (message.departureTime != null && message.hasOwnProperty("departureTime")) {
+                                    var error = $root.google.protobuf.Timestamp.verify(message.departureTime);
+                                    if (error)
+                                        return "departureTime." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a TransitStopDetails message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails} TransitStopDetails
+                             */
+                            TransitStopDetails.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails();
+                                if (object.arrivalStop != null) {
+                                    if (typeof object.arrivalStop !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.arrivalStop: object expected");
+                                    message.arrivalStop = $root.google.maps.routing.v2.TransitStop.fromObject(object.arrivalStop);
+                                }
+                                if (object.arrivalTime != null) {
+                                    if (typeof object.arrivalTime !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.arrivalTime: object expected");
+                                    message.arrivalTime = $root.google.protobuf.Timestamp.fromObject(object.arrivalTime);
+                                }
+                                if (object.departureStop != null) {
+                                    if (typeof object.departureStop !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.departureStop: object expected");
+                                    message.departureStop = $root.google.maps.routing.v2.TransitStop.fromObject(object.departureStop);
+                                }
+                                if (object.departureTime != null) {
+                                    if (typeof object.departureTime !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails.departureTime: object expected");
+                                    message.departureTime = $root.google.protobuf.Timestamp.fromObject(object.departureTime);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a TransitStopDetails message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails} message TransitStopDetails
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            TransitStopDetails.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.arrivalStop = null;
+                                    object.arrivalTime = null;
+                                    object.departureStop = null;
+                                    object.departureTime = null;
+                                }
+                                if (message.arrivalStop != null && message.hasOwnProperty("arrivalStop"))
+                                    object.arrivalStop = $root.google.maps.routing.v2.TransitStop.toObject(message.arrivalStop, options);
+                                if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime"))
+                                    object.arrivalTime = $root.google.protobuf.Timestamp.toObject(message.arrivalTime, options);
+                                if (message.departureStop != null && message.hasOwnProperty("departureStop"))
+                                    object.departureStop = $root.google.maps.routing.v2.TransitStop.toObject(message.departureStop, options);
+                                if (message.departureTime != null && message.hasOwnProperty("departureTime"))
+                                    object.departureTime = $root.google.protobuf.Timestamp.toObject(message.departureTime, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this TransitStopDetails to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            TransitStopDetails.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for TransitStopDetails
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            TransitStopDetails.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.RouteLegStepTransitDetails.TransitStopDetails";
+                            };
+    
+                            return TransitStopDetails;
+                        })();
+    
+                        RouteLegStepTransitDetails.TransitDetailsLocalizedValues = (function() {
+    
+                            /**
+                             * Properties of a TransitDetailsLocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                             * @interface ITransitDetailsLocalizedValues
+                             * @property {google.maps.routing.v2.ILocalizedTime|null} [arrivalTime] TransitDetailsLocalizedValues arrivalTime
+                             * @property {google.maps.routing.v2.ILocalizedTime|null} [departureTime] TransitDetailsLocalizedValues departureTime
+                             */
+    
+                            /**
+                             * Constructs a new TransitDetailsLocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails
+                             * @classdesc Represents a TransitDetailsLocalizedValues.
+                             * @implements ITransitDetailsLocalizedValues
+                             * @constructor
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitDetailsLocalizedValues=} [properties] Properties to set
+                             */
+                            function TransitDetailsLocalizedValues(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * TransitDetailsLocalizedValues arrivalTime.
+                             * @member {google.maps.routing.v2.ILocalizedTime|null|undefined} arrivalTime
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @instance
+                             */
+                            TransitDetailsLocalizedValues.prototype.arrivalTime = null;
+    
+                            /**
+                             * TransitDetailsLocalizedValues departureTime.
+                             * @member {google.maps.routing.v2.ILocalizedTime|null|undefined} departureTime
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @instance
+                             */
+                            TransitDetailsLocalizedValues.prototype.departureTime = null;
+    
+                            /**
+                             * Creates a new TransitDetailsLocalizedValues instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitDetailsLocalizedValues=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues} TransitDetailsLocalizedValues instance
+                             */
+                            TransitDetailsLocalizedValues.create = function create(properties) {
+                                return new TransitDetailsLocalizedValues(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified TransitDetailsLocalizedValues message. Does not implicitly {@link google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitDetailsLocalizedValues} message TransitDetailsLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransitDetailsLocalizedValues.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.arrivalTime != null && Object.hasOwnProperty.call(message, "arrivalTime"))
+                                    $root.google.maps.routing.v2.LocalizedTime.encode(message.arrivalTime, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.departureTime != null && Object.hasOwnProperty.call(message, "departureTime"))
+                                    $root.google.maps.routing.v2.LocalizedTime.encode(message.departureTime, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified TransitDetailsLocalizedValues message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.ITransitDetailsLocalizedValues} message TransitDetailsLocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransitDetailsLocalizedValues.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a TransitDetailsLocalizedValues message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues} TransitDetailsLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransitDetailsLocalizedValues.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.arrivalTime = $root.google.maps.routing.v2.LocalizedTime.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.departureTime = $root.google.maps.routing.v2.LocalizedTime.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a TransitDetailsLocalizedValues message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues} TransitDetailsLocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransitDetailsLocalizedValues.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a TransitDetailsLocalizedValues message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            TransitDetailsLocalizedValues.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime")) {
+                                    var error = $root.google.maps.routing.v2.LocalizedTime.verify(message.arrivalTime);
+                                    if (error)
+                                        return "arrivalTime." + error;
+                                }
+                                if (message.departureTime != null && message.hasOwnProperty("departureTime")) {
+                                    var error = $root.google.maps.routing.v2.LocalizedTime.verify(message.departureTime);
+                                    if (error)
+                                        return "departureTime." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a TransitDetailsLocalizedValues message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues} TransitDetailsLocalizedValues
+                             */
+                            TransitDetailsLocalizedValues.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues();
+                                if (object.arrivalTime != null) {
+                                    if (typeof object.arrivalTime !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.arrivalTime: object expected");
+                                    message.arrivalTime = $root.google.maps.routing.v2.LocalizedTime.fromObject(object.arrivalTime);
+                                }
+                                if (object.departureTime != null) {
+                                    if (typeof object.departureTime !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues.departureTime: object expected");
+                                    message.departureTime = $root.google.maps.routing.v2.LocalizedTime.fromObject(object.departureTime);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a TransitDetailsLocalizedValues message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues} message TransitDetailsLocalizedValues
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            TransitDetailsLocalizedValues.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.arrivalTime = null;
+                                    object.departureTime = null;
+                                }
+                                if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime"))
+                                    object.arrivalTime = $root.google.maps.routing.v2.LocalizedTime.toObject(message.arrivalTime, options);
+                                if (message.departureTime != null && message.hasOwnProperty("departureTime"))
+                                    object.departureTime = $root.google.maps.routing.v2.LocalizedTime.toObject(message.departureTime, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this TransitDetailsLocalizedValues to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            TransitDetailsLocalizedValues.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for TransitDetailsLocalizedValues
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            TransitDetailsLocalizedValues.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.RouteLegStepTransitDetails.TransitDetailsLocalizedValues";
+                            };
+    
+                            return TransitDetailsLocalizedValues;
+                        })();
+    
+                        return RouteLegStepTransitDetails;
                     })();
     
                     /**
@@ -17514,6 +24254,7 @@
                      * @property {number} DEFAULT_ROUTE=1 DEFAULT_ROUTE value
                      * @property {number} DEFAULT_ROUTE_ALTERNATE=2 DEFAULT_ROUTE_ALTERNATE value
                      * @property {number} FUEL_EFFICIENT=3 FUEL_EFFICIENT value
+                     * @property {number} SHORTER_DISTANCE=4 SHORTER_DISTANCE value
                      */
                     v2.RouteLabel = (function() {
                         var valuesById = {}, values = Object.create(valuesById);
@@ -17521,6 +24262,29 @@
                         values[valuesById[1] = "DEFAULT_ROUTE"] = 1;
                         values[valuesById[2] = "DEFAULT_ROUTE_ALTERNATE"] = 2;
                         values[valuesById[3] = "FUEL_EFFICIENT"] = 3;
+                        values[valuesById[4] = "SHORTER_DISTANCE"] = 4;
+                        return values;
+                    })();
+    
+                    /**
+                     * RouteTravelMode enum.
+                     * @name google.maps.routing.v2.RouteTravelMode
+                     * @enum {number}
+                     * @property {number} TRAVEL_MODE_UNSPECIFIED=0 TRAVEL_MODE_UNSPECIFIED value
+                     * @property {number} DRIVE=1 DRIVE value
+                     * @property {number} BICYCLE=2 BICYCLE value
+                     * @property {number} WALK=3 WALK value
+                     * @property {number} TWO_WHEELER=4 TWO_WHEELER value
+                     * @property {number} TRANSIT=7 TRANSIT value
+                     */
+                    v2.RouteTravelMode = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "TRAVEL_MODE_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "DRIVE"] = 1;
+                        values[valuesById[2] = "BICYCLE"] = 2;
+                        values[valuesById[3] = "WALK"] = 3;
+                        values[valuesById[4] = "TWO_WHEELER"] = 4;
+                        values[valuesById[7] = "TRANSIT"] = 7;
                         return values;
                     })();
     
@@ -18092,6 +24856,1310 @@
                         return TollInfo;
                     })();
     
+                    v2.TransitAgency = (function() {
+    
+                        /**
+                         * Properties of a TransitAgency.
+                         * @memberof google.maps.routing.v2
+                         * @interface ITransitAgency
+                         * @property {string|null} [name] TransitAgency name
+                         * @property {string|null} [phoneNumber] TransitAgency phoneNumber
+                         * @property {string|null} [uri] TransitAgency uri
+                         */
+    
+                        /**
+                         * Constructs a new TransitAgency.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a TransitAgency.
+                         * @implements ITransitAgency
+                         * @constructor
+                         * @param {google.maps.routing.v2.ITransitAgency=} [properties] Properties to set
+                         */
+                        function TransitAgency(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * TransitAgency name.
+                         * @member {string} name
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @instance
+                         */
+                        TransitAgency.prototype.name = "";
+    
+                        /**
+                         * TransitAgency phoneNumber.
+                         * @member {string} phoneNumber
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @instance
+                         */
+                        TransitAgency.prototype.phoneNumber = "";
+    
+                        /**
+                         * TransitAgency uri.
+                         * @member {string} uri
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @instance
+                         */
+                        TransitAgency.prototype.uri = "";
+    
+                        /**
+                         * Creates a new TransitAgency instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitAgency=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.TransitAgency} TransitAgency instance
+                         */
+                        TransitAgency.create = function create(properties) {
+                            return new TransitAgency(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified TransitAgency message. Does not implicitly {@link google.maps.routing.v2.TransitAgency.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitAgency} message TransitAgency message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitAgency.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                            if (message.phoneNumber != null && Object.hasOwnProperty.call(message, "phoneNumber"))
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.phoneNumber);
+                            if (message.uri != null && Object.hasOwnProperty.call(message, "uri"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.uri);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified TransitAgency message, length delimited. Does not implicitly {@link google.maps.routing.v2.TransitAgency.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitAgency} message TransitAgency message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitAgency.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a TransitAgency message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.TransitAgency} TransitAgency
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitAgency.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.TransitAgency();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.phoneNumber = reader.string();
+                                        break;
+                                    }
+                                case 3: {
+                                        message.uri = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a TransitAgency message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.TransitAgency} TransitAgency
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitAgency.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a TransitAgency message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        TransitAgency.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            if (message.phoneNumber != null && message.hasOwnProperty("phoneNumber"))
+                                if (!$util.isString(message.phoneNumber))
+                                    return "phoneNumber: string expected";
+                            if (message.uri != null && message.hasOwnProperty("uri"))
+                                if (!$util.isString(message.uri))
+                                    return "uri: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a TransitAgency message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.TransitAgency} TransitAgency
+                         */
+                        TransitAgency.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.TransitAgency)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.TransitAgency();
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            if (object.phoneNumber != null)
+                                message.phoneNumber = String(object.phoneNumber);
+                            if (object.uri != null)
+                                message.uri = String(object.uri);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a TransitAgency message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {google.maps.routing.v2.TransitAgency} message TransitAgency
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        TransitAgency.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.name = "";
+                                object.phoneNumber = "";
+                                object.uri = "";
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            if (message.phoneNumber != null && message.hasOwnProperty("phoneNumber"))
+                                object.phoneNumber = message.phoneNumber;
+                            if (message.uri != null && message.hasOwnProperty("uri"))
+                                object.uri = message.uri;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this TransitAgency to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        TransitAgency.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for TransitAgency
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.TransitAgency
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        TransitAgency.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.TransitAgency";
+                        };
+    
+                        return TransitAgency;
+                    })();
+    
+                    v2.TransitLine = (function() {
+    
+                        /**
+                         * Properties of a TransitLine.
+                         * @memberof google.maps.routing.v2
+                         * @interface ITransitLine
+                         * @property {Array.<google.maps.routing.v2.ITransitAgency>|null} [agencies] TransitLine agencies
+                         * @property {string|null} [name] TransitLine name
+                         * @property {string|null} [uri] TransitLine uri
+                         * @property {string|null} [color] TransitLine color
+                         * @property {string|null} [iconUri] TransitLine iconUri
+                         * @property {string|null} [nameShort] TransitLine nameShort
+                         * @property {string|null} [textColor] TransitLine textColor
+                         * @property {google.maps.routing.v2.ITransitVehicle|null} [vehicle] TransitLine vehicle
+                         */
+    
+                        /**
+                         * Constructs a new TransitLine.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a TransitLine.
+                         * @implements ITransitLine
+                         * @constructor
+                         * @param {google.maps.routing.v2.ITransitLine=} [properties] Properties to set
+                         */
+                        function TransitLine(properties) {
+                            this.agencies = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * TransitLine agencies.
+                         * @member {Array.<google.maps.routing.v2.ITransitAgency>} agencies
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.agencies = $util.emptyArray;
+    
+                        /**
+                         * TransitLine name.
+                         * @member {string} name
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.name = "";
+    
+                        /**
+                         * TransitLine uri.
+                         * @member {string} uri
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.uri = "";
+    
+                        /**
+                         * TransitLine color.
+                         * @member {string} color
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.color = "";
+    
+                        /**
+                         * TransitLine iconUri.
+                         * @member {string} iconUri
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.iconUri = "";
+    
+                        /**
+                         * TransitLine nameShort.
+                         * @member {string} nameShort
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.nameShort = "";
+    
+                        /**
+                         * TransitLine textColor.
+                         * @member {string} textColor
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.textColor = "";
+    
+                        /**
+                         * TransitLine vehicle.
+                         * @member {google.maps.routing.v2.ITransitVehicle|null|undefined} vehicle
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         */
+                        TransitLine.prototype.vehicle = null;
+    
+                        /**
+                         * Creates a new TransitLine instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitLine=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.TransitLine} TransitLine instance
+                         */
+                        TransitLine.create = function create(properties) {
+                            return new TransitLine(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified TransitLine message. Does not implicitly {@link google.maps.routing.v2.TransitLine.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitLine} message TransitLine message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitLine.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.agencies != null && message.agencies.length)
+                                for (var i = 0; i < message.agencies.length; ++i)
+                                    $root.google.maps.routing.v2.TransitAgency.encode(message.agencies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
+                            if (message.uri != null && Object.hasOwnProperty.call(message, "uri"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.uri);
+                            if (message.color != null && Object.hasOwnProperty.call(message, "color"))
+                                writer.uint32(/* id 4, wireType 2 =*/34).string(message.color);
+                            if (message.iconUri != null && Object.hasOwnProperty.call(message, "iconUri"))
+                                writer.uint32(/* id 5, wireType 2 =*/42).string(message.iconUri);
+                            if (message.nameShort != null && Object.hasOwnProperty.call(message, "nameShort"))
+                                writer.uint32(/* id 6, wireType 2 =*/50).string(message.nameShort);
+                            if (message.textColor != null && Object.hasOwnProperty.call(message, "textColor"))
+                                writer.uint32(/* id 7, wireType 2 =*/58).string(message.textColor);
+                            if (message.vehicle != null && Object.hasOwnProperty.call(message, "vehicle"))
+                                $root.google.maps.routing.v2.TransitVehicle.encode(message.vehicle, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified TransitLine message, length delimited. Does not implicitly {@link google.maps.routing.v2.TransitLine.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitLine} message TransitLine message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitLine.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a TransitLine message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.TransitLine} TransitLine
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitLine.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.TransitLine();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        if (!(message.agencies && message.agencies.length))
+                                            message.agencies = [];
+                                        message.agencies.push($root.google.maps.routing.v2.TransitAgency.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 2: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                case 3: {
+                                        message.uri = reader.string();
+                                        break;
+                                    }
+                                case 4: {
+                                        message.color = reader.string();
+                                        break;
+                                    }
+                                case 5: {
+                                        message.iconUri = reader.string();
+                                        break;
+                                    }
+                                case 6: {
+                                        message.nameShort = reader.string();
+                                        break;
+                                    }
+                                case 7: {
+                                        message.textColor = reader.string();
+                                        break;
+                                    }
+                                case 8: {
+                                        message.vehicle = $root.google.maps.routing.v2.TransitVehicle.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a TransitLine message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.TransitLine} TransitLine
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitLine.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a TransitLine message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        TransitLine.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.agencies != null && message.hasOwnProperty("agencies")) {
+                                if (!Array.isArray(message.agencies))
+                                    return "agencies: array expected";
+                                for (var i = 0; i < message.agencies.length; ++i) {
+                                    var error = $root.google.maps.routing.v2.TransitAgency.verify(message.agencies[i]);
+                                    if (error)
+                                        return "agencies." + error;
+                                }
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            if (message.uri != null && message.hasOwnProperty("uri"))
+                                if (!$util.isString(message.uri))
+                                    return "uri: string expected";
+                            if (message.color != null && message.hasOwnProperty("color"))
+                                if (!$util.isString(message.color))
+                                    return "color: string expected";
+                            if (message.iconUri != null && message.hasOwnProperty("iconUri"))
+                                if (!$util.isString(message.iconUri))
+                                    return "iconUri: string expected";
+                            if (message.nameShort != null && message.hasOwnProperty("nameShort"))
+                                if (!$util.isString(message.nameShort))
+                                    return "nameShort: string expected";
+                            if (message.textColor != null && message.hasOwnProperty("textColor"))
+                                if (!$util.isString(message.textColor))
+                                    return "textColor: string expected";
+                            if (message.vehicle != null && message.hasOwnProperty("vehicle")) {
+                                var error = $root.google.maps.routing.v2.TransitVehicle.verify(message.vehicle);
+                                if (error)
+                                    return "vehicle." + error;
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a TransitLine message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.TransitLine} TransitLine
+                         */
+                        TransitLine.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.TransitLine)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.TransitLine();
+                            if (object.agencies) {
+                                if (!Array.isArray(object.agencies))
+                                    throw TypeError(".google.maps.routing.v2.TransitLine.agencies: array expected");
+                                message.agencies = [];
+                                for (var i = 0; i < object.agencies.length; ++i) {
+                                    if (typeof object.agencies[i] !== "object")
+                                        throw TypeError(".google.maps.routing.v2.TransitLine.agencies: object expected");
+                                    message.agencies[i] = $root.google.maps.routing.v2.TransitAgency.fromObject(object.agencies[i]);
+                                }
+                            }
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            if (object.uri != null)
+                                message.uri = String(object.uri);
+                            if (object.color != null)
+                                message.color = String(object.color);
+                            if (object.iconUri != null)
+                                message.iconUri = String(object.iconUri);
+                            if (object.nameShort != null)
+                                message.nameShort = String(object.nameShort);
+                            if (object.textColor != null)
+                                message.textColor = String(object.textColor);
+                            if (object.vehicle != null) {
+                                if (typeof object.vehicle !== "object")
+                                    throw TypeError(".google.maps.routing.v2.TransitLine.vehicle: object expected");
+                                message.vehicle = $root.google.maps.routing.v2.TransitVehicle.fromObject(object.vehicle);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a TransitLine message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {google.maps.routing.v2.TransitLine} message TransitLine
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        TransitLine.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults)
+                                object.agencies = [];
+                            if (options.defaults) {
+                                object.name = "";
+                                object.uri = "";
+                                object.color = "";
+                                object.iconUri = "";
+                                object.nameShort = "";
+                                object.textColor = "";
+                                object.vehicle = null;
+                            }
+                            if (message.agencies && message.agencies.length) {
+                                object.agencies = [];
+                                for (var j = 0; j < message.agencies.length; ++j)
+                                    object.agencies[j] = $root.google.maps.routing.v2.TransitAgency.toObject(message.agencies[j], options);
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            if (message.uri != null && message.hasOwnProperty("uri"))
+                                object.uri = message.uri;
+                            if (message.color != null && message.hasOwnProperty("color"))
+                                object.color = message.color;
+                            if (message.iconUri != null && message.hasOwnProperty("iconUri"))
+                                object.iconUri = message.iconUri;
+                            if (message.nameShort != null && message.hasOwnProperty("nameShort"))
+                                object.nameShort = message.nameShort;
+                            if (message.textColor != null && message.hasOwnProperty("textColor"))
+                                object.textColor = message.textColor;
+                            if (message.vehicle != null && message.hasOwnProperty("vehicle"))
+                                object.vehicle = $root.google.maps.routing.v2.TransitVehicle.toObject(message.vehicle, options);
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this TransitLine to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        TransitLine.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for TransitLine
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.TransitLine
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        TransitLine.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.TransitLine";
+                        };
+    
+                        return TransitLine;
+                    })();
+    
+                    v2.TransitStop = (function() {
+    
+                        /**
+                         * Properties of a TransitStop.
+                         * @memberof google.maps.routing.v2
+                         * @interface ITransitStop
+                         * @property {string|null} [name] TransitStop name
+                         * @property {google.maps.routing.v2.ILocation|null} [location] TransitStop location
+                         */
+    
+                        /**
+                         * Constructs a new TransitStop.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a TransitStop.
+                         * @implements ITransitStop
+                         * @constructor
+                         * @param {google.maps.routing.v2.ITransitStop=} [properties] Properties to set
+                         */
+                        function TransitStop(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * TransitStop name.
+                         * @member {string} name
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @instance
+                         */
+                        TransitStop.prototype.name = "";
+    
+                        /**
+                         * TransitStop location.
+                         * @member {google.maps.routing.v2.ILocation|null|undefined} location
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @instance
+                         */
+                        TransitStop.prototype.location = null;
+    
+                        /**
+                         * Creates a new TransitStop instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitStop=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.TransitStop} TransitStop instance
+                         */
+                        TransitStop.create = function create(properties) {
+                            return new TransitStop(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified TransitStop message. Does not implicitly {@link google.maps.routing.v2.TransitStop.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitStop} message TransitStop message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitStop.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                            if (message.location != null && Object.hasOwnProperty.call(message, "location"))
+                                $root.google.maps.routing.v2.Location.encode(message.location, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified TransitStop message, length delimited. Does not implicitly {@link google.maps.routing.v2.TransitStop.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitStop} message TransitStop message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitStop.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a TransitStop message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.TransitStop} TransitStop
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitStop.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.TransitStop();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.location = $root.google.maps.routing.v2.Location.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a TransitStop message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.TransitStop} TransitStop
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitStop.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a TransitStop message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        TransitStop.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            if (message.location != null && message.hasOwnProperty("location")) {
+                                var error = $root.google.maps.routing.v2.Location.verify(message.location);
+                                if (error)
+                                    return "location." + error;
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a TransitStop message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.TransitStop} TransitStop
+                         */
+                        TransitStop.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.TransitStop)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.TransitStop();
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            if (object.location != null) {
+                                if (typeof object.location !== "object")
+                                    throw TypeError(".google.maps.routing.v2.TransitStop.location: object expected");
+                                message.location = $root.google.maps.routing.v2.Location.fromObject(object.location);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a TransitStop message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {google.maps.routing.v2.TransitStop} message TransitStop
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        TransitStop.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.name = "";
+                                object.location = null;
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            if (message.location != null && message.hasOwnProperty("location"))
+                                object.location = $root.google.maps.routing.v2.Location.toObject(message.location, options);
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this TransitStop to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        TransitStop.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for TransitStop
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.TransitStop
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        TransitStop.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.TransitStop";
+                        };
+    
+                        return TransitStop;
+                    })();
+    
+                    v2.TransitVehicle = (function() {
+    
+                        /**
+                         * Properties of a TransitVehicle.
+                         * @memberof google.maps.routing.v2
+                         * @interface ITransitVehicle
+                         * @property {google.type.ILocalizedText|null} [name] TransitVehicle name
+                         * @property {google.maps.routing.v2.TransitVehicle.TransitVehicleType|null} [type] TransitVehicle type
+                         * @property {string|null} [iconUri] TransitVehicle iconUri
+                         * @property {string|null} [localIconUri] TransitVehicle localIconUri
+                         */
+    
+                        /**
+                         * Constructs a new TransitVehicle.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a TransitVehicle.
+                         * @implements ITransitVehicle
+                         * @constructor
+                         * @param {google.maps.routing.v2.ITransitVehicle=} [properties] Properties to set
+                         */
+                        function TransitVehicle(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * TransitVehicle name.
+                         * @member {google.type.ILocalizedText|null|undefined} name
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @instance
+                         */
+                        TransitVehicle.prototype.name = null;
+    
+                        /**
+                         * TransitVehicle type.
+                         * @member {google.maps.routing.v2.TransitVehicle.TransitVehicleType} type
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @instance
+                         */
+                        TransitVehicle.prototype.type = 0;
+    
+                        /**
+                         * TransitVehicle iconUri.
+                         * @member {string} iconUri
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @instance
+                         */
+                        TransitVehicle.prototype.iconUri = "";
+    
+                        /**
+                         * TransitVehicle localIconUri.
+                         * @member {string} localIconUri
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @instance
+                         */
+                        TransitVehicle.prototype.localIconUri = "";
+    
+                        /**
+                         * Creates a new TransitVehicle instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitVehicle=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.TransitVehicle} TransitVehicle instance
+                         */
+                        TransitVehicle.create = function create(properties) {
+                            return new TransitVehicle(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified TransitVehicle message. Does not implicitly {@link google.maps.routing.v2.TransitVehicle.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitVehicle} message TransitVehicle message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitVehicle.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                $root.google.type.LocalizedText.encode(message.name, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.type);
+                            if (message.iconUri != null && Object.hasOwnProperty.call(message, "iconUri"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.iconUri);
+                            if (message.localIconUri != null && Object.hasOwnProperty.call(message, "localIconUri"))
+                                writer.uint32(/* id 4, wireType 2 =*/34).string(message.localIconUri);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified TransitVehicle message, length delimited. Does not implicitly {@link google.maps.routing.v2.TransitVehicle.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitVehicle} message TransitVehicle message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitVehicle.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a TransitVehicle message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.TransitVehicle} TransitVehicle
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitVehicle.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.TransitVehicle();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 2: {
+                                        message.type = reader.int32();
+                                        break;
+                                    }
+                                case 3: {
+                                        message.iconUri = reader.string();
+                                        break;
+                                    }
+                                case 4: {
+                                        message.localIconUri = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a TransitVehicle message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.TransitVehicle} TransitVehicle
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitVehicle.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a TransitVehicle message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        TransitVehicle.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.name != null && message.hasOwnProperty("name")) {
+                                var error = $root.google.type.LocalizedText.verify(message.name);
+                                if (error)
+                                    return "name." + error;
+                            }
+                            if (message.type != null && message.hasOwnProperty("type"))
+                                switch (message.type) {
+                                default:
+                                    return "type: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 5:
+                                case 6:
+                                case 7:
+                                case 8:
+                                case 9:
+                                case 10:
+                                case 11:
+                                case 12:
+                                case 13:
+                                case 14:
+                                case 15:
+                                case 16:
+                                case 17:
+                                case 18:
+                                    break;
+                                }
+                            if (message.iconUri != null && message.hasOwnProperty("iconUri"))
+                                if (!$util.isString(message.iconUri))
+                                    return "iconUri: string expected";
+                            if (message.localIconUri != null && message.hasOwnProperty("localIconUri"))
+                                if (!$util.isString(message.localIconUri))
+                                    return "localIconUri: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a TransitVehicle message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.TransitVehicle} TransitVehicle
+                         */
+                        TransitVehicle.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.TransitVehicle)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.TransitVehicle();
+                            if (object.name != null) {
+                                if (typeof object.name !== "object")
+                                    throw TypeError(".google.maps.routing.v2.TransitVehicle.name: object expected");
+                                message.name = $root.google.type.LocalizedText.fromObject(object.name);
+                            }
+                            switch (object.type) {
+                            default:
+                                if (typeof object.type === "number") {
+                                    message.type = object.type;
+                                    break;
+                                }
+                                break;
+                            case "TRANSIT_VEHICLE_TYPE_UNSPECIFIED":
+                            case 0:
+                                message.type = 0;
+                                break;
+                            case "BUS":
+                            case 1:
+                                message.type = 1;
+                                break;
+                            case "CABLE_CAR":
+                            case 2:
+                                message.type = 2;
+                                break;
+                            case "COMMUTER_TRAIN":
+                            case 3:
+                                message.type = 3;
+                                break;
+                            case "FERRY":
+                            case 4:
+                                message.type = 4;
+                                break;
+                            case "FUNICULAR":
+                            case 5:
+                                message.type = 5;
+                                break;
+                            case "GONDOLA_LIFT":
+                            case 6:
+                                message.type = 6;
+                                break;
+                            case "HEAVY_RAIL":
+                            case 7:
+                                message.type = 7;
+                                break;
+                            case "HIGH_SPEED_TRAIN":
+                            case 8:
+                                message.type = 8;
+                                break;
+                            case "INTERCITY_BUS":
+                            case 9:
+                                message.type = 9;
+                                break;
+                            case "LONG_DISTANCE_TRAIN":
+                            case 10:
+                                message.type = 10;
+                                break;
+                            case "METRO_RAIL":
+                            case 11:
+                                message.type = 11;
+                                break;
+                            case "MONORAIL":
+                            case 12:
+                                message.type = 12;
+                                break;
+                            case "OTHER":
+                            case 13:
+                                message.type = 13;
+                                break;
+                            case "RAIL":
+                            case 14:
+                                message.type = 14;
+                                break;
+                            case "SHARE_TAXI":
+                            case 15:
+                                message.type = 15;
+                                break;
+                            case "SUBWAY":
+                            case 16:
+                                message.type = 16;
+                                break;
+                            case "TRAM":
+                            case 17:
+                                message.type = 17;
+                                break;
+                            case "TROLLEYBUS":
+                            case 18:
+                                message.type = 18;
+                                break;
+                            }
+                            if (object.iconUri != null)
+                                message.iconUri = String(object.iconUri);
+                            if (object.localIconUri != null)
+                                message.localIconUri = String(object.localIconUri);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a TransitVehicle message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {google.maps.routing.v2.TransitVehicle} message TransitVehicle
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        TransitVehicle.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.name = null;
+                                object.type = options.enums === String ? "TRANSIT_VEHICLE_TYPE_UNSPECIFIED" : 0;
+                                object.iconUri = "";
+                                object.localIconUri = "";
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = $root.google.type.LocalizedText.toObject(message.name, options);
+                            if (message.type != null && message.hasOwnProperty("type"))
+                                object.type = options.enums === String ? $root.google.maps.routing.v2.TransitVehicle.TransitVehicleType[message.type] === undefined ? message.type : $root.google.maps.routing.v2.TransitVehicle.TransitVehicleType[message.type] : message.type;
+                            if (message.iconUri != null && message.hasOwnProperty("iconUri"))
+                                object.iconUri = message.iconUri;
+                            if (message.localIconUri != null && message.hasOwnProperty("localIconUri"))
+                                object.localIconUri = message.localIconUri;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this TransitVehicle to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        TransitVehicle.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for TransitVehicle
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.TransitVehicle
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        TransitVehicle.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.TransitVehicle";
+                        };
+    
+                        /**
+                         * TransitVehicleType enum.
+                         * @name google.maps.routing.v2.TransitVehicle.TransitVehicleType
+                         * @enum {number}
+                         * @property {number} TRANSIT_VEHICLE_TYPE_UNSPECIFIED=0 TRANSIT_VEHICLE_TYPE_UNSPECIFIED value
+                         * @property {number} BUS=1 BUS value
+                         * @property {number} CABLE_CAR=2 CABLE_CAR value
+                         * @property {number} COMMUTER_TRAIN=3 COMMUTER_TRAIN value
+                         * @property {number} FERRY=4 FERRY value
+                         * @property {number} FUNICULAR=5 FUNICULAR value
+                         * @property {number} GONDOLA_LIFT=6 GONDOLA_LIFT value
+                         * @property {number} HEAVY_RAIL=7 HEAVY_RAIL value
+                         * @property {number} HIGH_SPEED_TRAIN=8 HIGH_SPEED_TRAIN value
+                         * @property {number} INTERCITY_BUS=9 INTERCITY_BUS value
+                         * @property {number} LONG_DISTANCE_TRAIN=10 LONG_DISTANCE_TRAIN value
+                         * @property {number} METRO_RAIL=11 METRO_RAIL value
+                         * @property {number} MONORAIL=12 MONORAIL value
+                         * @property {number} OTHER=13 OTHER value
+                         * @property {number} RAIL=14 RAIL value
+                         * @property {number} SHARE_TAXI=15 SHARE_TAXI value
+                         * @property {number} SUBWAY=16 SUBWAY value
+                         * @property {number} TRAM=17 TRAM value
+                         * @property {number} TROLLEYBUS=18 TROLLEYBUS value
+                         */
+                        TransitVehicle.TransitVehicleType = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "TRANSIT_VEHICLE_TYPE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "BUS"] = 1;
+                            values[valuesById[2] = "CABLE_CAR"] = 2;
+                            values[valuesById[3] = "COMMUTER_TRAIN"] = 3;
+                            values[valuesById[4] = "FERRY"] = 4;
+                            values[valuesById[5] = "FUNICULAR"] = 5;
+                            values[valuesById[6] = "GONDOLA_LIFT"] = 6;
+                            values[valuesById[7] = "HEAVY_RAIL"] = 7;
+                            values[valuesById[8] = "HIGH_SPEED_TRAIN"] = 8;
+                            values[valuesById[9] = "INTERCITY_BUS"] = 9;
+                            values[valuesById[10] = "LONG_DISTANCE_TRAIN"] = 10;
+                            values[valuesById[11] = "METRO_RAIL"] = 11;
+                            values[valuesById[12] = "MONORAIL"] = 12;
+                            values[valuesById[13] = "OTHER"] = 13;
+                            values[valuesById[14] = "RAIL"] = 14;
+                            values[valuesById[15] = "SHARE_TAXI"] = 15;
+                            values[valuesById[16] = "SUBWAY"] = 16;
+                            values[valuesById[17] = "TRAM"] = 17;
+                            values[valuesById[18] = "TROLLEYBUS"] = 18;
+                            return values;
+                        })();
+    
+                        return TransitVehicle;
+                    })();
+    
                     v2.RouteModifiers = (function() {
     
                         /**
@@ -18354,6 +26422,8 @@
                                     case 16:
                                     case 78:
                                     case 79:
+                                    case 98:
+                                    case 99:
                                     case 90:
                                     case 91:
                                     case 93:
@@ -18393,6 +26463,7 @@
                                     case 94:
                                     case 37:
                                     case 38:
+                                    case 95:
                                     case 39:
                                     case 40:
                                     case 41:
@@ -18408,6 +26479,7 @@
                                     case 45:
                                     case 46:
                                     case 47:
+                                    case 97:
                                     case 48:
                                     case 49:
                                     case 50:
@@ -18415,6 +26487,7 @@
                                     case 52:
                                     case 53:
                                     case 54:
+                                    case 96:
                                     case 55:
                                     case 56:
                                     case 57:
@@ -18426,6 +26499,7 @@
                                     case 1:
                                     case 62:
                                     case 63:
+                                    case 100:
                                     case 64:
                                         break;
                                     }
@@ -18548,6 +26622,14 @@
                                     case "IN_LOCAL_HP_PLATE_EXEMPT":
                                     case 79:
                                         message.tollPasses[i] = 79;
+                                        break;
+                                    case "JP_ETC":
+                                    case 98:
+                                        message.tollPasses[i] = 98;
+                                        break;
+                                    case "JP_ETC2":
+                                    case 99:
+                                        message.tollPasses[i] = 99;
                                         break;
                                     case "MX_IAVE":
                                     case 90:
@@ -18705,6 +26787,10 @@
                                     case 38:
                                         message.tollPasses[i] = 38;
                                         break;
+                                    case "US_MI_IQ_TAG":
+                                    case 95:
+                                        message.tollPasses[i] = 95;
+                                        break;
                                     case "US_MI_MACKINAC_BRIDGE_MAC_PASS":
                                     case 39:
                                         message.tollPasses[i] = 39;
@@ -18765,6 +26851,10 @@
                                     case 47:
                                         message.tollPasses[i] = 47;
                                         break;
+                                    case "US_TX_AVI_TAG":
+                                    case 97:
+                                        message.tollPasses[i] = 97;
+                                        break;
                                     case "US_TX_BANCPASS":
                                     case 48:
                                         message.tollPasses[i] = 48;
@@ -18792,6 +26882,10 @@
                                     case "US_TX_EZTAG":
                                     case 54:
                                         message.tollPasses[i] = 54;
+                                        break;
+                                    case "US_TX_FUEGO_TAG":
+                                    case 96:
+                                        message.tollPasses[i] = 96;
                                         break;
                                     case "US_TX_LAREDO_TRADE_TAG":
                                     case 55:
@@ -18836,6 +26930,10 @@
                                     case "US_WV_MEMORIAL_BRIDGE_TICKETS":
                                     case 63:
                                         message.tollPasses[i] = 63;
+                                        break;
+                                    case "US_WV_MOV_PASS":
+                                    case 100:
+                                        message.tollPasses[i] = 100;
                                         break;
                                     case "US_WV_NEWELL_TOLL_BRIDGE_TICKET":
                                     case 64:
@@ -18939,6 +27037,8 @@
                      * @property {number} ID_E_TOLL=16 ID_E_TOLL value
                      * @property {number} IN_FASTAG=78 IN_FASTAG value
                      * @property {number} IN_LOCAL_HP_PLATE_EXEMPT=79 IN_LOCAL_HP_PLATE_EXEMPT value
+                     * @property {number} JP_ETC=98 JP_ETC value
+                     * @property {number} JP_ETC2=99 JP_ETC2 value
                      * @property {number} MX_IAVE=90 MX_IAVE value
                      * @property {number} MX_PASE=91 MX_PASE value
                      * @property {number} MX_QUICKPASS=93 MX_QUICKPASS value
@@ -18978,6 +27078,7 @@
                      * @property {number} US_MI_BCPASS=94 US_MI_BCPASS value
                      * @property {number} US_MI_GROSSE_ILE_TOLL_BRIDGE_PASS_TAG=37 US_MI_GROSSE_ILE_TOLL_BRIDGE_PASS_TAG value
                      * @property {number} US_MI_IQ_PROX_CARD=38 US_MI_IQ_PROX_CARD value
+                     * @property {number} US_MI_IQ_TAG=95 US_MI_IQ_TAG value
                      * @property {number} US_MI_MACKINAC_BRIDGE_MAC_PASS=39 US_MI_MACKINAC_BRIDGE_MAC_PASS value
                      * @property {number} US_MI_NEXPRESS_TOLL=40 US_MI_NEXPRESS_TOLL value
                      * @property {number} US_MN_EZPASSMN=41 US_MN_EZPASSMN value
@@ -18993,6 +27094,7 @@
                      * @property {number} US_PA_EZPASSPA=45 US_PA_EZPASSPA value
                      * @property {number} US_RI_EZPASSRI=46 US_RI_EZPASSRI value
                      * @property {number} US_SC_PALPASS=47 US_SC_PALPASS value
+                     * @property {number} US_TX_AVI_TAG=97 US_TX_AVI_TAG value
                      * @property {number} US_TX_BANCPASS=48 US_TX_BANCPASS value
                      * @property {number} US_TX_DEL_RIO_PASS=49 US_TX_DEL_RIO_PASS value
                      * @property {number} US_TX_EFAST_PASS=50 US_TX_EFAST_PASS value
@@ -19000,6 +27102,7 @@
                      * @property {number} US_TX_EPTOLL=52 US_TX_EPTOLL value
                      * @property {number} US_TX_EZ_CROSS=53 US_TX_EZ_CROSS value
                      * @property {number} US_TX_EZTAG=54 US_TX_EZTAG value
+                     * @property {number} US_TX_FUEGO_TAG=96 US_TX_FUEGO_TAG value
                      * @property {number} US_TX_LAREDO_TRADE_TAG=55 US_TX_LAREDO_TRADE_TAG value
                      * @property {number} US_TX_PLUSPASS=56 US_TX_PLUSPASS value
                      * @property {number} US_TX_TOLLTAG=57 US_TX_TOLLTAG value
@@ -19011,6 +27114,7 @@
                      * @property {number} US_WA_GOOD_TO_GO=1 US_WA_GOOD_TO_GO value
                      * @property {number} US_WV_EZPASSWV=62 US_WV_EZPASSWV value
                      * @property {number} US_WV_MEMORIAL_BRIDGE_TICKETS=63 US_WV_MEMORIAL_BRIDGE_TICKETS value
+                     * @property {number} US_WV_MOV_PASS=100 US_WV_MOV_PASS value
                      * @property {number} US_WV_NEWELL_TOLL_BRIDGE_TICKET=64 US_WV_NEWELL_TOLL_BRIDGE_TICKET value
                      */
                     v2.TollPass = (function() {
@@ -19035,6 +27139,8 @@
                         values[valuesById[16] = "ID_E_TOLL"] = 16;
                         values[valuesById[78] = "IN_FASTAG"] = 78;
                         values[valuesById[79] = "IN_LOCAL_HP_PLATE_EXEMPT"] = 79;
+                        values[valuesById[98] = "JP_ETC"] = 98;
+                        values[valuesById[99] = "JP_ETC2"] = 99;
                         values[valuesById[90] = "MX_IAVE"] = 90;
                         values[valuesById[91] = "MX_PASE"] = 91;
                         values[valuesById[93] = "MX_QUICKPASS"] = 93;
@@ -19074,6 +27180,7 @@
                         values[valuesById[94] = "US_MI_BCPASS"] = 94;
                         values[valuesById[37] = "US_MI_GROSSE_ILE_TOLL_BRIDGE_PASS_TAG"] = 37;
                         values[valuesById[38] = "US_MI_IQ_PROX_CARD"] = 38;
+                        values[valuesById[95] = "US_MI_IQ_TAG"] = 95;
                         values[valuesById[39] = "US_MI_MACKINAC_BRIDGE_MAC_PASS"] = 39;
                         values[valuesById[40] = "US_MI_NEXPRESS_TOLL"] = 40;
                         values[valuesById[41] = "US_MN_EZPASSMN"] = 41;
@@ -19089,6 +27196,7 @@
                         values[valuesById[45] = "US_PA_EZPASSPA"] = 45;
                         values[valuesById[46] = "US_RI_EZPASSRI"] = 46;
                         values[valuesById[47] = "US_SC_PALPASS"] = 47;
+                        values[valuesById[97] = "US_TX_AVI_TAG"] = 97;
                         values[valuesById[48] = "US_TX_BANCPASS"] = 48;
                         values[valuesById[49] = "US_TX_DEL_RIO_PASS"] = 49;
                         values[valuesById[50] = "US_TX_EFAST_PASS"] = 50;
@@ -19096,6 +27204,7 @@
                         values[valuesById[52] = "US_TX_EPTOLL"] = 52;
                         values[valuesById[53] = "US_TX_EZ_CROSS"] = 53;
                         values[valuesById[54] = "US_TX_EZTAG"] = 54;
+                        values[valuesById[96] = "US_TX_FUEGO_TAG"] = 96;
                         values[valuesById[55] = "US_TX_LAREDO_TRADE_TAG"] = 55;
                         values[valuesById[56] = "US_TX_PLUSPASS"] = 56;
                         values[valuesById[57] = "US_TX_TOLLTAG"] = 57;
@@ -19107,6 +27216,7 @@
                         values[valuesById[1] = "US_WA_GOOD_TO_GO"] = 1;
                         values[valuesById[62] = "US_WV_EZPASSWV"] = 62;
                         values[valuesById[63] = "US_WV_MEMORIAL_BRIDGE_TICKETS"] = 63;
+                        values[valuesById[100] = "US_WV_MOV_PASS"] = 100;
                         values[valuesById[64] = "US_WV_NEWELL_TOLL_BRIDGE_TICKET"] = 64;
                         return values;
                     })();
@@ -19368,26 +27478,6 @@
                         return values;
                     })();
     
-                    /**
-                     * RouteTravelMode enum.
-                     * @name google.maps.routing.v2.RouteTravelMode
-                     * @enum {number}
-                     * @property {number} TRAVEL_MODE_UNSPECIFIED=0 TRAVEL_MODE_UNSPECIFIED value
-                     * @property {number} DRIVE=1 DRIVE value
-                     * @property {number} BICYCLE=2 BICYCLE value
-                     * @property {number} WALK=3 WALK value
-                     * @property {number} TWO_WHEELER=4 TWO_WHEELER value
-                     */
-                    v2.RouteTravelMode = (function() {
-                        var valuesById = {}, values = Object.create(valuesById);
-                        values[valuesById[0] = "TRAVEL_MODE_UNSPECIFIED"] = 0;
-                        values[valuesById[1] = "DRIVE"] = 1;
-                        values[valuesById[2] = "BICYCLE"] = 2;
-                        values[valuesById[3] = "WALK"] = 3;
-                        values[valuesById[4] = "TWO_WHEELER"] = 4;
-                        return values;
-                    })();
-    
                     v2.Routes = (function() {
     
                         /**
@@ -19503,13 +27593,17 @@
                          * @property {google.maps.routing.v2.PolylineQuality|null} [polylineQuality] ComputeRoutesRequest polylineQuality
                          * @property {google.maps.routing.v2.PolylineEncoding|null} [polylineEncoding] ComputeRoutesRequest polylineEncoding
                          * @property {google.protobuf.ITimestamp|null} [departureTime] ComputeRoutesRequest departureTime
+                         * @property {google.protobuf.ITimestamp|null} [arrivalTime] ComputeRoutesRequest arrivalTime
                          * @property {boolean|null} [computeAlternativeRoutes] ComputeRoutesRequest computeAlternativeRoutes
                          * @property {google.maps.routing.v2.IRouteModifiers|null} [routeModifiers] ComputeRoutesRequest routeModifiers
                          * @property {string|null} [languageCode] ComputeRoutesRequest languageCode
                          * @property {string|null} [regionCode] ComputeRoutesRequest regionCode
                          * @property {google.maps.routing.v2.Units|null} [units] ComputeRoutesRequest units
+                         * @property {boolean|null} [optimizeWaypointOrder] ComputeRoutesRequest optimizeWaypointOrder
                          * @property {Array.<google.maps.routing.v2.ComputeRoutesRequest.ReferenceRoute>|null} [requestedReferenceRoutes] ComputeRoutesRequest requestedReferenceRoutes
                          * @property {Array.<google.maps.routing.v2.ComputeRoutesRequest.ExtraComputation>|null} [extraComputations] ComputeRoutesRequest extraComputations
+                         * @property {google.maps.routing.v2.TrafficModel|null} [trafficModel] ComputeRoutesRequest trafficModel
+                         * @property {google.maps.routing.v2.ITransitPreferences|null} [transitPreferences] ComputeRoutesRequest transitPreferences
                          */
     
                         /**
@@ -19595,6 +27689,14 @@
                         ComputeRoutesRequest.prototype.departureTime = null;
     
                         /**
+                         * ComputeRoutesRequest arrivalTime.
+                         * @member {google.protobuf.ITimestamp|null|undefined} arrivalTime
+                         * @memberof google.maps.routing.v2.ComputeRoutesRequest
+                         * @instance
+                         */
+                        ComputeRoutesRequest.prototype.arrivalTime = null;
+    
+                        /**
                          * ComputeRoutesRequest computeAlternativeRoutes.
                          * @member {boolean} computeAlternativeRoutes
                          * @memberof google.maps.routing.v2.ComputeRoutesRequest
@@ -19635,6 +27737,14 @@
                         ComputeRoutesRequest.prototype.units = 0;
     
                         /**
+                         * ComputeRoutesRequest optimizeWaypointOrder.
+                         * @member {boolean} optimizeWaypointOrder
+                         * @memberof google.maps.routing.v2.ComputeRoutesRequest
+                         * @instance
+                         */
+                        ComputeRoutesRequest.prototype.optimizeWaypointOrder = false;
+    
+                        /**
                          * ComputeRoutesRequest requestedReferenceRoutes.
                          * @member {Array.<google.maps.routing.v2.ComputeRoutesRequest.ReferenceRoute>} requestedReferenceRoutes
                          * @memberof google.maps.routing.v2.ComputeRoutesRequest
@@ -19649,6 +27759,22 @@
                          * @instance
                          */
                         ComputeRoutesRequest.prototype.extraComputations = $util.emptyArray;
+    
+                        /**
+                         * ComputeRoutesRequest trafficModel.
+                         * @member {google.maps.routing.v2.TrafficModel} trafficModel
+                         * @memberof google.maps.routing.v2.ComputeRoutesRequest
+                         * @instance
+                         */
+                        ComputeRoutesRequest.prototype.trafficModel = 0;
+    
+                        /**
+                         * ComputeRoutesRequest transitPreferences.
+                         * @member {google.maps.routing.v2.ITransitPreferences|null|undefined} transitPreferences
+                         * @memberof google.maps.routing.v2.ComputeRoutesRequest
+                         * @instance
+                         */
+                        ComputeRoutesRequest.prototype.transitPreferences = null;
     
                         /**
                          * Creates a new ComputeRoutesRequest instance using the specified properties.
@@ -19699,6 +27825,8 @@
                                 writer.uint32(/* id 11, wireType 0 =*/88).int32(message.units);
                             if (message.polylineEncoding != null && Object.hasOwnProperty.call(message, "polylineEncoding"))
                                 writer.uint32(/* id 12, wireType 0 =*/96).int32(message.polylineEncoding);
+                            if (message.optimizeWaypointOrder != null && Object.hasOwnProperty.call(message, "optimizeWaypointOrder"))
+                                writer.uint32(/* id 13, wireType 0 =*/104).bool(message.optimizeWaypointOrder);
                             if (message.requestedReferenceRoutes != null && message.requestedReferenceRoutes.length) {
                                 writer.uint32(/* id 14, wireType 2 =*/114).fork();
                                 for (var i = 0; i < message.requestedReferenceRoutes.length; ++i)
@@ -19713,6 +27841,12 @@
                             }
                             if (message.regionCode != null && Object.hasOwnProperty.call(message, "regionCode"))
                                 writer.uint32(/* id 16, wireType 2 =*/130).string(message.regionCode);
+                            if (message.trafficModel != null && Object.hasOwnProperty.call(message, "trafficModel"))
+                                writer.uint32(/* id 18, wireType 0 =*/144).int32(message.trafficModel);
+                            if (message.arrivalTime != null && Object.hasOwnProperty.call(message, "arrivalTime"))
+                                $root.google.protobuf.Timestamp.encode(message.arrivalTime, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+                            if (message.transitPreferences != null && Object.hasOwnProperty.call(message, "transitPreferences"))
+                                $root.google.maps.routing.v2.TransitPreferences.encode(message.transitPreferences, writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
                             return writer;
                         };
     
@@ -19781,6 +27915,10 @@
                                         message.departureTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                         break;
                                     }
+                                case 19: {
+                                        message.arrivalTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                        break;
+                                    }
                                 case 8: {
                                         message.computeAlternativeRoutes = reader.bool();
                                         break;
@@ -19799,6 +27937,10 @@
                                     }
                                 case 11: {
                                         message.units = reader.int32();
+                                        break;
+                                    }
+                                case 13: {
+                                        message.optimizeWaypointOrder = reader.bool();
                                         break;
                                     }
                                 case 14: {
@@ -19821,6 +27963,14 @@
                                                 message.extraComputations.push(reader.int32());
                                         } else
                                             message.extraComputations.push(reader.int32());
+                                        break;
+                                    }
+                                case 18: {
+                                        message.trafficModel = reader.int32();
+                                        break;
+                                    }
+                                case 20: {
+                                        message.transitPreferences = $root.google.maps.routing.v2.TransitPreferences.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -19886,6 +28036,7 @@
                                 case 2:
                                 case 3:
                                 case 4:
+                                case 7:
                                     break;
                                 }
                             if (message.routingPreference != null && message.hasOwnProperty("routingPreference"))
@@ -19921,6 +28072,11 @@
                                 if (error)
                                     return "departureTime." + error;
                             }
+                            if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime")) {
+                                var error = $root.google.protobuf.Timestamp.verify(message.arrivalTime);
+                                if (error)
+                                    return "arrivalTime." + error;
+                            }
                             if (message.computeAlternativeRoutes != null && message.hasOwnProperty("computeAlternativeRoutes"))
                                 if (typeof message.computeAlternativeRoutes !== "boolean")
                                     return "computeAlternativeRoutes: boolean expected";
@@ -19944,6 +28100,9 @@
                                 case 2:
                                     break;
                                 }
+                            if (message.optimizeWaypointOrder != null && message.hasOwnProperty("optimizeWaypointOrder"))
+                                if (typeof message.optimizeWaypointOrder !== "boolean")
+                                    return "optimizeWaypointOrder: boolean expected";
                             if (message.requestedReferenceRoutes != null && message.hasOwnProperty("requestedReferenceRoutes")) {
                                 if (!Array.isArray(message.requestedReferenceRoutes))
                                     return "requestedReferenceRoutes: array expected";
@@ -19953,6 +28112,7 @@
                                         return "requestedReferenceRoutes: enum value[] expected";
                                     case 0:
                                     case 1:
+                                    case 2:
                                         break;
                                     }
                             }
@@ -19967,8 +28127,26 @@
                                     case 1:
                                     case 2:
                                     case 3:
+                                    case 4:
+                                    case 7:
+                                    case 8:
                                         break;
                                     }
+                            }
+                            if (message.trafficModel != null && message.hasOwnProperty("trafficModel"))
+                                switch (message.trafficModel) {
+                                default:
+                                    return "trafficModel: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                    break;
+                                }
+                            if (message.transitPreferences != null && message.hasOwnProperty("transitPreferences")) {
+                                var error = $root.google.maps.routing.v2.TransitPreferences.verify(message.transitPreferences);
+                                if (error)
+                                    return "transitPreferences." + error;
                             }
                             return null;
                         };
@@ -20031,6 +28209,10 @@
                             case "TWO_WHEELER":
                             case 4:
                                 message.travelMode = 4;
+                                break;
+                            case "TRANSIT":
+                            case 7:
+                                message.travelMode = 7;
                                 break;
                             }
                             switch (object.routingPreference) {
@@ -20102,6 +28284,11 @@
                                     throw TypeError(".google.maps.routing.v2.ComputeRoutesRequest.departureTime: object expected");
                                 message.departureTime = $root.google.protobuf.Timestamp.fromObject(object.departureTime);
                             }
+                            if (object.arrivalTime != null) {
+                                if (typeof object.arrivalTime !== "object")
+                                    throw TypeError(".google.maps.routing.v2.ComputeRoutesRequest.arrivalTime: object expected");
+                                message.arrivalTime = $root.google.protobuf.Timestamp.fromObject(object.arrivalTime);
+                            }
                             if (object.computeAlternativeRoutes != null)
                                 message.computeAlternativeRoutes = Boolean(object.computeAlternativeRoutes);
                             if (object.routeModifiers != null) {
@@ -20133,6 +28320,8 @@
                                 message.units = 2;
                                 break;
                             }
+                            if (object.optimizeWaypointOrder != null)
+                                message.optimizeWaypointOrder = Boolean(object.optimizeWaypointOrder);
                             if (object.requestedReferenceRoutes) {
                                 if (!Array.isArray(object.requestedReferenceRoutes))
                                     throw TypeError(".google.maps.routing.v2.ComputeRoutesRequest.requestedReferenceRoutes: array expected");
@@ -20151,6 +28340,10 @@
                                     case "FUEL_EFFICIENT":
                                     case 1:
                                         message.requestedReferenceRoutes[i] = 1;
+                                        break;
+                                    case "SHORTER_DISTANCE":
+                                    case 2:
+                                        message.requestedReferenceRoutes[i] = 2;
                                         break;
                                     }
                             }
@@ -20181,7 +28374,48 @@
                                     case 3:
                                         message.extraComputations[i] = 3;
                                         break;
+                                    case "HTML_FORMATTED_NAVIGATION_INSTRUCTIONS":
+                                    case 4:
+                                        message.extraComputations[i] = 4;
+                                        break;
+                                    case "FLYOVER_INFO_ON_POLYLINE":
+                                    case 7:
+                                        message.extraComputations[i] = 7;
+                                        break;
+                                    case "NARROW_ROAD_INFO_ON_POLYLINE":
+                                    case 8:
+                                        message.extraComputations[i] = 8;
+                                        break;
                                     }
+                            }
+                            switch (object.trafficModel) {
+                            default:
+                                if (typeof object.trafficModel === "number") {
+                                    message.trafficModel = object.trafficModel;
+                                    break;
+                                }
+                                break;
+                            case "TRAFFIC_MODEL_UNSPECIFIED":
+                            case 0:
+                                message.trafficModel = 0;
+                                break;
+                            case "BEST_GUESS":
+                            case 1:
+                                message.trafficModel = 1;
+                                break;
+                            case "PESSIMISTIC":
+                            case 2:
+                                message.trafficModel = 2;
+                                break;
+                            case "OPTIMISTIC":
+                            case 3:
+                                message.trafficModel = 3;
+                                break;
+                            }
+                            if (object.transitPreferences != null) {
+                                if (typeof object.transitPreferences !== "object")
+                                    throw TypeError(".google.maps.routing.v2.ComputeRoutesRequest.transitPreferences: object expected");
+                                message.transitPreferences = $root.google.maps.routing.v2.TransitPreferences.fromObject(object.transitPreferences);
                             }
                             return message;
                         };
@@ -20216,7 +28450,11 @@
                                 object.languageCode = "";
                                 object.units = options.enums === String ? "UNITS_UNSPECIFIED" : 0;
                                 object.polylineEncoding = options.enums === String ? "POLYLINE_ENCODING_UNSPECIFIED" : 0;
+                                object.optimizeWaypointOrder = false;
                                 object.regionCode = "";
+                                object.trafficModel = options.enums === String ? "TRAFFIC_MODEL_UNSPECIFIED" : 0;
+                                object.arrivalTime = null;
+                                object.transitPreferences = null;
                             }
                             if (message.origin != null && message.hasOwnProperty("origin"))
                                 object.origin = $root.google.maps.routing.v2.Waypoint.toObject(message.origin, options);
@@ -20245,6 +28483,8 @@
                                 object.units = options.enums === String ? $root.google.maps.routing.v2.Units[message.units] === undefined ? message.units : $root.google.maps.routing.v2.Units[message.units] : message.units;
                             if (message.polylineEncoding != null && message.hasOwnProperty("polylineEncoding"))
                                 object.polylineEncoding = options.enums === String ? $root.google.maps.routing.v2.PolylineEncoding[message.polylineEncoding] === undefined ? message.polylineEncoding : $root.google.maps.routing.v2.PolylineEncoding[message.polylineEncoding] : message.polylineEncoding;
+                            if (message.optimizeWaypointOrder != null && message.hasOwnProperty("optimizeWaypointOrder"))
+                                object.optimizeWaypointOrder = message.optimizeWaypointOrder;
                             if (message.requestedReferenceRoutes && message.requestedReferenceRoutes.length) {
                                 object.requestedReferenceRoutes = [];
                                 for (var j = 0; j < message.requestedReferenceRoutes.length; ++j)
@@ -20257,6 +28497,12 @@
                             }
                             if (message.regionCode != null && message.hasOwnProperty("regionCode"))
                                 object.regionCode = message.regionCode;
+                            if (message.trafficModel != null && message.hasOwnProperty("trafficModel"))
+                                object.trafficModel = options.enums === String ? $root.google.maps.routing.v2.TrafficModel[message.trafficModel] === undefined ? message.trafficModel : $root.google.maps.routing.v2.TrafficModel[message.trafficModel] : message.trafficModel;
+                            if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime"))
+                                object.arrivalTime = $root.google.protobuf.Timestamp.toObject(message.arrivalTime, options);
+                            if (message.transitPreferences != null && message.hasOwnProperty("transitPreferences"))
+                                object.transitPreferences = $root.google.maps.routing.v2.TransitPreferences.toObject(message.transitPreferences, options);
                             return object;
                         };
     
@@ -20292,11 +28538,13 @@
                          * @enum {number}
                          * @property {number} REFERENCE_ROUTE_UNSPECIFIED=0 REFERENCE_ROUTE_UNSPECIFIED value
                          * @property {number} FUEL_EFFICIENT=1 FUEL_EFFICIENT value
+                         * @property {number} SHORTER_DISTANCE=2 SHORTER_DISTANCE value
                          */
                         ComputeRoutesRequest.ReferenceRoute = (function() {
                             var valuesById = {}, values = Object.create(valuesById);
                             values[valuesById[0] = "REFERENCE_ROUTE_UNSPECIFIED"] = 0;
                             values[valuesById[1] = "FUEL_EFFICIENT"] = 1;
+                            values[valuesById[2] = "SHORTER_DISTANCE"] = 2;
                             return values;
                         })();
     
@@ -20308,6 +28556,9 @@
                          * @property {number} TOLLS=1 TOLLS value
                          * @property {number} FUEL_CONSUMPTION=2 FUEL_CONSUMPTION value
                          * @property {number} TRAFFIC_ON_POLYLINE=3 TRAFFIC_ON_POLYLINE value
+                         * @property {number} HTML_FORMATTED_NAVIGATION_INSTRUCTIONS=4 HTML_FORMATTED_NAVIGATION_INSTRUCTIONS value
+                         * @property {number} FLYOVER_INFO_ON_POLYLINE=7 FLYOVER_INFO_ON_POLYLINE value
+                         * @property {number} NARROW_ROAD_INFO_ON_POLYLINE=8 NARROW_ROAD_INFO_ON_POLYLINE value
                          */
                         ComputeRoutesRequest.ExtraComputation = (function() {
                             var valuesById = {}, values = Object.create(valuesById);
@@ -20315,6 +28566,9 @@
                             values[valuesById[1] = "TOLLS"] = 1;
                             values[valuesById[2] = "FUEL_CONSUMPTION"] = 2;
                             values[valuesById[3] = "TRAFFIC_ON_POLYLINE"] = 3;
+                            values[valuesById[4] = "HTML_FORMATTED_NAVIGATION_INSTRUCTIONS"] = 4;
+                            values[valuesById[7] = "FLYOVER_INFO_ON_POLYLINE"] = 7;
+                            values[valuesById[8] = "NARROW_ROAD_INFO_ON_POLYLINE"] = 8;
                             return values;
                         })();
     
@@ -20614,9 +28868,13 @@
                          * @property {google.maps.routing.v2.RouteTravelMode|null} [travelMode] ComputeRouteMatrixRequest travelMode
                          * @property {google.maps.routing.v2.RoutingPreference|null} [routingPreference] ComputeRouteMatrixRequest routingPreference
                          * @property {google.protobuf.ITimestamp|null} [departureTime] ComputeRouteMatrixRequest departureTime
+                         * @property {google.protobuf.ITimestamp|null} [arrivalTime] ComputeRouteMatrixRequest arrivalTime
                          * @property {string|null} [languageCode] ComputeRouteMatrixRequest languageCode
                          * @property {string|null} [regionCode] ComputeRouteMatrixRequest regionCode
+                         * @property {google.maps.routing.v2.Units|null} [units] ComputeRouteMatrixRequest units
                          * @property {Array.<google.maps.routing.v2.ComputeRouteMatrixRequest.ExtraComputation>|null} [extraComputations] ComputeRouteMatrixRequest extraComputations
+                         * @property {google.maps.routing.v2.TrafficModel|null} [trafficModel] ComputeRouteMatrixRequest trafficModel
+                         * @property {google.maps.routing.v2.ITransitPreferences|null} [transitPreferences] ComputeRouteMatrixRequest transitPreferences
                          */
     
                         /**
@@ -20678,6 +28936,14 @@
                         ComputeRouteMatrixRequest.prototype.departureTime = null;
     
                         /**
+                         * ComputeRouteMatrixRequest arrivalTime.
+                         * @member {google.protobuf.ITimestamp|null|undefined} arrivalTime
+                         * @memberof google.maps.routing.v2.ComputeRouteMatrixRequest
+                         * @instance
+                         */
+                        ComputeRouteMatrixRequest.prototype.arrivalTime = null;
+    
+                        /**
                          * ComputeRouteMatrixRequest languageCode.
                          * @member {string} languageCode
                          * @memberof google.maps.routing.v2.ComputeRouteMatrixRequest
@@ -20694,12 +28960,36 @@
                         ComputeRouteMatrixRequest.prototype.regionCode = "";
     
                         /**
+                         * ComputeRouteMatrixRequest units.
+                         * @member {google.maps.routing.v2.Units} units
+                         * @memberof google.maps.routing.v2.ComputeRouteMatrixRequest
+                         * @instance
+                         */
+                        ComputeRouteMatrixRequest.prototype.units = 0;
+    
+                        /**
                          * ComputeRouteMatrixRequest extraComputations.
                          * @member {Array.<google.maps.routing.v2.ComputeRouteMatrixRequest.ExtraComputation>} extraComputations
                          * @memberof google.maps.routing.v2.ComputeRouteMatrixRequest
                          * @instance
                          */
                         ComputeRouteMatrixRequest.prototype.extraComputations = $util.emptyArray;
+    
+                        /**
+                         * ComputeRouteMatrixRequest trafficModel.
+                         * @member {google.maps.routing.v2.TrafficModel} trafficModel
+                         * @memberof google.maps.routing.v2.ComputeRouteMatrixRequest
+                         * @instance
+                         */
+                        ComputeRouteMatrixRequest.prototype.trafficModel = 0;
+    
+                        /**
+                         * ComputeRouteMatrixRequest transitPreferences.
+                         * @member {google.maps.routing.v2.ITransitPreferences|null|undefined} transitPreferences
+                         * @memberof google.maps.routing.v2.ComputeRouteMatrixRequest
+                         * @instance
+                         */
+                        ComputeRouteMatrixRequest.prototype.transitPreferences = null;
     
                         /**
                          * Creates a new ComputeRouteMatrixRequest instance using the specified properties.
@@ -20739,6 +29029,8 @@
                                 $root.google.protobuf.Timestamp.encode(message.departureTime, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                             if (message.languageCode != null && Object.hasOwnProperty.call(message, "languageCode"))
                                 writer.uint32(/* id 6, wireType 2 =*/50).string(message.languageCode);
+                            if (message.units != null && Object.hasOwnProperty.call(message, "units"))
+                                writer.uint32(/* id 7, wireType 0 =*/56).int32(message.units);
                             if (message.extraComputations != null && message.extraComputations.length) {
                                 writer.uint32(/* id 8, wireType 2 =*/66).fork();
                                 for (var i = 0; i < message.extraComputations.length; ++i)
@@ -20747,6 +29039,12 @@
                             }
                             if (message.regionCode != null && Object.hasOwnProperty.call(message, "regionCode"))
                                 writer.uint32(/* id 9, wireType 2 =*/74).string(message.regionCode);
+                            if (message.trafficModel != null && Object.hasOwnProperty.call(message, "trafficModel"))
+                                writer.uint32(/* id 10, wireType 0 =*/80).int32(message.trafficModel);
+                            if (message.arrivalTime != null && Object.hasOwnProperty.call(message, "arrivalTime"))
+                                $root.google.protobuf.Timestamp.encode(message.arrivalTime, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                            if (message.transitPreferences != null && Object.hasOwnProperty.call(message, "transitPreferences"))
+                                $root.google.maps.routing.v2.TransitPreferences.encode(message.transitPreferences, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                             return writer;
                         };
     
@@ -20805,12 +29103,20 @@
                                         message.departureTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                         break;
                                     }
+                                case 11: {
+                                        message.arrivalTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                        break;
+                                    }
                                 case 6: {
                                         message.languageCode = reader.string();
                                         break;
                                     }
                                 case 9: {
                                         message.regionCode = reader.string();
+                                        break;
+                                    }
+                                case 7: {
+                                        message.units = reader.int32();
                                         break;
                                     }
                                 case 8: {
@@ -20822,6 +29128,14 @@
                                                 message.extraComputations.push(reader.int32());
                                         } else
                                             message.extraComputations.push(reader.int32());
+                                        break;
+                                    }
+                                case 10: {
+                                        message.trafficModel = reader.int32();
+                                        break;
+                                    }
+                                case 12: {
+                                        message.transitPreferences = $root.google.maps.routing.v2.TransitPreferences.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -20886,6 +29200,7 @@
                                 case 2:
                                 case 3:
                                 case 4:
+                                case 7:
                                     break;
                                 }
                             if (message.routingPreference != null && message.hasOwnProperty("routingPreference"))
@@ -20903,12 +29218,26 @@
                                 if (error)
                                     return "departureTime." + error;
                             }
+                            if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime")) {
+                                var error = $root.google.protobuf.Timestamp.verify(message.arrivalTime);
+                                if (error)
+                                    return "arrivalTime." + error;
+                            }
                             if (message.languageCode != null && message.hasOwnProperty("languageCode"))
                                 if (!$util.isString(message.languageCode))
                                     return "languageCode: string expected";
                             if (message.regionCode != null && message.hasOwnProperty("regionCode"))
                                 if (!$util.isString(message.regionCode))
                                     return "regionCode: string expected";
+                            if (message.units != null && message.hasOwnProperty("units"))
+                                switch (message.units) {
+                                default:
+                                    return "units: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                    break;
+                                }
                             if (message.extraComputations != null && message.hasOwnProperty("extraComputations")) {
                                 if (!Array.isArray(message.extraComputations))
                                     return "extraComputations: array expected";
@@ -20920,6 +29249,21 @@
                                     case 1:
                                         break;
                                     }
+                            }
+                            if (message.trafficModel != null && message.hasOwnProperty("trafficModel"))
+                                switch (message.trafficModel) {
+                                default:
+                                    return "trafficModel: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                    break;
+                                }
+                            if (message.transitPreferences != null && message.hasOwnProperty("transitPreferences")) {
+                                var error = $root.google.maps.routing.v2.TransitPreferences.verify(message.transitPreferences);
+                                if (error)
+                                    return "transitPreferences." + error;
                             }
                             return null;
                         };
@@ -20983,6 +29327,10 @@
                             case 4:
                                 message.travelMode = 4;
                                 break;
+                            case "TRANSIT":
+                            case 7:
+                                message.travelMode = 7;
+                                break;
                             }
                             switch (object.routingPreference) {
                             default:
@@ -21013,10 +29361,35 @@
                                     throw TypeError(".google.maps.routing.v2.ComputeRouteMatrixRequest.departureTime: object expected");
                                 message.departureTime = $root.google.protobuf.Timestamp.fromObject(object.departureTime);
                             }
+                            if (object.arrivalTime != null) {
+                                if (typeof object.arrivalTime !== "object")
+                                    throw TypeError(".google.maps.routing.v2.ComputeRouteMatrixRequest.arrivalTime: object expected");
+                                message.arrivalTime = $root.google.protobuf.Timestamp.fromObject(object.arrivalTime);
+                            }
                             if (object.languageCode != null)
                                 message.languageCode = String(object.languageCode);
                             if (object.regionCode != null)
                                 message.regionCode = String(object.regionCode);
+                            switch (object.units) {
+                            default:
+                                if (typeof object.units === "number") {
+                                    message.units = object.units;
+                                    break;
+                                }
+                                break;
+                            case "UNITS_UNSPECIFIED":
+                            case 0:
+                                message.units = 0;
+                                break;
+                            case "METRIC":
+                            case 1:
+                                message.units = 1;
+                                break;
+                            case "IMPERIAL":
+                            case 2:
+                                message.units = 2;
+                                break;
+                            }
                             if (object.extraComputations) {
                                 if (!Array.isArray(object.extraComputations))
                                     throw TypeError(".google.maps.routing.v2.ComputeRouteMatrixRequest.extraComputations: array expected");
@@ -21037,6 +29410,35 @@
                                         message.extraComputations[i] = 1;
                                         break;
                                     }
+                            }
+                            switch (object.trafficModel) {
+                            default:
+                                if (typeof object.trafficModel === "number") {
+                                    message.trafficModel = object.trafficModel;
+                                    break;
+                                }
+                                break;
+                            case "TRAFFIC_MODEL_UNSPECIFIED":
+                            case 0:
+                                message.trafficModel = 0;
+                                break;
+                            case "BEST_GUESS":
+                            case 1:
+                                message.trafficModel = 1;
+                                break;
+                            case "PESSIMISTIC":
+                            case 2:
+                                message.trafficModel = 2;
+                                break;
+                            case "OPTIMISTIC":
+                            case 3:
+                                message.trafficModel = 3;
+                                break;
+                            }
+                            if (object.transitPreferences != null) {
+                                if (typeof object.transitPreferences !== "object")
+                                    throw TypeError(".google.maps.routing.v2.ComputeRouteMatrixRequest.transitPreferences: object expected");
+                                message.transitPreferences = $root.google.maps.routing.v2.TransitPreferences.fromObject(object.transitPreferences);
                             }
                             return message;
                         };
@@ -21064,7 +29466,11 @@
                                 object.routingPreference = options.enums === String ? "ROUTING_PREFERENCE_UNSPECIFIED" : 0;
                                 object.departureTime = null;
                                 object.languageCode = "";
+                                object.units = options.enums === String ? "UNITS_UNSPECIFIED" : 0;
                                 object.regionCode = "";
+                                object.trafficModel = options.enums === String ? "TRAFFIC_MODEL_UNSPECIFIED" : 0;
+                                object.arrivalTime = null;
+                                object.transitPreferences = null;
                             }
                             if (message.origins && message.origins.length) {
                                 object.origins = [];
@@ -21084,6 +29490,8 @@
                                 object.departureTime = $root.google.protobuf.Timestamp.toObject(message.departureTime, options);
                             if (message.languageCode != null && message.hasOwnProperty("languageCode"))
                                 object.languageCode = message.languageCode;
+                            if (message.units != null && message.hasOwnProperty("units"))
+                                object.units = options.enums === String ? $root.google.maps.routing.v2.Units[message.units] === undefined ? message.units : $root.google.maps.routing.v2.Units[message.units] : message.units;
                             if (message.extraComputations && message.extraComputations.length) {
                                 object.extraComputations = [];
                                 for (var j = 0; j < message.extraComputations.length; ++j)
@@ -21091,6 +29499,12 @@
                             }
                             if (message.regionCode != null && message.hasOwnProperty("regionCode"))
                                 object.regionCode = message.regionCode;
+                            if (message.trafficModel != null && message.hasOwnProperty("trafficModel"))
+                                object.trafficModel = options.enums === String ? $root.google.maps.routing.v2.TrafficModel[message.trafficModel] === undefined ? message.trafficModel : $root.google.maps.routing.v2.TrafficModel[message.trafficModel] : message.trafficModel;
+                            if (message.arrivalTime != null && message.hasOwnProperty("arrivalTime"))
+                                object.arrivalTime = $root.google.protobuf.Timestamp.toObject(message.arrivalTime, options);
+                            if (message.transitPreferences != null && message.hasOwnProperty("transitPreferences"))
+                                object.transitPreferences = $root.google.maps.routing.v2.TransitPreferences.toObject(message.transitPreferences, options);
                             return object;
                         };
     
@@ -21597,6 +30011,7 @@
                          * @property {google.protobuf.IDuration|null} [staticDuration] RouteMatrixElement staticDuration
                          * @property {google.maps.routing.v2.IRouteTravelAdvisory|null} [travelAdvisory] RouteMatrixElement travelAdvisory
                          * @property {google.maps.routing.v2.IFallbackInfo|null} [fallbackInfo] RouteMatrixElement fallbackInfo
+                         * @property {google.maps.routing.v2.RouteMatrixElement.ILocalizedValues|null} [localizedValues] RouteMatrixElement localizedValues
                          */
     
                         /**
@@ -21686,6 +30101,14 @@
                          */
                         RouteMatrixElement.prototype.fallbackInfo = null;
     
+                        /**
+                         * RouteMatrixElement localizedValues.
+                         * @member {google.maps.routing.v2.RouteMatrixElement.ILocalizedValues|null|undefined} localizedValues
+                         * @memberof google.maps.routing.v2.RouteMatrixElement
+                         * @instance
+                         */
+                        RouteMatrixElement.prototype.localizedValues = null;
+    
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
     
@@ -21753,6 +30176,8 @@
                                 $root.google.maps.routing.v2.FallbackInfo.encode(message.fallbackInfo, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
                             if (message.condition != null && Object.hasOwnProperty.call(message, "condition"))
                                 writer.uint32(/* id 9, wireType 0 =*/72).int32(message.condition);
+                            if (message.localizedValues != null && Object.hasOwnProperty.call(message, "localizedValues"))
+                                $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues.encode(message.localizedValues, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
                             return writer;
                         };
     
@@ -21821,6 +30246,10 @@
                                     }
                                 case 8: {
                                         message.fallbackInfo = $root.google.maps.routing.v2.FallbackInfo.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 10: {
+                                        message.localizedValues = $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -21906,6 +30335,11 @@
                                 if (error)
                                     return "fallbackInfo." + error;
                             }
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues")) {
+                                var error = $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues.verify(message.localizedValues);
+                                if (error)
+                                    return "localizedValues." + error;
+                            }
                             return null;
                         };
     
@@ -21972,6 +30406,11 @@
                                     throw TypeError(".google.maps.routing.v2.RouteMatrixElement.fallbackInfo: object expected");
                                 message.fallbackInfo = $root.google.maps.routing.v2.FallbackInfo.fromObject(object.fallbackInfo);
                             }
+                            if (object.localizedValues != null) {
+                                if (typeof object.localizedValues !== "object")
+                                    throw TypeError(".google.maps.routing.v2.RouteMatrixElement.localizedValues: object expected");
+                                message.localizedValues = $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues.fromObject(object.localizedValues);
+                            }
                             return message;
                         };
     
@@ -21996,6 +30435,7 @@
                                 object.travelAdvisory = null;
                                 object.fallbackInfo = null;
                                 object.condition = options.enums === String ? "ROUTE_MATRIX_ELEMENT_CONDITION_UNSPECIFIED" : 0;
+                                object.localizedValues = null;
                             }
                             if (message.originIndex != null && message.hasOwnProperty("originIndex")) {
                                 object.originIndex = message.originIndex;
@@ -22021,6 +30461,8 @@
                                 object.fallbackInfo = $root.google.maps.routing.v2.FallbackInfo.toObject(message.fallbackInfo, options);
                             if (message.condition != null && message.hasOwnProperty("condition"))
                                 object.condition = options.enums === String ? $root.google.maps.routing.v2.RouteMatrixElementCondition[message.condition] === undefined ? message.condition : $root.google.maps.routing.v2.RouteMatrixElementCondition[message.condition] : message.condition;
+                            if (message.localizedValues != null && message.hasOwnProperty("localizedValues"))
+                                object.localizedValues = $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues.toObject(message.localizedValues, options);
                             return object;
                         };
     
@@ -22049,6 +30491,299 @@
                             }
                             return typeUrlPrefix + "/google.maps.routing.v2.RouteMatrixElement";
                         };
+    
+                        RouteMatrixElement.LocalizedValues = (function() {
+    
+                            /**
+                             * Properties of a LocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteMatrixElement
+                             * @interface ILocalizedValues
+                             * @property {google.type.ILocalizedText|null} [distance] LocalizedValues distance
+                             * @property {google.type.ILocalizedText|null} [duration] LocalizedValues duration
+                             * @property {google.type.ILocalizedText|null} [staticDuration] LocalizedValues staticDuration
+                             * @property {google.type.ILocalizedText|null} [transitFare] LocalizedValues transitFare
+                             */
+    
+                            /**
+                             * Constructs a new LocalizedValues.
+                             * @memberof google.maps.routing.v2.RouteMatrixElement
+                             * @classdesc Represents a LocalizedValues.
+                             * @implements ILocalizedValues
+                             * @constructor
+                             * @param {google.maps.routing.v2.RouteMatrixElement.ILocalizedValues=} [properties] Properties to set
+                             */
+                            function LocalizedValues(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * LocalizedValues distance.
+                             * @member {google.type.ILocalizedText|null|undefined} distance
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @instance
+                             */
+                            LocalizedValues.prototype.distance = null;
+    
+                            /**
+                             * LocalizedValues duration.
+                             * @member {google.type.ILocalizedText|null|undefined} duration
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @instance
+                             */
+                            LocalizedValues.prototype.duration = null;
+    
+                            /**
+                             * LocalizedValues staticDuration.
+                             * @member {google.type.ILocalizedText|null|undefined} staticDuration
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @instance
+                             */
+                            LocalizedValues.prototype.staticDuration = null;
+    
+                            /**
+                             * LocalizedValues transitFare.
+                             * @member {google.type.ILocalizedText|null|undefined} transitFare
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @instance
+                             */
+                            LocalizedValues.prototype.transitFare = null;
+    
+                            /**
+                             * Creates a new LocalizedValues instance using the specified properties.
+                             * @function create
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteMatrixElement.ILocalizedValues=} [properties] Properties to set
+                             * @returns {google.maps.routing.v2.RouteMatrixElement.LocalizedValues} LocalizedValues instance
+                             */
+                            LocalizedValues.create = function create(properties) {
+                                return new LocalizedValues(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified LocalizedValues message. Does not implicitly {@link google.maps.routing.v2.RouteMatrixElement.LocalizedValues.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteMatrixElement.ILocalizedValues} message LocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            LocalizedValues.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.distance != null && Object.hasOwnProperty.call(message, "distance"))
+                                    $root.google.type.LocalizedText.encode(message.distance, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.duration != null && Object.hasOwnProperty.call(message, "duration"))
+                                    $root.google.type.LocalizedText.encode(message.duration, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.staticDuration != null && Object.hasOwnProperty.call(message, "staticDuration"))
+                                    $root.google.type.LocalizedText.encode(message.staticDuration, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                if (message.transitFare != null && Object.hasOwnProperty.call(message, "transitFare"))
+                                    $root.google.type.LocalizedText.encode(message.transitFare, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified LocalizedValues message, length delimited. Does not implicitly {@link google.maps.routing.v2.RouteMatrixElement.LocalizedValues.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteMatrixElement.ILocalizedValues} message LocalizedValues message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            LocalizedValues.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a LocalizedValues message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.maps.routing.v2.RouteMatrixElement.LocalizedValues} LocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            LocalizedValues.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.distance = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.duration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.staticDuration = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.transitFare = $root.google.type.LocalizedText.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a LocalizedValues message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.maps.routing.v2.RouteMatrixElement.LocalizedValues} LocalizedValues
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            LocalizedValues.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a LocalizedValues message.
+                             * @function verify
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            LocalizedValues.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.distance != null && message.hasOwnProperty("distance")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.distance);
+                                    if (error)
+                                        return "distance." + error;
+                                }
+                                if (message.duration != null && message.hasOwnProperty("duration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.duration);
+                                    if (error)
+                                        return "duration." + error;
+                                }
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.staticDuration);
+                                    if (error)
+                                        return "staticDuration." + error;
+                                }
+                                if (message.transitFare != null && message.hasOwnProperty("transitFare")) {
+                                    var error = $root.google.type.LocalizedText.verify(message.transitFare);
+                                    if (error)
+                                        return "transitFare." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a LocalizedValues message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.maps.routing.v2.RouteMatrixElement.LocalizedValues} LocalizedValues
+                             */
+                            LocalizedValues.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues)
+                                    return object;
+                                var message = new $root.google.maps.routing.v2.RouteMatrixElement.LocalizedValues();
+                                if (object.distance != null) {
+                                    if (typeof object.distance !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteMatrixElement.LocalizedValues.distance: object expected");
+                                    message.distance = $root.google.type.LocalizedText.fromObject(object.distance);
+                                }
+                                if (object.duration != null) {
+                                    if (typeof object.duration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteMatrixElement.LocalizedValues.duration: object expected");
+                                    message.duration = $root.google.type.LocalizedText.fromObject(object.duration);
+                                }
+                                if (object.staticDuration != null) {
+                                    if (typeof object.staticDuration !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteMatrixElement.LocalizedValues.staticDuration: object expected");
+                                    message.staticDuration = $root.google.type.LocalizedText.fromObject(object.staticDuration);
+                                }
+                                if (object.transitFare != null) {
+                                    if (typeof object.transitFare !== "object")
+                                        throw TypeError(".google.maps.routing.v2.RouteMatrixElement.LocalizedValues.transitFare: object expected");
+                                    message.transitFare = $root.google.type.LocalizedText.fromObject(object.transitFare);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a LocalizedValues message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {google.maps.routing.v2.RouteMatrixElement.LocalizedValues} message LocalizedValues
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            LocalizedValues.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.distance = null;
+                                    object.duration = null;
+                                    object.staticDuration = null;
+                                    object.transitFare = null;
+                                }
+                                if (message.distance != null && message.hasOwnProperty("distance"))
+                                    object.distance = $root.google.type.LocalizedText.toObject(message.distance, options);
+                                if (message.duration != null && message.hasOwnProperty("duration"))
+                                    object.duration = $root.google.type.LocalizedText.toObject(message.duration, options);
+                                if (message.staticDuration != null && message.hasOwnProperty("staticDuration"))
+                                    object.staticDuration = $root.google.type.LocalizedText.toObject(message.staticDuration, options);
+                                if (message.transitFare != null && message.hasOwnProperty("transitFare"))
+                                    object.transitFare = $root.google.type.LocalizedText.toObject(message.transitFare, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this LocalizedValues to JSON.
+                             * @function toJSON
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            LocalizedValues.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for LocalizedValues
+                             * @function getTypeUrl
+                             * @memberof google.maps.routing.v2.RouteMatrixElement.LocalizedValues
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            LocalizedValues.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.maps.routing.v2.RouteMatrixElement.LocalizedValues";
+                            };
+    
+                            return LocalizedValues;
+                        })();
     
                         return RouteMatrixElement;
                     })();
@@ -22085,6 +30820,376 @@
                         values[valuesById[2] = "TRAFFIC_AWARE"] = 2;
                         values[valuesById[3] = "TRAFFIC_AWARE_OPTIMAL"] = 3;
                         return values;
+                    })();
+    
+                    /**
+                     * TrafficModel enum.
+                     * @name google.maps.routing.v2.TrafficModel
+                     * @enum {number}
+                     * @property {number} TRAFFIC_MODEL_UNSPECIFIED=0 TRAFFIC_MODEL_UNSPECIFIED value
+                     * @property {number} BEST_GUESS=1 BEST_GUESS value
+                     * @property {number} PESSIMISTIC=2 PESSIMISTIC value
+                     * @property {number} OPTIMISTIC=3 OPTIMISTIC value
+                     */
+                    v2.TrafficModel = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "TRAFFIC_MODEL_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "BEST_GUESS"] = 1;
+                        values[valuesById[2] = "PESSIMISTIC"] = 2;
+                        values[valuesById[3] = "OPTIMISTIC"] = 3;
+                        return values;
+                    })();
+    
+                    v2.TransitPreferences = (function() {
+    
+                        /**
+                         * Properties of a TransitPreferences.
+                         * @memberof google.maps.routing.v2
+                         * @interface ITransitPreferences
+                         * @property {Array.<google.maps.routing.v2.TransitPreferences.TransitTravelMode>|null} [allowedTravelModes] TransitPreferences allowedTravelModes
+                         * @property {google.maps.routing.v2.TransitPreferences.TransitRoutingPreference|null} [routingPreference] TransitPreferences routingPreference
+                         */
+    
+                        /**
+                         * Constructs a new TransitPreferences.
+                         * @memberof google.maps.routing.v2
+                         * @classdesc Represents a TransitPreferences.
+                         * @implements ITransitPreferences
+                         * @constructor
+                         * @param {google.maps.routing.v2.ITransitPreferences=} [properties] Properties to set
+                         */
+                        function TransitPreferences(properties) {
+                            this.allowedTravelModes = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * TransitPreferences allowedTravelModes.
+                         * @member {Array.<google.maps.routing.v2.TransitPreferences.TransitTravelMode>} allowedTravelModes
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @instance
+                         */
+                        TransitPreferences.prototype.allowedTravelModes = $util.emptyArray;
+    
+                        /**
+                         * TransitPreferences routingPreference.
+                         * @member {google.maps.routing.v2.TransitPreferences.TransitRoutingPreference} routingPreference
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @instance
+                         */
+                        TransitPreferences.prototype.routingPreference = 0;
+    
+                        /**
+                         * Creates a new TransitPreferences instance using the specified properties.
+                         * @function create
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitPreferences=} [properties] Properties to set
+                         * @returns {google.maps.routing.v2.TransitPreferences} TransitPreferences instance
+                         */
+                        TransitPreferences.create = function create(properties) {
+                            return new TransitPreferences(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified TransitPreferences message. Does not implicitly {@link google.maps.routing.v2.TransitPreferences.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitPreferences} message TransitPreferences message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitPreferences.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.allowedTravelModes != null && message.allowedTravelModes.length) {
+                                writer.uint32(/* id 1, wireType 2 =*/10).fork();
+                                for (var i = 0; i < message.allowedTravelModes.length; ++i)
+                                    writer.int32(message.allowedTravelModes[i]);
+                                writer.ldelim();
+                            }
+                            if (message.routingPreference != null && Object.hasOwnProperty.call(message, "routingPreference"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.routingPreference);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified TransitPreferences message, length delimited. Does not implicitly {@link google.maps.routing.v2.TransitPreferences.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {google.maps.routing.v2.ITransitPreferences} message TransitPreferences message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        TransitPreferences.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a TransitPreferences message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.maps.routing.v2.TransitPreferences} TransitPreferences
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitPreferences.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.maps.routing.v2.TransitPreferences();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        if (!(message.allowedTravelModes && message.allowedTravelModes.length))
+                                            message.allowedTravelModes = [];
+                                        if ((tag & 7) === 2) {
+                                            var end2 = reader.uint32() + reader.pos;
+                                            while (reader.pos < end2)
+                                                message.allowedTravelModes.push(reader.int32());
+                                        } else
+                                            message.allowedTravelModes.push(reader.int32());
+                                        break;
+                                    }
+                                case 2: {
+                                        message.routingPreference = reader.int32();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a TransitPreferences message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.maps.routing.v2.TransitPreferences} TransitPreferences
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        TransitPreferences.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a TransitPreferences message.
+                         * @function verify
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        TransitPreferences.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.allowedTravelModes != null && message.hasOwnProperty("allowedTravelModes")) {
+                                if (!Array.isArray(message.allowedTravelModes))
+                                    return "allowedTravelModes: array expected";
+                                for (var i = 0; i < message.allowedTravelModes.length; ++i)
+                                    switch (message.allowedTravelModes[i]) {
+                                    default:
+                                        return "allowedTravelModes: enum value[] expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                    case 5:
+                                        break;
+                                    }
+                            }
+                            if (message.routingPreference != null && message.hasOwnProperty("routingPreference"))
+                                switch (message.routingPreference) {
+                                default:
+                                    return "routingPreference: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                    break;
+                                }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a TransitPreferences message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.maps.routing.v2.TransitPreferences} TransitPreferences
+                         */
+                        TransitPreferences.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.maps.routing.v2.TransitPreferences)
+                                return object;
+                            var message = new $root.google.maps.routing.v2.TransitPreferences();
+                            if (object.allowedTravelModes) {
+                                if (!Array.isArray(object.allowedTravelModes))
+                                    throw TypeError(".google.maps.routing.v2.TransitPreferences.allowedTravelModes: array expected");
+                                message.allowedTravelModes = [];
+                                for (var i = 0; i < object.allowedTravelModes.length; ++i)
+                                    switch (object.allowedTravelModes[i]) {
+                                    default:
+                                        if (typeof object.allowedTravelModes[i] === "number") {
+                                            message.allowedTravelModes[i] = object.allowedTravelModes[i];
+                                            break;
+                                        }
+                                    case "TRANSIT_TRAVEL_MODE_UNSPECIFIED":
+                                    case 0:
+                                        message.allowedTravelModes[i] = 0;
+                                        break;
+                                    case "BUS":
+                                    case 1:
+                                        message.allowedTravelModes[i] = 1;
+                                        break;
+                                    case "SUBWAY":
+                                    case 2:
+                                        message.allowedTravelModes[i] = 2;
+                                        break;
+                                    case "TRAIN":
+                                    case 3:
+                                        message.allowedTravelModes[i] = 3;
+                                        break;
+                                    case "LIGHT_RAIL":
+                                    case 4:
+                                        message.allowedTravelModes[i] = 4;
+                                        break;
+                                    case "RAIL":
+                                    case 5:
+                                        message.allowedTravelModes[i] = 5;
+                                        break;
+                                    }
+                            }
+                            switch (object.routingPreference) {
+                            default:
+                                if (typeof object.routingPreference === "number") {
+                                    message.routingPreference = object.routingPreference;
+                                    break;
+                                }
+                                break;
+                            case "TRANSIT_ROUTING_PREFERENCE_UNSPECIFIED":
+                            case 0:
+                                message.routingPreference = 0;
+                                break;
+                            case "LESS_WALKING":
+                            case 1:
+                                message.routingPreference = 1;
+                                break;
+                            case "FEWER_TRANSFERS":
+                            case 2:
+                                message.routingPreference = 2;
+                                break;
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a TransitPreferences message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {google.maps.routing.v2.TransitPreferences} message TransitPreferences
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        TransitPreferences.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults)
+                                object.allowedTravelModes = [];
+                            if (options.defaults)
+                                object.routingPreference = options.enums === String ? "TRANSIT_ROUTING_PREFERENCE_UNSPECIFIED" : 0;
+                            if (message.allowedTravelModes && message.allowedTravelModes.length) {
+                                object.allowedTravelModes = [];
+                                for (var j = 0; j < message.allowedTravelModes.length; ++j)
+                                    object.allowedTravelModes[j] = options.enums === String ? $root.google.maps.routing.v2.TransitPreferences.TransitTravelMode[message.allowedTravelModes[j]] === undefined ? message.allowedTravelModes[j] : $root.google.maps.routing.v2.TransitPreferences.TransitTravelMode[message.allowedTravelModes[j]] : message.allowedTravelModes[j];
+                            }
+                            if (message.routingPreference != null && message.hasOwnProperty("routingPreference"))
+                                object.routingPreference = options.enums === String ? $root.google.maps.routing.v2.TransitPreferences.TransitRoutingPreference[message.routingPreference] === undefined ? message.routingPreference : $root.google.maps.routing.v2.TransitPreferences.TransitRoutingPreference[message.routingPreference] : message.routingPreference;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this TransitPreferences to JSON.
+                         * @function toJSON
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        TransitPreferences.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for TransitPreferences
+                         * @function getTypeUrl
+                         * @memberof google.maps.routing.v2.TransitPreferences
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        TransitPreferences.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.maps.routing.v2.TransitPreferences";
+                        };
+    
+                        /**
+                         * TransitTravelMode enum.
+                         * @name google.maps.routing.v2.TransitPreferences.TransitTravelMode
+                         * @enum {number}
+                         * @property {number} TRANSIT_TRAVEL_MODE_UNSPECIFIED=0 TRANSIT_TRAVEL_MODE_UNSPECIFIED value
+                         * @property {number} BUS=1 BUS value
+                         * @property {number} SUBWAY=2 SUBWAY value
+                         * @property {number} TRAIN=3 TRAIN value
+                         * @property {number} LIGHT_RAIL=4 LIGHT_RAIL value
+                         * @property {number} RAIL=5 RAIL value
+                         */
+                        TransitPreferences.TransitTravelMode = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "TRANSIT_TRAVEL_MODE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "BUS"] = 1;
+                            values[valuesById[2] = "SUBWAY"] = 2;
+                            values[valuesById[3] = "TRAIN"] = 3;
+                            values[valuesById[4] = "LIGHT_RAIL"] = 4;
+                            values[valuesById[5] = "RAIL"] = 5;
+                            return values;
+                        })();
+    
+                        /**
+                         * TransitRoutingPreference enum.
+                         * @name google.maps.routing.v2.TransitPreferences.TransitRoutingPreference
+                         * @enum {number}
+                         * @property {number} TRANSIT_ROUTING_PREFERENCE_UNSPECIFIED=0 TRANSIT_ROUTING_PREFERENCE_UNSPECIFIED value
+                         * @property {number} LESS_WALKING=1 LESS_WALKING value
+                         * @property {number} FEWER_TRANSFERS=2 FEWER_TRANSFERS value
+                         */
+                        TransitPreferences.TransitRoutingPreference = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "TRANSIT_ROUTING_PREFERENCE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "LESS_WALKING"] = 1;
+                            values[valuesById[2] = "FEWER_TRANSFERS"] = 2;
+                            return values;
+                        })();
+    
+                        return TransitPreferences;
                     })();
     
                     /**
@@ -22760,6 +31865,34 @@
              * @namespace
              */
             var api = {};
+    
+            /**
+             * FieldBehavior enum.
+             * @name google.api.FieldBehavior
+             * @enum {number}
+             * @property {number} FIELD_BEHAVIOR_UNSPECIFIED=0 FIELD_BEHAVIOR_UNSPECIFIED value
+             * @property {number} OPTIONAL=1 OPTIONAL value
+             * @property {number} REQUIRED=2 REQUIRED value
+             * @property {number} OUTPUT_ONLY=3 OUTPUT_ONLY value
+             * @property {number} INPUT_ONLY=4 INPUT_ONLY value
+             * @property {number} IMMUTABLE=5 IMMUTABLE value
+             * @property {number} UNORDERED_LIST=6 UNORDERED_LIST value
+             * @property {number} NON_EMPTY_DEFAULT=7 NON_EMPTY_DEFAULT value
+             * @property {number} IDENTIFIER=8 IDENTIFIER value
+             */
+            api.FieldBehavior = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "FIELD_BEHAVIOR_UNSPECIFIED"] = 0;
+                values[valuesById[1] = "OPTIONAL"] = 1;
+                values[valuesById[2] = "REQUIRED"] = 2;
+                values[valuesById[3] = "OUTPUT_ONLY"] = 3;
+                values[valuesById[4] = "INPUT_ONLY"] = 4;
+                values[valuesById[5] = "IMMUTABLE"] = 5;
+                values[valuesById[6] = "UNORDERED_LIST"] = 6;
+                values[valuesById[7] = "NON_EMPTY_DEFAULT"] = 7;
+                values[valuesById[8] = "IDENTIFIER"] = 8;
+                return values;
+            })();
     
             api.Http = (function() {
     
@@ -23724,29 +32857,3932 @@
                 return CustomHttpPattern;
             })();
     
+            api.CommonLanguageSettings = (function() {
+    
+                /**
+                 * Properties of a CommonLanguageSettings.
+                 * @memberof google.api
+                 * @interface ICommonLanguageSettings
+                 * @property {string|null} [referenceDocsUri] CommonLanguageSettings referenceDocsUri
+                 * @property {Array.<google.api.ClientLibraryDestination>|null} [destinations] CommonLanguageSettings destinations
+                 */
+    
+                /**
+                 * Constructs a new CommonLanguageSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CommonLanguageSettings.
+                 * @implements ICommonLanguageSettings
+                 * @constructor
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 */
+                function CommonLanguageSettings(properties) {
+                    this.destinations = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CommonLanguageSettings referenceDocsUri.
+                 * @member {string} referenceDocsUri
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.referenceDocsUri = "";
+    
+                /**
+                 * CommonLanguageSettings destinations.
+                 * @member {Array.<google.api.ClientLibraryDestination>} destinations
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.destinations = $util.emptyArray;
+    
+                /**
+                 * Creates a new CommonLanguageSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings instance
+                 */
+                CommonLanguageSettings.create = function create(properties) {
+                    return new CommonLanguageSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.referenceDocsUri != null && Object.hasOwnProperty.call(message, "referenceDocsUri"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.referenceDocsUri);
+                    if (message.destinations != null && message.destinations.length) {
+                        writer.uint32(/* id 2, wireType 2 =*/18).fork();
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            writer.int32(message.destinations[i]);
+                        writer.ldelim();
+                    }
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CommonLanguageSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.referenceDocsUri = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.destinations && message.destinations.length))
+                                    message.destinations = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.destinations.push(reader.int32());
+                                } else
+                                    message.destinations.push(reader.int32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CommonLanguageSettings message.
+                 * @function verify
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CommonLanguageSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        if (!$util.isString(message.referenceDocsUri))
+                            return "referenceDocsUri: string expected";
+                    if (message.destinations != null && message.hasOwnProperty("destinations")) {
+                        if (!Array.isArray(message.destinations))
+                            return "destinations: array expected";
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            switch (message.destinations[i]) {
+                            default:
+                                return "destinations: enum value[] expected";
+                            case 0:
+                            case 10:
+                            case 20:
+                                break;
+                            }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 */
+                CommonLanguageSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CommonLanguageSettings)
+                        return object;
+                    var message = new $root.google.api.CommonLanguageSettings();
+                    if (object.referenceDocsUri != null)
+                        message.referenceDocsUri = String(object.referenceDocsUri);
+                    if (object.destinations) {
+                        if (!Array.isArray(object.destinations))
+                            throw TypeError(".google.api.CommonLanguageSettings.destinations: array expected");
+                        message.destinations = [];
+                        for (var i = 0; i < object.destinations.length; ++i)
+                            switch (object.destinations[i]) {
+                            default:
+                                if (typeof object.destinations[i] === "number") {
+                                    message.destinations[i] = object.destinations[i];
+                                    break;
+                                }
+                            case "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED":
+                            case 0:
+                                message.destinations[i] = 0;
+                                break;
+                            case "GITHUB":
+                            case 10:
+                                message.destinations[i] = 10;
+                                break;
+                            case "PACKAGE_MANAGER":
+                            case 20:
+                                message.destinations[i] = 20;
+                                break;
+                            }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.CommonLanguageSettings} message CommonLanguageSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CommonLanguageSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.destinations = [];
+                    if (options.defaults)
+                        object.referenceDocsUri = "";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        object.referenceDocsUri = message.referenceDocsUri;
+                    if (message.destinations && message.destinations.length) {
+                        object.destinations = [];
+                        for (var j = 0; j < message.destinations.length; ++j)
+                            object.destinations[j] = options.enums === String ? $root.google.api.ClientLibraryDestination[message.destinations[j]] === undefined ? message.destinations[j] : $root.google.api.ClientLibraryDestination[message.destinations[j]] : message.destinations[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this CommonLanguageSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CommonLanguageSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CommonLanguageSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CommonLanguageSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CommonLanguageSettings";
+                };
+    
+                return CommonLanguageSettings;
+            })();
+    
+            api.ClientLibrarySettings = (function() {
+    
+                /**
+                 * Properties of a ClientLibrarySettings.
+                 * @memberof google.api
+                 * @interface IClientLibrarySettings
+                 * @property {string|null} [version] ClientLibrarySettings version
+                 * @property {google.api.LaunchStage|null} [launchStage] ClientLibrarySettings launchStage
+                 * @property {boolean|null} [restNumericEnums] ClientLibrarySettings restNumericEnums
+                 * @property {google.api.IJavaSettings|null} [javaSettings] ClientLibrarySettings javaSettings
+                 * @property {google.api.ICppSettings|null} [cppSettings] ClientLibrarySettings cppSettings
+                 * @property {google.api.IPhpSettings|null} [phpSettings] ClientLibrarySettings phpSettings
+                 * @property {google.api.IPythonSettings|null} [pythonSettings] ClientLibrarySettings pythonSettings
+                 * @property {google.api.INodeSettings|null} [nodeSettings] ClientLibrarySettings nodeSettings
+                 * @property {google.api.IDotnetSettings|null} [dotnetSettings] ClientLibrarySettings dotnetSettings
+                 * @property {google.api.IRubySettings|null} [rubySettings] ClientLibrarySettings rubySettings
+                 * @property {google.api.IGoSettings|null} [goSettings] ClientLibrarySettings goSettings
+                 */
+    
+                /**
+                 * Constructs a new ClientLibrarySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a ClientLibrarySettings.
+                 * @implements IClientLibrarySettings
+                 * @constructor
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 */
+                function ClientLibrarySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ClientLibrarySettings version.
+                 * @member {string} version
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.version = "";
+    
+                /**
+                 * ClientLibrarySettings launchStage.
+                 * @member {google.api.LaunchStage} launchStage
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.launchStage = 0;
+    
+                /**
+                 * ClientLibrarySettings restNumericEnums.
+                 * @member {boolean} restNumericEnums
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.restNumericEnums = false;
+    
+                /**
+                 * ClientLibrarySettings javaSettings.
+                 * @member {google.api.IJavaSettings|null|undefined} javaSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.javaSettings = null;
+    
+                /**
+                 * ClientLibrarySettings cppSettings.
+                 * @member {google.api.ICppSettings|null|undefined} cppSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.cppSettings = null;
+    
+                /**
+                 * ClientLibrarySettings phpSettings.
+                 * @member {google.api.IPhpSettings|null|undefined} phpSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.phpSettings = null;
+    
+                /**
+                 * ClientLibrarySettings pythonSettings.
+                 * @member {google.api.IPythonSettings|null|undefined} pythonSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.pythonSettings = null;
+    
+                /**
+                 * ClientLibrarySettings nodeSettings.
+                 * @member {google.api.INodeSettings|null|undefined} nodeSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.nodeSettings = null;
+    
+                /**
+                 * ClientLibrarySettings dotnetSettings.
+                 * @member {google.api.IDotnetSettings|null|undefined} dotnetSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.dotnetSettings = null;
+    
+                /**
+                 * ClientLibrarySettings rubySettings.
+                 * @member {google.api.IRubySettings|null|undefined} rubySettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.rubySettings = null;
+    
+                /**
+                 * ClientLibrarySettings goSettings.
+                 * @member {google.api.IGoSettings|null|undefined} goSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.goSettings = null;
+    
+                /**
+                 * Creates a new ClientLibrarySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings instance
+                 */
+                ClientLibrarySettings.create = function create(properties) {
+                    return new ClientLibrarySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.version != null && Object.hasOwnProperty.call(message, "version"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.version);
+                    if (message.launchStage != null && Object.hasOwnProperty.call(message, "launchStage"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.launchStage);
+                    if (message.restNumericEnums != null && Object.hasOwnProperty.call(message, "restNumericEnums"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.restNumericEnums);
+                    if (message.javaSettings != null && Object.hasOwnProperty.call(message, "javaSettings"))
+                        $root.google.api.JavaSettings.encode(message.javaSettings, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                    if (message.cppSettings != null && Object.hasOwnProperty.call(message, "cppSettings"))
+                        $root.google.api.CppSettings.encode(message.cppSettings, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                    if (message.phpSettings != null && Object.hasOwnProperty.call(message, "phpSettings"))
+                        $root.google.api.PhpSettings.encode(message.phpSettings, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
+                    if (message.pythonSettings != null && Object.hasOwnProperty.call(message, "pythonSettings"))
+                        $root.google.api.PythonSettings.encode(message.pythonSettings, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
+                    if (message.nodeSettings != null && Object.hasOwnProperty.call(message, "nodeSettings"))
+                        $root.google.api.NodeSettings.encode(message.nodeSettings, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
+                    if (message.dotnetSettings != null && Object.hasOwnProperty.call(message, "dotnetSettings"))
+                        $root.google.api.DotnetSettings.encode(message.dotnetSettings, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
+                    if (message.rubySettings != null && Object.hasOwnProperty.call(message, "rubySettings"))
+                        $root.google.api.RubySettings.encode(message.rubySettings, writer.uint32(/* id 27, wireType 2 =*/218).fork()).ldelim();
+                    if (message.goSettings != null && Object.hasOwnProperty.call(message, "goSettings"))
+                        $root.google.api.GoSettings.encode(message.goSettings, writer.uint32(/* id 28, wireType 2 =*/226).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.ClientLibrarySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.version = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.launchStage = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.restNumericEnums = reader.bool();
+                                break;
+                            }
+                        case 21: {
+                                message.javaSettings = $root.google.api.JavaSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 22: {
+                                message.cppSettings = $root.google.api.CppSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 23: {
+                                message.phpSettings = $root.google.api.PhpSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 24: {
+                                message.pythonSettings = $root.google.api.PythonSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 25: {
+                                message.nodeSettings = $root.google.api.NodeSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 26: {
+                                message.dotnetSettings = $root.google.api.DotnetSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 27: {
+                                message.rubySettings = $root.google.api.RubySettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 28: {
+                                message.goSettings = $root.google.api.GoSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a ClientLibrarySettings message.
+                 * @function verify
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ClientLibrarySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        if (!$util.isString(message.version))
+                            return "version: string expected";
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        switch (message.launchStage) {
+                        default:
+                            return "launchStage: enum value expected";
+                        case 0:
+                        case 6:
+                        case 7:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            break;
+                        }
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        if (typeof message.restNumericEnums !== "boolean")
+                            return "restNumericEnums: boolean expected";
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings")) {
+                        var error = $root.google.api.JavaSettings.verify(message.javaSettings);
+                        if (error)
+                            return "javaSettings." + error;
+                    }
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings")) {
+                        var error = $root.google.api.CppSettings.verify(message.cppSettings);
+                        if (error)
+                            return "cppSettings." + error;
+                    }
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings")) {
+                        var error = $root.google.api.PhpSettings.verify(message.phpSettings);
+                        if (error)
+                            return "phpSettings." + error;
+                    }
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings")) {
+                        var error = $root.google.api.PythonSettings.verify(message.pythonSettings);
+                        if (error)
+                            return "pythonSettings." + error;
+                    }
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings")) {
+                        var error = $root.google.api.NodeSettings.verify(message.nodeSettings);
+                        if (error)
+                            return "nodeSettings." + error;
+                    }
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings")) {
+                        var error = $root.google.api.DotnetSettings.verify(message.dotnetSettings);
+                        if (error)
+                            return "dotnetSettings." + error;
+                    }
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings")) {
+                        var error = $root.google.api.RubySettings.verify(message.rubySettings);
+                        if (error)
+                            return "rubySettings." + error;
+                    }
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings")) {
+                        var error = $root.google.api.GoSettings.verify(message.goSettings);
+                        if (error)
+                            return "goSettings." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 */
+                ClientLibrarySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.ClientLibrarySettings)
+                        return object;
+                    var message = new $root.google.api.ClientLibrarySettings();
+                    if (object.version != null)
+                        message.version = String(object.version);
+                    switch (object.launchStage) {
+                    default:
+                        if (typeof object.launchStage === "number") {
+                            message.launchStage = object.launchStage;
+                            break;
+                        }
+                        break;
+                    case "LAUNCH_STAGE_UNSPECIFIED":
+                    case 0:
+                        message.launchStage = 0;
+                        break;
+                    case "UNIMPLEMENTED":
+                    case 6:
+                        message.launchStage = 6;
+                        break;
+                    case "PRELAUNCH":
+                    case 7:
+                        message.launchStage = 7;
+                        break;
+                    case "EARLY_ACCESS":
+                    case 1:
+                        message.launchStage = 1;
+                        break;
+                    case "ALPHA":
+                    case 2:
+                        message.launchStage = 2;
+                        break;
+                    case "BETA":
+                    case 3:
+                        message.launchStage = 3;
+                        break;
+                    case "GA":
+                    case 4:
+                        message.launchStage = 4;
+                        break;
+                    case "DEPRECATED":
+                    case 5:
+                        message.launchStage = 5;
+                        break;
+                    }
+                    if (object.restNumericEnums != null)
+                        message.restNumericEnums = Boolean(object.restNumericEnums);
+                    if (object.javaSettings != null) {
+                        if (typeof object.javaSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.javaSettings: object expected");
+                        message.javaSettings = $root.google.api.JavaSettings.fromObject(object.javaSettings);
+                    }
+                    if (object.cppSettings != null) {
+                        if (typeof object.cppSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.cppSettings: object expected");
+                        message.cppSettings = $root.google.api.CppSettings.fromObject(object.cppSettings);
+                    }
+                    if (object.phpSettings != null) {
+                        if (typeof object.phpSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.phpSettings: object expected");
+                        message.phpSettings = $root.google.api.PhpSettings.fromObject(object.phpSettings);
+                    }
+                    if (object.pythonSettings != null) {
+                        if (typeof object.pythonSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.pythonSettings: object expected");
+                        message.pythonSettings = $root.google.api.PythonSettings.fromObject(object.pythonSettings);
+                    }
+                    if (object.nodeSettings != null) {
+                        if (typeof object.nodeSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.nodeSettings: object expected");
+                        message.nodeSettings = $root.google.api.NodeSettings.fromObject(object.nodeSettings);
+                    }
+                    if (object.dotnetSettings != null) {
+                        if (typeof object.dotnetSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.dotnetSettings: object expected");
+                        message.dotnetSettings = $root.google.api.DotnetSettings.fromObject(object.dotnetSettings);
+                    }
+                    if (object.rubySettings != null) {
+                        if (typeof object.rubySettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.rubySettings: object expected");
+                        message.rubySettings = $root.google.api.RubySettings.fromObject(object.rubySettings);
+                    }
+                    if (object.goSettings != null) {
+                        if (typeof object.goSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.goSettings: object expected");
+                        message.goSettings = $root.google.api.GoSettings.fromObject(object.goSettings);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.ClientLibrarySettings} message ClientLibrarySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ClientLibrarySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.version = "";
+                        object.launchStage = options.enums === String ? "LAUNCH_STAGE_UNSPECIFIED" : 0;
+                        object.restNumericEnums = false;
+                        object.javaSettings = null;
+                        object.cppSettings = null;
+                        object.phpSettings = null;
+                        object.pythonSettings = null;
+                        object.nodeSettings = null;
+                        object.dotnetSettings = null;
+                        object.rubySettings = null;
+                        object.goSettings = null;
+                    }
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        object.version = message.version;
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        object.launchStage = options.enums === String ? $root.google.api.LaunchStage[message.launchStage] === undefined ? message.launchStage : $root.google.api.LaunchStage[message.launchStage] : message.launchStage;
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        object.restNumericEnums = message.restNumericEnums;
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings"))
+                        object.javaSettings = $root.google.api.JavaSettings.toObject(message.javaSettings, options);
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings"))
+                        object.cppSettings = $root.google.api.CppSettings.toObject(message.cppSettings, options);
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings"))
+                        object.phpSettings = $root.google.api.PhpSettings.toObject(message.phpSettings, options);
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings"))
+                        object.pythonSettings = $root.google.api.PythonSettings.toObject(message.pythonSettings, options);
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings"))
+                        object.nodeSettings = $root.google.api.NodeSettings.toObject(message.nodeSettings, options);
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings"))
+                        object.dotnetSettings = $root.google.api.DotnetSettings.toObject(message.dotnetSettings, options);
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings"))
+                        object.rubySettings = $root.google.api.RubySettings.toObject(message.rubySettings, options);
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings"))
+                        object.goSettings = $root.google.api.GoSettings.toObject(message.goSettings, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this ClientLibrarySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ClientLibrarySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for ClientLibrarySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                ClientLibrarySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.ClientLibrarySettings";
+                };
+    
+                return ClientLibrarySettings;
+            })();
+    
+            api.Publishing = (function() {
+    
+                /**
+                 * Properties of a Publishing.
+                 * @memberof google.api
+                 * @interface IPublishing
+                 * @property {Array.<google.api.IMethodSettings>|null} [methodSettings] Publishing methodSettings
+                 * @property {string|null} [newIssueUri] Publishing newIssueUri
+                 * @property {string|null} [documentationUri] Publishing documentationUri
+                 * @property {string|null} [apiShortName] Publishing apiShortName
+                 * @property {string|null} [githubLabel] Publishing githubLabel
+                 * @property {Array.<string>|null} [codeownerGithubTeams] Publishing codeownerGithubTeams
+                 * @property {string|null} [docTagPrefix] Publishing docTagPrefix
+                 * @property {google.api.ClientLibraryOrganization|null} [organization] Publishing organization
+                 * @property {Array.<google.api.IClientLibrarySettings>|null} [librarySettings] Publishing librarySettings
+                 * @property {string|null} [protoReferenceDocumentationUri] Publishing protoReferenceDocumentationUri
+                 */
+    
+                /**
+                 * Constructs a new Publishing.
+                 * @memberof google.api
+                 * @classdesc Represents a Publishing.
+                 * @implements IPublishing
+                 * @constructor
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 */
+                function Publishing(properties) {
+                    this.methodSettings = [];
+                    this.codeownerGithubTeams = [];
+                    this.librarySettings = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Publishing methodSettings.
+                 * @member {Array.<google.api.IMethodSettings>} methodSettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.methodSettings = $util.emptyArray;
+    
+                /**
+                 * Publishing newIssueUri.
+                 * @member {string} newIssueUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.newIssueUri = "";
+    
+                /**
+                 * Publishing documentationUri.
+                 * @member {string} documentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.documentationUri = "";
+    
+                /**
+                 * Publishing apiShortName.
+                 * @member {string} apiShortName
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.apiShortName = "";
+    
+                /**
+                 * Publishing githubLabel.
+                 * @member {string} githubLabel
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.githubLabel = "";
+    
+                /**
+                 * Publishing codeownerGithubTeams.
+                 * @member {Array.<string>} codeownerGithubTeams
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.codeownerGithubTeams = $util.emptyArray;
+    
+                /**
+                 * Publishing docTagPrefix.
+                 * @member {string} docTagPrefix
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.docTagPrefix = "";
+    
+                /**
+                 * Publishing organization.
+                 * @member {google.api.ClientLibraryOrganization} organization
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.organization = 0;
+    
+                /**
+                 * Publishing librarySettings.
+                 * @member {Array.<google.api.IClientLibrarySettings>} librarySettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.librarySettings = $util.emptyArray;
+    
+                /**
+                 * Publishing protoReferenceDocumentationUri.
+                 * @member {string} protoReferenceDocumentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.protoReferenceDocumentationUri = "";
+    
+                /**
+                 * Creates a new Publishing instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 * @returns {google.api.Publishing} Publishing instance
+                 */
+                Publishing.create = function create(properties) {
+                    return new Publishing(properties);
+                };
+    
+                /**
+                 * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.methodSettings != null && message.methodSettings.length)
+                        for (var i = 0; i < message.methodSettings.length; ++i)
+                            $root.google.api.MethodSettings.encode(message.methodSettings[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.newIssueUri != null && Object.hasOwnProperty.call(message, "newIssueUri"))
+                        writer.uint32(/* id 101, wireType 2 =*/810).string(message.newIssueUri);
+                    if (message.documentationUri != null && Object.hasOwnProperty.call(message, "documentationUri"))
+                        writer.uint32(/* id 102, wireType 2 =*/818).string(message.documentationUri);
+                    if (message.apiShortName != null && Object.hasOwnProperty.call(message, "apiShortName"))
+                        writer.uint32(/* id 103, wireType 2 =*/826).string(message.apiShortName);
+                    if (message.githubLabel != null && Object.hasOwnProperty.call(message, "githubLabel"))
+                        writer.uint32(/* id 104, wireType 2 =*/834).string(message.githubLabel);
+                    if (message.codeownerGithubTeams != null && message.codeownerGithubTeams.length)
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            writer.uint32(/* id 105, wireType 2 =*/842).string(message.codeownerGithubTeams[i]);
+                    if (message.docTagPrefix != null && Object.hasOwnProperty.call(message, "docTagPrefix"))
+                        writer.uint32(/* id 106, wireType 2 =*/850).string(message.docTagPrefix);
+                    if (message.organization != null && Object.hasOwnProperty.call(message, "organization"))
+                        writer.uint32(/* id 107, wireType 0 =*/856).int32(message.organization);
+                    if (message.librarySettings != null && message.librarySettings.length)
+                        for (var i = 0; i < message.librarySettings.length; ++i)
+                            $root.google.api.ClientLibrarySettings.encode(message.librarySettings[i], writer.uint32(/* id 109, wireType 2 =*/874).fork()).ldelim();
+                    if (message.protoReferenceDocumentationUri != null && Object.hasOwnProperty.call(message, "protoReferenceDocumentationUri"))
+                        writer.uint32(/* id 110, wireType 2 =*/882).string(message.protoReferenceDocumentationUri);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.Publishing();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 2: {
+                                if (!(message.methodSettings && message.methodSettings.length))
+                                    message.methodSettings = [];
+                                message.methodSettings.push($root.google.api.MethodSettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 101: {
+                                message.newIssueUri = reader.string();
+                                break;
+                            }
+                        case 102: {
+                                message.documentationUri = reader.string();
+                                break;
+                            }
+                        case 103: {
+                                message.apiShortName = reader.string();
+                                break;
+                            }
+                        case 104: {
+                                message.githubLabel = reader.string();
+                                break;
+                            }
+                        case 105: {
+                                if (!(message.codeownerGithubTeams && message.codeownerGithubTeams.length))
+                                    message.codeownerGithubTeams = [];
+                                message.codeownerGithubTeams.push(reader.string());
+                                break;
+                            }
+                        case 106: {
+                                message.docTagPrefix = reader.string();
+                                break;
+                            }
+                        case 107: {
+                                message.organization = reader.int32();
+                                break;
+                            }
+                        case 109: {
+                                if (!(message.librarySettings && message.librarySettings.length))
+                                    message.librarySettings = [];
+                                message.librarySettings.push($root.google.api.ClientLibrarySettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 110: {
+                                message.protoReferenceDocumentationUri = reader.string();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Publishing message.
+                 * @function verify
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Publishing.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.methodSettings != null && message.hasOwnProperty("methodSettings")) {
+                        if (!Array.isArray(message.methodSettings))
+                            return "methodSettings: array expected";
+                        for (var i = 0; i < message.methodSettings.length; ++i) {
+                            var error = $root.google.api.MethodSettings.verify(message.methodSettings[i]);
+                            if (error)
+                                return "methodSettings." + error;
+                        }
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        if (!$util.isString(message.newIssueUri))
+                            return "newIssueUri: string expected";
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        if (!$util.isString(message.documentationUri))
+                            return "documentationUri: string expected";
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        if (!$util.isString(message.apiShortName))
+                            return "apiShortName: string expected";
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        if (!$util.isString(message.githubLabel))
+                            return "githubLabel: string expected";
+                    if (message.codeownerGithubTeams != null && message.hasOwnProperty("codeownerGithubTeams")) {
+                        if (!Array.isArray(message.codeownerGithubTeams))
+                            return "codeownerGithubTeams: array expected";
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            if (!$util.isString(message.codeownerGithubTeams[i]))
+                                return "codeownerGithubTeams: string[] expected";
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        if (!$util.isString(message.docTagPrefix))
+                            return "docTagPrefix: string expected";
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        switch (message.organization) {
+                        default:
+                            return "organization: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                            break;
+                        }
+                    if (message.librarySettings != null && message.hasOwnProperty("librarySettings")) {
+                        if (!Array.isArray(message.librarySettings))
+                            return "librarySettings: array expected";
+                        for (var i = 0; i < message.librarySettings.length; ++i) {
+                            var error = $root.google.api.ClientLibrarySettings.verify(message.librarySettings[i]);
+                            if (error)
+                                return "librarySettings." + error;
+                        }
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        if (!$util.isString(message.protoReferenceDocumentationUri))
+                            return "protoReferenceDocumentationUri: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.Publishing} Publishing
+                 */
+                Publishing.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.Publishing)
+                        return object;
+                    var message = new $root.google.api.Publishing();
+                    if (object.methodSettings) {
+                        if (!Array.isArray(object.methodSettings))
+                            throw TypeError(".google.api.Publishing.methodSettings: array expected");
+                        message.methodSettings = [];
+                        for (var i = 0; i < object.methodSettings.length; ++i) {
+                            if (typeof object.methodSettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.methodSettings: object expected");
+                            message.methodSettings[i] = $root.google.api.MethodSettings.fromObject(object.methodSettings[i]);
+                        }
+                    }
+                    if (object.newIssueUri != null)
+                        message.newIssueUri = String(object.newIssueUri);
+                    if (object.documentationUri != null)
+                        message.documentationUri = String(object.documentationUri);
+                    if (object.apiShortName != null)
+                        message.apiShortName = String(object.apiShortName);
+                    if (object.githubLabel != null)
+                        message.githubLabel = String(object.githubLabel);
+                    if (object.codeownerGithubTeams) {
+                        if (!Array.isArray(object.codeownerGithubTeams))
+                            throw TypeError(".google.api.Publishing.codeownerGithubTeams: array expected");
+                        message.codeownerGithubTeams = [];
+                        for (var i = 0; i < object.codeownerGithubTeams.length; ++i)
+                            message.codeownerGithubTeams[i] = String(object.codeownerGithubTeams[i]);
+                    }
+                    if (object.docTagPrefix != null)
+                        message.docTagPrefix = String(object.docTagPrefix);
+                    switch (object.organization) {
+                    default:
+                        if (typeof object.organization === "number") {
+                            message.organization = object.organization;
+                            break;
+                        }
+                        break;
+                    case "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED":
+                    case 0:
+                        message.organization = 0;
+                        break;
+                    case "CLOUD":
+                    case 1:
+                        message.organization = 1;
+                        break;
+                    case "ADS":
+                    case 2:
+                        message.organization = 2;
+                        break;
+                    case "PHOTOS":
+                    case 3:
+                        message.organization = 3;
+                        break;
+                    case "STREET_VIEW":
+                    case 4:
+                        message.organization = 4;
+                        break;
+                    case "SHOPPING":
+                    case 5:
+                        message.organization = 5;
+                        break;
+                    case "GEO":
+                    case 6:
+                        message.organization = 6;
+                        break;
+                    case "GENERATIVE_AI":
+                    case 7:
+                        message.organization = 7;
+                        break;
+                    }
+                    if (object.librarySettings) {
+                        if (!Array.isArray(object.librarySettings))
+                            throw TypeError(".google.api.Publishing.librarySettings: array expected");
+                        message.librarySettings = [];
+                        for (var i = 0; i < object.librarySettings.length; ++i) {
+                            if (typeof object.librarySettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.librarySettings: object expected");
+                            message.librarySettings[i] = $root.google.api.ClientLibrarySettings.fromObject(object.librarySettings[i]);
+                        }
+                    }
+                    if (object.protoReferenceDocumentationUri != null)
+                        message.protoReferenceDocumentationUri = String(object.protoReferenceDocumentationUri);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.Publishing} message Publishing
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Publishing.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.methodSettings = [];
+                        object.codeownerGithubTeams = [];
+                        object.librarySettings = [];
+                    }
+                    if (options.defaults) {
+                        object.newIssueUri = "";
+                        object.documentationUri = "";
+                        object.apiShortName = "";
+                        object.githubLabel = "";
+                        object.docTagPrefix = "";
+                        object.organization = options.enums === String ? "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED" : 0;
+                        object.protoReferenceDocumentationUri = "";
+                    }
+                    if (message.methodSettings && message.methodSettings.length) {
+                        object.methodSettings = [];
+                        for (var j = 0; j < message.methodSettings.length; ++j)
+                            object.methodSettings[j] = $root.google.api.MethodSettings.toObject(message.methodSettings[j], options);
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        object.newIssueUri = message.newIssueUri;
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        object.documentationUri = message.documentationUri;
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        object.apiShortName = message.apiShortName;
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        object.githubLabel = message.githubLabel;
+                    if (message.codeownerGithubTeams && message.codeownerGithubTeams.length) {
+                        object.codeownerGithubTeams = [];
+                        for (var j = 0; j < message.codeownerGithubTeams.length; ++j)
+                            object.codeownerGithubTeams[j] = message.codeownerGithubTeams[j];
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        object.docTagPrefix = message.docTagPrefix;
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        object.organization = options.enums === String ? $root.google.api.ClientLibraryOrganization[message.organization] === undefined ? message.organization : $root.google.api.ClientLibraryOrganization[message.organization] : message.organization;
+                    if (message.librarySettings && message.librarySettings.length) {
+                        object.librarySettings = [];
+                        for (var j = 0; j < message.librarySettings.length; ++j)
+                            object.librarySettings[j] = $root.google.api.ClientLibrarySettings.toObject(message.librarySettings[j], options);
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        object.protoReferenceDocumentationUri = message.protoReferenceDocumentationUri;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Publishing to JSON.
+                 * @function toJSON
+                 * @memberof google.api.Publishing
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Publishing.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Publishing
+                 * @function getTypeUrl
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Publishing.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.Publishing";
+                };
+    
+                return Publishing;
+            })();
+    
+            api.JavaSettings = (function() {
+    
+                /**
+                 * Properties of a JavaSettings.
+                 * @memberof google.api
+                 * @interface IJavaSettings
+                 * @property {string|null} [libraryPackage] JavaSettings libraryPackage
+                 * @property {Object.<string,string>|null} [serviceClassNames] JavaSettings serviceClassNames
+                 * @property {google.api.ICommonLanguageSettings|null} [common] JavaSettings common
+                 */
+    
+                /**
+                 * Constructs a new JavaSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a JavaSettings.
+                 * @implements IJavaSettings
+                 * @constructor
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 */
+                function JavaSettings(properties) {
+                    this.serviceClassNames = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * JavaSettings libraryPackage.
+                 * @member {string} libraryPackage
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.libraryPackage = "";
+    
+                /**
+                 * JavaSettings serviceClassNames.
+                 * @member {Object.<string,string>} serviceClassNames
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.serviceClassNames = $util.emptyObject;
+    
+                /**
+                 * JavaSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new JavaSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 * @returns {google.api.JavaSettings} JavaSettings instance
+                 */
+                JavaSettings.create = function create(properties) {
+                    return new JavaSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.libraryPackage != null && Object.hasOwnProperty.call(message, "libraryPackage"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.libraryPackage);
+                    if (message.serviceClassNames != null && Object.hasOwnProperty.call(message, "serviceClassNames"))
+                        for (var keys = Object.keys(message.serviceClassNames), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.serviceClassNames[keys[i]]).ldelim();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.JavaSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.libraryPackage = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (message.serviceClassNames === $util.emptyObject)
+                                    message.serviceClassNames = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.serviceClassNames[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a JavaSettings message.
+                 * @function verify
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                JavaSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        if (!$util.isString(message.libraryPackage))
+                            return "libraryPackage: string expected";
+                    if (message.serviceClassNames != null && message.hasOwnProperty("serviceClassNames")) {
+                        if (!$util.isObject(message.serviceClassNames))
+                            return "serviceClassNames: object expected";
+                        var key = Object.keys(message.serviceClassNames);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.serviceClassNames[key[i]]))
+                                return "serviceClassNames: string{k:string} expected";
+                    }
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 */
+                JavaSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.JavaSettings)
+                        return object;
+                    var message = new $root.google.api.JavaSettings();
+                    if (object.libraryPackage != null)
+                        message.libraryPackage = String(object.libraryPackage);
+                    if (object.serviceClassNames) {
+                        if (typeof object.serviceClassNames !== "object")
+                            throw TypeError(".google.api.JavaSettings.serviceClassNames: object expected");
+                        message.serviceClassNames = {};
+                        for (var keys = Object.keys(object.serviceClassNames), i = 0; i < keys.length; ++i)
+                            message.serviceClassNames[keys[i]] = String(object.serviceClassNames[keys[i]]);
+                    }
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.JavaSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.JavaSettings} message JavaSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                JavaSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.serviceClassNames = {};
+                    if (options.defaults) {
+                        object.libraryPackage = "";
+                        object.common = null;
+                    }
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        object.libraryPackage = message.libraryPackage;
+                    var keys2;
+                    if (message.serviceClassNames && (keys2 = Object.keys(message.serviceClassNames)).length) {
+                        object.serviceClassNames = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.serviceClassNames[keys2[j]] = message.serviceClassNames[keys2[j]];
+                    }
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this JavaSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                JavaSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for JavaSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                JavaSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.JavaSettings";
+                };
+    
+                return JavaSettings;
+            })();
+    
+            api.CppSettings = (function() {
+    
+                /**
+                 * Properties of a CppSettings.
+                 * @memberof google.api
+                 * @interface ICppSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] CppSettings common
+                 */
+    
+                /**
+                 * Constructs a new CppSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CppSettings.
+                 * @implements ICppSettings
+                 * @constructor
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 */
+                function CppSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CppSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 */
+                CppSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new CppSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 * @returns {google.api.CppSettings} CppSettings instance
+                 */
+                CppSettings.create = function create(properties) {
+                    return new CppSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CppSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CppSettings message.
+                 * @function verify
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CppSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CppSettings} CppSettings
+                 */
+                CppSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CppSettings)
+                        return object;
+                    var message = new $root.google.api.CppSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.CppSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.CppSettings} message CppSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CppSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this CppSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CppSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CppSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CppSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CppSettings";
+                };
+    
+                return CppSettings;
+            })();
+    
+            api.PhpSettings = (function() {
+    
+                /**
+                 * Properties of a PhpSettings.
+                 * @memberof google.api
+                 * @interface IPhpSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PhpSettings common
+                 */
+    
+                /**
+                 * Constructs a new PhpSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PhpSettings.
+                 * @implements IPhpSettings
+                 * @constructor
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 */
+                function PhpSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PhpSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 */
+                PhpSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PhpSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 * @returns {google.api.PhpSettings} PhpSettings instance
+                 */
+                PhpSettings.create = function create(properties) {
+                    return new PhpSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PhpSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PhpSettings message.
+                 * @function verify
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PhpSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 */
+                PhpSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PhpSettings)
+                        return object;
+                    var message = new $root.google.api.PhpSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PhpSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.PhpSettings} message PhpSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PhpSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PhpSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PhpSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PhpSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PhpSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PhpSettings";
+                };
+    
+                return PhpSettings;
+            })();
+    
+            api.PythonSettings = (function() {
+    
+                /**
+                 * Properties of a PythonSettings.
+                 * @memberof google.api
+                 * @interface IPythonSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PythonSettings common
+                 */
+    
+                /**
+                 * Constructs a new PythonSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PythonSettings.
+                 * @implements IPythonSettings
+                 * @constructor
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 */
+                function PythonSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PythonSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 */
+                PythonSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PythonSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 * @returns {google.api.PythonSettings} PythonSettings instance
+                 */
+                PythonSettings.create = function create(properties) {
+                    return new PythonSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PythonSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PythonSettings message.
+                 * @function verify
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PythonSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 */
+                PythonSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PythonSettings)
+                        return object;
+                    var message = new $root.google.api.PythonSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PythonSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.PythonSettings} message PythonSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PythonSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PythonSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PythonSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PythonSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PythonSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PythonSettings";
+                };
+    
+                return PythonSettings;
+            })();
+    
+            api.NodeSettings = (function() {
+    
+                /**
+                 * Properties of a NodeSettings.
+                 * @memberof google.api
+                 * @interface INodeSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] NodeSettings common
+                 */
+    
+                /**
+                 * Constructs a new NodeSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a NodeSettings.
+                 * @implements INodeSettings
+                 * @constructor
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 */
+                function NodeSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * NodeSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 */
+                NodeSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new NodeSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 * @returns {google.api.NodeSettings} NodeSettings instance
+                 */
+                NodeSettings.create = function create(properties) {
+                    return new NodeSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.NodeSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a NodeSettings message.
+                 * @function verify
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                NodeSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 */
+                NodeSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.NodeSettings)
+                        return object;
+                    var message = new $root.google.api.NodeSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.NodeSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.NodeSettings} message NodeSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                NodeSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this NodeSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                NodeSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for NodeSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                NodeSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.NodeSettings";
+                };
+    
+                return NodeSettings;
+            })();
+    
+            api.DotnetSettings = (function() {
+    
+                /**
+                 * Properties of a DotnetSettings.
+                 * @memberof google.api
+                 * @interface IDotnetSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] DotnetSettings common
+                 * @property {Object.<string,string>|null} [renamedServices] DotnetSettings renamedServices
+                 * @property {Object.<string,string>|null} [renamedResources] DotnetSettings renamedResources
+                 * @property {Array.<string>|null} [ignoredResources] DotnetSettings ignoredResources
+                 * @property {Array.<string>|null} [forcedNamespaceAliases] DotnetSettings forcedNamespaceAliases
+                 * @property {Array.<string>|null} [handwrittenSignatures] DotnetSettings handwrittenSignatures
+                 */
+    
+                /**
+                 * Constructs a new DotnetSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a DotnetSettings.
+                 * @implements IDotnetSettings
+                 * @constructor
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 */
+                function DotnetSettings(properties) {
+                    this.renamedServices = {};
+                    this.renamedResources = {};
+                    this.ignoredResources = [];
+                    this.forcedNamespaceAliases = [];
+                    this.handwrittenSignatures = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * DotnetSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.common = null;
+    
+                /**
+                 * DotnetSettings renamedServices.
+                 * @member {Object.<string,string>} renamedServices
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedServices = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings renamedResources.
+                 * @member {Object.<string,string>} renamedResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedResources = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings ignoredResources.
+                 * @member {Array.<string>} ignoredResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.ignoredResources = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings forcedNamespaceAliases.
+                 * @member {Array.<string>} forcedNamespaceAliases
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.forcedNamespaceAliases = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings handwrittenSignatures.
+                 * @member {Array.<string>} handwrittenSignatures
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.handwrittenSignatures = $util.emptyArray;
+    
+                /**
+                 * Creates a new DotnetSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 * @returns {google.api.DotnetSettings} DotnetSettings instance
+                 */
+                DotnetSettings.create = function create(properties) {
+                    return new DotnetSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.renamedServices != null && Object.hasOwnProperty.call(message, "renamedServices"))
+                        for (var keys = Object.keys(message.renamedServices), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedServices[keys[i]]).ldelim();
+                    if (message.renamedResources != null && Object.hasOwnProperty.call(message, "renamedResources"))
+                        for (var keys = Object.keys(message.renamedResources), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedResources[keys[i]]).ldelim();
+                    if (message.ignoredResources != null && message.ignoredResources.length)
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            writer.uint32(/* id 4, wireType 2 =*/34).string(message.ignoredResources[i]);
+                    if (message.forcedNamespaceAliases != null && message.forcedNamespaceAliases.length)
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.forcedNamespaceAliases[i]);
+                    if (message.handwrittenSignatures != null && message.handwrittenSignatures.length)
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            writer.uint32(/* id 6, wireType 2 =*/50).string(message.handwrittenSignatures[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.DotnetSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 2: {
+                                if (message.renamedServices === $util.emptyObject)
+                                    message.renamedServices = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedServices[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                if (message.renamedResources === $util.emptyObject)
+                                    message.renamedResources = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedResources[key] = value;
+                                break;
+                            }
+                        case 4: {
+                                if (!(message.ignoredResources && message.ignoredResources.length))
+                                    message.ignoredResources = [];
+                                message.ignoredResources.push(reader.string());
+                                break;
+                            }
+                        case 5: {
+                                if (!(message.forcedNamespaceAliases && message.forcedNamespaceAliases.length))
+                                    message.forcedNamespaceAliases = [];
+                                message.forcedNamespaceAliases.push(reader.string());
+                                break;
+                            }
+                        case 6: {
+                                if (!(message.handwrittenSignatures && message.handwrittenSignatures.length))
+                                    message.handwrittenSignatures = [];
+                                message.handwrittenSignatures.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a DotnetSettings message.
+                 * @function verify
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                DotnetSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    if (message.renamedServices != null && message.hasOwnProperty("renamedServices")) {
+                        if (!$util.isObject(message.renamedServices))
+                            return "renamedServices: object expected";
+                        var key = Object.keys(message.renamedServices);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedServices[key[i]]))
+                                return "renamedServices: string{k:string} expected";
+                    }
+                    if (message.renamedResources != null && message.hasOwnProperty("renamedResources")) {
+                        if (!$util.isObject(message.renamedResources))
+                            return "renamedResources: object expected";
+                        var key = Object.keys(message.renamedResources);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedResources[key[i]]))
+                                return "renamedResources: string{k:string} expected";
+                    }
+                    if (message.ignoredResources != null && message.hasOwnProperty("ignoredResources")) {
+                        if (!Array.isArray(message.ignoredResources))
+                            return "ignoredResources: array expected";
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            if (!$util.isString(message.ignoredResources[i]))
+                                return "ignoredResources: string[] expected";
+                    }
+                    if (message.forcedNamespaceAliases != null && message.hasOwnProperty("forcedNamespaceAliases")) {
+                        if (!Array.isArray(message.forcedNamespaceAliases))
+                            return "forcedNamespaceAliases: array expected";
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            if (!$util.isString(message.forcedNamespaceAliases[i]))
+                                return "forcedNamespaceAliases: string[] expected";
+                    }
+                    if (message.handwrittenSignatures != null && message.hasOwnProperty("handwrittenSignatures")) {
+                        if (!Array.isArray(message.handwrittenSignatures))
+                            return "handwrittenSignatures: array expected";
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            if (!$util.isString(message.handwrittenSignatures[i]))
+                                return "handwrittenSignatures: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 */
+                DotnetSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.DotnetSettings)
+                        return object;
+                    var message = new $root.google.api.DotnetSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.DotnetSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    if (object.renamedServices) {
+                        if (typeof object.renamedServices !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedServices: object expected");
+                        message.renamedServices = {};
+                        for (var keys = Object.keys(object.renamedServices), i = 0; i < keys.length; ++i)
+                            message.renamedServices[keys[i]] = String(object.renamedServices[keys[i]]);
+                    }
+                    if (object.renamedResources) {
+                        if (typeof object.renamedResources !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedResources: object expected");
+                        message.renamedResources = {};
+                        for (var keys = Object.keys(object.renamedResources), i = 0; i < keys.length; ++i)
+                            message.renamedResources[keys[i]] = String(object.renamedResources[keys[i]]);
+                    }
+                    if (object.ignoredResources) {
+                        if (!Array.isArray(object.ignoredResources))
+                            throw TypeError(".google.api.DotnetSettings.ignoredResources: array expected");
+                        message.ignoredResources = [];
+                        for (var i = 0; i < object.ignoredResources.length; ++i)
+                            message.ignoredResources[i] = String(object.ignoredResources[i]);
+                    }
+                    if (object.forcedNamespaceAliases) {
+                        if (!Array.isArray(object.forcedNamespaceAliases))
+                            throw TypeError(".google.api.DotnetSettings.forcedNamespaceAliases: array expected");
+                        message.forcedNamespaceAliases = [];
+                        for (var i = 0; i < object.forcedNamespaceAliases.length; ++i)
+                            message.forcedNamespaceAliases[i] = String(object.forcedNamespaceAliases[i]);
+                    }
+                    if (object.handwrittenSignatures) {
+                        if (!Array.isArray(object.handwrittenSignatures))
+                            throw TypeError(".google.api.DotnetSettings.handwrittenSignatures: array expected");
+                        message.handwrittenSignatures = [];
+                        for (var i = 0; i < object.handwrittenSignatures.length; ++i)
+                            message.handwrittenSignatures[i] = String(object.handwrittenSignatures[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.DotnetSettings} message DotnetSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                DotnetSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.ignoredResources = [];
+                        object.forcedNamespaceAliases = [];
+                        object.handwrittenSignatures = [];
+                    }
+                    if (options.objects || options.defaults) {
+                        object.renamedServices = {};
+                        object.renamedResources = {};
+                    }
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    var keys2;
+                    if (message.renamedServices && (keys2 = Object.keys(message.renamedServices)).length) {
+                        object.renamedServices = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedServices[keys2[j]] = message.renamedServices[keys2[j]];
+                    }
+                    if (message.renamedResources && (keys2 = Object.keys(message.renamedResources)).length) {
+                        object.renamedResources = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedResources[keys2[j]] = message.renamedResources[keys2[j]];
+                    }
+                    if (message.ignoredResources && message.ignoredResources.length) {
+                        object.ignoredResources = [];
+                        for (var j = 0; j < message.ignoredResources.length; ++j)
+                            object.ignoredResources[j] = message.ignoredResources[j];
+                    }
+                    if (message.forcedNamespaceAliases && message.forcedNamespaceAliases.length) {
+                        object.forcedNamespaceAliases = [];
+                        for (var j = 0; j < message.forcedNamespaceAliases.length; ++j)
+                            object.forcedNamespaceAliases[j] = message.forcedNamespaceAliases[j];
+                    }
+                    if (message.handwrittenSignatures && message.handwrittenSignatures.length) {
+                        object.handwrittenSignatures = [];
+                        for (var j = 0; j < message.handwrittenSignatures.length; ++j)
+                            object.handwrittenSignatures[j] = message.handwrittenSignatures[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this DotnetSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                DotnetSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for DotnetSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                DotnetSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.DotnetSettings";
+                };
+    
+                return DotnetSettings;
+            })();
+    
+            api.RubySettings = (function() {
+    
+                /**
+                 * Properties of a RubySettings.
+                 * @memberof google.api
+                 * @interface IRubySettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] RubySettings common
+                 */
+    
+                /**
+                 * Constructs a new RubySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a RubySettings.
+                 * @implements IRubySettings
+                 * @constructor
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 */
+                function RubySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * RubySettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 */
+                RubySettings.prototype.common = null;
+    
+                /**
+                 * Creates a new RubySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 * @returns {google.api.RubySettings} RubySettings instance
+                 */
+                RubySettings.create = function create(properties) {
+                    return new RubySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RubySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a RubySettings message.
+                 * @function verify
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                RubySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.RubySettings} RubySettings
+                 */
+                RubySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.RubySettings)
+                        return object;
+                    var message = new $root.google.api.RubySettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.RubySettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.RubySettings} message RubySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                RubySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this RubySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                RubySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for RubySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                RubySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.RubySettings";
+                };
+    
+                return RubySettings;
+            })();
+    
+            api.GoSettings = (function() {
+    
+                /**
+                 * Properties of a GoSettings.
+                 * @memberof google.api
+                 * @interface IGoSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] GoSettings common
+                 */
+    
+                /**
+                 * Constructs a new GoSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a GoSettings.
+                 * @implements IGoSettings
+                 * @constructor
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 */
+                function GoSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * GoSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 */
+                GoSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new GoSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 * @returns {google.api.GoSettings} GoSettings instance
+                 */
+                GoSettings.create = function create(properties) {
+                    return new GoSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.GoSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a GoSettings message.
+                 * @function verify
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                GoSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.GoSettings} GoSettings
+                 */
+                GoSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.GoSettings)
+                        return object;
+                    var message = new $root.google.api.GoSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.GoSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.GoSettings} message GoSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                GoSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this GoSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                GoSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for GoSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                GoSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.GoSettings";
+                };
+    
+                return GoSettings;
+            })();
+    
+            api.MethodSettings = (function() {
+    
+                /**
+                 * Properties of a MethodSettings.
+                 * @memberof google.api
+                 * @interface IMethodSettings
+                 * @property {string|null} [selector] MethodSettings selector
+                 * @property {google.api.MethodSettings.ILongRunning|null} [longRunning] MethodSettings longRunning
+                 * @property {Array.<string>|null} [autoPopulatedFields] MethodSettings autoPopulatedFields
+                 */
+    
+                /**
+                 * Constructs a new MethodSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a MethodSettings.
+                 * @implements IMethodSettings
+                 * @constructor
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 */
+                function MethodSettings(properties) {
+                    this.autoPopulatedFields = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MethodSettings selector.
+                 * @member {string} selector
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.selector = "";
+    
+                /**
+                 * MethodSettings longRunning.
+                 * @member {google.api.MethodSettings.ILongRunning|null|undefined} longRunning
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.longRunning = null;
+    
+                /**
+                 * MethodSettings autoPopulatedFields.
+                 * @member {Array.<string>} autoPopulatedFields
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.autoPopulatedFields = $util.emptyArray;
+    
+                /**
+                 * Creates a new MethodSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 * @returns {google.api.MethodSettings} MethodSettings instance
+                 */
+                MethodSettings.create = function create(properties) {
+                    return new MethodSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.selector != null && Object.hasOwnProperty.call(message, "selector"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.selector);
+                    if (message.longRunning != null && Object.hasOwnProperty.call(message, "longRunning"))
+                        $root.google.api.MethodSettings.LongRunning.encode(message.longRunning, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.autoPopulatedFields != null && message.autoPopulatedFields.length)
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.autoPopulatedFields[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.selector = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.longRunning = $root.google.api.MethodSettings.LongRunning.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                if (!(message.autoPopulatedFields && message.autoPopulatedFields.length))
+                                    message.autoPopulatedFields = [];
+                                message.autoPopulatedFields.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MethodSettings message.
+                 * @function verify
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MethodSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        if (!$util.isString(message.selector))
+                            return "selector: string expected";
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning")) {
+                        var error = $root.google.api.MethodSettings.LongRunning.verify(message.longRunning);
+                        if (error)
+                            return "longRunning." + error;
+                    }
+                    if (message.autoPopulatedFields != null && message.hasOwnProperty("autoPopulatedFields")) {
+                        if (!Array.isArray(message.autoPopulatedFields))
+                            return "autoPopulatedFields: array expected";
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            if (!$util.isString(message.autoPopulatedFields[i]))
+                                return "autoPopulatedFields: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 */
+                MethodSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MethodSettings)
+                        return object;
+                    var message = new $root.google.api.MethodSettings();
+                    if (object.selector != null)
+                        message.selector = String(object.selector);
+                    if (object.longRunning != null) {
+                        if (typeof object.longRunning !== "object")
+                            throw TypeError(".google.api.MethodSettings.longRunning: object expected");
+                        message.longRunning = $root.google.api.MethodSettings.LongRunning.fromObject(object.longRunning);
+                    }
+                    if (object.autoPopulatedFields) {
+                        if (!Array.isArray(object.autoPopulatedFields))
+                            throw TypeError(".google.api.MethodSettings.autoPopulatedFields: array expected");
+                        message.autoPopulatedFields = [];
+                        for (var i = 0; i < object.autoPopulatedFields.length; ++i)
+                            message.autoPopulatedFields[i] = String(object.autoPopulatedFields[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.MethodSettings} message MethodSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MethodSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.autoPopulatedFields = [];
+                    if (options.defaults) {
+                        object.selector = "";
+                        object.longRunning = null;
+                    }
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        object.selector = message.selector;
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning"))
+                        object.longRunning = $root.google.api.MethodSettings.LongRunning.toObject(message.longRunning, options);
+                    if (message.autoPopulatedFields && message.autoPopulatedFields.length) {
+                        object.autoPopulatedFields = [];
+                        for (var j = 0; j < message.autoPopulatedFields.length; ++j)
+                            object.autoPopulatedFields[j] = message.autoPopulatedFields[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this MethodSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MethodSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MethodSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MethodSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MethodSettings";
+                };
+    
+                MethodSettings.LongRunning = (function() {
+    
+                    /**
+                     * Properties of a LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @interface ILongRunning
+                     * @property {google.protobuf.IDuration|null} [initialPollDelay] LongRunning initialPollDelay
+                     * @property {number|null} [pollDelayMultiplier] LongRunning pollDelayMultiplier
+                     * @property {google.protobuf.IDuration|null} [maxPollDelay] LongRunning maxPollDelay
+                     * @property {google.protobuf.IDuration|null} [totalPollTimeout] LongRunning totalPollTimeout
+                     */
+    
+                    /**
+                     * Constructs a new LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @classdesc Represents a LongRunning.
+                     * @implements ILongRunning
+                     * @constructor
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     */
+                    function LongRunning(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * LongRunning initialPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} initialPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.initialPollDelay = null;
+    
+                    /**
+                     * LongRunning pollDelayMultiplier.
+                     * @member {number} pollDelayMultiplier
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.pollDelayMultiplier = 0;
+    
+                    /**
+                     * LongRunning maxPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} maxPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.maxPollDelay = null;
+    
+                    /**
+                     * LongRunning totalPollTimeout.
+                     * @member {google.protobuf.IDuration|null|undefined} totalPollTimeout
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.totalPollTimeout = null;
+    
+                    /**
+                     * Creates a new LongRunning instance using the specified properties.
+                     * @function create
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning instance
+                     */
+                    LongRunning.create = function create(properties) {
+                        return new LongRunning(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.initialPollDelay != null && Object.hasOwnProperty.call(message, "initialPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.initialPollDelay, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.pollDelayMultiplier != null && Object.hasOwnProperty.call(message, "pollDelayMultiplier"))
+                            writer.uint32(/* id 2, wireType 5 =*/21).float(message.pollDelayMultiplier);
+                        if (message.maxPollDelay != null && Object.hasOwnProperty.call(message, "maxPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.maxPollDelay, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.totalPollTimeout != null && Object.hasOwnProperty.call(message, "totalPollTimeout"))
+                            $root.google.protobuf.Duration.encode(message.totalPollTimeout, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings.LongRunning();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.initialPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.pollDelayMultiplier = reader.float();
+                                    break;
+                                }
+                            case 3: {
+                                    message.maxPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 4: {
+                                    message.totalPollTimeout = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a LongRunning message.
+                     * @function verify
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    LongRunning.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.initialPollDelay);
+                            if (error)
+                                return "initialPollDelay." + error;
+                        }
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            if (typeof message.pollDelayMultiplier !== "number")
+                                return "pollDelayMultiplier: number expected";
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.maxPollDelay);
+                            if (error)
+                                return "maxPollDelay." + error;
+                        }
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout")) {
+                            var error = $root.google.protobuf.Duration.verify(message.totalPollTimeout);
+                            if (error)
+                                return "totalPollTimeout." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     */
+                    LongRunning.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.api.MethodSettings.LongRunning)
+                            return object;
+                        var message = new $root.google.api.MethodSettings.LongRunning();
+                        if (object.initialPollDelay != null) {
+                            if (typeof object.initialPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.initialPollDelay: object expected");
+                            message.initialPollDelay = $root.google.protobuf.Duration.fromObject(object.initialPollDelay);
+                        }
+                        if (object.pollDelayMultiplier != null)
+                            message.pollDelayMultiplier = Number(object.pollDelayMultiplier);
+                        if (object.maxPollDelay != null) {
+                            if (typeof object.maxPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.maxPollDelay: object expected");
+                            message.maxPollDelay = $root.google.protobuf.Duration.fromObject(object.maxPollDelay);
+                        }
+                        if (object.totalPollTimeout != null) {
+                            if (typeof object.totalPollTimeout !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.totalPollTimeout: object expected");
+                            message.totalPollTimeout = $root.google.protobuf.Duration.fromObject(object.totalPollTimeout);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.LongRunning} message LongRunning
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    LongRunning.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.initialPollDelay = null;
+                            object.pollDelayMultiplier = 0;
+                            object.maxPollDelay = null;
+                            object.totalPollTimeout = null;
+                        }
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay"))
+                            object.initialPollDelay = $root.google.protobuf.Duration.toObject(message.initialPollDelay, options);
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            object.pollDelayMultiplier = options.json && !isFinite(message.pollDelayMultiplier) ? String(message.pollDelayMultiplier) : message.pollDelayMultiplier;
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay"))
+                            object.maxPollDelay = $root.google.protobuf.Duration.toObject(message.maxPollDelay, options);
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout"))
+                            object.totalPollTimeout = $root.google.protobuf.Duration.toObject(message.totalPollTimeout, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this LongRunning to JSON.
+                     * @function toJSON
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    LongRunning.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for LongRunning
+                     * @function getTypeUrl
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    LongRunning.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.api.MethodSettings.LongRunning";
+                    };
+    
+                    return LongRunning;
+                })();
+    
+                return MethodSettings;
+            })();
+    
             /**
-             * FieldBehavior enum.
-             * @name google.api.FieldBehavior
+             * ClientLibraryOrganization enum.
+             * @name google.api.ClientLibraryOrganization
              * @enum {number}
-             * @property {number} FIELD_BEHAVIOR_UNSPECIFIED=0 FIELD_BEHAVIOR_UNSPECIFIED value
-             * @property {number} OPTIONAL=1 OPTIONAL value
-             * @property {number} REQUIRED=2 REQUIRED value
-             * @property {number} OUTPUT_ONLY=3 OUTPUT_ONLY value
-             * @property {number} INPUT_ONLY=4 INPUT_ONLY value
-             * @property {number} IMMUTABLE=5 IMMUTABLE value
-             * @property {number} UNORDERED_LIST=6 UNORDERED_LIST value
-             * @property {number} NON_EMPTY_DEFAULT=7 NON_EMPTY_DEFAULT value
+             * @property {number} CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED=0 CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED value
+             * @property {number} CLOUD=1 CLOUD value
+             * @property {number} ADS=2 ADS value
+             * @property {number} PHOTOS=3 PHOTOS value
+             * @property {number} STREET_VIEW=4 STREET_VIEW value
+             * @property {number} SHOPPING=5 SHOPPING value
+             * @property {number} GEO=6 GEO value
+             * @property {number} GENERATIVE_AI=7 GENERATIVE_AI value
              */
-            api.FieldBehavior = (function() {
+            api.ClientLibraryOrganization = (function() {
                 var valuesById = {}, values = Object.create(valuesById);
-                values[valuesById[0] = "FIELD_BEHAVIOR_UNSPECIFIED"] = 0;
-                values[valuesById[1] = "OPTIONAL"] = 1;
-                values[valuesById[2] = "REQUIRED"] = 2;
-                values[valuesById[3] = "OUTPUT_ONLY"] = 3;
-                values[valuesById[4] = "INPUT_ONLY"] = 4;
-                values[valuesById[5] = "IMMUTABLE"] = 5;
-                values[valuesById[6] = "UNORDERED_LIST"] = 6;
-                values[valuesById[7] = "NON_EMPTY_DEFAULT"] = 7;
+                values[valuesById[0] = "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED"] = 0;
+                values[valuesById[1] = "CLOUD"] = 1;
+                values[valuesById[2] = "ADS"] = 2;
+                values[valuesById[3] = "PHOTOS"] = 3;
+                values[valuesById[4] = "STREET_VIEW"] = 4;
+                values[valuesById[5] = "SHOPPING"] = 5;
+                values[valuesById[6] = "GEO"] = 6;
+                values[valuesById[7] = "GENERATIVE_AI"] = 7;
+                return values;
+            })();
+    
+            /**
+             * ClientLibraryDestination enum.
+             * @name google.api.ClientLibraryDestination
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_DESTINATION_UNSPECIFIED=0 CLIENT_LIBRARY_DESTINATION_UNSPECIFIED value
+             * @property {number} GITHUB=10 GITHUB value
+             * @property {number} PACKAGE_MANAGER=20 PACKAGE_MANAGER value
+             */
+            api.ClientLibraryDestination = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED"] = 0;
+                values[valuesById[10] = "GITHUB"] = 10;
+                values[valuesById[20] = "PACKAGE_MANAGER"] = 20;
+                return values;
+            })();
+    
+            /**
+             * LaunchStage enum.
+             * @name google.api.LaunchStage
+             * @enum {number}
+             * @property {number} LAUNCH_STAGE_UNSPECIFIED=0 LAUNCH_STAGE_UNSPECIFIED value
+             * @property {number} UNIMPLEMENTED=6 UNIMPLEMENTED value
+             * @property {number} PRELAUNCH=7 PRELAUNCH value
+             * @property {number} EARLY_ACCESS=1 EARLY_ACCESS value
+             * @property {number} ALPHA=2 ALPHA value
+             * @property {number} BETA=3 BETA value
+             * @property {number} GA=4 GA value
+             * @property {number} DEPRECATED=5 DEPRECATED value
+             */
+            api.LaunchStage = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "LAUNCH_STAGE_UNSPECIFIED"] = 0;
+                values[valuesById[6] = "UNIMPLEMENTED"] = 6;
+                values[valuesById[7] = "PRELAUNCH"] = 7;
+                values[valuesById[1] = "EARLY_ACCESS"] = 1;
+                values[valuesById[2] = "ALPHA"] = 2;
+                values[valuesById[3] = "BETA"] = 3;
+                values[valuesById[4] = "GA"] = 4;
+                values[valuesById[5] = "DEPRECATED"] = 5;
                 return values;
             })();
     

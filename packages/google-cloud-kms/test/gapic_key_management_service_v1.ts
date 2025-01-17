@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -129,16 +129,100 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.KeyManagementServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        keymanagementserviceModule.v1.KeyManagementServiceClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'cloudkms.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        keymanagementserviceModule.v1.KeyManagementServiceClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          keymanagementserviceModule.v1.KeyManagementServiceClient.servicePath;
+        assert.strictEqual(servicePath, 'cloudkms.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          keymanagementserviceModule.v1.KeyManagementServiceClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'cloudkms.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          universeDomain: 'example.com',
+        });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudkms.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          universe_domain: 'example.com',
+        });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudkms.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new keymanagementserviceModule.v1.KeyManagementServiceClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'cloudkms.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new keymanagementserviceModule.v1.KeyManagementServiceClient({
+              universeDomain: 'configured.example.com',
+            });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'cloudkms.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -2558,6 +2642,274 @@ describe('v1.KeyManagementServiceClient', () => {
     });
   });
 
+  describe('rawEncrypt', () => {
+    it('invokes rawEncrypt without error', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawEncryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawEncryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawEncryptResponse()
+      );
+      client.innerApiCalls.rawEncrypt = stubSimpleCall(expectedResponse);
+      const [response] = await client.rawEncrypt(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.rawEncrypt as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.rawEncrypt as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes rawEncrypt without error using callback', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawEncryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawEncryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawEncryptResponse()
+      );
+      client.innerApiCalls.rawEncrypt =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.rawEncrypt(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.kms.v1.IRawEncryptResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.rawEncrypt as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.rawEncrypt as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes rawEncrypt with error', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawEncryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawEncryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.rawEncrypt = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.rawEncrypt(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.rawEncrypt as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.rawEncrypt as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes rawEncrypt with closed client', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawEncryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawEncryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.rawEncrypt(request), expectedError);
+    });
+  });
+
+  describe('rawDecrypt', () => {
+    it('invokes rawDecrypt without error', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawDecryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawDecryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawDecryptResponse()
+      );
+      client.innerApiCalls.rawDecrypt = stubSimpleCall(expectedResponse);
+      const [response] = await client.rawDecrypt(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.rawDecrypt as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.rawDecrypt as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes rawDecrypt without error using callback', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawDecryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawDecryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawDecryptResponse()
+      );
+      client.innerApiCalls.rawDecrypt =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.rawDecrypt(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.kms.v1.IRawDecryptResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.rawDecrypt as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.rawDecrypt as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes rawDecrypt with error', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawDecryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawDecryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.rawDecrypt = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.rawDecrypt(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.rawDecrypt as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.rawDecrypt as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes rawDecrypt with closed client', async () => {
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.kms.v1.RawDecryptRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.kms.v1.RawDecryptRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.rawDecrypt(request), expectedError);
+    });
+  });
+
   describe('asymmetricSign', () => {
     it('invokes asymmetricSign without error', async () => {
       const client =
@@ -3386,9 +3738,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listKeyRings.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3435,9 +3787,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listKeyRings.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3479,9 +3831,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listKeyRings.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3520,9 +3872,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listKeyRings.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -3690,9 +4042,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listCryptoKeys.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3737,9 +4089,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listCryptoKeys.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3781,9 +4133,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listCryptoKeys.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3822,9 +4174,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listCryptoKeys.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -4348,9 +4700,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listImportJobs.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4395,9 +4747,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listImportJobs.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4439,9 +4791,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listImportJobs.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4480,9 +4832,9 @@ describe('v1.KeyManagementServiceClient', () => {
       assert(
         (client.descriptors.page.listImportJobs.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -5024,6 +5376,45 @@ describe('v1.KeyManagementServiceClient', () => {
   });
 
   describe('Path templates', () => {
+    describe('autokeyConfig', () => {
+      const fakePath = '/rendered/path/autokeyConfig';
+      const expectedParameters = {
+        folder: 'folderValue',
+      };
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      client.pathTemplates.autokeyConfigPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.autokeyConfigPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('autokeyConfigPath', () => {
+        const result = client.autokeyConfigPath('folderValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.autokeyConfigPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchFolderFromAutokeyConfigName', () => {
+        const result = client.matchFolderFromAutokeyConfigName(fakePath);
+        assert.strictEqual(result, 'folderValue');
+        assert(
+          (client.pathTemplates.autokeyConfigPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('cryptoKey', () => {
       const fakePath = '/rendered/path/cryptoKey';
       const expectedParameters = {
@@ -5380,6 +5771,71 @@ describe('v1.KeyManagementServiceClient', () => {
         assert.strictEqual(result, 'importJobValue');
         assert(
           (client.pathTemplates.importJobPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('keyHandle', () => {
+      const fakePath = '/rendered/path/keyHandle';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        key_handle: 'keyHandleValue',
+      };
+      const client =
+        new keymanagementserviceModule.v1.KeyManagementServiceClient({
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        });
+      client.initialize();
+      client.pathTemplates.keyHandlePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.keyHandlePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('keyHandlePath', () => {
+        const result = client.keyHandlePath(
+          'projectValue',
+          'locationValue',
+          'keyHandleValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.keyHandlePathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromKeyHandleName', () => {
+        const result = client.matchProjectFromKeyHandleName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.keyHandlePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromKeyHandleName', () => {
+        const result = client.matchLocationFromKeyHandleName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.keyHandlePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchKeyHandleFromKeyHandleName', () => {
+        const result = client.matchKeyHandleFromKeyHandleName(fakePath);
+        assert.strictEqual(result, 'keyHandleValue');
+        assert(
+          (client.pathTemplates.keyHandlePathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );

@@ -1,5 +1,62 @@
 # Changelog
 
+## [6.4.0](https://github.com/googleapis/google-cloud-node/compare/recommender-v6.3.0...recommender-v6.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [6.3.0](https://github.com/googleapis/google-cloud-node/compare/recommender-v6.2.0...recommender-v6.3.0) (2024-04-05)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5190](https://github.com/googleapis/google-cloud-node/issues/5190)) ([b569fbe](https://github.com/googleapis/google-cloud-node/commit/b569fbe1472d0fd71c1bfb58d0b1661814ac5727))
+
+## [6.2.0](https://github.com/googleapis/google-cloud-node/compare/recommender-v6.1.1...recommender-v6.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5027](https://github.com/googleapis/google-cloud-node/issues/5027)) ([88763bb](https://github.com/googleapis/google-cloud-node/commit/88763bb1b7ce9ff884b9e3f476230d38985b2ff2))
+
+## [6.1.1](https://github.com/googleapis/google-cloud-node/compare/recommender-v6.1.0...recommender-v6.1.1) (2024-01-05)
+
+
+### Bug Fixes
+
+* [recommender] correct long audio synthesis HTTP binding ([#4883](https://github.com/googleapis/google-cloud-node/issues/4883)) ([aa8dcf8](https://github.com/googleapis/google-cloud-node/commit/aa8dcf8c3f98e878eac8517cfd01ec2bfa7f54be))
+
+## [6.1.0](https://github.com/googleapis/google-cloud-node/compare/recommender-v6.0.0...recommender-v6.1.0) (2023-09-06)
+
+
+### Features
+
+* [recommender] ListRecommenders and ListInsightTypes RPC methods ([#4604](https://github.com/googleapis/google-cloud-node/issues/4604)) ([3b4414b](https://github.com/googleapis/google-cloud-node/commit/3b4414b48877b91dafe0f9540701744dafc3d431))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4587](https://github.com/googleapis/google-cloud-node/issues/4587)) ([e3b1e7e](https://github.com/googleapis/google-cloud-node/commit/e3b1e7e46d666abb4df28c3cd69e97c08b88445a))
+
+## [6.0.0](https://github.com/googleapis/google-cloud-node/compare/recommender-v5.0.6...recommender-v6.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4463](https://github.com/googleapis/google-cloud-node/issues/4463)) ([64109b0](https://github.com/googleapis/google-cloud-node/commit/64109b007521c418cefe09c18a92cc6eaef0932c))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [5.0.6](https://github.com/googleapis/google-cloud-node/compare/recommender-v5.0.5...recommender-v5.0.6) (2023-04-13)
 
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,11 +33,12 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  Maximum number of items to return.
+   *  Optional. Maximum number of items to return.
    */
   // const pageSize = 1234
   /**
-   *  next_page_token value returned from a previous List request, if any.
+   *  Optional. next_page_token value returned from a previous List request, if
+   *  any.
    */
   // const pageToken = 'abc123'
 
@@ -54,7 +55,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await workstationsClient.listWorkstationsAsync(request);
+    const iterable = workstationsClient.listWorkstationsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

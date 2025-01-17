@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ function main(parent, instanceId, instance) {
   /**
    *  Required. The instance's project and location, in the format
    *  `projects/{project_id}/locations/{location}`. In Filestore,
-   *  locations map to GCP zones, for example **us-west1-b**.
+   *  locations map to Google Cloud zones, for example **us-west1-b**.
    */
   // const parent = 'abc123'
   /**

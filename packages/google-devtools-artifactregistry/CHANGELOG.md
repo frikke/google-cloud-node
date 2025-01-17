@@ -1,5 +1,76 @@
 # Changelog
 
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.4.0...artifact-registry-v3.5.0) (2024-10-30)
+
+
+### Features
+
+* [artifactregistry] Add Artifact Registry attachment API ([#5769](https://github.com/googleapis/google-cloud-node/issues/5769)) ([c5eb3c3](https://github.com/googleapis/google-cloud-node/commit/c5eb3c3ec44e03edae96207f892d5b2d98aca51a))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.3.0...artifact-registry-v3.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.2.0...artifact-registry-v3.3.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5192](https://github.com/googleapis/google-cloud-node/issues/5192)) ([b926f13](https://github.com/googleapis/google-cloud-node/commit/b926f1326ea4df73c411dbeb7e529f8d9ccc3642))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.1.1...artifact-registry-v3.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5028](https://github.com/googleapis/google-cloud-node/issues/5028)) ([852f3eb](https://github.com/googleapis/google-cloud-node/commit/852f3ebf065ee24e910580b9a1fc365acb3a744a))
+
+## [3.1.1](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.1.0...artifact-registry-v3.1.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* [Many APIs] improve retry logic for streaming API calls ([#4968](https://github.com/googleapis/google-cloud-node/issues/4968)) ([7fbf16c](https://github.com/googleapis/google-cloud-node/commit/7fbf16c98d0521a0533ab36a00f6ec932c72a02e))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.0.1...artifact-registry-v3.1.0) (2023-10-18)
+
+
+### Features
+
+* [artifactregistry] make repositories required in ListRepositoriesRequest ([#4709](https://github.com/googleapis/google-cloud-node/issues/4709)) ([81cca60](https://github.com/googleapis/google-cloud-node/commit/81cca6072dab3c753db27fab7dbf08d13196e087))
+
+
+### Bug Fixes
+
+* [artifactregistry] make repository and repository_id in CreateRepository required ([#4693](https://github.com/googleapis/google-cloud-node/issues/4693)) ([dcd9022](https://github.com/googleapis/google-cloud-node/commit/dcd9022f16c63c9e0f0eec10615f64b76184a9b6))
+
+## [3.0.1](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v3.0.0...artifact-registry-v3.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4589](https://github.com/googleapis/google-cloud-node/issues/4589)) ([07967ad](https://github.com/googleapis/google-cloud-node/commit/07967add1b5fc28b548cf74721b595ea0ba90d5b))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v2.2.2...artifact-registry-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4464](https://github.com/googleapis/google-cloud-node/issues/4464)) ([c909357](https://github.com/googleapis/google-cloud-node/commit/c90935765ceee0eea6b9ce21a151707df142cf7d))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [2.2.2](https://github.com/googleapis/google-cloud-node/compare/artifact-registry-v2.2.1...artifact-registry-v2.2.2) (2023-04-13)
 
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/lineage_client_config.json`.
@@ -41,7 +42,7 @@ const version = require('../../../package.json').version;
 
 /**
  *  Lineage is used to track data flows between assets over time. You can
- *  create {@link google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvents}
+ *  create {@link protos.google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvents}
  *  to record lineage between multiple sources and a single target, for
  *  example, when table data is based on data from multiple tables.
  * @class
@@ -55,6 +56,8 @@ export class LineageClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -96,8 +99,7 @@ export class LineageClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -105,7 +107,7 @@ export class LineageClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new LineageClient({fallback: 'rest'}, gax);
+   *     const client = new LineageClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -114,8 +116,27 @@ export class LineageClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof LineageClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'datalineage.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -130,7 +151,7 @@ export class LineageClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -155,23 +176,23 @@ export class LineageClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -240,7 +261,7 @@ export class LineageClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -341,6 +362,7 @@ export class LineageClient {
     // Iterate over each of the methods that the service provides
     // and create an API call method for each.
     const lineageStubMethods = [
+      'processOpenLineageRunEvent',
       'createProcess',
       'updateProcess',
       'getProcess',
@@ -392,19 +414,50 @@ export class LineageClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'datalineage.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'datalineage.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -444,6 +497,117 @@ export class LineageClient {
   // -- Service calls --
   // -------------------
   /**
+   * Creates new lineage events together with their parents: process and run.
+   * Updates the process and run if they already exist.
+   * Mapped from Open Lineage specification:
+   * https://github.com/OpenLineage/OpenLineage/blob/main/spec/OpenLineage.json.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The name of the project and its location that should own the
+   *   process, run, and lineage event.
+   * @param {google.protobuf.Struct} request.openLineage
+   *   Required. OpenLineage message following OpenLineage format:
+   *   https://github.com/OpenLineage/OpenLineage/blob/main/spec/OpenLineage.json
+   * @param {string} request.requestId
+   *   A unique identifier for this request. Restricted to 36 ASCII characters.
+   *   A random UUID is recommended. This request is idempotent only if a
+   *   `request_id` is provided.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventResponse|ProcessOpenLineageRunEventResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/lineage.process_open_lineage_run_event.js</caption>
+   * region_tag:datalineage_v1_generated_Lineage_ProcessOpenLineageRunEvent_async
+   */
+  processOpenLineageRunEvent(
+    request?: protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse,
+      (
+        | protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  >;
+  processOpenLineageRunEvent(
+    request: protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse,
+      | protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  processOpenLineageRunEvent(
+    request: protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest,
+    callback: Callback<
+      protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse,
+      | protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  processOpenLineageRunEvent(
+    request?: protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse,
+          | protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse,
+      | protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse,
+      (
+        | protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.processOpenLineageRunEvent(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
    * Creates a new process.
    *
    * @param {Object} request
@@ -460,9 +624,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.Process | Process}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Process|Process}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.create_process.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_CreateProcess_async
@@ -477,7 +640,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.ICreateProcessRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createProcess(
@@ -526,7 +689,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.ICreateProcessRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -564,9 +727,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.Process | Process}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Process|Process}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.update_process.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_UpdateProcess_async
@@ -581,7 +743,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.IUpdateProcessRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateProcess(
@@ -630,7 +792,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.IUpdateProcessRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -661,9 +823,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.Process | Process}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Process|Process}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.get_process.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_GetProcess_async
@@ -675,7 +836,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IProcess,
       protos.google.cloud.datacatalog.lineage.v1.IGetProcessRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getProcess(
@@ -721,7 +882,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IProcess,
       protos.google.cloud.datacatalog.lineage.v1.IGetProcessRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -758,9 +919,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.Run | Run}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Run|Run}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.create_run.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_CreateRun_async
@@ -772,7 +932,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun,
       protos.google.cloud.datacatalog.lineage.v1.ICreateRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createRun(
@@ -818,7 +978,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun,
       protos.google.cloud.datacatalog.lineage.v1.ICreateRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -854,12 +1014,13 @@ export class LineageClient {
    * @param {google.protobuf.FieldMask} request.updateMask
    *   The list of fields to update. Currently not used. The whole message is
    *   updated.
+   * @param {boolean} request.allowMissing
+   *   If set to true and the run is not found, the request creates it.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.Run | Run}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Run|Run}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.update_run.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_UpdateRun_async
@@ -871,7 +1032,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun,
       protos.google.cloud.datacatalog.lineage.v1.IUpdateRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateRun(
@@ -917,7 +1078,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun,
       protos.google.cloud.datacatalog.lineage.v1.IUpdateRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -948,9 +1109,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.Run | Run}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Run|Run}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.get_run.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_GetRun_async
@@ -962,7 +1122,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun,
       protos.google.cloud.datacatalog.lineage.v1.IGetRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getRun(
@@ -1008,7 +1168,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun,
       protos.google.cloud.datacatalog.lineage.v1.IGetRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1045,9 +1205,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.LineageEvent | LineageEvent}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvent}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.create_lineage_event.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_CreateLineageEvent_async
@@ -1062,7 +1221,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.ICreateLineageEventRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createLineageEvent(
@@ -1111,7 +1270,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.ICreateLineageEventRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1142,9 +1301,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.datacatalog.lineage.v1.LineageEvent | LineageEvent}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvent}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.get_lineage_event.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_GetLineageEvent_async
@@ -1159,7 +1317,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.IGetLineageEventRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getLineageEvent(
@@ -1208,7 +1366,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.IGetLineageEventRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1242,9 +1400,8 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.delete_lineage_event.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_DeleteLineageEvent_async
@@ -1259,7 +1416,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.IDeleteLineageEventRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteLineageEvent(
@@ -1308,7 +1465,7 @@ export class LineageClient {
         | protos.google.cloud.datacatalog.lineage.v1.IDeleteLineageEventRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1346,8 +1503,7 @@ export class LineageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.delete_process.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_DeleteProcess_async
@@ -1362,7 +1518,7 @@ export class LineageClient {
         protos.google.cloud.datacatalog.lineage.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteProcess(
@@ -1415,7 +1571,7 @@ export class LineageClient {
         protos.google.cloud.datacatalog.lineage.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1442,8 +1598,7 @@ export class LineageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.delete_process.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_DeleteProcess_async
@@ -1487,8 +1642,7 @@ export class LineageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.delete_run.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_DeleteRun_async
@@ -1503,7 +1657,7 @@ export class LineageClient {
         protos.google.cloud.datacatalog.lineage.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteRun(
@@ -1556,7 +1710,7 @@ export class LineageClient {
         protos.google.cloud.datacatalog.lineage.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1583,8 +1737,7 @@ export class LineageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.delete_run.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_DeleteRun_async
@@ -1635,14 +1788,13 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.datacatalog.lineage.v1.Process | Process}.
+   *   The first element of the array is Array of {@link protos.google.cloud.datacatalog.lineage.v1.Process|Process}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listProcessesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcesses(
@@ -1652,7 +1804,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IProcess[],
       protos.google.cloud.datacatalog.lineage.v1.IListProcessesRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IListProcessesResponse
+      protos.google.cloud.datacatalog.lineage.v1.IListProcessesResponse,
     ]
   >;
   listProcesses(
@@ -1698,7 +1850,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IProcess[],
       protos.google.cloud.datacatalog.lineage.v1.IListProcessesRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IListProcessesResponse
+      protos.google.cloud.datacatalog.lineage.v1.IListProcessesResponse,
     ]
   > | void {
     request = request || {};
@@ -1741,13 +1893,12 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.datacatalog.lineage.v1.Process | Process} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Process|Process} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listProcessesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessesStream(
@@ -1795,12 +1946,11 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.datacatalog.lineage.v1.Process | Process}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.datacatalog.lineage.v1.Process|Process}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.list_processes.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_ListProcesses_async
@@ -1848,14 +1998,13 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.datacatalog.lineage.v1.Run | Run}.
+   *   The first element of the array is Array of {@link protos.google.cloud.datacatalog.lineage.v1.Run|Run}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listRunsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listRuns(
@@ -1865,7 +2014,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun[],
       protos.google.cloud.datacatalog.lineage.v1.IListRunsRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IListRunsResponse
+      protos.google.cloud.datacatalog.lineage.v1.IListRunsResponse,
     ]
   >;
   listRuns(
@@ -1911,7 +2060,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IRun[],
       protos.google.cloud.datacatalog.lineage.v1.IListRunsRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IListRunsResponse
+      protos.google.cloud.datacatalog.lineage.v1.IListRunsResponse,
     ]
   > | void {
     request = request || {};
@@ -1953,13 +2102,12 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.datacatalog.lineage.v1.Run | Run} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Run|Run} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listRunsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listRunsStream(
@@ -2006,12 +2154,11 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.datacatalog.lineage.v1.Run | Run}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.datacatalog.lineage.v1.Run|Run}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.list_runs.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_ListRuns_async
@@ -2061,14 +2208,13 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.datacatalog.lineage.v1.LineageEvent | LineageEvent}.
+   *   The first element of the array is Array of {@link protos.google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvent}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listLineageEventsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listLineageEvents(
@@ -2078,7 +2224,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.ILineageEvent[],
       protos.google.cloud.datacatalog.lineage.v1.IListLineageEventsRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IListLineageEventsResponse
+      protos.google.cloud.datacatalog.lineage.v1.IListLineageEventsResponse,
     ]
   >;
   listLineageEvents(
@@ -2124,7 +2270,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.ILineageEvent[],
       protos.google.cloud.datacatalog.lineage.v1.IListLineageEventsRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IListLineageEventsResponse
+      protos.google.cloud.datacatalog.lineage.v1.IListLineageEventsResponse,
     ]
   > | void {
     request = request || {};
@@ -2168,13 +2314,12 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.datacatalog.lineage.v1.LineageEvent | LineageEvent} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvent} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listLineageEventsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listLineageEventsStream(
@@ -2223,12 +2368,11 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.datacatalog.lineage.v1.LineageEvent | LineageEvent}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.datacatalog.lineage.v1.LineageEvent|LineageEvent}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.list_lineage_events.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_ListLineageEvents_async
@@ -2268,7 +2412,7 @@ export class LineageClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project and location you want search in the format `projects/* /locations/*`
+   *   Required. The project and location you want search in.
    * @param {google.cloud.datacatalog.lineage.v1.EntityReference} [request.source]
    *   Optional. Send asset information in the **source** field to retrieve all
    *   links that lead from the specified asset to downstream assets.
@@ -2291,14 +2435,13 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.datacatalog.lineage.v1.Link | Link}.
+   *   The first element of the array is Array of {@link protos.google.cloud.datacatalog.lineage.v1.Link|Link}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `searchLinksAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   searchLinks(
@@ -2308,7 +2451,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.ILink[],
       protos.google.cloud.datacatalog.lineage.v1.ISearchLinksRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.ISearchLinksResponse
+      protos.google.cloud.datacatalog.lineage.v1.ISearchLinksResponse,
     ]
   >;
   searchLinks(
@@ -2354,7 +2497,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.ILink[],
       protos.google.cloud.datacatalog.lineage.v1.ISearchLinksRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.ISearchLinksResponse
+      protos.google.cloud.datacatalog.lineage.v1.ISearchLinksResponse,
     ]
   > | void {
     request = request || {};
@@ -2381,7 +2524,7 @@ export class LineageClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project and location you want search in the format `projects/* /locations/*`
+   *   Required. The project and location you want search in.
    * @param {google.cloud.datacatalog.lineage.v1.EntityReference} [request.source]
    *   Optional. Send asset information in the **source** field to retrieve all
    *   links that lead from the specified asset to downstream assets.
@@ -2404,13 +2547,12 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.datacatalog.lineage.v1.Link | Link} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.datacatalog.lineage.v1.Link|Link} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `searchLinksAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   searchLinksStream(
@@ -2442,7 +2584,7 @@ export class LineageClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project and location you want search in the format `projects/* /locations/*`
+   *   Required. The project and location you want search in.
    * @param {google.cloud.datacatalog.lineage.v1.EntityReference} [request.source]
    *   Optional. Send asset information in the **source** field to retrieve all
    *   links that lead from the specified asset to downstream assets.
@@ -2465,12 +2607,11 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.datacatalog.lineage.v1.Link | Link}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.datacatalog.lineage.v1.Link|Link}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.search_links.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_SearchLinks_async
@@ -2505,7 +2646,7 @@ export class LineageClient {
    * If you have specific link names, you can use this method to
    * verify which LineageProcesses contribute to creating those links.
    * See the
-   * {@link google.cloud.datacatalog.lineage.v1.Lineage.SearchLinks|SearchLinks}
+   * {@link protos.google.cloud.datacatalog.lineage.v1.Lineage.SearchLinks|SearchLinks}
    * method for more information on how to retrieve link name.
    *
    * You can retrieve the LineageProcess information in every project where you
@@ -2515,7 +2656,7 @@ export class LineageClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project and location you want search in the format `projects/* /locations/*`
+   *   Required. The project and location where you want to search.
    * @param {string[]} request.links
    *   Required. An array of links to check for their associated LineageProcesses.
    *
@@ -2537,14 +2678,13 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.datacatalog.lineage.v1.ProcessLinks | ProcessLinks}.
+   *   The first element of the array is Array of {@link protos.google.cloud.datacatalog.lineage.v1.ProcessLinks|ProcessLinks}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `batchSearchLinkProcessesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   batchSearchLinkProcesses(
@@ -2554,7 +2694,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IProcessLinks[],
       protos.google.cloud.datacatalog.lineage.v1.IBatchSearchLinkProcessesRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IBatchSearchLinkProcessesResponse
+      protos.google.cloud.datacatalog.lineage.v1.IBatchSearchLinkProcessesResponse,
     ]
   >;
   batchSearchLinkProcesses(
@@ -2600,7 +2740,7 @@ export class LineageClient {
     [
       protos.google.cloud.datacatalog.lineage.v1.IProcessLinks[],
       protos.google.cloud.datacatalog.lineage.v1.IBatchSearchLinkProcessesRequest | null,
-      protos.google.cloud.datacatalog.lineage.v1.IBatchSearchLinkProcessesResponse
+      protos.google.cloud.datacatalog.lineage.v1.IBatchSearchLinkProcessesResponse,
     ]
   > | void {
     request = request || {};
@@ -2631,7 +2771,7 @@ export class LineageClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project and location you want search in the format `projects/* /locations/*`
+   *   Required. The project and location where you want to search.
    * @param {string[]} request.links
    *   Required. An array of links to check for their associated LineageProcesses.
    *
@@ -2653,13 +2793,12 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.datacatalog.lineage.v1.ProcessLinks | ProcessLinks} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.datacatalog.lineage.v1.ProcessLinks|ProcessLinks} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `batchSearchLinkProcessesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   batchSearchLinkProcessesStream(
@@ -2691,7 +2830,7 @@ export class LineageClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project and location you want search in the format `projects/* /locations/*`
+   *   Required. The project and location where you want to search.
    * @param {string[]} request.links
    *   Required. An array of links to check for their associated LineageProcesses.
    *
@@ -2713,12 +2852,11 @@ export class LineageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.datacatalog.lineage.v1.ProcessLinks | ProcessLinks}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.datacatalog.lineage.v1.ProcessLinks|ProcessLinks}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/lineage.batch_search_link_processes.js</caption>
    * region_tag:datalineage_v1_generated_Lineage_BatchSearchLinkProcesses_async

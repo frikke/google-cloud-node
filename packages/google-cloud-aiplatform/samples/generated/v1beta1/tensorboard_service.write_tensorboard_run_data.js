@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ function main(tensorboardRun, timeSeriesData) {
    *  step.
    *  The upper limit of data points per write request is 5000.
    */
-  // const timeSeriesData = 1234
+  // const timeSeriesData = [1,2,3,4]
 
   // Imports the Aiplatform library
   const {TensorboardServiceClient} = require('@google-cloud/aiplatform').v1beta1;

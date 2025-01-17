@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ function main(name, newTagTemplateFieldId) {
    */
   // const name = 'abc123'
   /**
-   *  Required. The new ID of this tag template field. For example, `my_new_field`.
+   *  Required. The new ID of this tag template field. For example,
+   *  `my_new_field`.
    */
   // const newTagTemplateFieldId = 'abc123'
 

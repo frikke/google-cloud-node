@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ function main(parent, migrationJobId, migrationJob) {
    */
   // const migrationJob = {}
   /**
-   *  A unique ID used to identify the request. If the server receives two
-   *  requests with the same ID, then the second request is ignored.
+   *  Optional. A unique ID used to identify the request. If the server receives
+   *  two requests with the same ID, then the second request is ignored.
    *  It is recommended to always set this value to a UUID.
    *  The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores
    *  (_), and hyphens (-). The maximum length is 40 characters.

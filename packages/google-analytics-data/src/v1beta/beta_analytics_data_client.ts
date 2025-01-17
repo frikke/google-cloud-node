@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,10 +23,15 @@ import type {
   CallOptions,
   Descriptors,
   ClientOptions,
+  GrpcClientOptions,
+  LROperation,
+  PaginationCallback,
+  GaxCall,
 } from 'google-gax';
-
+import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1beta/beta_analytics_data_client_config.json`.
@@ -48,6 +53,8 @@ export class BetaAnalyticsDataClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -58,6 +65,7 @@ export class BetaAnalyticsDataClient {
   warn: (code: string, message: string, warnType?: string) => void;
   innerApiCalls: {[name: string]: Function};
   pathTemplates: {[name: string]: gax.PathTemplate};
+  operationsClient: gax.OperationsClient;
   betaAnalyticsDataStub?: Promise<{[name: string]: Function}>;
 
   /**
@@ -88,8 +96,7 @@ export class BetaAnalyticsDataClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -97,7 +104,7 @@ export class BetaAnalyticsDataClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new BetaAnalyticsDataClient({fallback: 'rest'}, gax);
+   *     const client = new BetaAnalyticsDataClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -106,8 +113,27 @@ export class BetaAnalyticsDataClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof BetaAnalyticsDataClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'analyticsdata.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -122,7 +148,7 @@ export class BetaAnalyticsDataClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -147,23 +173,23 @@ export class BetaAnalyticsDataClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -176,8 +202,55 @@ export class BetaAnalyticsDataClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      audienceExportPathTemplate: new this._gaxModule.PathTemplate(
+        'properties/{property}/audienceExports/{audience_export}'
+      ),
       metadataPathTemplate: new this._gaxModule.PathTemplate(
         'properties/{property}/metadata'
+      ),
+      propertyPathTemplate: new this._gaxModule.PathTemplate(
+        'properties/{property}'
+      ),
+    };
+
+    // Some of the methods on this service return "paged" results,
+    // (e.g. 50 results at a time, with tokens to get subsequent
+    // pages). Denote the keys used for pagination and results.
+    this.descriptors.page = {
+      listAudienceExports: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'audienceExports'
+      ),
+    };
+
+    const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
+    // This API contains "long-running operations", which return a
+    // an Operation object that allows for tracking of the operation,
+    // rather than holding a request open.
+    const lroOptions: GrpcClientOptions = {
+      auth: this.auth,
+      grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
+    };
+    if (opts.fallback) {
+      lroOptions.protoJson = protoFilesRoot;
+      lroOptions.httpRules = [];
+    }
+    this.operationsClient = this._gaxModule
+      .lro(lroOptions)
+      .operationsClient(opts);
+    const createAudienceExportResponse = protoFilesRoot.lookup(
+      '.google.analytics.data.v1beta.AudienceExport'
+    ) as gax.protobuf.Type;
+    const createAudienceExportMetadata = protoFilesRoot.lookup(
+      '.google.analytics.data.v1beta.AudienceExportMetadata'
+    ) as gax.protobuf.Type;
+
+    this.descriptors.longrunning = {
+      createAudienceExport: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createAudienceExportResponse.decode.bind(createAudienceExportResponse),
+        createAudienceExportMetadata.decode.bind(createAudienceExportMetadata)
       ),
     };
 
@@ -238,6 +311,10 @@ export class BetaAnalyticsDataClient {
       'getMetadata',
       'runRealtimeReport',
       'checkCompatibility',
+      'createAudienceExport',
+      'queryAudienceExport',
+      'getAudienceExport',
+      'listAudienceExports',
     ];
     for (const methodName of betaAnalyticsDataStubMethods) {
       const callPromise = this.betaAnalyticsDataStub.then(
@@ -254,7 +331,10 @@ export class BetaAnalyticsDataClient {
         }
       );
 
-      const descriptor = undefined;
+      const descriptor =
+        this.descriptors.page[methodName] ||
+        this.descriptors.longrunning[methodName] ||
+        undefined;
       const apiCall = this._gaxModule.createApiCall(
         callPromise,
         this._defaults[methodName],
@@ -270,19 +350,50 @@ export class BetaAnalyticsDataClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'analyticsdata.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'analyticsdata.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -340,7 +451,7 @@ export class BetaAnalyticsDataClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.property
-   *   A Google Analytics GA4 property identifier whose events are tracked.
+   *   A Google Analytics property identifier whose events are tracked.
    *   Specified in the URL path and not the body. To learn more, see [where to
    *   find your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -359,7 +470,7 @@ export class BetaAnalyticsDataClient {
    *   response rows for both date ranges. In a cohort request, this `dateRanges`
    *   must be unspecified.
    * @param {google.analytics.data.v1beta.FilterExpression} request.dimensionFilter
-   *   Dimension filters allow you to ask for only specific dimension values in
+   *   Dimension filters let you ask for only specific dimension values in
    *   the report. To learn more, see [Fundamentals of Dimension
    *   Filters](https://developers.google.com/analytics/devguides/reporting/data/v1/basics#dimension_filters)
    *   for examples. Metrics cannot be used in this filter.
@@ -378,7 +489,7 @@ export class BetaAnalyticsDataClient {
    *   [Pagination](https://developers.google.com/analytics/devguides/reporting/data/v1/basics#pagination).
    * @param {number} request.limit
    *   The number of rows to return. If unspecified, 10,000 rows are returned. The
-   *   API returns a maximum of 100,000 rows per request, no matter how many you
+   *   API returns a maximum of 250,000 rows per request, no matter how many you
    *   ask for. `limit` must be positive.
    *
    *   The API can also return fewer rows than the requested `limit`, if there
@@ -392,8 +503,12 @@ export class BetaAnalyticsDataClient {
    * @param {number[]} request.metricAggregations
    *   Aggregation of metrics. Aggregated metric values will be shown in rows
    *   where the dimension_values are set to "RESERVED_(MetricAggregation)".
+   *   Aggregates including both comparisons and multiple date ranges will
+   *   be aggregated based on the date ranges.
    * @param {number[]} request.orderBys
    *   Specifies how rows are ordered in the response.
+   *   Requests including both comparisons and multiple date ranges will
+   *   have order bys applied on the comparisons.
    * @param {string} request.currencyCode
    *   A currency code in ISO4217 format, such as "AED", "USD", "JPY".
    *   If the field is empty, the report uses the property's default currency.
@@ -404,15 +519,25 @@ export class BetaAnalyticsDataClient {
    *   If false or unspecified, each row with all metrics equal to 0 will not be
    *   returned. If true, these rows will be returned if they are not separately
    *   removed by a filter.
+   *
+   *   Regardless of this `keep_empty_rows` setting, only data recorded by the
+   *   Google Analytics property can be displayed in a report.
+   *
+   *   For example if a property never logs a `purchase` event, then a query for
+   *   the `eventName` dimension and  `eventCount` metric will not have a row
+   *   eventName: "purchase" and eventCount: 0.
    * @param {boolean} request.returnPropertyQuota
-   *   Toggles whether to return the current state of this Analytics Property's
-   *   quota. Quota is returned in [PropertyQuota](#PropertyQuota).
+   *   Toggles whether to return the current state of this Google Analytics
+   *   property's quota. Quota is returned in [PropertyQuota](#PropertyQuota).
+   * @param {number[]} [request.comparisons]
+   *   Optional. The configuration of comparisons requested and displayed. The
+   *   request only requires a comparisons field in order to receive a comparison
+   *   column in the response.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.RunReportResponse | RunReportResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.RunReportResponse|RunReportResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.run_report.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_RunReport_async
@@ -424,7 +549,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IRunReportResponse,
       protos.google.analytics.data.v1beta.IRunReportRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runReport(
@@ -464,7 +589,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IRunReportResponse,
       protos.google.analytics.data.v1beta.IRunReportRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -495,7 +620,7 @@ export class BetaAnalyticsDataClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.property
-   *   A Google Analytics GA4 property identifier whose events are tracked.
+   *   A Google Analytics property identifier whose events are tracked.
    *   Specified in the URL path and not the body. To learn more, see [where to
    *   find your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -538,15 +663,25 @@ export class BetaAnalyticsDataClient {
    *   If false or unspecified, each row with all metrics equal to 0 will not be
    *   returned. If true, these rows will be returned if they are not separately
    *   removed by a filter.
+   *
+   *   Regardless of this `keep_empty_rows` setting, only data recorded by the
+   *   Google Analytics property can be displayed in a report.
+   *
+   *   For example if a property never logs a `purchase` event, then a query for
+   *   the `eventName` dimension and  `eventCount` metric will not have a row
+   *   eventName: "purchase" and eventCount: 0.
    * @param {boolean} request.returnPropertyQuota
-   *   Toggles whether to return the current state of this Analytics Property's
-   *   quota. Quota is returned in [PropertyQuota](#PropertyQuota).
+   *   Toggles whether to return the current state of this Google Analytics
+   *   property's quota. Quota is returned in [PropertyQuota](#PropertyQuota).
+   * @param {number[]} [request.comparisons]
+   *   Optional. The configuration of comparisons requested and displayed. The
+   *   request requires both a comparisons field and a comparisons dimension to
+   *   receive a comparison column in the response.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.RunPivotReportResponse | RunPivotReportResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.RunPivotReportResponse|RunPivotReportResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.run_pivot_report.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_RunPivotReport_async
@@ -558,7 +693,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IRunPivotReportResponse,
       protos.google.analytics.data.v1beta.IRunPivotReportRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runPivotReport(
@@ -604,7 +739,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IRunPivotReportResponse,
       protos.google.analytics.data.v1beta.IRunPivotReportRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -627,12 +762,12 @@ export class BetaAnalyticsDataClient {
   }
   /**
    * Returns multiple reports in a batch. All reports must be for the same
-   * GA4 Property.
+   * Google Analytics property.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.property
-   *   A Google Analytics GA4 property identifier whose events are tracked.
+   *   A Google Analytics property identifier whose events are tracked.
    *   Specified in the URL path and not the body. To learn more, see [where to
    *   find your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -647,9 +782,8 @@ export class BetaAnalyticsDataClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.BatchRunReportsResponse | BatchRunReportsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.BatchRunReportsResponse|BatchRunReportsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.batch_run_reports.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_BatchRunReports_async
@@ -661,7 +795,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IBatchRunReportsResponse,
       protos.google.analytics.data.v1beta.IBatchRunReportsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchRunReports(
@@ -707,7 +841,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IBatchRunReportsResponse,
       protos.google.analytics.data.v1beta.IBatchRunReportsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -730,12 +864,12 @@ export class BetaAnalyticsDataClient {
   }
   /**
    * Returns multiple pivot reports in a batch. All reports must be for the same
-   * GA4 Property.
+   * Google Analytics property.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.property
-   *   A Google Analytics GA4 property identifier whose events are tracked.
+   *   A Google Analytics property identifier whose events are tracked.
    *   Specified in the URL path and not the body. To learn more, see [where to
    *   find your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -750,9 +884,8 @@ export class BetaAnalyticsDataClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.BatchRunPivotReportsResponse | BatchRunPivotReportsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.BatchRunPivotReportsResponse|BatchRunPivotReportsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.batch_run_pivot_reports.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_BatchRunPivotReports_async
@@ -767,7 +900,7 @@ export class BetaAnalyticsDataClient {
         | protos.google.analytics.data.v1beta.IBatchRunPivotReportsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchRunPivotReports(
@@ -816,7 +949,7 @@ export class BetaAnalyticsDataClient {
         | protos.google.analytics.data.v1beta.IBatchRunPivotReportsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -840,7 +973,7 @@ export class BetaAnalyticsDataClient {
   /**
    * Returns metadata for dimensions and metrics available in reporting methods.
    * Used to explore the dimensions and metrics. In this method, a Google
-   * Analytics GA4 Property Identifier is specified in the request, and
+   * Analytics property identifier is specified in the request, and
    * the metadata response includes Custom dimensions and metrics as well as
    * Universal metadata.
    *
@@ -854,7 +987,7 @@ export class BetaAnalyticsDataClient {
    * @param {string} request.name
    *   Required. The resource name of the metadata to retrieve. This name field is
    *   specified in the URL path and not URL parameters. Property is a numeric
-   *   Google Analytics GA4 Property identifier. To learn more, see [where to find
+   *   Google Analytics property identifier. To learn more, see [where to find
    *   your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
    *
@@ -866,9 +999,8 @@ export class BetaAnalyticsDataClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.Metadata | Metadata}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.Metadata|Metadata}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.get_metadata.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_GetMetadata_async
@@ -880,7 +1012,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IMetadata,
       protos.google.analytics.data.v1beta.IGetMetadataRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getMetadata(
@@ -926,7 +1058,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IMetadata,
       protos.google.analytics.data.v1beta.IGetMetadataRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -961,7 +1093,7 @@ export class BetaAnalyticsDataClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.property
-   *   A Google Analytics GA4 property identifier whose events are tracked.
+   *   A Google Analytics property identifier whose events are tracked.
    *   Specified in the URL path and not the body. To learn more, see [where to
    *   find your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -978,7 +1110,7 @@ export class BetaAnalyticsDataClient {
    *   SQL having-clause. Dimensions cannot be used in this filter.
    * @param {number} request.limit
    *   The number of rows to return. If unspecified, 10,000 rows are returned. The
-   *   API returns a maximum of 100,000 rows per request, no matter how many you
+   *   API returns a maximum of 250,000 rows per request, no matter how many you
    *   ask for. `limit` must be positive.
    *
    *   The API can also return fewer rows than the requested `limit`, if there
@@ -992,8 +1124,9 @@ export class BetaAnalyticsDataClient {
    * @param {number[]} request.orderBys
    *   Specifies how rows are ordered in the response.
    * @param {boolean} request.returnPropertyQuota
-   *   Toggles whether to return the current state of this Analytics Property's
-   *   Realtime quota. Quota is returned in [PropertyQuota](#PropertyQuota).
+   *   Toggles whether to return the current state of this Google Analytics
+   *   property's Realtime quota. Quota is returned in
+   *   [PropertyQuota](#PropertyQuota).
    * @param {number[]} request.minuteRanges
    *   The minute ranges of event data to read. If unspecified, one minute range
    *   for the last 30 minutes will be used. If multiple minute ranges are
@@ -1003,9 +1136,8 @@ export class BetaAnalyticsDataClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.RunRealtimeReportResponse | RunRealtimeReportResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.RunRealtimeReportResponse|RunRealtimeReportResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.run_realtime_report.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_RunRealtimeReport_async
@@ -1017,7 +1149,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IRunRealtimeReportResponse,
       protos.google.analytics.data.v1beta.IRunRealtimeReportRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runRealtimeReport(
@@ -1063,7 +1195,7 @@ export class BetaAnalyticsDataClient {
     [
       protos.google.analytics.data.v1beta.IRunRealtimeReportResponse,
       protos.google.analytics.data.v1beta.IRunRealtimeReportRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1099,16 +1231,12 @@ export class BetaAnalyticsDataClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.property
-   *   A Google Analytics GA4 property identifier whose events are tracked. To
+   *   A Google Analytics property identifier whose events are tracked. To
    *   learn more, see [where to find your Property
    *   ID](https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
    *   `property` should be the same value as in your `runReport` request.
    *
    *   Example: properties/1234
-   *
-   *   Set the Property ID to 0 for compatibility checking on dimensions and
-   *   metrics common to all properties. In this special mode, this method will
-   *   not return custom dimensions and metrics.
    * @param {number[]} request.dimensions
    *   The dimensions in this report. `dimensions` should be the same value as in
    *   your `runReport` request.
@@ -1128,9 +1256,8 @@ export class BetaAnalyticsDataClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.analytics.data.v1beta.CheckCompatibilityResponse | CheckCompatibilityResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.CheckCompatibilityResponse|CheckCompatibilityResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta/beta_analytics_data.check_compatibility.js</caption>
    * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_CheckCompatibility_async
@@ -1145,7 +1272,7 @@ export class BetaAnalyticsDataClient {
         | protos.google.analytics.data.v1beta.ICheckCompatibilityRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   checkCompatibility(
@@ -1194,7 +1321,7 @@ export class BetaAnalyticsDataClient {
         | protos.google.analytics.data.v1beta.ICheckCompatibilityRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1215,10 +1342,850 @@ export class BetaAnalyticsDataClient {
     this.initialize();
     return this.innerApiCalls.checkCompatibility(request, options, callback);
   }
+  /**
+   * Retrieves an audience export of users. After creating an audience, the
+   * users are not immediately available for exporting. First, a request to
+   * `CreateAudienceExport` is necessary to create an audience export of users,
+   * and then second, this method is used to retrieve the users in the audience
+   * export.
+   *
+   * See [Creating an Audience
+   * Export](https://developers.google.com/analytics/devguides/reporting/data/v1/audience-list-basics)
+   * for an introduction to Audience Exports with examples.
+   *
+   * Audiences in Google Analytics 4 allow you to segment your users in the ways
+   * that are important to your business. To learn more, see
+   * https://support.google.com/analytics/answer/9267572.
+   *
+   * Audience Export APIs have some methods at alpha and other methods at beta
+   * stability. The intention is to advance methods to beta stability after some
+   * feedback and adoption. To give your feedback on this API, complete the
+   * [Google Analytics Audience Export API
+   * Feedback](https://forms.gle/EeA5u5LW6PEggtCEA) form.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the audience export to retrieve users from.
+   *   Format: `properties/{property}/audienceExports/{audience_export}`
+   * @param {number} [request.offset]
+   *   Optional. The row count of the start row. The first row is counted as row
+   *   0.
+   *
+   *   When paging, the first request does not specify offset; or equivalently,
+   *   sets offset to 0; the first request returns the first `limit` of rows. The
+   *   second request sets offset to the `limit` of the first request; the second
+   *   request returns the second `limit` of rows.
+   *
+   *   To learn more about this pagination parameter, see
+   *   [Pagination](https://developers.google.com/analytics/devguides/reporting/data/v1/basics#pagination).
+   * @param {number} [request.limit]
+   *   Optional. The number of rows to return. If unspecified, 10,000 rows are
+   *   returned. The API returns a maximum of 250,000 rows per request, no matter
+   *   how many you ask for. `limit` must be positive.
+   *
+   *   The API can also return fewer rows than the requested `limit`, if there
+   *   aren't as many dimension values as the `limit`.
+   *
+   *   To learn more about this pagination parameter, see
+   *   [Pagination](https://developers.google.com/analytics/devguides/reporting/data/v1/basics#pagination).
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.QueryAudienceExportResponse|QueryAudienceExportResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta/beta_analytics_data.query_audience_export.js</caption>
+   * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_QueryAudienceExport_async
+   */
+  queryAudienceExport(
+    request?: protos.google.analytics.data.v1beta.IQueryAudienceExportRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.analytics.data.v1beta.IQueryAudienceExportResponse,
+      (
+        | protos.google.analytics.data.v1beta.IQueryAudienceExportRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  >;
+  queryAudienceExport(
+    request: protos.google.analytics.data.v1beta.IQueryAudienceExportRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.analytics.data.v1beta.IQueryAudienceExportResponse,
+      | protos.google.analytics.data.v1beta.IQueryAudienceExportRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  queryAudienceExport(
+    request: protos.google.analytics.data.v1beta.IQueryAudienceExportRequest,
+    callback: Callback<
+      protos.google.analytics.data.v1beta.IQueryAudienceExportResponse,
+      | protos.google.analytics.data.v1beta.IQueryAudienceExportRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  queryAudienceExport(
+    request?: protos.google.analytics.data.v1beta.IQueryAudienceExportRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.analytics.data.v1beta.IQueryAudienceExportResponse,
+          | protos.google.analytics.data.v1beta.IQueryAudienceExportRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.analytics.data.v1beta.IQueryAudienceExportResponse,
+      | protos.google.analytics.data.v1beta.IQueryAudienceExportRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.analytics.data.v1beta.IQueryAudienceExportResponse,
+      (
+        | protos.google.analytics.data.v1beta.IQueryAudienceExportRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.queryAudienceExport(request, options, callback);
+  }
+  /**
+   * Gets configuration metadata about a specific audience export. This method
+   * can be used to understand an audience export after it has been created.
+   *
+   * See [Creating an Audience
+   * Export](https://developers.google.com/analytics/devguides/reporting/data/v1/audience-list-basics)
+   * for an introduction to Audience Exports with examples.
+   *
+   * Audience Export APIs have some methods at alpha and other methods at beta
+   * stability. The intention is to advance methods to beta stability after some
+   * feedback and adoption. To give your feedback on this API, complete the
+   * [Google Analytics Audience Export API
+   * Feedback](https://forms.gle/EeA5u5LW6PEggtCEA) form.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The audience export resource name.
+   *   Format: `properties/{property}/audienceExports/{audience_export}`
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.analytics.data.v1beta.AudienceExport|AudienceExport}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta/beta_analytics_data.get_audience_export.js</caption>
+   * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_GetAudienceExport_async
+   */
+  getAudienceExport(
+    request?: protos.google.analytics.data.v1beta.IGetAudienceExportRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.analytics.data.v1beta.IAudienceExport,
+      protos.google.analytics.data.v1beta.IGetAudienceExportRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getAudienceExport(
+    request: protos.google.analytics.data.v1beta.IGetAudienceExportRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.analytics.data.v1beta.IAudienceExport,
+      | protos.google.analytics.data.v1beta.IGetAudienceExportRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAudienceExport(
+    request: protos.google.analytics.data.v1beta.IGetAudienceExportRequest,
+    callback: Callback<
+      protos.google.analytics.data.v1beta.IAudienceExport,
+      | protos.google.analytics.data.v1beta.IGetAudienceExportRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAudienceExport(
+    request?: protos.google.analytics.data.v1beta.IGetAudienceExportRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.analytics.data.v1beta.IAudienceExport,
+          | protos.google.analytics.data.v1beta.IGetAudienceExportRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.analytics.data.v1beta.IAudienceExport,
+      | protos.google.analytics.data.v1beta.IGetAudienceExportRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.analytics.data.v1beta.IAudienceExport,
+      protos.google.analytics.data.v1beta.IGetAudienceExportRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getAudienceExport(request, options, callback);
+  }
+
+  /**
+   * Creates an audience export for later retrieval. This method quickly returns
+   * the audience export's resource name and initiates a long running
+   * asynchronous request to form an audience export. To export the users in an
+   * audience export, first create the audience export through this method and
+   * then send the audience resource name to the `QueryAudienceExport` method.
+   *
+   * See [Creating an Audience
+   * Export](https://developers.google.com/analytics/devguides/reporting/data/v1/audience-list-basics)
+   * for an introduction to Audience Exports with examples.
+   *
+   * An audience export is a snapshot of the users currently in the audience at
+   * the time of audience export creation. Creating audience exports for one
+   * audience on different days will return different results as users enter and
+   * exit the audience.
+   *
+   * Audiences in Google Analytics 4 allow you to segment your users in the ways
+   * that are important to your business. To learn more, see
+   * https://support.google.com/analytics/answer/9267572. Audience exports
+   * contain the users in each audience.
+   *
+   * Audience Export APIs have some methods at alpha and other methods at beta
+   * stability. The intention is to advance methods to beta stability after some
+   * feedback and adoption. To give your feedback on this API, complete the
+   * [Google Analytics Audience Export API
+   * Feedback](https://forms.gle/EeA5u5LW6PEggtCEA) form.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent resource where this audience export will be created.
+   *   Format: `properties/{property}`
+   * @param {google.analytics.data.v1beta.AudienceExport} request.audienceExport
+   *   Required. The audience export to create.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta/beta_analytics_data.create_audience_export.js</caption>
+   * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_CreateAudienceExport_async
+   */
+  createAudienceExport(
+    request?: protos.google.analytics.data.v1beta.ICreateAudienceExportRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.analytics.data.v1beta.IAudienceExport,
+        protos.google.analytics.data.v1beta.IAudienceExportMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createAudienceExport(
+    request: protos.google.analytics.data.v1beta.ICreateAudienceExportRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.analytics.data.v1beta.IAudienceExport,
+        protos.google.analytics.data.v1beta.IAudienceExportMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createAudienceExport(
+    request: protos.google.analytics.data.v1beta.ICreateAudienceExportRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.analytics.data.v1beta.IAudienceExport,
+        protos.google.analytics.data.v1beta.IAudienceExportMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createAudienceExport(
+    request?: protos.google.analytics.data.v1beta.ICreateAudienceExportRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.analytics.data.v1beta.IAudienceExport,
+            protos.google.analytics.data.v1beta.IAudienceExportMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.analytics.data.v1beta.IAudienceExport,
+        protos.google.analytics.data.v1beta.IAudienceExportMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.analytics.data.v1beta.IAudienceExport,
+        protos.google.analytics.data.v1beta.IAudienceExportMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createAudienceExport(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createAudienceExport()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta/beta_analytics_data.create_audience_export.js</caption>
+   * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_CreateAudienceExport_async
+   */
+  async checkCreateAudienceExportProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.analytics.data.v1beta.AudienceExport,
+      protos.google.analytics.data.v1beta.AudienceExportMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createAudienceExport,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.analytics.data.v1beta.AudienceExport,
+      protos.google.analytics.data.v1beta.AudienceExportMetadata
+    >;
+  }
+  /**
+   * Lists all audience exports for a property. This method can be used for you
+   * to find and reuse existing audience exports rather than creating
+   * unnecessary new audience exports. The same audience can have multiple
+   * audience exports that represent the export of users that were in an
+   * audience on different days.
+   *
+   * See [Creating an Audience
+   * Export](https://developers.google.com/analytics/devguides/reporting/data/v1/audience-list-basics)
+   * for an introduction to Audience Exports with examples.
+   *
+   * Audience Export APIs have some methods at alpha and other methods at beta
+   * stability. The intention is to advance methods to beta stability after some
+   * feedback and adoption. To give your feedback on this API, complete the
+   * [Google Analytics Audience Export API
+   * Feedback](https://forms.gle/EeA5u5LW6PEggtCEA) form.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. All audience exports for this property will be listed in the
+   *   response. Format: `properties/{property}`
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of audience exports to return. The service may
+   *   return fewer than this value. If unspecified, at most 200 audience exports
+   *   will be returned. The maximum value is 1000 (higher values will be coerced
+   *   to the maximum).
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListAudienceExports`
+   *   call. Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other parameters provided to `ListAudienceExports`
+   *   must match the call that provided the page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.analytics.data.v1beta.AudienceExport|AudienceExport}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listAudienceExportsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAudienceExports(
+    request?: protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.analytics.data.v1beta.IAudienceExport[],
+      protos.google.analytics.data.v1beta.IListAudienceExportsRequest | null,
+      protos.google.analytics.data.v1beta.IListAudienceExportsResponse,
+    ]
+  >;
+  listAudienceExports(
+    request: protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+      | protos.google.analytics.data.v1beta.IListAudienceExportsResponse
+      | null
+      | undefined,
+      protos.google.analytics.data.v1beta.IAudienceExport
+    >
+  ): void;
+  listAudienceExports(
+    request: protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+    callback: PaginationCallback<
+      protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+      | protos.google.analytics.data.v1beta.IListAudienceExportsResponse
+      | null
+      | undefined,
+      protos.google.analytics.data.v1beta.IAudienceExport
+    >
+  ): void;
+  listAudienceExports(
+    request?: protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+          | protos.google.analytics.data.v1beta.IListAudienceExportsResponse
+          | null
+          | undefined,
+          protos.google.analytics.data.v1beta.IAudienceExport
+        >,
+    callback?: PaginationCallback<
+      protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+      | protos.google.analytics.data.v1beta.IListAudienceExportsResponse
+      | null
+      | undefined,
+      protos.google.analytics.data.v1beta.IAudienceExport
+    >
+  ): Promise<
+    [
+      protos.google.analytics.data.v1beta.IAudienceExport[],
+      protos.google.analytics.data.v1beta.IListAudienceExportsRequest | null,
+      protos.google.analytics.data.v1beta.IListAudienceExportsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listAudienceExports(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. All audience exports for this property will be listed in the
+   *   response. Format: `properties/{property}`
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of audience exports to return. The service may
+   *   return fewer than this value. If unspecified, at most 200 audience exports
+   *   will be returned. The maximum value is 1000 (higher values will be coerced
+   *   to the maximum).
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListAudienceExports`
+   *   call. Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other parameters provided to `ListAudienceExports`
+   *   must match the call that provided the page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.analytics.data.v1beta.AudienceExport|AudienceExport} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listAudienceExportsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAudienceExportsStream(
+    request?: protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAudienceExports'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAudienceExports.createStream(
+      this.innerApiCalls.listAudienceExports as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listAudienceExports`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. All audience exports for this property will be listed in the
+   *   response. Format: `properties/{property}`
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of audience exports to return. The service may
+   *   return fewer than this value. If unspecified, at most 200 audience exports
+   *   will be returned. The maximum value is 1000 (higher values will be coerced
+   *   to the maximum).
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListAudienceExports`
+   *   call. Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other parameters provided to `ListAudienceExports`
+   *   must match the call that provided the page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.analytics.data.v1beta.AudienceExport|AudienceExport}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta/beta_analytics_data.list_audience_exports.js</caption>
+   * region_tag:analyticsdata_v1beta_generated_BetaAnalyticsData_ListAudienceExports_async
+   */
+  listAudienceExportsAsync(
+    request?: protos.google.analytics.data.v1beta.IListAudienceExportsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.analytics.data.v1beta.IAudienceExport> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAudienceExports'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAudienceExports.asyncIterate(
+      this.innerApiCalls['listAudienceExports'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.analytics.data.v1beta.IAudienceExport>;
+  }
+  /**
+   * Gets the latest state of a long-running operation.  Clients can use this
+   * method to poll the operation result at intervals as recommended by the API
+   * service.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   *   for the details.
+   * @param {function(?Error, ?Object)=} callback
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing
+   *   {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * @return {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   * {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * const name = '';
+   * const [response] = await client.getOperation({name});
+   * // doThingsWith(response)
+   * ```
+   */
+  getOperation(
+    request: protos.google.longrunning.GetOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.longrunning.Operation,
+          protos.google.longrunning.GetOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.longrunning.Operation,
+      protos.google.longrunning.GetOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<[protos.google.longrunning.Operation]> {
+    return this.operationsClient.getOperation(request, options, callback);
+  }
+  /**
+   * Lists operations that match the specified filter in the request. If the
+   * server doesn't support this method, it returns `UNIMPLEMENTED`. Returns an iterable object.
+   *
+   * For-await-of syntax is used with the iterable to recursively get response element on-demand.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation collection.
+   * @param {string} request.filter - The standard list filter.
+   * @param {number=} request.pageSize -
+   *   The maximum number of resources contained in the underlying API
+   *   response. If page streaming is performed per-resource, this
+   *   parameter does not affect the return value. If page streaming is
+   *   performed per-page, this determines the maximum number of
+   *   resources in a page.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
+   *   details.
+   * @returns {Object}
+   *   An iterable Object that conforms to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | iteration protocols}.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * for await (const response of client.listOperationsAsync(request));
+   * // doThingsWith(response)
+   * ```
+   */
+  listOperationsAsync(
+    request: protos.google.longrunning.ListOperationsRequest,
+    options?: gax.CallOptions
+  ): AsyncIterable<protos.google.longrunning.ListOperationsResponse> {
+    return this.operationsClient.listOperationsAsync(request, options);
+  }
+  /**
+   * Starts asynchronous cancellation on a long-running operation.  The server
+   * makes a best effort to cancel the operation, but success is not
+   * guaranteed.  If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.  Clients can use
+   * {@link Operations.GetOperation} or
+   * other methods to check whether the cancellation succeeded or whether the
+   * operation completed despite cancellation. On successful cancellation,
+   * the operation is not deleted; instead, it becomes an operation with
+   * an {@link Operation.error} value with a {@link google.rpc.Status.code} of
+   * 1, corresponding to `Code.CANCELLED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be cancelled.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
+   * details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.cancelOperation({name: ''});
+   * ```
+   */
+  cancelOperation(
+    request: protos.google.longrunning.CancelOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.CancelOperationRequest,
+          {} | undefined | null
+        >,
+    callback?: Callback<
+      protos.google.longrunning.CancelOperationRequest,
+      protos.google.protobuf.Empty,
+      {} | undefined | null
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.cancelOperation(request, options, callback);
+  }
+
+  /**
+   * Deletes a long-running operation. This method indicates that the client is
+   * no longer interested in the operation result. It does not cancel the
+   * operation. If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be deleted.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   * for the details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.deleteOperation({name: ''});
+   * ```
+   */
+  deleteOperation(
+    request: protos.google.longrunning.DeleteOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.DeleteOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.protobuf.Empty,
+      protos.google.longrunning.DeleteOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.deleteOperation(request, options, callback);
+  }
 
   // --------------------
   // -- Path templates --
   // --------------------
+
+  /**
+   * Return a fully-qualified audienceExport resource name string.
+   *
+   * @param {string} property
+   * @param {string} audience_export
+   * @returns {string} Resource name string.
+   */
+  audienceExportPath(property: string, audienceExport: string) {
+    return this.pathTemplates.audienceExportPathTemplate.render({
+      property: property,
+      audience_export: audienceExport,
+    });
+  }
+
+  /**
+   * Parse the property from AudienceExport resource.
+   *
+   * @param {string} audienceExportName
+   *   A fully-qualified path representing AudienceExport resource.
+   * @returns {string} A string representing the property.
+   */
+  matchPropertyFromAudienceExportName(audienceExportName: string) {
+    return this.pathTemplates.audienceExportPathTemplate.match(
+      audienceExportName
+    ).property;
+  }
+
+  /**
+   * Parse the audience_export from AudienceExport resource.
+   *
+   * @param {string} audienceExportName
+   *   A fully-qualified path representing AudienceExport resource.
+   * @returns {string} A string representing the audience_export.
+   */
+  matchAudienceExportFromAudienceExportName(audienceExportName: string) {
+    return this.pathTemplates.audienceExportPathTemplate.match(
+      audienceExportName
+    ).audience_export;
+  }
 
   /**
    * Return a fully-qualified metadata resource name string.
@@ -1244,6 +2211,29 @@ export class BetaAnalyticsDataClient {
   }
 
   /**
+   * Return a fully-qualified property resource name string.
+   *
+   * @param {string} property
+   * @returns {string} Resource name string.
+   */
+  propertyPath(property: string) {
+    return this.pathTemplates.propertyPathTemplate.render({
+      property: property,
+    });
+  }
+
+  /**
+   * Parse the property from Property resource.
+   *
+   * @param {string} propertyName
+   *   A fully-qualified path representing Property resource.
+   * @returns {string} A string representing the property.
+   */
+  matchPropertyFromPropertyName(propertyName: string) {
+    return this.pathTemplates.propertyPathTemplate.match(propertyName).property;
+  }
+
+  /**
    * Terminate the gRPC channel and close the client.
    *
    * The client will no longer be usable and all future behavior is undefined.
@@ -1254,6 +2244,7 @@ export class BetaAnalyticsDataClient {
       return this.betaAnalyticsDataStub.then(stub => {
         this._terminated = true;
         stub.close();
+        this.operationsClient.close();
       });
     }
     return Promise.resolve();

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/cloud_billing_client_config.json`.
@@ -51,6 +52,8 @@ export class CloudBillingClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -91,8 +94,7 @@ export class CloudBillingClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -100,7 +102,7 @@ export class CloudBillingClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CloudBillingClient({fallback: 'rest'}, gax);
+   *     const client = new CloudBillingClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -109,8 +111,27 @@ export class CloudBillingClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof CloudBillingClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'cloudbilling.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -125,7 +146,7 @@ export class CloudBillingClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -150,23 +171,23 @@ export class CloudBillingClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -181,6 +202,18 @@ export class CloudBillingClient {
     this.pathTemplates = {
       billingAccountPathTemplate: new this._gaxModule.PathTemplate(
         'billingAccounts/{billing_account}'
+      ),
+      organizationPathTemplate: new this._gaxModule.PathTemplate(
+        'organizations/{organization}'
+      ),
+      organizationBillingAccountPathTemplate: new this._gaxModule.PathTemplate(
+        'organizations/{organization}/billingAccounts/{billing_account}'
+      ),
+      projectPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}'
+      ),
+      projectBillingInfoPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/billingInfo'
       ),
       servicePathTemplate: new this._gaxModule.PathTemplate(
         'services/{service}'
@@ -266,6 +299,7 @@ export class CloudBillingClient {
       'getIamPolicy',
       'setIamPolicy',
       'testIamPermissions',
+      'moveBillingAccount',
     ];
     for (const methodName of cloudBillingStubMethods) {
       const callPromise = this.cloudBillingStub.then(
@@ -298,19 +332,50 @@ export class CloudBillingClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudbilling.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudbilling.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -366,9 +431,8 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.billing.v1.BillingAccount | BillingAccount}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.get_billing_account.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_GetBillingAccount_async
@@ -380,7 +444,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount,
       protos.google.cloud.billing.v1.IGetBillingAccountRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getBillingAccount(
@@ -426,7 +490,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount,
       protos.google.cloud.billing.v1.IGetBillingAccountRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -468,9 +532,8 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.billing.v1.BillingAccount | BillingAccount}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.update_billing_account.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_UpdateBillingAccount_async
@@ -482,7 +545,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount,
       protos.google.cloud.billing.v1.IUpdateBillingAccountRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateBillingAccount(
@@ -528,7 +591,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount,
       protos.google.cloud.billing.v1.IUpdateBillingAccountRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -564,7 +627,7 @@ export class CloudBillingClient {
    * typically given to billing account
    * [administrators](https://cloud.google.com/billing/docs/how-to/billing-access).
    * This method will return an error if the parent account has not been
-   * provisioned as a reseller account.
+   * provisioned for subaccounts.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -573,12 +636,16 @@ export class CloudBillingClient {
    *   Currently CreateBillingAccount only supports subaccount creation, so
    *   any created billing accounts must be under a provided parent billing
    *   account.
+   * @param {string} [request.parent]
+   *   Optional. The parent to create a billing account from.
+   *   Format:
+   *     - `billingAccounts/{billing_account_id}`, for example,
+   *        `billingAccounts/012345-567890-ABCDEF`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.billing.v1.BillingAccount | BillingAccount}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.create_billing_account.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_CreateBillingAccount_async
@@ -590,7 +657,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount,
       protos.google.cloud.billing.v1.ICreateBillingAccountRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createBillingAccount(
@@ -636,7 +703,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount,
       protos.google.cloud.billing.v1.ICreateBillingAccountRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -650,6 +717,10 @@ export class CloudBillingClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
     this.initialize();
     return this.innerApiCalls.createBillingAccount(request, options, callback);
   }
@@ -668,9 +739,8 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.billing.v1.ProjectBillingInfo | ProjectBillingInfo}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.billing.v1.ProjectBillingInfo|ProjectBillingInfo}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.get_project_billing_info.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_GetProjectBillingInfo_async
@@ -682,7 +752,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IProjectBillingInfo,
       protos.google.cloud.billing.v1.IGetProjectBillingInfoRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getProjectBillingInfo(
@@ -728,7 +798,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IProjectBillingInfo,
       protos.google.cloud.billing.v1.IGetProjectBillingInfoRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -763,7 +833,8 @@ export class CloudBillingClient {
    * account, even if the charge occurred before the new billing account was
    * assigned to the project.
    *
-   * The current authenticated user must have ownership privileges for both the
+   * The current authenticated user must have ownership privileges for both
+   * the
    * [project](https://cloud.google.com/docs/permissions-overview#h.bgs0oxofvnoo
    * ) and the [billing
    * account](https://cloud.google.com/billing/docs/how-to/billing-access).
@@ -789,14 +860,14 @@ export class CloudBillingClient {
    *   information that you want to update. For example,
    *   `projects/tokyo-rain-123`.
    * @param {google.cloud.billing.v1.ProjectBillingInfo} request.projectBillingInfo
-   *   The new billing information for the project. Read-only fields are ignored;
-   *   thus, you can leave empty all fields except `billing_account_name`.
+   *   The new billing information for the project. Output-only fields are
+   *   ignored; thus, you can leave empty all fields except
+   *   `billing_account_name`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.billing.v1.ProjectBillingInfo | ProjectBillingInfo}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.billing.v1.ProjectBillingInfo|ProjectBillingInfo}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.update_project_billing_info.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_UpdateProjectBillingInfo_async
@@ -811,7 +882,7 @@ export class CloudBillingClient {
         | protos.google.cloud.billing.v1.IUpdateProjectBillingInfoRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateProjectBillingInfo(
@@ -860,7 +931,7 @@ export class CloudBillingClient {
         | protos.google.cloud.billing.v1.IUpdateProjectBillingInfoRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -902,9 +973,8 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.iam.v1.Policy | Policy}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.iam.v1.Policy|Policy}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.get_iam_policy.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_GetIamPolicy_async
@@ -916,7 +986,7 @@ export class CloudBillingClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.IGetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getIamPolicy(
@@ -954,7 +1024,7 @@ export class CloudBillingClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.IGetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1001,9 +1071,8 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.iam.v1.Policy | Policy}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.iam.v1.Policy|Policy}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.set_iam_policy.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_SetIamPolicy_async
@@ -1015,7 +1084,7 @@ export class CloudBillingClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.ISetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   setIamPolicy(
@@ -1053,7 +1122,7 @@ export class CloudBillingClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.ISetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1092,9 +1161,8 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.iam.v1.TestIamPermissionsResponse|TestIamPermissionsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.test_iam_permissions.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_TestIamPermissions_async
@@ -1106,7 +1174,7 @@ export class CloudBillingClient {
     [
       protos.google.iam.v1.ITestIamPermissionsResponse,
       protos.google.iam.v1.ITestIamPermissionsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   testIamPermissions(
@@ -1144,7 +1212,7 @@ export class CloudBillingClient {
     [
       protos.google.iam.v1.ITestIamPermissionsResponse,
       protos.google.iam.v1.ITestIamPermissionsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1165,6 +1233,104 @@ export class CloudBillingClient {
     this.initialize();
     return this.innerApiCalls.testIamPermissions(request, options, callback);
   }
+  /**
+   * Changes which parent organization a billing account belongs to.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The resource name of the billing account to move.
+   *   Must be of the form `billingAccounts/{billing_account_id}`.
+   *   The specified billing account cannot be a subaccount, since a subaccount
+   *   always belongs to the same organization as its parent account.
+   * @param {string} request.destinationParent
+   *   Required. The resource name of the Organization to move
+   *   the billing account under.
+   *   Must be of the form `organizations/{organization_id}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_billing.move_billing_account.js</caption>
+   * region_tag:cloudbilling_v1_generated_CloudBilling_MoveBillingAccount_async
+   */
+  moveBillingAccount(
+    request?: protos.google.cloud.billing.v1.IMoveBillingAccountRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.billing.v1.IBillingAccount,
+      protos.google.cloud.billing.v1.IMoveBillingAccountRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  moveBillingAccount(
+    request: protos.google.cloud.billing.v1.IMoveBillingAccountRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.billing.v1.IBillingAccount,
+      | protos.google.cloud.billing.v1.IMoveBillingAccountRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  moveBillingAccount(
+    request: protos.google.cloud.billing.v1.IMoveBillingAccountRequest,
+    callback: Callback<
+      protos.google.cloud.billing.v1.IBillingAccount,
+      | protos.google.cloud.billing.v1.IMoveBillingAccountRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  moveBillingAccount(
+    request?: protos.google.cloud.billing.v1.IMoveBillingAccountRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.billing.v1.IBillingAccount,
+          | protos.google.cloud.billing.v1.IMoveBillingAccountRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.billing.v1.IBillingAccount,
+      | protos.google.cloud.billing.v1.IMoveBillingAccountRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.billing.v1.IBillingAccount,
+      protos.google.cloud.billing.v1.IMoveBillingAccountRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+        destination_parent: request.destinationParent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.moveBillingAccount(request, options, callback);
+  }
 
   /**
    * Lists the billing accounts that the current authenticated user has
@@ -1182,22 +1348,29 @@ export class CloudBillingClient {
    *   call. If unspecified, the first page of results is returned.
    * @param {string} request.filter
    *   Options for how to filter the returned billing accounts.
-   *   Currently this only supports filtering for
+   *   This only supports filtering for
    *   [subaccounts](https://cloud.google.com/billing/docs/concepts) under a
-   *   single provided reseller billing account.
-   *   (e.g. "master_billing_account=billingAccounts/012345-678901-ABCDEF").
+   *   single provided parent billing account.
+   *   (for example,
+   *   `master_billing_account=billingAccounts/012345-678901-ABCDEF`).
    *   Boolean algebra and other fields are not currently supported.
+   * @param {string} [request.parent]
+   *   Optional. The parent resource to list billing accounts from.
+   *   Format:
+   *     - `organizations/{organization_id}`, for example,
+   *       `organizations/12345678`
+   *     - `billingAccounts/{billing_account_id}`, for example,
+   *       `billingAccounts/012345-567890-ABCDEF`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.billing.v1.BillingAccount | BillingAccount}.
+   *   The first element of the array is Array of {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listBillingAccountsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBillingAccounts(
@@ -1207,7 +1380,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount[],
       protos.google.cloud.billing.v1.IListBillingAccountsRequest | null,
-      protos.google.cloud.billing.v1.IListBillingAccountsResponse
+      protos.google.cloud.billing.v1.IListBillingAccountsResponse,
     ]
   >;
   listBillingAccounts(
@@ -1253,7 +1426,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IBillingAccount[],
       protos.google.cloud.billing.v1.IListBillingAccountsRequest | null,
-      protos.google.cloud.billing.v1.IListBillingAccountsResponse
+      protos.google.cloud.billing.v1.IListBillingAccountsResponse,
     ]
   > | void {
     request = request || {};
@@ -1267,6 +1440,10 @@ export class CloudBillingClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
     this.initialize();
     return this.innerApiCalls.listBillingAccounts(request, options, callback);
   }
@@ -1284,21 +1461,28 @@ export class CloudBillingClient {
    *   call. If unspecified, the first page of results is returned.
    * @param {string} request.filter
    *   Options for how to filter the returned billing accounts.
-   *   Currently this only supports filtering for
+   *   This only supports filtering for
    *   [subaccounts](https://cloud.google.com/billing/docs/concepts) under a
-   *   single provided reseller billing account.
-   *   (e.g. "master_billing_account=billingAccounts/012345-678901-ABCDEF").
+   *   single provided parent billing account.
+   *   (for example,
+   *   `master_billing_account=billingAccounts/012345-678901-ABCDEF`).
    *   Boolean algebra and other fields are not currently supported.
+   * @param {string} [request.parent]
+   *   Optional. The parent resource to list billing accounts from.
+   *   Format:
+   *     - `organizations/{organization_id}`, for example,
+   *       `organizations/12345678`
+   *     - `billingAccounts/{billing_account_id}`, for example,
+   *       `billingAccounts/012345-567890-ABCDEF`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.billing.v1.BillingAccount | BillingAccount} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listBillingAccountsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBillingAccountsStream(
@@ -1309,6 +1493,10 @@ export class CloudBillingClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
     const defaultCallSettings = this._defaults['listBillingAccounts'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -1334,20 +1522,27 @@ export class CloudBillingClient {
    *   call. If unspecified, the first page of results is returned.
    * @param {string} request.filter
    *   Options for how to filter the returned billing accounts.
-   *   Currently this only supports filtering for
+   *   This only supports filtering for
    *   [subaccounts](https://cloud.google.com/billing/docs/concepts) under a
-   *   single provided reseller billing account.
-   *   (e.g. "master_billing_account=billingAccounts/012345-678901-ABCDEF").
+   *   single provided parent billing account.
+   *   (for example,
+   *   `master_billing_account=billingAccounts/012345-678901-ABCDEF`).
    *   Boolean algebra and other fields are not currently supported.
+   * @param {string} [request.parent]
+   *   Optional. The parent resource to list billing accounts from.
+   *   Format:
+   *     - `organizations/{organization_id}`, for example,
+   *       `organizations/12345678`
+   *     - `billingAccounts/{billing_account_id}`, for example,
+   *       `billingAccounts/012345-567890-ABCDEF`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.billing.v1.BillingAccount | BillingAccount}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.billing.v1.BillingAccount|BillingAccount}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.list_billing_accounts.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_ListBillingAccounts_async
@@ -1360,6 +1555,10 @@ export class CloudBillingClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
     const defaultCallSettings = this._defaults['listBillingAccounts'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -1391,14 +1590,13 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.billing.v1.ProjectBillingInfo | ProjectBillingInfo}.
+   *   The first element of the array is Array of {@link protos.google.cloud.billing.v1.ProjectBillingInfo|ProjectBillingInfo}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listProjectBillingInfoAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProjectBillingInfo(
@@ -1408,7 +1606,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IProjectBillingInfo[],
       protos.google.cloud.billing.v1.IListProjectBillingInfoRequest | null,
-      protos.google.cloud.billing.v1.IListProjectBillingInfoResponse
+      protos.google.cloud.billing.v1.IListProjectBillingInfoResponse,
     ]
   >;
   listProjectBillingInfo(
@@ -1454,7 +1652,7 @@ export class CloudBillingClient {
     [
       protos.google.cloud.billing.v1.IProjectBillingInfo[],
       protos.google.cloud.billing.v1.IListProjectBillingInfoRequest | null,
-      protos.google.cloud.billing.v1.IListProjectBillingInfoResponse
+      protos.google.cloud.billing.v1.IListProjectBillingInfoResponse,
     ]
   > | void {
     request = request || {};
@@ -1498,13 +1696,12 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.billing.v1.ProjectBillingInfo | ProjectBillingInfo} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.billing.v1.ProjectBillingInfo|ProjectBillingInfo} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listProjectBillingInfoAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProjectBillingInfoStream(
@@ -1549,12 +1746,11 @@ export class CloudBillingClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.billing.v1.ProjectBillingInfo | ProjectBillingInfo}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.billing.v1.ProjectBillingInfo|ProjectBillingInfo}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_billing.list_project_billing_info.js</caption>
    * region_tag:cloudbilling_v1_generated_CloudBilling_ListProjectBillingInfo_async
@@ -1600,13 +1796,129 @@ export class CloudBillingClient {
    * Parse the billing_account from BillingAccount resource.
    *
    * @param {string} billingAccountName
-   *   A fully-qualified path representing BillingAccount resource.
+   *   A fully-qualified path representing billing_account resource.
    * @returns {string} A string representing the billing_account.
    */
   matchBillingAccountFromBillingAccountName(billingAccountName: string) {
     return this.pathTemplates.billingAccountPathTemplate.match(
       billingAccountName
     ).billing_account;
+  }
+
+  /**
+   * Return a fully-qualified organization resource name string.
+   *
+   * @param {string} organization
+   * @returns {string} Resource name string.
+   */
+  organizationPath(organization: string) {
+    return this.pathTemplates.organizationPathTemplate.render({
+      organization: organization,
+    });
+  }
+
+  /**
+   * Parse the organization from Organization resource.
+   *
+   * @param {string} organizationName
+   *   A fully-qualified path representing Organization resource.
+   * @returns {string} A string representing the organization.
+   */
+  matchOrganizationFromOrganizationName(organizationName: string) {
+    return this.pathTemplates.organizationPathTemplate.match(organizationName)
+      .organization;
+  }
+
+  /**
+   * Return a fully-qualified organizationBillingAccount resource name string.
+   *
+   * @param {string} organization
+   * @param {string} billing_account
+   * @returns {string} Resource name string.
+   */
+  organizationBillingAccountPath(organization: string, billingAccount: string) {
+    return this.pathTemplates.organizationBillingAccountPathTemplate.render({
+      organization: organization,
+      billing_account: billingAccount,
+    });
+  }
+
+  /**
+   * Parse the organization from OrganizationBillingAccount resource.
+   *
+   * @param {string} organizationBillingAccountName
+   *   A fully-qualified path representing organization_billing_account resource.
+   * @returns {string} A string representing the organization.
+   */
+  matchOrganizationFromOrganizationBillingAccountName(
+    organizationBillingAccountName: string
+  ) {
+    return this.pathTemplates.organizationBillingAccountPathTemplate.match(
+      organizationBillingAccountName
+    ).organization;
+  }
+
+  /**
+   * Parse the billing_account from OrganizationBillingAccount resource.
+   *
+   * @param {string} organizationBillingAccountName
+   *   A fully-qualified path representing organization_billing_account resource.
+   * @returns {string} A string representing the billing_account.
+   */
+  matchBillingAccountFromOrganizationBillingAccountName(
+    organizationBillingAccountName: string
+  ) {
+    return this.pathTemplates.organizationBillingAccountPathTemplate.match(
+      organizationBillingAccountName
+    ).billing_account;
+  }
+
+  /**
+   * Return a fully-qualified project resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  projectPath(project: string) {
+    return this.pathTemplates.projectPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from Project resource.
+   *
+   * @param {string} projectName
+   *   A fully-qualified path representing Project resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectName(projectName: string) {
+    return this.pathTemplates.projectPathTemplate.match(projectName).project;
+  }
+
+  /**
+   * Return a fully-qualified projectBillingInfo resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  projectBillingInfoPath(project: string) {
+    return this.pathTemplates.projectBillingInfoPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from ProjectBillingInfo resource.
+   *
+   * @param {string} projectBillingInfoName
+   *   A fully-qualified path representing ProjectBillingInfo resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectBillingInfoName(projectBillingInfoName: string) {
+    return this.pathTemplates.projectBillingInfoPathTemplate.match(
+      projectBillingInfoName
+    ).project;
   }
 
   /**

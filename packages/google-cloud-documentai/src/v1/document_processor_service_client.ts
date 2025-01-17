@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/document_processor_service_client_config.json`.
@@ -42,7 +43,7 @@ import * as gapicConfig from './document_processor_service_client_config.json';
 const version = require('../../../package.json').version;
 
 /**
- *  Service to call Cloud DocumentAI to process documents according to the
+ *  Service to call Document AI to process documents according to the
  *  processor's definition. Processors are built using state-of-the-art Google
  *  AI such as natural language, computer vision, and translation to extract
  *  structured information from unstructured or semi-structured documents.
@@ -57,6 +58,8 @@ export class DocumentProcessorServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -99,8 +102,7 @@ export class DocumentProcessorServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -108,7 +110,7 @@ export class DocumentProcessorServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new DocumentProcessorServiceClient({fallback: 'rest'}, gax);
+   *     const client = new DocumentProcessorServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -118,8 +120,27 @@ export class DocumentProcessorServiceClient {
     // Ensure that options include all the required fields.
     const staticMembers = this
       .constructor as typeof DocumentProcessorServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'documentai.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -134,7 +155,7 @@ export class DocumentProcessorServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -159,10 +180,10 @@ export class DocumentProcessorServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -172,14 +193,14 @@ export class DocumentProcessorServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -249,7 +270,7 @@ export class DocumentProcessorServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -552,19 +573,50 @@ export class DocumentProcessorServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'documentai.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'documentai.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -612,30 +664,43 @@ export class DocumentProcessorServiceClient {
    *   An inline document proto.
    * @param {google.cloud.documentai.v1.RawDocument} request.rawDocument
    *   A raw document content (bytes).
+   * @param {google.cloud.documentai.v1.GcsDocument} request.gcsDocument
+   *   A raw document on Google Cloud Storage.
    * @param {string} request.name
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.Processor|Processor} or
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}
+   *   {@link protos.google.cloud.documentai.v1.Processor|Processor} or
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}
    *   to use for processing. If a
-   *   {@link google.cloud.documentai.v1.Processor|Processor} is specified, the server
+   *   {@link protos.google.cloud.documentai.v1.Processor|Processor} is specified, the server
    *   will use its [default
    *   version][google.cloud.documentai.v1.Processor.default_processor_version].
    *   Format: `projects/{project}/locations/{location}/processors/{processor}`,
    *   or
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}`
    * @param {boolean} request.skipHumanReview
-   *   Whether Human Review feature should be skipped for this request. Default to
-   *   false.
+   *   Whether human review should be skipped for this request. Default to
+   *   `false`.
    * @param {google.protobuf.FieldMask} request.fieldMask
-   *   Specifies which fields to include in ProcessResponse's document.
-   *   Only supports top level document and pages field so it must be in the form
-   *   of `{document_field_name}` or `pages.{page_field_name}`.
+   *   Specifies which fields to include in the
+   *   {@link protos.google.cloud.documentai.v1.ProcessResponse.document|ProcessResponse.document}
+   *   output. Only supports top-level document and pages field, so it must be in
+   *   the form of `{document_field_name}` or `pages.{page_field_name}`.
+   * @param {google.cloud.documentai.v1.ProcessOptions} request.processOptions
+   *   Inference-time options for the process API
+   * @param {number[]} [request.labels]
+   *   Optional. The labels with user-defined metadata for the request.
+   *
+   *   Label keys and values can be no longer than 63 characters
+   *   (Unicode codepoints) and can only contain lowercase letters, numeric
+   *   characters, underscores, and dashes. International characters are allowed.
+   *   Label values are optional. Label keys must start with a letter.
+   * @param {boolean} [request.imagelessMode]
+   *   Optional. Option to remove images from the document.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.ProcessResponse | ProcessResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.ProcessResponse|ProcessResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.process_document.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ProcessDocument_async
@@ -647,7 +712,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessResponse,
       protos.google.cloud.documentai.v1.IProcessRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   processDocument(
@@ -685,7 +750,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessResponse,
       protos.google.cloud.documentai.v1.IProcessRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -707,21 +772,20 @@ export class DocumentProcessorServiceClient {
     return this.innerApiCalls.processDocument(request, options, callback);
   }
   /**
-   * Fetches processor types. Note that we do not use ListProcessorTypes here
-   * because it is not paginated.
+   * Fetches processor types. Note that we don't use
+   * {@link protos.google.cloud.documentai.v1.DocumentProcessorService.ListProcessorTypes|ListProcessorTypes}
+   * here, because it isn't paginated.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The project of processor type to list.
-   *   The available processor types may depend on the allow-listing on projects.
-   *   Format: `projects/{project}/locations/{location}`
+   *   Required. The location of processor types to list.
+   *   Format: `projects/{project}/locations/{location}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.FetchProcessorTypesResponse | FetchProcessorTypesResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.FetchProcessorTypesResponse|FetchProcessorTypesResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.fetch_processor_types.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_FetchProcessorTypes_async
@@ -733,7 +797,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IFetchProcessorTypesResponse,
       protos.google.cloud.documentai.v1.IFetchProcessorTypesRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   fetchProcessorTypes(
@@ -779,7 +843,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IFetchProcessorTypesResponse,
       protos.google.cloud.documentai.v1.IFetchProcessorTypesRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -810,9 +874,8 @@ export class DocumentProcessorServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.ProcessorType | ProcessorType}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.ProcessorType|ProcessorType}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.get_processor_type.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_GetProcessorType_async
@@ -824,7 +887,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorType,
       protos.google.cloud.documentai.v1.IGetProcessorTypeRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getProcessorType(
@@ -870,7 +933,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorType,
       protos.google.cloud.documentai.v1.IGetProcessorTypeRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -901,9 +964,8 @@ export class DocumentProcessorServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.Processor | Processor}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.Processor|Processor}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.get_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_GetProcessor_async
@@ -915,7 +977,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessor,
       protos.google.cloud.documentai.v1.IGetProcessorRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getProcessor(
@@ -955,7 +1017,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessor,
       protos.google.cloud.documentai.v1.IGetProcessorRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -986,9 +1048,8 @@ export class DocumentProcessorServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.ProcessorVersion | ProcessorVersion}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.get_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_GetProcessorVersion_async
@@ -1000,7 +1061,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorVersion,
       protos.google.cloud.documentai.v1.IGetProcessorVersionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getProcessorVersion(
@@ -1046,7 +1107,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorVersion,
       protos.google.cloud.documentai.v1.IGetProcessorVersionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1068,8 +1129,13 @@ export class DocumentProcessorServiceClient {
     return this.innerApiCalls.getProcessorVersion(request, options, callback);
   }
   /**
-   * Creates a processor from the type processor that the user chose.
-   * The processor will be at "ENABLED" state by default after its creation.
+   * Creates a processor from the
+   * {@link protos.google.cloud.documentai.v1.ProcessorType|ProcessorType} provided. The
+   * processor will be at `ENABLED` state by default after its creation. Note
+   * that this method requires the `documentai.processors.create` permission on
+   * the project, which is highly privileged. A user or service account with
+   * this permission can create new processors that can interact with any gcs
+   * bucket in your project.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1077,15 +1143,17 @@ export class DocumentProcessorServiceClient {
    *   Required. The parent (project and location) under which to create the
    *   processor. Format: `projects/{project}/locations/{location}`
    * @param {google.cloud.documentai.v1.Processor} request.processor
-   *   Required. The processor to be created, requires [processor_type] and
-   *   [display_name] to be set. Also, the processor is under CMEK if CMEK fields
-   *   are set.
+   *   Required. The processor to be created, requires
+   *   {@link protos.google.cloud.documentai.v1.Processor.type|Processor.type} and
+   *   {@link protos.google.cloud.documentai.v1.Processor.display_name|Processor.display_name}
+   *   to be set. Also, the
+   *   {@link protos.google.cloud.documentai.v1.Processor.kms_key_name|Processor.kms_key_name}
+   *   field must be set if the processor is under CMEK.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.Processor | Processor}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.Processor|Processor}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.create_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_CreateProcessor_async
@@ -1097,7 +1165,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessor,
       protos.google.cloud.documentai.v1.ICreateProcessorRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createProcessor(
@@ -1143,7 +1211,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessor,
       protos.google.cloud.documentai.v1.ICreateProcessorRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1171,14 +1239,13 @@ export class DocumentProcessorServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.Evaluation|Evaluation} to get.
+   *   {@link protos.google.cloud.documentai.v1.Evaluation|Evaluation} to get.
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}/evaluations/{evaluation}`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.documentai.v1.Evaluation | Evaluation}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.documentai.v1.Evaluation|Evaluation}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.get_evaluation.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_GetEvaluation_async
@@ -1190,7 +1257,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IEvaluation,
       protos.google.cloud.documentai.v1.IGetEvaluationRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getEvaluation(
@@ -1236,7 +1303,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IEvaluation,
       protos.google.cloud.documentai.v1.IGetEvaluationRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1266,26 +1333,38 @@ export class DocumentProcessorServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name of
-   *   {@link google.cloud.documentai.v1.Processor|Processor} or
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}.
+   *   {@link protos.google.cloud.documentai.v1.Processor|Processor} or
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}.
    *   Format: `projects/{project}/locations/{location}/processors/{processor}`,
    *   or
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}`
    * @param {google.cloud.documentai.v1.BatchDocumentsInputConfig} request.inputDocuments
-   *   The input documents for batch process.
+   *   The input documents for the
+   *   {@link protos.google.cloud.documentai.v1.DocumentProcessorService.BatchProcessDocuments|BatchProcessDocuments}
+   *   method.
    * @param {google.cloud.documentai.v1.DocumentOutputConfig} request.documentOutputConfig
-   *   The overall output config for batch process.
+   *   The output configuration for the
+   *   {@link protos.google.cloud.documentai.v1.DocumentProcessorService.BatchProcessDocuments|BatchProcessDocuments}
+   *   method.
    * @param {boolean} request.skipHumanReview
-   *   Whether Human Review feature should be skipped for this request. Default to
-   *   false.
+   *   Whether human review should be skipped for this request. Default to
+   *   `false`.
+   * @param {google.cloud.documentai.v1.ProcessOptions} request.processOptions
+   *   Inference-time options for the process API
+   * @param {number[]} [request.labels]
+   *   Optional. The labels with user-defined metadata for the request.
+   *
+   *   Label keys and values can be no longer than 63 characters
+   *   (Unicode codepoints) and can only contain lowercase letters, numeric
+   *   characters, underscores, and dashes. International characters are allowed.
+   *   Label values are optional. Label keys must start with a letter.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.batch_process_documents.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_BatchProcessDocuments_async
@@ -1300,7 +1379,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IBatchProcessMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchProcessDocuments(
@@ -1353,7 +1432,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IBatchProcessMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1380,8 +1459,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.batch_process_documents.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_BatchProcessDocuments_async
@@ -1412,10 +1490,14 @@ export class DocumentProcessorServiceClient {
   /**
    * Trains a new processor version.
    * Operation metadata is returned as
-   * cloud_documentai_core.TrainProcessorVersionMetadata.
+   * {@link protos.google.cloud.documentai.v1.TrainProcessorVersionMetadata|TrainProcessorVersionMetadata}.
    *
    * @param {Object} request
    *   The request object that will be sent.
+   * @param {google.cloud.documentai.v1.TrainProcessorVersionRequest.CustomDocumentExtractionOptions} request.customDocumentExtractionOptions
+   *   Options to control Custom Document Extraction (CDE) Processor.
+   * @param {google.cloud.documentai.v1.TrainProcessorVersionRequest.FoundationModelTuningOptions} request.foundationModelTuningOptions
+   *   Options to control foundation model tuning of a processor.
    * @param {string} request.parent
    *   Required. The parent (project, location and processor) to create the new
    *   version for. Format:
@@ -1425,7 +1507,8 @@ export class DocumentProcessorServiceClient {
    * @param {google.cloud.documentai.v1.DocumentSchema} [request.documentSchema]
    *   Optional. The schema the processor version will be trained with.
    * @param {google.cloud.documentai.v1.TrainProcessorVersionRequest.InputData} [request.inputData]
-   *   Optional. The input data used to train the `ProcessorVersion`.
+   *   Optional. The input data used to train the
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}.
    * @param {string} [request.baseProcessorVersion]
    *   Optional. The processor version to use as a base for training. This
    *   processor version must be a child of `parent`. Format:
@@ -1436,8 +1519,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.train_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_TrainProcessorVersion_async
@@ -1452,7 +1534,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.ITrainProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   trainProcessorVersion(
@@ -1505,7 +1587,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.ITrainProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1532,8 +1614,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.train_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_TrainProcessorVersion_async
@@ -1575,8 +1656,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.delete_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DeleteProcessorVersion_async
@@ -1591,7 +1671,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDeleteProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteProcessorVersion(
@@ -1644,7 +1724,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDeleteProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1675,8 +1755,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.delete_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DeleteProcessorVersion_async
@@ -1717,8 +1796,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.deploy_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DeployProcessorVersion_async
@@ -1733,7 +1811,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDeployProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deployProcessorVersion(
@@ -1786,7 +1864,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDeployProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1817,8 +1895,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.deploy_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DeployProcessorVersion_async
@@ -1859,8 +1936,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.undeploy_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_UndeployProcessorVersion_async
@@ -1875,7 +1951,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IUndeployProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   undeployProcessorVersion(
@@ -1928,7 +2004,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IUndeployProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1959,8 +2035,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.undeploy_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_UndeployProcessorVersion_async
@@ -2002,8 +2077,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.delete_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DeleteProcessor_async
@@ -2018,7 +2092,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDeleteProcessorMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteProcessor(
@@ -2071,7 +2145,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDeleteProcessorMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2098,8 +2172,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.delete_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DeleteProcessor_async
@@ -2140,8 +2213,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.enable_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_EnableProcessor_async
@@ -2156,7 +2228,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IEnableProcessorMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   enableProcessor(
@@ -2209,7 +2281,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IEnableProcessorMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2236,8 +2308,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.enable_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_EnableProcessor_async
@@ -2278,8 +2349,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.disable_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DisableProcessor_async
@@ -2294,7 +2364,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDisableProcessorMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   disableProcessor(
@@ -2347,7 +2417,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IDisableProcessorMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2374,8 +2444,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.disable_processor.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_DisableProcessor_async
@@ -2405,20 +2474,20 @@ export class DocumentProcessorServiceClient {
   }
   /**
    * Set the default (active) version of a
-   * {@link google.cloud.documentai.v1.Processor|Processor} that will be used in
-   * {@link google.cloud.documentai.v1.DocumentProcessorService.ProcessDocument|ProcessDocument}
+   * {@link protos.google.cloud.documentai.v1.Processor|Processor} that will be used in
+   * {@link protos.google.cloud.documentai.v1.DocumentProcessorService.ProcessDocument|ProcessDocument}
    * and
-   * {@link google.cloud.documentai.v1.DocumentProcessorService.BatchProcessDocuments|BatchProcessDocuments}.
+   * {@link protos.google.cloud.documentai.v1.DocumentProcessorService.BatchProcessDocuments|BatchProcessDocuments}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.processor
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.Processor|Processor} to change default
+   *   {@link protos.google.cloud.documentai.v1.Processor|Processor} to change default
    *   version.
    * @param {string} request.defaultProcessorVersion
    *   Required. The resource name of child
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to use as
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to use as
    *   default. Format:
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{version}`
    * @param {object} [options]
@@ -2427,8 +2496,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.set_default_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_SetDefaultProcessorVersion_async
@@ -2443,7 +2511,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.ISetDefaultProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   setDefaultProcessorVersion(
@@ -2496,7 +2564,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.ISetDefaultProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2527,8 +2595,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.set_default_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_SetDefaultProcessorVersion_async
@@ -2565,8 +2632,9 @@ export class DocumentProcessorServiceClient {
    * @param {google.cloud.documentai.v1.Document} request.inlineDocument
    *   An inline document proto.
    * @param {string} request.humanReviewConfig
-   *   Required. The resource name of the HumanReviewConfig that the document will
-   *   be reviewed with.
+   *   Required. The resource name of the
+   *   {@link protos.google.cloud.documentai.v1.HumanReviewConfig|HumanReviewConfig} that the
+   *   document will be reviewed with.
    * @param {boolean} request.enableSchemaValidation
    *   Whether the validation should be performed on the ad-hoc review request.
    * @param {google.cloud.documentai.v1.ReviewDocumentRequest.Priority} request.priority
@@ -2579,8 +2647,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.review_document.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ReviewDocument_async
@@ -2595,7 +2662,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IReviewDocumentOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   reviewDocument(
@@ -2648,7 +2715,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IReviewDocumentOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2675,8 +2742,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.review_document.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ReviewDocument_async
@@ -2712,7 +2778,7 @@ export class DocumentProcessorServiceClient {
    *   The request object that will be sent.
    * @param {string} request.processorVersion
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to
    *   evaluate.
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}`
    * @param {google.cloud.documentai.v1.BatchDocumentsInputConfig} [request.evaluationDocuments]
@@ -2724,8 +2790,7 @@ export class DocumentProcessorServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.evaluate_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_EvaluateProcessorVersion_async
@@ -2740,7 +2805,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IEvaluateProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   evaluateProcessorVersion(
@@ -2793,7 +2858,7 @@ export class DocumentProcessorServiceClient {
         protos.google.cloud.documentai.v1.IEvaluateProcessorVersionMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2824,8 +2889,7 @@ export class DocumentProcessorServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.evaluate_processor_version.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_EvaluateProcessorVersion_async
@@ -2859,26 +2923,24 @@ export class DocumentProcessorServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The location of processor type to list.
-   *   The available processor types may depend on the allow-listing on projects.
-   *   Format: `projects/{project}/locations/{location}`
+   *   Required. The location of processor types to list.
+   *   Format: `projects/{project}/locations/{location}`.
    * @param {number} request.pageSize
    *   The maximum number of processor types to return.
-   *   If unspecified, at most 100 processor types will be returned.
-   *   The maximum value is 500; values above 500 will be coerced to 500.
+   *   If unspecified, at most `100` processor types will be returned.
+   *   The maximum value is `500`. Values above `500` will be coerced to `500`.
    * @param {string} request.pageToken
    *   Used to retrieve the next page of results, empty if at the end of the list.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.documentai.v1.ProcessorType | ProcessorType}.
+   *   The first element of the array is Array of {@link protos.google.cloud.documentai.v1.ProcessorType|ProcessorType}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listProcessorTypesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessorTypes(
@@ -2888,7 +2950,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorType[],
       protos.google.cloud.documentai.v1.IListProcessorTypesRequest | null,
-      protos.google.cloud.documentai.v1.IListProcessorTypesResponse
+      protos.google.cloud.documentai.v1.IListProcessorTypesResponse,
     ]
   >;
   listProcessorTypes(
@@ -2934,7 +2996,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorType[],
       protos.google.cloud.documentai.v1.IListProcessorTypesRequest | null,
-      protos.google.cloud.documentai.v1.IListProcessorTypesResponse
+      protos.google.cloud.documentai.v1.IListProcessorTypesResponse,
     ]
   > | void {
     request = request || {};
@@ -2961,25 +3023,23 @@ export class DocumentProcessorServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The location of processor type to list.
-   *   The available processor types may depend on the allow-listing on projects.
-   *   Format: `projects/{project}/locations/{location}`
+   *   Required. The location of processor types to list.
+   *   Format: `projects/{project}/locations/{location}`.
    * @param {number} request.pageSize
    *   The maximum number of processor types to return.
-   *   If unspecified, at most 100 processor types will be returned.
-   *   The maximum value is 500; values above 500 will be coerced to 500.
+   *   If unspecified, at most `100` processor types will be returned.
+   *   The maximum value is `500`. Values above `500` will be coerced to `500`.
    * @param {string} request.pageToken
    *   Used to retrieve the next page of results, empty if at the end of the list.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.documentai.v1.ProcessorType | ProcessorType} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.documentai.v1.ProcessorType|ProcessorType} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listProcessorTypesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessorTypesStream(
@@ -3011,24 +3071,22 @@ export class DocumentProcessorServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The location of processor type to list.
-   *   The available processor types may depend on the allow-listing on projects.
-   *   Format: `projects/{project}/locations/{location}`
+   *   Required. The location of processor types to list.
+   *   Format: `projects/{project}/locations/{location}`.
    * @param {number} request.pageSize
    *   The maximum number of processor types to return.
-   *   If unspecified, at most 100 processor types will be returned.
-   *   The maximum value is 500; values above 500 will be coerced to 500.
+   *   If unspecified, at most `100` processor types will be returned.
+   *   The maximum value is `500`. Values above `500` will be coerced to `500`.
    * @param {string} request.pageToken
    *   Used to retrieve the next page of results, empty if at the end of the list.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.documentai.v1.ProcessorType | ProcessorType}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.documentai.v1.ProcessorType|ProcessorType}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.list_processor_types.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ListProcessorTypes_async
@@ -3064,22 +3122,21 @@ export class DocumentProcessorServiceClient {
    *   Processors. Format: `projects/{project}/locations/{location}`
    * @param {number} request.pageSize
    *   The maximum number of processors to return.
-   *   If unspecified, at most 50 processors will be returned.
-   *   The maximum value is 100; values above 100 will be coerced to 100.
+   *   If unspecified, at most `50` processors will be returned.
+   *   The maximum value is `100`. Values above `100` will be coerced to `100`.
    * @param {string} request.pageToken
    *   We will return the processors sorted by creation time. The page token
    *   will point to the next processor.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.documentai.v1.Processor | Processor}.
+   *   The first element of the array is Array of {@link protos.google.cloud.documentai.v1.Processor|Processor}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listProcessorsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessors(
@@ -3089,7 +3146,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessor[],
       protos.google.cloud.documentai.v1.IListProcessorsRequest | null,
-      protos.google.cloud.documentai.v1.IListProcessorsResponse
+      protos.google.cloud.documentai.v1.IListProcessorsResponse,
     ]
   >;
   listProcessors(
@@ -3135,7 +3192,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessor[],
       protos.google.cloud.documentai.v1.IListProcessorsRequest | null,
-      protos.google.cloud.documentai.v1.IListProcessorsResponse
+      protos.google.cloud.documentai.v1.IListProcessorsResponse,
     ]
   > | void {
     request = request || {};
@@ -3166,21 +3223,20 @@ export class DocumentProcessorServiceClient {
    *   Processors. Format: `projects/{project}/locations/{location}`
    * @param {number} request.pageSize
    *   The maximum number of processors to return.
-   *   If unspecified, at most 50 processors will be returned.
-   *   The maximum value is 100; values above 100 will be coerced to 100.
+   *   If unspecified, at most `50` processors will be returned.
+   *   The maximum value is `100`. Values above `100` will be coerced to `100`.
    * @param {string} request.pageToken
    *   We will return the processors sorted by creation time. The page token
    *   will point to the next processor.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.documentai.v1.Processor | Processor} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.documentai.v1.Processor|Processor} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listProcessorsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessorsStream(
@@ -3216,20 +3272,19 @@ export class DocumentProcessorServiceClient {
    *   Processors. Format: `projects/{project}/locations/{location}`
    * @param {number} request.pageSize
    *   The maximum number of processors to return.
-   *   If unspecified, at most 50 processors will be returned.
-   *   The maximum value is 100; values above 100 will be coerced to 100.
+   *   If unspecified, at most `50` processors will be returned.
+   *   The maximum value is `100`. Values above `100` will be coerced to `100`.
    * @param {string} request.pageToken
    *   We will return the processors sorted by creation time. The page token
    *   will point to the next processor.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.documentai.v1.Processor | Processor}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.documentai.v1.Processor|Processor}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.list_processors.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ListProcessors_async
@@ -3266,22 +3321,21 @@ export class DocumentProcessorServiceClient {
    *   `projects/{project}/locations/{location}/processors/{processor}`
    * @param {number} request.pageSize
    *   The maximum number of processor versions to return.
-   *   If unspecified, at most 10 processor versions will be returned.
-   *   The maximum value is 20; values above 20 will be coerced to 20.
+   *   If unspecified, at most `10` processor versions will be returned.
+   *   The maximum value is `20`. Values above `20` will be coerced to `20`.
    * @param {string} request.pageToken
    *   We will return the processor versions sorted by creation time. The page
    *   token will point to the next processor version.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.documentai.v1.ProcessorVersion | ProcessorVersion}.
+   *   The first element of the array is Array of {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listProcessorVersionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessorVersions(
@@ -3291,7 +3345,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorVersion[],
       protos.google.cloud.documentai.v1.IListProcessorVersionsRequest | null,
-      protos.google.cloud.documentai.v1.IListProcessorVersionsResponse
+      protos.google.cloud.documentai.v1.IListProcessorVersionsResponse,
     ]
   >;
   listProcessorVersions(
@@ -3337,7 +3391,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IProcessorVersion[],
       protos.google.cloud.documentai.v1.IListProcessorVersionsRequest | null,
-      protos.google.cloud.documentai.v1.IListProcessorVersionsResponse
+      protos.google.cloud.documentai.v1.IListProcessorVersionsResponse,
     ]
   > | void {
     request = request || {};
@@ -3369,21 +3423,20 @@ export class DocumentProcessorServiceClient {
    *   `projects/{project}/locations/{location}/processors/{processor}`
    * @param {number} request.pageSize
    *   The maximum number of processor versions to return.
-   *   If unspecified, at most 10 processor versions will be returned.
-   *   The maximum value is 20; values above 20 will be coerced to 20.
+   *   If unspecified, at most `10` processor versions will be returned.
+   *   The maximum value is `20`. Values above `20` will be coerced to `20`.
    * @param {string} request.pageToken
    *   We will return the processor versions sorted by creation time. The page
    *   token will point to the next processor version.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.documentai.v1.ProcessorVersion | ProcessorVersion} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listProcessorVersionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listProcessorVersionsStream(
@@ -3420,20 +3473,19 @@ export class DocumentProcessorServiceClient {
    *   `projects/{project}/locations/{location}/processors/{processor}`
    * @param {number} request.pageSize
    *   The maximum number of processor versions to return.
-   *   If unspecified, at most 10 processor versions will be returned.
-   *   The maximum value is 20; values above 20 will be coerced to 20.
+   *   If unspecified, at most `10` processor versions will be returned.
+   *   The maximum value is `20`. Values above `20` will be coerced to `20`.
    * @param {string} request.pageToken
    *   We will return the processor versions sorted by creation time. The page
    *   token will point to the next processor version.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.documentai.v1.ProcessorVersion | ProcessorVersion}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.list_processor_versions.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ListProcessorVersions_async
@@ -3466,27 +3518,26 @@ export class DocumentProcessorServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to list
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to list
    *   evaluations for.
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}`
    * @param {number} request.pageSize
    *   The standard list page size.
-   *   If unspecified, at most 5 evaluations will be returned.
-   *   The maximum value is 100; values above 100 will be coerced to 100.
+   *   If unspecified, at most `5` evaluations are returned.
+   *   The maximum value is `100`. Values above `100` are coerced to `100`.
    * @param {string} request.pageToken
    *   A page token, received from a previous `ListEvaluations` call.
    *   Provide this to retrieve the subsequent page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.documentai.v1.Evaluation | Evaluation}.
+   *   The first element of the array is Array of {@link protos.google.cloud.documentai.v1.Evaluation|Evaluation}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listEvaluationsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEvaluations(
@@ -3496,7 +3547,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IEvaluation[],
       protos.google.cloud.documentai.v1.IListEvaluationsRequest | null,
-      protos.google.cloud.documentai.v1.IListEvaluationsResponse
+      protos.google.cloud.documentai.v1.IListEvaluationsResponse,
     ]
   >;
   listEvaluations(
@@ -3542,7 +3593,7 @@ export class DocumentProcessorServiceClient {
     [
       protos.google.cloud.documentai.v1.IEvaluation[],
       protos.google.cloud.documentai.v1.IListEvaluationsRequest | null,
-      protos.google.cloud.documentai.v1.IListEvaluationsResponse
+      protos.google.cloud.documentai.v1.IListEvaluationsResponse,
     ]
   > | void {
     request = request || {};
@@ -3570,26 +3621,25 @@ export class DocumentProcessorServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to list
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to list
    *   evaluations for.
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}`
    * @param {number} request.pageSize
    *   The standard list page size.
-   *   If unspecified, at most 5 evaluations will be returned.
-   *   The maximum value is 100; values above 100 will be coerced to 100.
+   *   If unspecified, at most `5` evaluations are returned.
+   *   The maximum value is `100`. Values above `100` are coerced to `100`.
    * @param {string} request.pageToken
    *   A page token, received from a previous `ListEvaluations` call.
    *   Provide this to retrieve the subsequent page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.documentai.v1.Evaluation | Evaluation} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.documentai.v1.Evaluation|Evaluation} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listEvaluationsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEvaluationsStream(
@@ -3622,25 +3672,24 @@ export class DocumentProcessorServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to list
+   *   {@link protos.google.cloud.documentai.v1.ProcessorVersion|ProcessorVersion} to list
    *   evaluations for.
    *   `projects/{project}/locations/{location}/processors/{processor}/processorVersions/{processorVersion}`
    * @param {number} request.pageSize
    *   The standard list page size.
-   *   If unspecified, at most 5 evaluations will be returned.
-   *   The maximum value is 100; values above 100 will be coerced to 100.
+   *   If unspecified, at most `5` evaluations are returned.
+   *   The maximum value is `100`. Values above `100` are coerced to `100`.
    * @param {string} request.pageToken
    *   A page token, received from a previous `ListEvaluations` call.
    *   Provide this to retrieve the subsequent page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.documentai.v1.Evaluation | Evaluation}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.documentai.v1.Evaluation|Evaluation}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/document_processor_service.list_evaluations.js</caption>
    * region_tag:documentai_v1_generated_DocumentProcessorService_ListEvaluations_async
@@ -3677,8 +3726,7 @@ export class DocumentProcessorServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -3724,12 +3772,11 @@ export class DocumentProcessorServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```

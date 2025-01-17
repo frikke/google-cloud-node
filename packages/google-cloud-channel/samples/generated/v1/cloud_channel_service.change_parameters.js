@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ function main(name, parameters) {
    *  Offer.parameter_definitions google.cloud.channel.v1.Offer.parameter_definitions 
    *  from the desired offer.
    */
-  // const parameters = 1234
+  // const parameters = [1,2,3,4]
   /**
    *  Optional. You can specify an optional unique request ID, and if you need to
    *  retry your request, the server will know to ignore the request if it's

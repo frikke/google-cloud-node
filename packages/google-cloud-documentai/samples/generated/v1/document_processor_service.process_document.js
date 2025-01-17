@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,6 +37,10 @@ function main(name) {
    */
   // const rawDocument = {}
   /**
+   *  A raw document on Google Cloud Storage.
+   */
+  // const gcsDocument = {}
+  /**
    *  Required. The resource name of the
    *  Processor google.cloud.documentai.v1.Processor  or
    *  ProcessorVersion google.cloud.documentai.v1.ProcessorVersion 
@@ -50,16 +54,33 @@ function main(name) {
    */
   // const name = 'abc123'
   /**
-   *  Whether Human Review feature should be skipped for this request. Default to
-   *  false.
+   *  Whether human review should be skipped for this request. Default to
+   *  `false`.
    */
   // const skipHumanReview = true
   /**
-   *  Specifies which fields to include in ProcessResponse's document.
-   *  Only supports top level document and pages field so it must be in the form
-   *  of `{document_field_name}` or `pages.{page_field_name}`.
+   *  Specifies which fields to include in the
+   *  ProcessResponse.document google.cloud.documentai.v1.ProcessResponse.document 
+   *  output. Only supports top-level document and pages field, so it must be in
+   *  the form of `{document_field_name}` or `pages.{page_field_name}`.
    */
   // const fieldMask = {}
+  /**
+   *  Inference-time options for the process API
+   */
+  // const processOptions = {}
+  /**
+   *  Optional. The labels with user-defined metadata for the request.
+   *  Label keys and values can be no longer than 63 characters
+   *  (Unicode codepoints) and can only contain lowercase letters, numeric
+   *  characters, underscores, and dashes. International characters are allowed.
+   *  Label values are optional. Label keys must start with a letter.
+   */
+  // const labels = [1,2,3,4]
+  /**
+   *  Optional. Option to remove images from the document.
+   */
+  // const imagelessMode = true
 
   // Imports the Documentai library
   const {DocumentProcessorServiceClient} = require('@google-cloud/documentai').v1;

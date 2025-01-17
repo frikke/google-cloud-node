@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ function main(product, type, placeIds) {
    *  the pattern `[a-zA-Z0-9_-]+`, such as "store1" or "REGION-2". Otherwise, an
    *  INVALID_ARGUMENT error is returned.
    */
-  // const placeIds = 'abc123'
+  // const placeIds = ['abc','def']
   /**
    *  The time when the fulfillment updates are issued, used to prevent
    *  out-of-order updates on fulfillment information. If not provided, the

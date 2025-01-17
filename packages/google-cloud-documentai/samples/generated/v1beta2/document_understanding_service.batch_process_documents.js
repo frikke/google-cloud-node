@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ function main(requests) {
   /**
    *  Required. Individual requests for each document.
    */
-  // const requests = 1234
+  // const requests = [1,2,3,4]
   /**
    *  Target project and location to make a call.
    *  Format: `projects/{project-id}/locations/{location-id}`.

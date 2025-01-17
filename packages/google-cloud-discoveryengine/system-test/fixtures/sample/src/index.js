@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,9 +21,24 @@ const discoveryengine = require('@google-cloud/discoveryengine');
 
 function main() {
   const completionServiceClient = new discoveryengine.CompletionServiceClient();
+  const controlServiceClient = new discoveryengine.ControlServiceClient();
+  const conversationalSearchServiceClient =
+    new discoveryengine.ConversationalSearchServiceClient();
+  const dataStoreServiceClient = new discoveryengine.DataStoreServiceClient();
   const documentServiceClient = new discoveryengine.DocumentServiceClient();
+  const engineServiceClient = new discoveryengine.EngineServiceClient();
+  const groundedGenerationServiceClient =
+    new discoveryengine.GroundedGenerationServiceClient();
+  const projectServiceClient = new discoveryengine.ProjectServiceClient();
+  const rankServiceClient = new discoveryengine.RankServiceClient();
+  const recommendationServiceClient =
+    new discoveryengine.RecommendationServiceClient();
   const schemaServiceClient = new discoveryengine.SchemaServiceClient();
   const searchServiceClient = new discoveryengine.SearchServiceClient();
+  const searchTuningServiceClient =
+    new discoveryengine.SearchTuningServiceClient();
+  const siteSearchEngineServiceClient =
+    new discoveryengine.SiteSearchEngineServiceClient();
   const userEventServiceClient = new discoveryengine.UserEventServiceClient();
 }
 

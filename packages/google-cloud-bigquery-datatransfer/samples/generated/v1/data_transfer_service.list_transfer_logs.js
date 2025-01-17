@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ function main(parent) {
    *  Message types to return. If not populated - INFO, WARNING and ERROR
    *  messages are returned.
    */
-  // const messageTypes = 1234
+  // const messageTypes = [1,2,3,4]
 
   // Imports the Datatransfer library
   const {DataTransferServiceClient} = require('@google-cloud/bigquery-data-transfer').v1;
@@ -65,7 +65,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await datatransferClient.listTransferLogsAsync(request);
+    const iterable = datatransferClient.listTransferLogsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

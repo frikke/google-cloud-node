@@ -35,6 +35,21 @@
                 "deleteEvent"
               ]
             },
+            "GetClip": {
+              "methods": [
+                "getClip"
+              ]
+            },
+            "GetAsset": {
+              "methods": [
+                "getAsset"
+              ]
+            },
+            "GetPool": {
+              "methods": [
+                "getPool"
+              ]
+            },
             "CreateChannel": {
               "methods": [
                 "createChannel"
@@ -75,6 +90,31 @@
                 "updateInput"
               ]
             },
+            "CreateClip": {
+              "methods": [
+                "createClip"
+              ]
+            },
+            "DeleteClip": {
+              "methods": [
+                "deleteClip"
+              ]
+            },
+            "CreateAsset": {
+              "methods": [
+                "createAsset"
+              ]
+            },
+            "DeleteAsset": {
+              "methods": [
+                "deleteAsset"
+              ]
+            },
+            "UpdatePool": {
+              "methods": [
+                "updatePool"
+              ]
+            },
             "ListChannels": {
               "methods": [
                 "listChannels",
@@ -94,6 +134,20 @@
                 "listEvents",
                 "listEventsStream",
                 "listEventsAsync"
+              ]
+            },
+            "ListClips": {
+              "methods": [
+                "listClips",
+                "listClipsStream",
+                "listClipsAsync"
+              ]
+            },
+            "ListAssets": {
+              "methods": [
+                "listAssets",
+                "listAssetsStream",
+                "listAssetsAsync"
               ]
             }
           }
@@ -126,6 +180,21 @@
                 "deleteEvent"
               ]
             },
+            "GetClip": {
+              "methods": [
+                "getClip"
+              ]
+            },
+            "GetAsset": {
+              "methods": [
+                "getAsset"
+              ]
+            },
+            "GetPool": {
+              "methods": [
+                "getPool"
+              ]
+            },
             "CreateChannel": {
               "methods": [
                 "createChannel"
@@ -166,6 +235,31 @@
                 "updateInput"
               ]
             },
+            "CreateClip": {
+              "methods": [
+                "createClip"
+              ]
+            },
+            "DeleteClip": {
+              "methods": [
+                "deleteClip"
+              ]
+            },
+            "CreateAsset": {
+              "methods": [
+                "createAsset"
+              ]
+            },
+            "DeleteAsset": {
+              "methods": [
+                "deleteAsset"
+              ]
+            },
+            "UpdatePool": {
+              "methods": [
+                "updatePool"
+              ]
+            },
             "ListChannels": {
               "methods": [
                 "listChannels",
@@ -185,6 +279,20 @@
                 "listEvents",
                 "listEventsStream",
                 "listEventsAsync"
+              ]
+            },
+            "ListClips": {
+              "methods": [
+                "listClips",
+                "listClipsStream",
+                "listClipsAsync"
+              ]
+            },
+            "ListAssets": {
+              "methods": [
+                "listAssets",
+                "listAssetsStream",
+                "listAssetsAsync"
               ]
             }
           }

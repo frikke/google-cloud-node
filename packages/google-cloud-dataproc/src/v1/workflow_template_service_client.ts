@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/workflow_template_service_client_config.json`.
@@ -55,6 +56,8 @@ export class WorkflowTemplateServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -97,8 +100,7 @@ export class WorkflowTemplateServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -106,7 +108,7 @@ export class WorkflowTemplateServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new WorkflowTemplateServiceClient({fallback: 'rest'}, gax);
+   *     const client = new WorkflowTemplateServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -116,8 +118,27 @@ export class WorkflowTemplateServiceClient {
     // Ensure that options include all the required fields.
     const staticMembers = this
       .constructor as typeof WorkflowTemplateServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'dataproc.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -132,7 +153,7 @@ export class WorkflowTemplateServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -157,24 +178,24 @@ export class WorkflowTemplateServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -215,6 +236,12 @@ export class WorkflowTemplateServiceClient {
       regionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/regions/{region}'
       ),
+      sessionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/sessions/{session}'
+      ),
+      sessionTemplatePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/sessionTemplates/{template}'
+      ),
     };
 
     // Some of the methods on this service return "paged" results,
@@ -236,7 +263,7 @@ export class WorkflowTemplateServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -493,19 +520,50 @@ export class WorkflowTemplateServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dataproc.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dataproc.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -565,9 +623,8 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dataproc.v1.WorkflowTemplate | WorkflowTemplate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dataproc.v1.WorkflowTemplate|WorkflowTemplate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.create_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_CreateWorkflowTemplate_async
@@ -582,7 +639,7 @@ export class WorkflowTemplateServiceClient {
         | protos.google.cloud.dataproc.v1.ICreateWorkflowTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createWorkflowTemplate(
@@ -631,7 +688,7 @@ export class WorkflowTemplateServiceClient {
         | protos.google.cloud.dataproc.v1.ICreateWorkflowTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -683,9 +740,8 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dataproc.v1.WorkflowTemplate | WorkflowTemplate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dataproc.v1.WorkflowTemplate|WorkflowTemplate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.get_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_GetWorkflowTemplate_async
@@ -697,7 +753,7 @@ export class WorkflowTemplateServiceClient {
     [
       protos.google.cloud.dataproc.v1.IWorkflowTemplate,
       protos.google.cloud.dataproc.v1.IGetWorkflowTemplateRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getWorkflowTemplate(
@@ -743,7 +799,7 @@ export class WorkflowTemplateServiceClient {
     [
       protos.google.cloud.dataproc.v1.IWorkflowTemplate,
       protos.google.cloud.dataproc.v1.IGetWorkflowTemplateRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -777,9 +833,8 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dataproc.v1.WorkflowTemplate | WorkflowTemplate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dataproc.v1.WorkflowTemplate|WorkflowTemplate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.update_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_UpdateWorkflowTemplate_async
@@ -794,7 +849,7 @@ export class WorkflowTemplateServiceClient {
         | protos.google.cloud.dataproc.v1.IUpdateWorkflowTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateWorkflowTemplate(
@@ -843,7 +898,7 @@ export class WorkflowTemplateServiceClient {
         | protos.google.cloud.dataproc.v1.IUpdateWorkflowTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -891,9 +946,8 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.delete_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_DeleteWorkflowTemplate_async
@@ -908,7 +962,7 @@ export class WorkflowTemplateServiceClient {
         | protos.google.cloud.dataproc.v1.IDeleteWorkflowTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteWorkflowTemplate(
@@ -957,7 +1011,7 @@ export class WorkflowTemplateServiceClient {
         | protos.google.cloud.dataproc.v1.IDeleteWorkflowTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -988,22 +1042,22 @@ export class WorkflowTemplateServiceClient {
    *
    * The returned Operation can be used to track execution of
    * workflow by polling
-   * {@link google.longrunning.Operations.GetOperation|operations.get}.
+   * {@link protos.google.longrunning.Operations.GetOperation|operations.get}.
    * The Operation will complete when entire workflow is finished.
    *
    * The running workflow can be aborted via
-   * {@link google.longrunning.Operations.CancelOperation|operations.cancel}.
+   * {@link protos.google.longrunning.Operations.CancelOperation|operations.cancel}.
    * This will cause any inflight jobs to be cancelled and workflow-owned
    * clusters to be deleted.
    *
-   * The {@link google.longrunning.Operation.metadata|Operation.metadata} will be
+   * The {@link protos.google.longrunning.Operation.metadata|Operation.metadata} will be
    * [WorkflowMetadata](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#workflowmetadata).
    * Also see [Using
    * WorkflowMetadata](https://cloud.google.com/dataproc/docs/concepts/workflows/debugging#using_workflowmetadata).
    *
    * On successful completion,
-   * {@link google.longrunning.Operation.response|Operation.response} will be
-   * {@link google.protobuf.Empty|Empty}.
+   * {@link protos.google.longrunning.Operation.response|Operation.response} will be
+   * {@link protos.google.protobuf.Empty|Empty}.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1044,8 +1098,7 @@ export class WorkflowTemplateServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.instantiate_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_InstantiateWorkflowTemplate_async
@@ -1060,7 +1113,7 @@ export class WorkflowTemplateServiceClient {
         protos.google.cloud.dataproc.v1.IWorkflowMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   instantiateWorkflowTemplate(
@@ -1113,7 +1166,7 @@ export class WorkflowTemplateServiceClient {
         protos.google.cloud.dataproc.v1.IWorkflowMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1144,8 +1197,7 @@ export class WorkflowTemplateServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.instantiate_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_InstantiateWorkflowTemplate_async
@@ -1177,28 +1229,28 @@ export class WorkflowTemplateServiceClient {
    * Instantiates a template and begins execution.
    *
    * This method is equivalent to executing the sequence
-   * {@link google.cloud.dataproc.v1.WorkflowTemplateService.CreateWorkflowTemplate|CreateWorkflowTemplate},
-   * {@link google.cloud.dataproc.v1.WorkflowTemplateService.InstantiateWorkflowTemplate|InstantiateWorkflowTemplate},
-   * {@link google.cloud.dataproc.v1.WorkflowTemplateService.DeleteWorkflowTemplate|DeleteWorkflowTemplate}.
+   * {@link protos.google.cloud.dataproc.v1.WorkflowTemplateService.CreateWorkflowTemplate|CreateWorkflowTemplate},
+   * {@link protos.google.cloud.dataproc.v1.WorkflowTemplateService.InstantiateWorkflowTemplate|InstantiateWorkflowTemplate},
+   * {@link protos.google.cloud.dataproc.v1.WorkflowTemplateService.DeleteWorkflowTemplate|DeleteWorkflowTemplate}.
    *
    * The returned Operation can be used to track execution of
    * workflow by polling
-   * {@link google.longrunning.Operations.GetOperation|operations.get}.
+   * {@link protos.google.longrunning.Operations.GetOperation|operations.get}.
    * The Operation will complete when entire workflow is finished.
    *
    * The running workflow can be aborted via
-   * {@link google.longrunning.Operations.CancelOperation|operations.cancel}.
+   * {@link protos.google.longrunning.Operations.CancelOperation|operations.cancel}.
    * This will cause any inflight jobs to be cancelled and workflow-owned
    * clusters to be deleted.
    *
-   * The {@link google.longrunning.Operation.metadata|Operation.metadata} will be
+   * The {@link protos.google.longrunning.Operation.metadata|Operation.metadata} will be
    * [WorkflowMetadata](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#workflowmetadata).
    * Also see [Using
    * WorkflowMetadata](https://cloud.google.com/dataproc/docs/concepts/workflows/debugging#using_workflowmetadata).
    *
    * On successful completion,
-   * {@link google.longrunning.Operation.response|Operation.response} will be
-   * {@link google.protobuf.Empty|Empty}.
+   * {@link protos.google.longrunning.Operation.response|Operation.response} will be
+   * {@link protos.google.protobuf.Empty|Empty}.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1231,8 +1283,7 @@ export class WorkflowTemplateServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.instantiate_inline_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_InstantiateInlineWorkflowTemplate_async
@@ -1247,7 +1298,7 @@ export class WorkflowTemplateServiceClient {
         protos.google.cloud.dataproc.v1.IWorkflowMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   instantiateInlineWorkflowTemplate(
@@ -1300,7 +1351,7 @@ export class WorkflowTemplateServiceClient {
         protos.google.cloud.dataproc.v1.IWorkflowMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1331,8 +1382,7 @@ export class WorkflowTemplateServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.instantiate_inline_workflow_template.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_InstantiateInlineWorkflowTemplate_async
@@ -1384,14 +1434,13 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dataproc.v1.WorkflowTemplate | WorkflowTemplate}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dataproc.v1.WorkflowTemplate|WorkflowTemplate}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listWorkflowTemplatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listWorkflowTemplates(
@@ -1401,7 +1450,7 @@ export class WorkflowTemplateServiceClient {
     [
       protos.google.cloud.dataproc.v1.IWorkflowTemplate[],
       protos.google.cloud.dataproc.v1.IListWorkflowTemplatesRequest | null,
-      protos.google.cloud.dataproc.v1.IListWorkflowTemplatesResponse
+      protos.google.cloud.dataproc.v1.IListWorkflowTemplatesResponse,
     ]
   >;
   listWorkflowTemplates(
@@ -1447,7 +1496,7 @@ export class WorkflowTemplateServiceClient {
     [
       protos.google.cloud.dataproc.v1.IWorkflowTemplate[],
       protos.google.cloud.dataproc.v1.IListWorkflowTemplatesRequest | null,
-      protos.google.cloud.dataproc.v1.IListWorkflowTemplatesResponse
+      protos.google.cloud.dataproc.v1.IListWorkflowTemplatesResponse,
     ]
   > | void {
     request = request || {};
@@ -1492,13 +1541,12 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dataproc.v1.WorkflowTemplate | WorkflowTemplate} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dataproc.v1.WorkflowTemplate|WorkflowTemplate} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listWorkflowTemplatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listWorkflowTemplatesStream(
@@ -1548,12 +1596,11 @@ export class WorkflowTemplateServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dataproc.v1.WorkflowTemplate | WorkflowTemplate}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dataproc.v1.WorkflowTemplate|WorkflowTemplate}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/workflow_template_service.list_workflow_templates.js</caption>
    * region_tag:dataproc_v1_generated_WorkflowTemplateService_ListWorkflowTemplates_async
@@ -1618,7 +1665,7 @@ export class WorkflowTemplateServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -1639,8 +1686,7 @@ export class WorkflowTemplateServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -1666,7 +1712,7 @@ export class WorkflowTemplateServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -1687,8 +1733,7 @@ export class WorkflowTemplateServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -1715,7 +1760,7 @@ export class WorkflowTemplateServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -2340,6 +2385,110 @@ export class WorkflowTemplateServiceClient {
    */
   matchRegionFromRegionName(regionName: string) {
     return this.pathTemplates.regionPathTemplate.match(regionName).region;
+  }
+
+  /**
+   * Return a fully-qualified session resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} session
+   * @returns {string} Resource name string.
+   */
+  sessionPath(project: string, location: string, session: string) {
+    return this.pathTemplates.sessionPathTemplate.render({
+      project: project,
+      location: location,
+      session: session,
+    });
+  }
+
+  /**
+   * Parse the project from Session resource.
+   *
+   * @param {string} sessionName
+   *   A fully-qualified path representing Session resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromSessionName(sessionName: string) {
+    return this.pathTemplates.sessionPathTemplate.match(sessionName).project;
+  }
+
+  /**
+   * Parse the location from Session resource.
+   *
+   * @param {string} sessionName
+   *   A fully-qualified path representing Session resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromSessionName(sessionName: string) {
+    return this.pathTemplates.sessionPathTemplate.match(sessionName).location;
+  }
+
+  /**
+   * Parse the session from Session resource.
+   *
+   * @param {string} sessionName
+   *   A fully-qualified path representing Session resource.
+   * @returns {string} A string representing the session.
+   */
+  matchSessionFromSessionName(sessionName: string) {
+    return this.pathTemplates.sessionPathTemplate.match(sessionName).session;
+  }
+
+  /**
+   * Return a fully-qualified sessionTemplate resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} template
+   * @returns {string} Resource name string.
+   */
+  sessionTemplatePath(project: string, location: string, template: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.render({
+      project: project,
+      location: location,
+      template: template,
+    });
+  }
+
+  /**
+   * Parse the project from SessionTemplate resource.
+   *
+   * @param {string} sessionTemplateName
+   *   A fully-qualified path representing SessionTemplate resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromSessionTemplateName(sessionTemplateName: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.match(
+      sessionTemplateName
+    ).project;
+  }
+
+  /**
+   * Parse the location from SessionTemplate resource.
+   *
+   * @param {string} sessionTemplateName
+   *   A fully-qualified path representing SessionTemplate resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromSessionTemplateName(sessionTemplateName: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.match(
+      sessionTemplateName
+    ).location;
+  }
+
+  /**
+   * Parse the template from SessionTemplate resource.
+   *
+   * @param {string} sessionTemplateName
+   *   A fully-qualified path representing SessionTemplate resource.
+   * @returns {string} A string representing the template.
+   */
+  matchTemplateFromSessionTemplateName(sessionTemplateName: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.match(
+      sessionTemplateName
+    ).template;
   }
 
   /**

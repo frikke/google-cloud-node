@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,11 +46,11 @@ function main(name, payload) {
    *  `projects/-/serviceAccounts/{ACCOUNT_EMAIL_OR_UNIQUEID}`. The `-` wildcard
    *  character is required; replacing it with a project ID is invalid.
    */
-  // const delegates = 'abc123'
+  // const delegates = ['abc','def']
   /**
    *  Required. The bytes to sign.
    */
-  // const payload = 'Buffer.from('string')'
+  // const payload = Buffer.from('string')
 
   // Imports the Credentials library
   const {IAMCredentialsClient} = require('@google-cloud/iam-credentials').v1;

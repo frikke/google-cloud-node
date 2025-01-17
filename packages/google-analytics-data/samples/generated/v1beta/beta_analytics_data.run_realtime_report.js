@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ function main() {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  A Google Analytics GA4 property identifier whose events are tracked.
+   *  A Google Analytics property identifier whose events are tracked.
    *  Specified in the URL path and not the body. To learn more, see where to
    *  find your Property
    *  ID (https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -39,11 +39,11 @@ function main() {
   /**
    *  The dimensions requested and displayed.
    */
-  // const dimensions = 1234
+  // const dimensions = [1,2,3,4]
   /**
    *  The metrics requested and displayed.
    */
-  // const metrics = 1234
+  // const metrics = [1,2,3,4]
   /**
    *  The filter clause of dimensions. Metrics cannot be used in this filter.
    */
@@ -55,7 +55,7 @@ function main() {
   // const metricFilter = {}
   /**
    *  The number of rows to return. If unspecified, 10,000 rows are returned. The
-   *  API returns a maximum of 100,000 rows per request, no matter how many you
+   *  API returns a maximum of 250,000 rows per request, no matter how many you
    *  ask for. `limit` must be positive.
    *  The API can also return fewer rows than the requested `limit`, if there
    *  aren't as many dimension values as the `limit`. For instance, there are
@@ -68,14 +68,15 @@ function main() {
    *  Aggregation of metrics. Aggregated metric values will be shown in rows
    *  where the dimension_values are set to "RESERVED_(MetricAggregation)".
    */
-  // const metricAggregations = 1234
+  // const metricAggregations = [1,2,3,4]
   /**
    *  Specifies how rows are ordered in the response.
    */
-  // const orderBys = 1234
+  // const orderBys = [1,2,3,4]
   /**
-   *  Toggles whether to return the current state of this Analytics Property's
-   *  Realtime quota. Quota is returned in PropertyQuota (#PropertyQuota).
+   *  Toggles whether to return the current state of this Google Analytics
+   *  property's Realtime quota. Quota is returned in
+   *  PropertyQuota (#PropertyQuota).
    */
   // const returnPropertyQuota = true
   /**
@@ -85,7 +86,7 @@ function main() {
    *  If two minute ranges overlap, the event data for the overlapping minutes is
    *  included in the response rows for both minute ranges.
    */
-  // const minuteRanges = 1234
+  // const minuteRanges = [1,2,3,4]
 
   // Imports the Data library
   const {BetaAnalyticsDataClient} = require('@google-analytics/data').v1beta;

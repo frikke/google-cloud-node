@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ function main(parent) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  A cloud storage bucket source.
+   *  A cloud storage bucket source. Note that any previously ingested objects
+   *  from the source will be skipped to avoid duplication.
    */
   // const gcsSource = {}
   /**
@@ -44,6 +45,23 @@ function main(parent) {
    *  Configuration that applies to all conversations.
    */
   // const conversationConfig = {}
+  /**
+   *  Optional. DLP settings for transcript redaction. Optional, will default to
+   *  the config specified in Settings.
+   */
+  // const redactionConfig = {}
+  /**
+   *  Optional. Default Speech-to-Text configuration. Optional, will default to
+   *  the config specified in Settings.
+   */
+  // const speechConfig = {}
+  /**
+   *  Optional. If set, this fields indicates the number of objects to ingest
+   *  from the Cloud Storage bucket. If empty, the entire bucket will be
+   *  ingested. Unless they are first deleted, conversations produced through
+   *  sampling won't be ingested by subsequent ingest requests.
+   */
+  // const sampleSize = 1234
 
   // Imports the Contactcenterinsights library
   const {ContactCenterInsightsClient} = require('@google-cloud/contact-center-insights').v1;

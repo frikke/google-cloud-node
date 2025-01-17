@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ function main(endpoint, deployedModelId) {
    *  doesn't have any traffic assigned to it when this method executes, or if
    *  this field unassigns any traffic to it.
    */
-  // const trafficSplit = 1234
+  // const trafficSplit = [1,2,3,4]
 
   // Imports the Aiplatform library
   const {EndpointServiceClient} = require('@google-cloud/aiplatform').v1;

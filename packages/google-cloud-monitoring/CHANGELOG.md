@@ -4,6 +4,32 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/monitoring?activeTab=versions
 
+## [4.1.0](https://github.com/googleapis/google-cloud-node/compare/monitoring-v4.0.0...monitoring-v4.1.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [4.0.0](https://github.com/googleapis/google-cloud-node/compare/monitoring-v3.0.5...monitoring-v4.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [3.0.5](https://github.com/googleapis/google-cloud-node/compare/monitoring-v3.0.4...monitoring-v3.0.5) (2023-06-28)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency yargs to v17 ([#4351](https://github.com/googleapis/google-cloud-node/issues/4351)) ([4fb5285](https://github.com/googleapis/google-cloud-node/commit/4fb528559c204cee33329c4e55021aa1fd0e4974))
+
 ## [3.0.4](https://github.com/googleapis/google-cloud-node/compare/monitoring-v3.0.3...monitoring-v3.0.4) (2023-04-13)
 
 

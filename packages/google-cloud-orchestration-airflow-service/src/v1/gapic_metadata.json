@@ -15,6 +15,66 @@
                 "getEnvironment"
               ]
             },
+            "ExecuteAirflowCommand": {
+              "methods": [
+                "executeAirflowCommand"
+              ]
+            },
+            "StopAirflowCommand": {
+              "methods": [
+                "stopAirflowCommand"
+              ]
+            },
+            "PollAirflowCommand": {
+              "methods": [
+                "pollAirflowCommand"
+              ]
+            },
+            "CreateUserWorkloadsSecret": {
+              "methods": [
+                "createUserWorkloadsSecret"
+              ]
+            },
+            "GetUserWorkloadsSecret": {
+              "methods": [
+                "getUserWorkloadsSecret"
+              ]
+            },
+            "UpdateUserWorkloadsSecret": {
+              "methods": [
+                "updateUserWorkloadsSecret"
+              ]
+            },
+            "DeleteUserWorkloadsSecret": {
+              "methods": [
+                "deleteUserWorkloadsSecret"
+              ]
+            },
+            "CreateUserWorkloadsConfigMap": {
+              "methods": [
+                "createUserWorkloadsConfigMap"
+              ]
+            },
+            "GetUserWorkloadsConfigMap": {
+              "methods": [
+                "getUserWorkloadsConfigMap"
+              ]
+            },
+            "UpdateUserWorkloadsConfigMap": {
+              "methods": [
+                "updateUserWorkloadsConfigMap"
+              ]
+            },
+            "DeleteUserWorkloadsConfigMap": {
+              "methods": [
+                "deleteUserWorkloadsConfigMap"
+              ]
+            },
+            "FetchDatabaseProperties": {
+              "methods": [
+                "fetchDatabaseProperties"
+              ]
+            },
             "CreateEnvironment": {
               "methods": [
                 "createEnvironment"
@@ -30,6 +90,11 @@
                 "deleteEnvironment"
               ]
             },
+            "CheckUpgrade": {
+              "methods": [
+                "checkUpgrade"
+              ]
+            },
             "SaveSnapshot": {
               "methods": [
                 "saveSnapshot"
@@ -40,11 +105,37 @@
                 "loadSnapshot"
               ]
             },
+            "DatabaseFailover": {
+              "methods": [
+                "databaseFailover"
+              ]
+            },
             "ListEnvironments": {
               "methods": [
                 "listEnvironments",
                 "listEnvironmentsStream",
                 "listEnvironmentsAsync"
+              ]
+            },
+            "ListWorkloads": {
+              "methods": [
+                "listWorkloads",
+                "listWorkloadsStream",
+                "listWorkloadsAsync"
+              ]
+            },
+            "ListUserWorkloadsSecrets": {
+              "methods": [
+                "listUserWorkloadsSecrets",
+                "listUserWorkloadsSecretsStream",
+                "listUserWorkloadsSecretsAsync"
+              ]
+            },
+            "ListUserWorkloadsConfigMaps": {
+              "methods": [
+                "listUserWorkloadsConfigMaps",
+                "listUserWorkloadsConfigMapsStream",
+                "listUserWorkloadsConfigMapsAsync"
               ]
             }
           }
@@ -57,6 +148,66 @@
                 "getEnvironment"
               ]
             },
+            "ExecuteAirflowCommand": {
+              "methods": [
+                "executeAirflowCommand"
+              ]
+            },
+            "StopAirflowCommand": {
+              "methods": [
+                "stopAirflowCommand"
+              ]
+            },
+            "PollAirflowCommand": {
+              "methods": [
+                "pollAirflowCommand"
+              ]
+            },
+            "CreateUserWorkloadsSecret": {
+              "methods": [
+                "createUserWorkloadsSecret"
+              ]
+            },
+            "GetUserWorkloadsSecret": {
+              "methods": [
+                "getUserWorkloadsSecret"
+              ]
+            },
+            "UpdateUserWorkloadsSecret": {
+              "methods": [
+                "updateUserWorkloadsSecret"
+              ]
+            },
+            "DeleteUserWorkloadsSecret": {
+              "methods": [
+                "deleteUserWorkloadsSecret"
+              ]
+            },
+            "CreateUserWorkloadsConfigMap": {
+              "methods": [
+                "createUserWorkloadsConfigMap"
+              ]
+            },
+            "GetUserWorkloadsConfigMap": {
+              "methods": [
+                "getUserWorkloadsConfigMap"
+              ]
+            },
+            "UpdateUserWorkloadsConfigMap": {
+              "methods": [
+                "updateUserWorkloadsConfigMap"
+              ]
+            },
+            "DeleteUserWorkloadsConfigMap": {
+              "methods": [
+                "deleteUserWorkloadsConfigMap"
+              ]
+            },
+            "FetchDatabaseProperties": {
+              "methods": [
+                "fetchDatabaseProperties"
+              ]
+            },
             "CreateEnvironment": {
               "methods": [
                 "createEnvironment"
@@ -72,6 +223,11 @@
                 "deleteEnvironment"
               ]
             },
+            "CheckUpgrade": {
+              "methods": [
+                "checkUpgrade"
+              ]
+            },
             "SaveSnapshot": {
               "methods": [
                 "saveSnapshot"
@@ -82,11 +238,37 @@
                 "loadSnapshot"
               ]
             },
+            "DatabaseFailover": {
+              "methods": [
+                "databaseFailover"
+              ]
+            },
             "ListEnvironments": {
               "methods": [
                 "listEnvironments",
                 "listEnvironmentsStream",
                 "listEnvironmentsAsync"
+              ]
+            },
+            "ListWorkloads": {
+              "methods": [
+                "listWorkloads",
+                "listWorkloadsStream",
+                "listWorkloadsAsync"
+              ]
+            },
+            "ListUserWorkloadsSecrets": {
+              "methods": [
+                "listUserWorkloadsSecrets",
+                "listUserWorkloadsSecretsStream",
+                "listUserWorkloadsSecretsAsync"
+              ]
+            },
+            "ListUserWorkloadsConfigMaps": {
+              "methods": [
+                "listUserWorkloadsConfigMaps",
+                "listUserWorkloadsConfigMapsStream",
+                "listUserWorkloadsConfigMapsAsync"
               ]
             }
           }

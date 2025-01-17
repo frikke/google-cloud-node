@@ -18,13 +18,13 @@
   * [Cloud_billing.get_project_billing_info](#cloud_billing.get_project_billing_info)
   * [Cloud_billing.list_billing_accounts](#cloud_billing.list_billing_accounts)
   * [Cloud_billing.list_project_billing_info](#cloud_billing.list_project_billing_info)
+  * [Cloud_billing.move_billing_account](#cloud_billing.move_billing_account)
   * [Cloud_billing.set_iam_policy](#cloud_billing.set_iam_policy)
   * [Cloud_billing.test_iam_permissions](#cloud_billing.test_iam_permissions)
   * [Cloud_billing.update_billing_account](#cloud_billing.update_billing_account)
   * [Cloud_billing.update_project_billing_info](#cloud_billing.update_project_billing_info)
   * [Cloud_catalog.list_services](#cloud_catalog.list_services)
   * [Cloud_catalog.list_skus](#cloud_catalog.list_skus)
-  * [Quickstart](#quickstart)
   * [Quickstart](#quickstart)
 
 ## Before you begin
@@ -144,6 +144,23 @@ __Usage:__
 
 
 
+### Cloud_billing.move_billing_account
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-billing/samples/generated/v1/cloud_billing.move_billing_account.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-billing/samples/generated/v1/cloud_billing.move_billing_account.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-billing/samples/generated/v1/cloud_billing.move_billing_account.js`
+
+
+-----
+
+
+
+
 ### Cloud_billing.set_iam_policy
 
 View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-billing/samples/generated/v1/cloud_billing.set_iam_policy.js).
@@ -256,23 +273,6 @@ __Usage:__
 
 
 `node packages/google-cloud-billing/samples/quickstart.js`
-
-
------
-
-
-
-
-### Quickstart
-
-View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-billing/samples/test/quickstart.js).
-
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-billing/samples/test/quickstart.js,samples/README.md)
-
-__Usage:__
-
-
-`node packages/google-cloud-billing/samples/test/quickstart.js`
 
 
 

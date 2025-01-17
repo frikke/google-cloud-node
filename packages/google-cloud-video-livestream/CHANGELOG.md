@@ -1,5 +1,71 @@
 # Changelog
 
+## [1.4.0](https://github.com/googleapis/google-cloud-node/compare/livestream-v1.3.0...livestream-v1.4.0) (2024-07-22)
+
+
+### Features
+
+* [video] added RetentionConfig for enabling retention of output media segments ([#5544](https://github.com/googleapis/google-cloud-node/issues/5544)) ([f1b1eed](https://github.com/googleapis/google-cloud-node/commit/f1b1eedafc5295513fba09c4132389489640fe23))
+
+## [1.3.0](https://github.com/googleapis/google-cloud-node/compare/livestream-v1.2.0...livestream-v1.3.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [1.2.0](https://github.com/googleapis/google-cloud-node/compare/livestream-v1.1.0...livestream-v1.2.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5191](https://github.com/googleapis/google-cloud-node/issues/5191)) ([57567db](https://github.com/googleapis/google-cloud-node/commit/57567db36033ca53ae2f54e6517b8cd12145bb82))
+
+## [1.1.0](https://github.com/googleapis/google-cloud-node/compare/livestream-v1.0.2...livestream-v1.1.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5028](https://github.com/googleapis/google-cloud-node/issues/5028)) ([852f3eb](https://github.com/googleapis/google-cloud-node/commit/852f3ebf065ee24e910580b9a1fc365acb3a744a))
+
+## [1.0.2](https://github.com/googleapis/google-cloud-node/compare/livestream-v1.0.1...livestream-v1.0.2) (2024-01-23)
+
+
+### Bug Fixes
+
+* [Many APIs] improve retry logic for streaming API calls ([#4968](https://github.com/googleapis/google-cloud-node/issues/4968)) ([7fbf16c](https://github.com/googleapis/google-cloud-node/commit/7fbf16c98d0521a0533ab36a00f6ec932c72a02e))
+
+## [1.0.1](https://github.com/googleapis/google-cloud-node/compare/livestream-v1.0.0...livestream-v1.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4588](https://github.com/googleapis/google-cloud-node/issues/4588)) ([e5ad564](https://github.com/googleapis/google-cloud-node/commit/e5ad564f74dc7a36c0e8cd8de173428a99f1deae))
+
+## [1.0.0](https://github.com/googleapis/google-cloud-node/compare/livestream-v0.6.0...livestream-v1.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4464](https://github.com/googleapis/google-cloud-node/issues/4464)) ([c909357](https://github.com/googleapis/google-cloud-node/commit/c90935765ceee0eea6b9ce21a151707df142cf7d))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [0.6.0](https://github.com/googleapis/google-cloud-node/compare/livestream-v0.5.1...livestream-v0.6.0) (2023-07-24)
+
+
+### Features
+
+* [video] added support for slate events which allow users to create and insert a slate into a live stream to replace the main live stream content ([#4438](https://github.com/googleapis/google-cloud-node/issues/4438)) ([5f19ab6](https://github.com/googleapis/google-cloud-node/commit/5f19ab6bab05774ced7a3947f9bb129f748d01f5))
+
 ## [0.5.1](https://github.com/googleapis/google-cloud-node/compare/livestream-v0.5.0...livestream-v0.5.1) (2023-04-13)
 
 

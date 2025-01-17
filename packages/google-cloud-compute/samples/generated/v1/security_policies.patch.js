@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,6 +44,10 @@ function main(project, securityPolicy, securityPolicyResource) {
    *  The body resource for this request
    */
   // const securityPolicyResource = {}
+  /**
+   *  Indicates fields to be cleared as part of this request.
+   */
+  // const updateMask = 'abc123'
 
   // Imports the Compute library
   const {SecurityPoliciesClient} = require('@google-cloud/compute').v1;

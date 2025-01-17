@@ -4,6 +4,112 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/dataproc?activeTab=versions
 
+## [5.12.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.11.0...dataproc-v5.12.0) (2024-10-30)
+
+
+### Features
+
+* [dataproc] Add `ProvisioningModelMix` to support mixing of spot and standard instances for secondary workers ([#5753](https://github.com/googleapis/google-cloud-node/issues/5753)) ([9639bc9](https://github.com/googleapis/google-cloud-node/commit/9639bc9a253ccf94a4318210d638b29a42a5ee72))
+
+## [5.11.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.10.0...dataproc-v5.11.0) (2024-10-10)
+
+
+### Features
+
+* [dataproc] add support for Spark Connect sessions in Dataproc Serverless for Spark ([#5709](https://github.com/googleapis/google-cloud-node/issues/5709)) ([fe95238](https://github.com/googleapis/google-cloud-node/commit/fe95238882e9c30570e025d11dc3a8ef5d4614a8))
+
+## [5.10.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.9.0...dataproc-v5.10.0) (2024-09-24)
+
+
+### Features
+
+* [dataproc] add resource reference for KMS keys and fix comments ([#5680](https://github.com/googleapis/google-cloud-node/issues/5680)) ([8c7b907](https://github.com/googleapis/google-cloud-node/commit/8c7b907e67852a7fbb91961bce625b3387411525))
+
+## [5.9.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.8.0...dataproc-v5.9.0) (2024-09-13)
+
+
+### Features
+
+* [dataproc] add support for new Dataproc features ([#5666](https://github.com/googleapis/google-cloud-node/issues/5666)) ([a53df0d](https://github.com/googleapis/google-cloud-node/commit/a53df0d4600c1666cabf1818d550232f04b265c8))
+
+## [5.8.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.7.0...dataproc-v5.8.0) (2024-09-10)
+
+
+### Features
+
+* [dataproc]add optional parameters (tarball-access) in DiagnoseClusterRequest ([#5652](https://github.com/googleapis/google-cloud-node/issues/5652)) ([2d1df0f](https://github.com/googleapis/google-cloud-node/commit/2d1df0fe8ba212573550b7046db7f6688d7ee036))
+
+## [5.7.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.6.0...dataproc-v5.7.0) (2024-06-26)
+
+
+### Features
+
+* [dataproc] add the cohort and auto tuning configuration to the batch's RuntimeConfig ([#5494](https://github.com/googleapis/google-cloud-node/issues/5494)) ([910da3c](https://github.com/googleapis/google-cloud-node/commit/910da3caf3602e360423db51ed171a42bba4f68a))
+
+## [5.6.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.5.0...dataproc-v5.6.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [5.5.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.4.0...dataproc-v5.5.0) (2024-04-16)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5188](https://github.com/googleapis/google-cloud-node/issues/5188)) ([c5ccdf9](https://github.com/googleapis/google-cloud-node/commit/c5ccdf93641e7bb6d0e5c636168fad0feafab6e3))
+
+## [5.4.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.3.0...dataproc-v5.4.0) (2024-02-07)
+
+
+### Features
+
+* [dataproc] add session and session_template controllers ([#4994](https://github.com/googleapis/google-cloud-node/issues/4994)) ([1163399](https://github.com/googleapis/google-cloud-node/commit/1163399752d783bc7831dfd749e73215e8ebab34))
+
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.2.0...dataproc-v5.3.0) (2023-11-03)
+
+
+### Features
+
+* [dataproc] support required_registration_fraction for secondary workers ([#4786](https://github.com/googleapis/google-cloud-node/issues/4786)) ([8d1ae22](https://github.com/googleapis/google-cloud-node/commit/8d1ae22ced4e3f56a9d9b728140d1ec5c3e1cdde))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.1.0...dataproc-v5.2.0) (2023-09-19)
+
+
+### Features
+
+* [dataproc] add optional parameters (tarball_gcs_dir, diagnosis_interval, jobs, yarn_application_ids) in DiagnoseClusterRequest ([#4661](https://github.com/googleapis/google-cloud-node/issues/4661)) ([9c2bd8e](https://github.com/googleapis/google-cloud-node/commit/9c2bd8e3675ef4021fe166a514e022fe70821f02))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v5.0.0...dataproc-v5.1.0) (2023-09-06)
+
+
+### Features
+
+* [dataproc] support min_num_instances for primary worker and InstanceFlexibilityPolicy for secondary worker ([#4574](https://github.com/googleapis/google-cloud-node/issues/4574)) ([5b112a6](https://github.com/googleapis/google-cloud-node/commit/5b112a6f8b73a8e3604c2465bacc64e799a9bcb0))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4585](https://github.com/googleapis/google-cloud-node/issues/4585)) ([b6cea45](https://github.com/googleapis/google-cloud-node/commit/b6cea45d03faaa7bd6e5daa36ebd0063a1e1f251))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v4.5.0...dataproc-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4461](https://github.com/googleapis/google-cloud-node/issues/4461)) ([61bcc0a](https://github.com/googleapis/google-cloud-node/commit/61bcc0a89c70cf1037299eecd72aef9c98c2e666))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [4.5.0](https://github.com/googleapis/google-cloud-node/compare/dataproc-v4.4.1...dataproc-v4.5.0) (2023-04-24)
 
 

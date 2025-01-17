@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ function main(parent, servicePerimeters) {
    *  Access Policy 
    *  google.identity.accesscontextmanager.v1.AccessPolicy.
    */
-  // const servicePerimeters = 1234
+  // const servicePerimeters = [1,2,3,4]
   /**
    *  Optional. The etag for the version of the Access Policy 
    *  google.identity.accesscontextmanager.v1.AccessPolicy  that this

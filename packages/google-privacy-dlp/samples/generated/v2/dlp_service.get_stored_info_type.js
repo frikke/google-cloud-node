@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ function main(name) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. Resource name of the organization and storedInfoType to be read, for
-   *  example `organizations/433245324/storedInfoTypes/432452342` or
+   *  Required. Resource name of the organization and storedInfoType to be read,
+   *  for example `organizations/433245324/storedInfoTypes/432452342` or
    *  projects/project-id/storedInfoTypes/432452342.
    */
   // const name = 'abc123'

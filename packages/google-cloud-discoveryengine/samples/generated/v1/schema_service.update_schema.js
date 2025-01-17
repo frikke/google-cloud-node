@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ function main(schema) {
   // const schema = {}
   /**
    *  If set to true, and the Schema google.cloud.discoveryengine.v1.Schema  is
-   *  not found, a new Schema google.cloud.discoveryengine.v1.Schema  will be
+   *  not found, a new Schema google.cloud.discoveryengine.v1.Schema  is
    *  created. In this situation, `update_mask` is ignored.
    */
   // const allowMissing = true

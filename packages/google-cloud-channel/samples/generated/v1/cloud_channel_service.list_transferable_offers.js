@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -66,6 +66,13 @@ function main(parent, sku) {
    *  The default value is "en-US".
    */
   // const languageCode = 'abc123'
+  /**
+   *  Optional. The Billing Account to look up Offers for. Format:
+   *  accounts/{account_id}/billingAccounts/{billing_account_id}.
+   *  This field is only relevant for multi-currency accounts. It should be left
+   *  empty for single currency accounts.
+   */
+  // const billingAccount = 'abc123'
 
   // Imports the Channel library
   const {CloudChannelServiceClient} = require('@google-cloud/channel').v1;
@@ -81,7 +88,7 @@ function main(parent, sku) {
     };
 
     // Run request
-    const iterable = await channelClient.listTransferableOffersAsync(request);
+    const iterable = channelClient.listTransferableOffersAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

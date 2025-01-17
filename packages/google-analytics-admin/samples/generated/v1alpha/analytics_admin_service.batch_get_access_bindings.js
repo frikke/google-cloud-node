@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ function main(parent, names) {
    *  - accounts/{account}/accessBindings/{accessBinding}
    *  - properties/{property}/accessBindings/{accessBinding}
    */
-  // const names = 'abc123'
+  // const names = ['abc','def']
 
   // Imports the Admin library
   const {AnalyticsAdminServiceClient} = require('@google-analytics/admin').v1alpha;

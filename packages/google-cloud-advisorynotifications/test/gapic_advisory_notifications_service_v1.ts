@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -129,18 +129,104 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.AdvisoryNotificationsServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient
-          .servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'advisorynotifications.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient
-          .apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          advisorynotificationsserviceModule.v1
+            .AdvisoryNotificationsServiceClient.servicePath;
+        assert.strictEqual(servicePath, 'advisorynotifications.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          advisorynotificationsserviceModule.v1
+            .AdvisoryNotificationsServiceClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'advisorynotifications.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {universeDomain: 'example.com'}
+        );
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'advisorynotifications.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {universe_domain: 'example.com'}
+        );
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'advisorynotifications.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'advisorynotifications.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+              {universeDomain: 'configured.example.com'}
+            );
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(
+            servicePath,
+            'advisorynotifications.configured.example.com'
+          );
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {universe_domain: 'example.com', universeDomain: 'example.net'}
+        );
+      });
     });
 
     it('has port', () => {
@@ -392,6 +478,294 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
     });
   });
 
+  describe('getSettings', () => {
+    it('invokes getSettings without error', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.GetSettingsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.GetSettingsRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.Settings()
+      );
+      client.innerApiCalls.getSettings = stubSimpleCall(expectedResponse);
+      const [response] = await client.getSettings(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.getSettings as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.getSettings as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes getSettings without error using callback', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.GetSettingsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.GetSettingsRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.Settings()
+      );
+      client.innerApiCalls.getSettings =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.getSettings(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.advisorynotifications.v1.ISettings | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.getSettings as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.getSettings as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes getSettings with error', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.GetSettingsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.GetSettingsRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.getSettings = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.getSettings(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.getSettings as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.getSettings as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes getSettings with closed client', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.GetSettingsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.GetSettingsRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.getSettings(request), expectedError);
+    });
+  });
+
+  describe('updateSettings', () => {
+    it('invokes updateSettings without error', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.UpdateSettingsRequest()
+      );
+      request.settings ??= {};
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.UpdateSettingsRequest',
+        ['settings', 'name']
+      );
+      request.settings.name = defaultValue1;
+      const expectedHeaderRequestParams = `settings.name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.Settings()
+      );
+      client.innerApiCalls.updateSettings = stubSimpleCall(expectedResponse);
+      const [response] = await client.updateSettings(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.updateSettings as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.updateSettings as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes updateSettings without error using callback', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.UpdateSettingsRequest()
+      );
+      request.settings ??= {};
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.UpdateSettingsRequest',
+        ['settings', 'name']
+      );
+      request.settings.name = defaultValue1;
+      const expectedHeaderRequestParams = `settings.name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.Settings()
+      );
+      client.innerApiCalls.updateSettings =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.updateSettings(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.advisorynotifications.v1.ISettings | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.updateSettings as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.updateSettings as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes updateSettings with error', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.UpdateSettingsRequest()
+      );
+      request.settings ??= {};
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.UpdateSettingsRequest',
+        ['settings', 'name']
+      );
+      request.settings.name = defaultValue1;
+      const expectedHeaderRequestParams = `settings.name=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.updateSettings = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.updateSettings(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.updateSettings as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.updateSettings as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes updateSettings with closed client', async () => {
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.advisorynotifications.v1.UpdateSettingsRequest()
+      );
+      request.settings ??= {};
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.advisorynotifications.v1.UpdateSettingsRequest',
+        ['settings', 'name']
+      );
+      request.settings.name = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.updateSettings(request), expectedError);
+    });
+  });
+
   describe('listNotifications', () => {
     it('invokes listNotifications without error', async () => {
       const client =
@@ -589,9 +963,9 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
       assert(
         (client.descriptors.page.listNotifications.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -644,9 +1018,9 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
       assert(
         (client.descriptors.page.listNotifications.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -697,9 +1071,9 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
       assert(
         (client.descriptors.page.listNotifications.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -741,16 +1115,16 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
       assert(
         (client.descriptors.page.listNotifications.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
 
   describe('Path templates', () => {
-    describe('location', () => {
-      const fakePath = '/rendered/path/location';
+    describe('organizationLocation', () => {
+      const fakePath = '/rendered/path/organizationLocation';
       const expectedParameters = {
         organization: 'organizationValue',
         location: 'locationValue',
@@ -763,49 +1137,60 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
           }
         );
       client.initialize();
-      client.pathTemplates.locationPathTemplate.render = sinon
+      client.pathTemplates.organizationLocationPathTemplate.render = sinon
         .stub()
         .returns(fakePath);
-      client.pathTemplates.locationPathTemplate.match = sinon
+      client.pathTemplates.organizationLocationPathTemplate.match = sinon
         .stub()
         .returns(expectedParameters);
 
-      it('locationPath', () => {
-        const result = client.locationPath(
+      it('organizationLocationPath', () => {
+        const result = client.organizationLocationPath(
           'organizationValue',
           'locationValue'
         );
         assert.strictEqual(result, fakePath);
         assert(
-          (client.pathTemplates.locationPathTemplate.render as SinonStub)
+          (
+            client.pathTemplates.organizationLocationPathTemplate
+              .render as SinonStub
+          )
             .getCall(-1)
             .calledWith(expectedParameters)
         );
       });
 
-      it('matchOrganizationFromLocationName', () => {
-        const result = client.matchOrganizationFromLocationName(fakePath);
+      it('matchOrganizationFromOrganizationLocationName', () => {
+        const result =
+          client.matchOrganizationFromOrganizationLocationName(fakePath);
         assert.strictEqual(result, 'organizationValue');
         assert(
-          (client.pathTemplates.locationPathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.organizationLocationPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchLocationFromLocationName', () => {
-        const result = client.matchLocationFromLocationName(fakePath);
+      it('matchLocationFromOrganizationLocationName', () => {
+        const result =
+          client.matchLocationFromOrganizationLocationName(fakePath);
         assert.strictEqual(result, 'locationValue');
         assert(
-          (client.pathTemplates.locationPathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.organizationLocationPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
     });
 
-    describe('notification', () => {
-      const fakePath = '/rendered/path/notification';
+    describe('organizationLocationNotification', () => {
+      const fakePath = '/rendered/path/organizationLocationNotification';
       const expectedParameters = {
         organization: 'organizationValue',
         location: 'locationValue',
@@ -819,62 +1204,82 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
           }
         );
       client.initialize();
-      client.pathTemplates.notificationPathTemplate.render = sinon
-        .stub()
-        .returns(fakePath);
-      client.pathTemplates.notificationPathTemplate.match = sinon
-        .stub()
-        .returns(expectedParameters);
+      client.pathTemplates.organizationLocationNotificationPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.organizationLocationNotificationPathTemplate.match =
+        sinon.stub().returns(expectedParameters);
 
-      it('notificationPath', () => {
-        const result = client.notificationPath(
+      it('organizationLocationNotificationPath', () => {
+        const result = client.organizationLocationNotificationPath(
           'organizationValue',
           'locationValue',
           'notificationValue'
         );
         assert.strictEqual(result, fakePath);
         assert(
-          (client.pathTemplates.notificationPathTemplate.render as SinonStub)
+          (
+            client.pathTemplates.organizationLocationNotificationPathTemplate
+              .render as SinonStub
+          )
             .getCall(-1)
             .calledWith(expectedParameters)
         );
       });
 
-      it('matchOrganizationFromNotificationName', () => {
-        const result = client.matchOrganizationFromNotificationName(fakePath);
+      it('matchOrganizationFromOrganizationLocationNotificationName', () => {
+        const result =
+          client.matchOrganizationFromOrganizationLocationNotificationName(
+            fakePath
+          );
         assert.strictEqual(result, 'organizationValue');
         assert(
-          (client.pathTemplates.notificationPathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.organizationLocationNotificationPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchLocationFromNotificationName', () => {
-        const result = client.matchLocationFromNotificationName(fakePath);
+      it('matchLocationFromOrganizationLocationNotificationName', () => {
+        const result =
+          client.matchLocationFromOrganizationLocationNotificationName(
+            fakePath
+          );
         assert.strictEqual(result, 'locationValue');
         assert(
-          (client.pathTemplates.notificationPathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.organizationLocationNotificationPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchNotificationFromNotificationName', () => {
-        const result = client.matchNotificationFromNotificationName(fakePath);
+      it('matchNotificationFromOrganizationLocationNotificationName', () => {
+        const result =
+          client.matchNotificationFromOrganizationLocationNotificationName(
+            fakePath
+          );
         assert.strictEqual(result, 'notificationValue');
         assert(
-          (client.pathTemplates.notificationPathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.organizationLocationNotificationPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
     });
 
-    describe('organization', () => {
-      const fakePath = '/rendered/path/organization';
+    describe('organizationLocationSettings', () => {
+      const fakePath = '/rendered/path/organizationLocationSettings';
       const expectedParameters = {
         organization: 'organizationValue',
+        location: 'locationValue',
       };
       const client =
         new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
@@ -884,28 +1289,199 @@ describe('v1.AdvisoryNotificationsServiceClient', () => {
           }
         );
       client.initialize();
-      client.pathTemplates.organizationPathTemplate.render = sinon
-        .stub()
-        .returns(fakePath);
-      client.pathTemplates.organizationPathTemplate.match = sinon
-        .stub()
-        .returns(expectedParameters);
+      client.pathTemplates.organizationLocationSettingsPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.organizationLocationSettingsPathTemplate.match =
+        sinon.stub().returns(expectedParameters);
 
-      it('organizationPath', () => {
-        const result = client.organizationPath('organizationValue');
+      it('organizationLocationSettingsPath', () => {
+        const result = client.organizationLocationSettingsPath(
+          'organizationValue',
+          'locationValue'
+        );
         assert.strictEqual(result, fakePath);
         assert(
-          (client.pathTemplates.organizationPathTemplate.render as SinonStub)
+          (
+            client.pathTemplates.organizationLocationSettingsPathTemplate
+              .render as SinonStub
+          )
             .getCall(-1)
             .calledWith(expectedParameters)
         );
       });
 
-      it('matchOrganizationFromOrganizationName', () => {
-        const result = client.matchOrganizationFromOrganizationName(fakePath);
+      it('matchOrganizationFromOrganizationLocationSettingsName', () => {
+        const result =
+          client.matchOrganizationFromOrganizationLocationSettingsName(
+            fakePath
+          );
         assert.strictEqual(result, 'organizationValue');
         assert(
-          (client.pathTemplates.organizationPathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.organizationLocationSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromOrganizationLocationSettingsName', () => {
+        const result =
+          client.matchLocationFromOrganizationLocationSettingsName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.organizationLocationSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationNotification', () => {
+      const fakePath = '/rendered/path/projectLocationNotification';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        notification: 'notificationValue',
+      };
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      client.pathTemplates.projectLocationNotificationPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationNotificationPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('projectLocationNotificationPath', () => {
+        const result = client.projectLocationNotificationPath(
+          'projectValue',
+          'locationValue',
+          'notificationValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.projectLocationNotificationPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationNotificationName', () => {
+        const result =
+          client.matchProjectFromProjectLocationNotificationName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationNotificationPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationNotificationName', () => {
+        const result =
+          client.matchLocationFromProjectLocationNotificationName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationNotificationPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchNotificationFromProjectLocationNotificationName', () => {
+        const result =
+          client.matchNotificationFromProjectLocationNotificationName(fakePath);
+        assert.strictEqual(result, 'notificationValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationNotificationPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationSettings', () => {
+      const fakePath = '/rendered/path/projectLocationSettings';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+      };
+      const client =
+        new advisorynotificationsserviceModule.v1.AdvisoryNotificationsServiceClient(
+          {
+            credentials: {client_email: 'bogus', private_key: 'bogus'},
+            projectId: 'bogus',
+          }
+        );
+      client.initialize();
+      client.pathTemplates.projectLocationSettingsPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.projectLocationSettingsPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('projectLocationSettingsPath', () => {
+        const result = client.projectLocationSettingsPath(
+          'projectValue',
+          'locationValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.projectLocationSettingsPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationSettingsName', () => {
+        const result =
+          client.matchProjectFromProjectLocationSettingsName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationSettingsName', () => {
+        const result =
+          client.matchLocationFromProjectLocationSettingsName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationSettingsPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );

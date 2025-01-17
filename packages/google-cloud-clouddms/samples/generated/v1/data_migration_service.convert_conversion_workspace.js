@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,15 +34,21 @@ function main() {
    */
   // const name = 'abc123'
   /**
-   *  Specifies whether the conversion workspace is to be committed automatically
-   *  after the conversion.
+   *  Optional. Specifies whether the conversion workspace is to be committed
+   *  automatically after the conversion.
    */
   // const autoCommit = true
   /**
-   *  Filter the entities to convert. Leaving this field empty will convert all
-   *  of the entities. Supports Google AIP-160 style filtering.
+   *  Optional. Filter the entities to convert. Leaving this field empty will
+   *  convert all of the entities. Supports Google AIP-160 style filtering.
    */
   // const filter = 'abc123'
+  /**
+   *  Optional. Automatically convert the full entity path for each entity
+   *  specified by the filter. For example, if the filter specifies a table, that
+   *  table schema (and database if there is one) will also be converted.
+   */
+  // const convertFullPath = true
 
   // Imports the Clouddms library
   const {DataMigrationServiceClient} = require('@google-cloud/dms').v1;

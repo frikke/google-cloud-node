@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ function main(azureCluster) {
    *  AzureCluster google.cloud.gkemulticloud.v1.AzureCluster  resource to
    *  authenticate to.
    *  `AzureCluster` names are formatted as
-   *  `projects/<project-id>/locations/<region>/AzureClusters/<cluster-id>`.
+   *  `projects/<project-id>/locations/<region>/azureClusters/<cluster-id>`.
    *  See Resource Names (https://cloud.google.com/apis/design/resource_names)
    *  for more details on Google Cloud resource names.
    */

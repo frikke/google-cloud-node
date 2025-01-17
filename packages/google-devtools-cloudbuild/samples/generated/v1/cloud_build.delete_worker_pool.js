@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,8 +35,8 @@ function main(name) {
    */
   // const name = 'abc123'
   /**
-   *  Optional. If this is provided, it must match the server's etag on the
-   *  workerpool for the request to be processed.
+   *  Optional. If provided, it must match the server's etag on the workerpool
+   *  for the request to be processed.
    */
   // const etag = 'abc123'
   /**

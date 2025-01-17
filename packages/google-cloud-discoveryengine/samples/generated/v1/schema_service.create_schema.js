@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,8 +39,8 @@ function main(parent, schema, schemaId) {
   // const schema = {}
   /**
    *  Required. The ID to use for the
-   *  Schema google.cloud.discoveryengine.v1.Schema, which will become the
-   *  final component of the
+   *  Schema google.cloud.discoveryengine.v1.Schema, which becomes the final
+   *  component of the
    *  Schema.name google.cloud.discoveryengine.v1.Schema.name.
    *  This field should conform to
    *  RFC-1034 (https://tools.ietf.org/html/rfc1034) standard with a length

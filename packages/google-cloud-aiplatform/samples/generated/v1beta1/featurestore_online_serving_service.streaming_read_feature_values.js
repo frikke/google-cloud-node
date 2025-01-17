@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ function main(entityType, entityIds, featureSelector) {
    *  IDs is 100. For example, for a machine learning model predicting user
    *  clicks on a website, an entity ID could be `user_123`.
    */
-  // const entityIds = 'abc123'
+  // const entityIds = ['abc','def']
   /**
    *  Required. Selector choosing Features of the target EntityType. Feature IDs
    *  will be deduplicated.

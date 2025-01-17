@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ function main(parent) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. Resource name of project that the newly created taxonomies will
-   *  belong to.
+   *  Required. Resource name of project that the imported taxonomies will belong
+   *  to.
    */
   // const parent = 'abc123'
   /**
-   *  Inline source used for taxonomies import
+   *  Inline source used for taxonomies to be imported.
    */
   // const inlineSource = {}
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/index_service_client_config.json`.
@@ -56,6 +57,8 @@ export class IndexServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -99,8 +102,7 @@ export class IndexServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -108,7 +110,7 @@ export class IndexServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new IndexServiceClient({fallback: 'rest'}, gax);
+   *     const client = new IndexServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -117,8 +119,27 @@ export class IndexServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof IndexServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'aiplatform.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -129,8 +150,11 @@ export class IndexServiceClient {
       (typeof window !== 'undefined' && typeof window?.fetch === 'function');
     opts = Object.assign({servicePath, port, clientConfig, fallback}, opts);
 
+    // Request numeric enum values if REST transport is used.
+    opts.numericEnums = true;
+
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -155,10 +179,10 @@ export class IndexServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -170,14 +194,14 @@ export class IndexServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -217,14 +241,29 @@ export class IndexServiceClient {
       datasetPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/datasets/{dataset}'
       ),
+      datasetVersionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/datasets/{dataset}/datasetVersions/{dataset_version}'
+      ),
+      deploymentResourcePoolPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}'
+      ),
       entityTypePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}'
       ),
       executionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/metadataStores/{metadata_store}/executions/{execution}'
       ),
-      featurePathTemplate: new this._gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}'
+      featureGroupPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureGroups/{feature_group}'
+      ),
+      featureOnlineStorePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}'
+      ),
+      featureViewPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}/featureViews/{feature_view}'
+      ),
+      featureViewSyncPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}/featureViews/{feature_view}/featureViewSyncs/feature_view_sync'
       ),
       featurestorePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/featurestores/{featurestore}'
@@ -266,12 +305,32 @@ export class IndexServiceClient {
       nasTrialDetailPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/nasJobs/{nas_job}/nasTrialDetails/{nas_trial_detail}'
       ),
+      notebookExecutionJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookExecutionJobs/{notebook_execution_job}'
+      ),
+      notebookRuntimePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookRuntimes/{notebook_runtime}'
+      ),
+      notebookRuntimeTemplatePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookRuntimeTemplates/{notebook_runtime_template}'
+      ),
+      persistentResourcePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/persistentResources/{persistent_resource}'
+      ),
       pipelineJobPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}'
       ),
       projectLocationEndpointPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/endpoints/{endpoint}'
       ),
+      projectLocationFeatureGroupFeaturePathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/featureGroups/{feature_group}/features/{feature}'
+        ),
+      projectLocationFeaturestoreEntityTypeFeaturePathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}'
+        ),
       projectLocationPublisherModelPathTemplate:
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/publishers/{publisher}/models/{model}'
@@ -281,6 +340,9 @@ export class IndexServiceClient {
       ),
       savedQueryPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/datasets/{dataset}/savedQueries/{saved_query}'
+      ),
+      schedulePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/schedules/{schedule}'
       ),
       specialistPoolPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/specialistPools/{specialist_pool}'
@@ -306,6 +368,9 @@ export class IndexServiceClient {
       trialPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/studies/{study}/trials/{trial}'
       ),
+      tuningJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/tuningJobs/{tuning_job}'
+      ),
     };
 
     // Some of the methods on this service return "paged" results,
@@ -327,7 +392,7 @@ export class IndexServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -348,6 +413,18 @@ export class IndexServiceClient {
               post: '/v1/{resource=projects/*/locations/*/featurestores/*/entityTypes/*}:getIamPolicy',
             },
             {
+              post: '/v1/{resource=projects/*/locations/*/models/*}:getIamPolicy',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:getIamPolicy',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*}:getIamPolicy',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:getIamPolicy',
+            },
+            {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:getIamPolicy',
             },
             {
@@ -362,6 +439,15 @@ export class IndexServiceClient {
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:getIamPolicy',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/publishers/*/models/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:getIamPolicy',
+            },
           ],
         },
         {
@@ -371,6 +457,22 @@ export class IndexServiceClient {
           additional_bindings: [
             {
               post: '/v1/{resource=projects/*/locations/*/featurestores/*/entityTypes/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/models/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:setIamPolicy',
               body: '*',
             },
             {
@@ -393,6 +495,14 @@ export class IndexServiceClient {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:setIamPolicy',
               body: '*',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:setIamPolicy',
+              body: '*',
+            },
           ],
         },
         {
@@ -401,6 +511,18 @@ export class IndexServiceClient {
           additional_bindings: [
             {
               post: '/v1/{resource=projects/*/locations/*/featurestores/*/entityTypes/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/models/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:testIamPermissions',
             },
             {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:testIamPermissions',
@@ -417,12 +539,24 @@ export class IndexServiceClient {
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:testIamPermissions',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:testIamPermissions',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:testIamPermissions',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.CancelOperation',
           post: '/ui/{name=projects/*/locations/*/operations/*}:cancel',
           additional_bindings: [
+            {
+              post: '/ui/{name=projects/*/locations/*/agents/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/apps/*/operations/*}:cancel',
+            },
             {
               post: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}:cancel',
             },
@@ -448,6 +582,12 @@ export class IndexServiceClient {
               post: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}:cancel',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}:cancel',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}:cancel',
             },
             {
@@ -466,10 +606,25 @@ export class IndexServiceClient {
               post: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:cancel',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}:cancel',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:cancel',
@@ -485,6 +640,18 @@ export class IndexServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/studies/*/operations/*}:cancel',
@@ -557,10 +724,25 @@ export class IndexServiceClient {
               post: '/v1/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:cancel',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/tuningJobs/*/operations/*}:cancel',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/indexes/*/operations/*}:cancel',
             },
             {
               post: '/v1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:cancel',
             },
             {
               post: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:cancel',
@@ -575,6 +757,18 @@ export class IndexServiceClient {
               post: '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/studies/*/operations/*}:cancel',
             },
             {
@@ -585,6 +779,9 @@ export class IndexServiceClient {
             },
             {
               post: '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/schedules/*/operations/*}:cancel',
             },
             {
               post: '/v1/{name=projects/*/locations/*/specialistPools/*/operations/*}:cancel',
@@ -607,6 +804,8 @@ export class IndexServiceClient {
           selector: 'google.longrunning.Operations.DeleteOperation',
           delete: '/ui/{name=projects/*/locations/*/operations/*}',
           additional_bindings: [
+            {delete: '/ui/{name=projects/*/locations/*/agents/*/operations/*}'},
+            {delete: '/ui/{name=projects/*/locations/*/apps/*/operations/*}'},
             {
               delete:
                 '/ui/{name=projects/*/locations/*/datasets/*/operations/*}',
@@ -638,6 +837,14 @@ export class IndexServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/extensions/*}/operations',
             },
             {
               delete:
@@ -673,6 +880,22 @@ export class IndexServiceClient {
             },
             {
               delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
+            },
+            {
+              delete:
                 '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
             },
             {
@@ -687,6 +910,22 @@ export class IndexServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}',
             },
             {
               delete:
@@ -727,6 +966,22 @@ export class IndexServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
             },
             {delete: '/v1/{name=projects/*/locations/*/operations/*}'},
             {
@@ -791,6 +1046,22 @@ export class IndexServiceClient {
             },
             {
               delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
             },
             {
@@ -801,6 +1072,18 @@ export class IndexServiceClient {
             {
               delete:
                 '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
             },
             {
               delete:
@@ -816,7 +1099,15 @@ export class IndexServiceClient {
             },
             {
               delete:
+                '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/schedules/*/operations/*}',
             },
             {
               delete:
@@ -838,12 +1129,30 @@ export class IndexServiceClient {
               delete:
                 '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
             },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.GetOperation',
           get: '/ui/{name=projects/*/locations/*/operations/*}',
           additional_bindings: [
+            {get: '/ui/{name=projects/*/locations/*/agents/*/operations/*}'},
+            {get: '/ui/{name=projects/*/locations/*/apps/*/operations/*}'},
             {get: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/datasets/*/dataItems/*/operations/*}',
@@ -868,6 +1177,12 @@ export class IndexServiceClient {
             },
             {get: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}'},
             {
+              get: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}',
+            },
+            {
               get: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}',
             },
             {
@@ -885,9 +1200,24 @@ export class IndexServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}',
+            },
             {get: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
             },
             {
               get: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
@@ -901,6 +1231,18 @@ export class IndexServiceClient {
             {get: '/ui/{name=projects/*/locations/*/models/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}',
             },
             {get: '/ui/{name=projects/*/locations/*/studies/*/operations/*}'},
             {
@@ -927,6 +1269,18 @@ export class IndexServiceClient {
             },
             {
               get: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
             },
             {get: '/v1/{name=projects/*/locations/*/operations/*}'},
             {get: '/v1/{name=projects/*/locations/*/datasets/*/operations/*}'},
@@ -964,9 +1318,24 @@ export class IndexServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/tuningJobs/*/operations/*}',
+            },
             {get: '/v1/{name=projects/*/locations/*/indexes/*/operations/*}'},
             {
               get: '/v1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
             },
             {
               get: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
@@ -978,6 +1347,15 @@ export class IndexServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
             {get: '/v1/{name=projects/*/locations/*/studies/*/operations/*}'},
             {
               get: '/v1/{name=projects/*/locations/*/studies/*/trials/*/operations/*}',
@@ -986,8 +1364,12 @@ export class IndexServiceClient {
               get: '/v1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}',
             },
             {
+              get: '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}',
+            },
+            {
               get: '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}',
             },
+            {get: '/v1/{name=projects/*/locations/*/schedules/*/operations/*}'},
             {
               get: '/v1/{name=projects/*/locations/*/specialistPools/*/operations/*}',
             },
@@ -1003,12 +1385,26 @@ export class IndexServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.ListOperations',
           get: '/ui/{name=projects/*/locations/*}/operations',
           additional_bindings: [
+            {get: '/ui/{name=projects/*/locations/*/agents/*}/operations'},
+            {get: '/ui/{name=projects/*/locations/*/apps/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/datasets/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/datasets/*/dataItems/*}/operations',
@@ -1028,6 +1424,10 @@ export class IndexServiceClient {
             {get: '/ui/{name=projects/*/locations/*/edgeDevices/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/endpoints/*}/operations'},
             {
+              get: '/ui/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {get: '/ui/{name=projects/*/locations/*/extensions/*}/operations'},
+            {
               get: '/ui/{name=projects/*/locations/*/featurestores/*}/operations',
             },
             {
@@ -1043,9 +1443,22 @@ export class IndexServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*}/operations',
             },
+            {get: '/ui/{name=projects/*/locations/*/tuningJobs/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/indexes/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/indexEndpoints/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*}/operations',
@@ -1060,12 +1473,24 @@ export class IndexServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/models/*/evaluations/*}/operations',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimes/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*}/operations',
+            },
             {get: '/ui/{name=projects/*/locations/*/studies/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/studies/*/trials/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/trainingPipelines/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/persistentResources/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/pipelineJobs/*}/operations',
@@ -1085,6 +1510,18 @@ export class IndexServiceClient {
             },
             {
               get: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
             },
             {get: '/v1/{name=projects/*/locations/*}/operations'},
             {get: '/v1/{name=projects/*/locations/*/datasets/*}/operations'},
@@ -1120,9 +1557,22 @@ export class IndexServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/hyperparameterTuningJobs/*}/operations',
             },
+            {get: '/v1/{name=projects/*/locations/*/tuningJobs/*}/operations'},
             {get: '/v1/{name=projects/*/locations/*/indexes/*}/operations'},
             {
               get: '/v1/{name=projects/*/locations/*/indexEndpoints/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*}/operations',
             },
             {
               get: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*}/operations',
@@ -1134,6 +1584,15 @@ export class IndexServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/models/*/evaluations/*}/operations',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimes/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*}/operations',
+            },
             {get: '/v1/{name=projects/*/locations/*/studies/*}/operations'},
             {
               get: '/v1/{name=projects/*/locations/*/studies/*/trials/*}/operations',
@@ -1142,8 +1601,12 @@ export class IndexServiceClient {
               get: '/v1/{name=projects/*/locations/*/trainingPipelines/*}/operations',
             },
             {
+              get: '/v1/{name=projects/*/locations/*/persistentResources/*}/operations',
+            },
+            {
               get: '/v1/{name=projects/*/locations/*/pipelineJobs/*}/operations',
             },
+            {get: '/v1/{name=projects/*/locations/*/schedules/*}/operations'},
             {
               get: '/v1/{name=projects/*/locations/*/specialistPools/*}/operations',
             },
@@ -1159,12 +1622,30 @@ export class IndexServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*}/operations',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.WaitOperation',
           post: '/ui/{name=projects/*/locations/*/operations/*}:wait',
           additional_bindings: [
+            {
+              post: '/ui/{name=projects/*/locations/*/agents/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/apps/*/operations/*}:wait',
+            },
             {
               post: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}:wait',
             },
@@ -1190,6 +1671,12 @@ export class IndexServiceClient {
               post: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}:wait',
             },
             {
@@ -1208,10 +1695,25 @@ export class IndexServiceClient {
               post: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:wait',
@@ -1229,6 +1731,15 @@ export class IndexServiceClient {
               post: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/studies/*/operations/*}:wait',
             },
             {
@@ -1236,6 +1747,9 @@ export class IndexServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:wait',
@@ -1257,6 +1771,18 @@ export class IndexServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
             },
             {post: '/v1/{name=projects/*/locations/*/operations/*}:wait'},
             {
@@ -1305,6 +1831,18 @@ export class IndexServiceClient {
               post: '/v1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:wait',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:wait',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:wait',
             },
             {
@@ -1317,6 +1855,15 @@ export class IndexServiceClient {
               post: '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:wait',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/studies/*/operations/*}:wait',
             },
             {
@@ -1326,7 +1873,13 @@ export class IndexServiceClient {
               post: '/v1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:wait',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/schedules/*/operations/*}:wait',
             },
             {
               post: '/v1/{name=projects/*/locations/*/specialistPools/*/operations/*}:wait',
@@ -1342,6 +1895,18 @@ export class IndexServiceClient {
             },
             {
               post: '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
             },
           ],
         },
@@ -1479,19 +2044,50 @@ export class IndexServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'aiplatform.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'aiplatform.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -1542,9 +2138,8 @@ export class IndexServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Index | Index}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Index|Index}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.get_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_GetIndex_async
@@ -1556,7 +2151,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IIndex,
       protos.google.cloud.aiplatform.v1.IGetIndexRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getIndex(
@@ -1594,7 +2189,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IIndex,
       protos.google.cloud.aiplatform.v1.IGetIndexRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1626,12 +2221,19 @@ export class IndexServiceClient {
    *   `projects/{project}/locations/{location}/indexes/{index}`
    * @param {number[]} request.datapoints
    *   A list of datapoints to be created/updated.
+   * @param {google.protobuf.FieldMask} [request.updateMask]
+   *   Optional. Update mask is used to specify the fields to be overwritten in
+   *   the datapoints by the update. The fields specified in the update_mask are
+   *   relative to each IndexDatapoint inside datapoints, not the full request.
+   *
+   *   Updatable fields:
+   *
+   *     * Use `all_restricts` to update both restricts and numeric_restricts.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.UpsertDatapointsResponse | UpsertDatapointsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.UpsertDatapointsResponse|UpsertDatapointsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.upsert_datapoints.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_UpsertDatapoints_async
@@ -1643,7 +2245,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IUpsertDatapointsResponse,
       protos.google.cloud.aiplatform.v1.IUpsertDatapointsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   upsertDatapoints(
@@ -1689,7 +2291,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IUpsertDatapointsResponse,
       protos.google.cloud.aiplatform.v1.IUpsertDatapointsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1724,9 +2326,8 @@ export class IndexServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.RemoveDatapointsResponse | RemoveDatapointsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.RemoveDatapointsResponse|RemoveDatapointsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.remove_datapoints.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_RemoveDatapoints_async
@@ -1738,7 +2339,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IRemoveDatapointsResponse,
       protos.google.cloud.aiplatform.v1.IRemoveDatapointsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   removeDatapoints(
@@ -1784,7 +2385,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IRemoveDatapointsResponse,
       protos.google.cloud.aiplatform.v1.IRemoveDatapointsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1822,8 +2423,7 @@ export class IndexServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.create_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_CreateIndex_async
@@ -1838,7 +2438,7 @@ export class IndexServiceClient {
         protos.google.cloud.aiplatform.v1.ICreateIndexOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createIndex(
@@ -1891,7 +2491,7 @@ export class IndexServiceClient {
         protos.google.cloud.aiplatform.v1.ICreateIndexOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1918,8 +2518,7 @@ export class IndexServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.create_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_CreateIndex_async
@@ -1957,15 +2556,14 @@ export class IndexServiceClient {
    * @param {google.protobuf.FieldMask} request.updateMask
    *   The update mask applies to the resource.
    *   For the `FieldMask` definition, see
-   *   {@link google.protobuf.FieldMask|google.protobuf.FieldMask}.
+   *   {@link protos.google.protobuf.FieldMask|google.protobuf.FieldMask}.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.update_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_UpdateIndex_async
@@ -1980,7 +2578,7 @@ export class IndexServiceClient {
         protos.google.cloud.aiplatform.v1.IUpdateIndexOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateIndex(
@@ -2033,7 +2631,7 @@ export class IndexServiceClient {
         protos.google.cloud.aiplatform.v1.IUpdateIndexOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2060,8 +2658,7 @@ export class IndexServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.update_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_UpdateIndex_async
@@ -2092,7 +2689,7 @@ export class IndexServiceClient {
   /**
    * Deletes an Index.
    * An Index can only be deleted when all its
-   * {@link google.cloud.aiplatform.v1.Index.deployed_indexes|DeployedIndexes} had
+   * {@link protos.google.cloud.aiplatform.v1.Index.deployed_indexes|DeployedIndexes} had
    * been undeployed.
    *
    * @param {Object} request
@@ -2107,8 +2704,7 @@ export class IndexServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.delete_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_DeleteIndex_async
@@ -2123,7 +2719,7 @@ export class IndexServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteIndex(
@@ -2176,7 +2772,7 @@ export class IndexServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2203,8 +2799,7 @@ export class IndexServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.delete_index.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_DeleteIndex_async
@@ -2247,23 +2842,22 @@ export class IndexServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1.ListIndexesResponse.next_page_token|ListIndexesResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1.ListIndexesResponse.next_page_token|ListIndexesResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1.IndexService.ListIndexes|IndexService.ListIndexes}
+   *   {@link protos.google.cloud.aiplatform.v1.IndexService.ListIndexes|IndexService.ListIndexes}
    *   call.
    * @param {google.protobuf.FieldMask} request.readMask
    *   Mask specifying which fields to read.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1.Index | Index}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1.Index|Index}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listIndexesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listIndexes(
@@ -2273,7 +2867,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IIndex[],
       protos.google.cloud.aiplatform.v1.IListIndexesRequest | null,
-      protos.google.cloud.aiplatform.v1.IListIndexesResponse
+      protos.google.cloud.aiplatform.v1.IListIndexesResponse,
     ]
   >;
   listIndexes(
@@ -2313,7 +2907,7 @@ export class IndexServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IIndex[],
       protos.google.cloud.aiplatform.v1.IListIndexesRequest | null,
-      protos.google.cloud.aiplatform.v1.IListIndexesResponse
+      protos.google.cloud.aiplatform.v1.IListIndexesResponse,
     ]
   > | void {
     request = request || {};
@@ -2349,22 +2943,21 @@ export class IndexServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1.ListIndexesResponse.next_page_token|ListIndexesResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1.ListIndexesResponse.next_page_token|ListIndexesResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1.IndexService.ListIndexes|IndexService.ListIndexes}
+   *   {@link protos.google.cloud.aiplatform.v1.IndexService.ListIndexes|IndexService.ListIndexes}
    *   call.
    * @param {google.protobuf.FieldMask} request.readMask
    *   Mask specifying which fields to read.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1.Index | Index} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1.Index|Index} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listIndexesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listIndexesStream(
@@ -2405,21 +2998,20 @@ export class IndexServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1.ListIndexesResponse.next_page_token|ListIndexesResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1.ListIndexesResponse.next_page_token|ListIndexesResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1.IndexService.ListIndexes|IndexService.ListIndexes}
+   *   {@link protos.google.cloud.aiplatform.v1.IndexService.ListIndexes|IndexService.ListIndexes}
    *   call.
    * @param {google.protobuf.FieldMask} request.readMask
    *   Mask specifying which fields to read.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1.Index | Index}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1.Index|Index}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/index_service.list_indexes.js</caption>
    * region_tag:aiplatform_v1_generated_IndexService_ListIndexes_async
@@ -2484,7 +3076,7 @@ export class IndexServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -2505,8 +3097,7 @@ export class IndexServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -2532,7 +3123,7 @@ export class IndexServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -2553,8 +3144,7 @@ export class IndexServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -2581,7 +3171,7 @@ export class IndexServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -2596,8 +3186,7 @@ export class IndexServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -2643,12 +3232,11 @@ export class IndexServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -3431,6 +4019,146 @@ export class IndexServiceClient {
   }
 
   /**
+   * Return a fully-qualified datasetVersion resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} dataset
+   * @param {string} dataset_version
+   * @returns {string} Resource name string.
+   */
+  datasetVersionPath(
+    project: string,
+    location: string,
+    dataset: string,
+    datasetVersion: string
+  ) {
+    return this.pathTemplates.datasetVersionPathTemplate.render({
+      project: project,
+      location: location,
+      dataset: dataset,
+      dataset_version: datasetVersion,
+    });
+  }
+
+  /**
+   * Parse the project from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).project;
+  }
+
+  /**
+   * Parse the location from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).location;
+  }
+
+  /**
+   * Parse the dataset from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the dataset.
+   */
+  matchDatasetFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).dataset;
+  }
+
+  /**
+   * Parse the dataset_version from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the dataset_version.
+   */
+  matchDatasetVersionFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).dataset_version;
+  }
+
+  /**
+   * Return a fully-qualified deploymentResourcePool resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} deployment_resource_pool
+   * @returns {string} Resource name string.
+   */
+  deploymentResourcePoolPath(
+    project: string,
+    location: string,
+    deploymentResourcePool: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.render({
+      project: project,
+      location: location,
+      deployment_resource_pool: deploymentResourcePool,
+    });
+  }
+
+  /**
+   * Parse the project from DeploymentResourcePool resource.
+   *
+   * @param {string} deploymentResourcePoolName
+   *   A fully-qualified path representing DeploymentResourcePool resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDeploymentResourcePoolName(
+    deploymentResourcePoolName: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.match(
+      deploymentResourcePoolName
+    ).project;
+  }
+
+  /**
+   * Parse the location from DeploymentResourcePool resource.
+   *
+   * @param {string} deploymentResourcePoolName
+   *   A fully-qualified path representing DeploymentResourcePool resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDeploymentResourcePoolName(
+    deploymentResourcePoolName: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.match(
+      deploymentResourcePoolName
+    ).location;
+  }
+
+  /**
+   * Parse the deployment_resource_pool from DeploymentResourcePool resource.
+   *
+   * @param {string} deploymentResourcePoolName
+   *   A fully-qualified path representing DeploymentResourcePool resource.
+   * @returns {string} A string representing the deployment_resource_pool.
+   */
+  matchDeploymentResourcePoolFromDeploymentResourcePoolName(
+    deploymentResourcePoolName: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.match(
+      deploymentResourcePoolName
+    ).deployment_resource_pool;
+  }
+
+  /**
    * Return a fully-qualified entityType resource name string.
    *
    * @param {string} project
@@ -3573,86 +4301,262 @@ export class IndexServiceClient {
   }
 
   /**
-   * Return a fully-qualified feature resource name string.
+   * Return a fully-qualified featureGroup resource name string.
    *
    * @param {string} project
    * @param {string} location
-   * @param {string} featurestore
-   * @param {string} entity_type
-   * @param {string} feature
+   * @param {string} feature_group
    * @returns {string} Resource name string.
    */
-  featurePath(
-    project: string,
-    location: string,
-    featurestore: string,
-    entityType: string,
-    feature: string
-  ) {
-    return this.pathTemplates.featurePathTemplate.render({
+  featureGroupPath(project: string, location: string, featureGroup: string) {
+    return this.pathTemplates.featureGroupPathTemplate.render({
       project: project,
       location: location,
-      featurestore: featurestore,
-      entity_type: entityType,
-      feature: feature,
+      feature_group: featureGroup,
     });
   }
 
   /**
-   * Parse the project from Feature resource.
+   * Parse the project from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
    * @returns {string} A string representing the project.
    */
-  matchProjectFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).project;
+  matchProjectFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .project;
   }
 
   /**
-   * Parse the location from Feature resource.
+   * Parse the location from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
    * @returns {string} A string representing the location.
    */
-  matchLocationFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).location;
+  matchLocationFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .location;
   }
 
   /**
-   * Parse the featurestore from Feature resource.
+   * Parse the feature_group from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the featurestore.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
+   * @returns {string} A string representing the feature_group.
    */
-  matchFeaturestoreFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName)
-      .featurestore;
+  matchFeatureGroupFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .feature_group;
   }
 
   /**
-   * Parse the entity_type from Feature resource.
+   * Return a fully-qualified featureOnlineStore resource name string.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the entity_type.
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @returns {string} Resource name string.
    */
-  matchEntityTypeFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName)
-      .entity_type;
+  featureOnlineStorePath(
+    project: string,
+    location: string,
+    featureOnlineStore: string
+  ) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+    });
   }
 
   /**
-   * Parse the feature from Feature resource.
+   * Parse the project from FeatureOnlineStore resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the feature.
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the project.
    */
-  matchFeatureFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).feature;
+  matchProjectFromFeatureOnlineStoreName(featureOnlineStoreName: string) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureOnlineStoreName(featureOnlineStoreName: string) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureOnlineStoreName(
+    featureOnlineStoreName: string
+  ) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).feature_online_store;
+  }
+
+  /**
+   * Return a fully-qualified featureView resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @param {string} feature_view
+   * @returns {string} Resource name string.
+   */
+  featureViewPath(
+    project: string,
+    location: string,
+    featureOnlineStore: string,
+    featureView: string
+  ) {
+    return this.pathTemplates.featureViewPathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+      feature_view: featureView,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .project;
+  }
+
+  /**
+   * Parse the location from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .feature_online_store;
+  }
+
+  /**
+   * Parse the feature_view from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the feature_view.
+   */
+  matchFeatureViewFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .feature_view;
+  }
+
+  /**
+   * Return a fully-qualified featureViewSync resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @param {string} feature_view
+   * @returns {string} Resource name string.
+   */
+  featureViewSyncPath(
+    project: string,
+    location: string,
+    featureOnlineStore: string,
+    featureView: string
+  ) {
+    return this.pathTemplates.featureViewSyncPathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+      feature_view: featureView,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).feature_online_store;
+  }
+
+  /**
+   * Parse the feature_view from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the feature_view.
+   */
+  matchFeatureViewFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).feature_view;
   }
 
   /**
@@ -4443,6 +5347,252 @@ export class IndexServiceClient {
   }
 
   /**
+   * Return a fully-qualified notebookExecutionJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_execution_job
+   * @returns {string} Resource name string.
+   */
+  notebookExecutionJobPath(
+    project: string,
+    location: string,
+    notebookExecutionJob: string
+  ) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.render({
+      project: project,
+      location: location,
+      notebook_execution_job: notebookExecutionJob,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookExecutionJobName(notebookExecutionJobName: string) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookExecutionJobName(notebookExecutionJobName: string) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_execution_job from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the notebook_execution_job.
+   */
+  matchNotebookExecutionJobFromNotebookExecutionJobName(
+    notebookExecutionJobName: string
+  ) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).notebook_execution_job;
+  }
+
+  /**
+   * Return a fully-qualified notebookRuntime resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_runtime
+   * @returns {string} Resource name string.
+   */
+  notebookRuntimePath(
+    project: string,
+    location: string,
+    notebookRuntime: string
+  ) {
+    return this.pathTemplates.notebookRuntimePathTemplate.render({
+      project: project,
+      location: location,
+      notebook_runtime: notebookRuntime,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_runtime from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the notebook_runtime.
+   */
+  matchNotebookRuntimeFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).notebook_runtime;
+  }
+
+  /**
+   * Return a fully-qualified notebookRuntimeTemplate resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_runtime_template
+   * @returns {string} Resource name string.
+   */
+  notebookRuntimeTemplatePath(
+    project: string,
+    location: string,
+    notebookRuntimeTemplate: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.render({
+      project: project,
+      location: location,
+      notebook_runtime_template: notebookRuntimeTemplate,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_runtime_template from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the notebook_runtime_template.
+   */
+  matchNotebookRuntimeTemplateFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).notebook_runtime_template;
+  }
+
+  /**
+   * Return a fully-qualified persistentResource resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} persistent_resource
+   * @returns {string} Resource name string.
+   */
+  persistentResourcePath(
+    project: string,
+    location: string,
+    persistentResource: string
+  ) {
+    return this.pathTemplates.persistentResourcePathTemplate.render({
+      project: project,
+      location: location,
+      persistent_resource: persistentResource,
+    });
+  }
+
+  /**
+   * Parse the project from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromPersistentResourceName(persistentResourceName: string) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).project;
+  }
+
+  /**
+   * Parse the location from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromPersistentResourceName(persistentResourceName: string) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).location;
+  }
+
+  /**
+   * Parse the persistent_resource from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the persistent_resource.
+   */
+  matchPersistentResourceFromPersistentResourceName(
+    persistentResourceName: string
+  ) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).persistent_resource;
+  }
+
+  /**
    * Return a fully-qualified pipelineJob resource name string.
    *
    * @param {string} project
@@ -4557,6 +5707,194 @@ export class IndexServiceClient {
     return this.pathTemplates.projectLocationEndpointPathTemplate.match(
       projectLocationEndpointName
     ).endpoint;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationFeatureGroupFeature resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_group
+   * @param {string} feature
+   * @returns {string} Resource name string.
+   */
+  projectLocationFeatureGroupFeaturePath(
+    project: string,
+    location: string,
+    featureGroup: string,
+    feature: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.render(
+      {
+        project: project,
+        location: location,
+        feature_group: featureGroup,
+        feature: feature,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_group from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the feature_group.
+   */
+  matchFeatureGroupFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).feature_group;
+  }
+
+  /**
+   * Parse the feature from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the feature.
+   */
+  matchFeatureFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).feature;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationFeaturestoreEntityTypeFeature resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} featurestore
+   * @param {string} entity_type
+   * @param {string} feature
+   * @returns {string} Resource name string.
+   */
+  projectLocationFeaturestoreEntityTypeFeaturePath(
+    project: string,
+    location: string,
+    featurestore: string,
+    entityType: string,
+    feature: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.render(
+      {
+        project: project,
+        location: location,
+        featurestore: featurestore,
+        entity_type: entityType,
+        feature: feature,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).location;
+  }
+
+  /**
+   * Parse the featurestore from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the featurestore.
+   */
+  matchFeaturestoreFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).featurestore;
+  }
+
+  /**
+   * Parse the entity_type from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the entity_type.
+   */
+  matchEntityTypeFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).entity_type;
+  }
+
+  /**
+   * Parse the feature from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the feature.
+   */
+  matchFeatureFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).feature;
   }
 
   /**
@@ -4751,6 +6089,55 @@ export class IndexServiceClient {
   matchSavedQueryFromSavedQueryName(savedQueryName: string) {
     return this.pathTemplates.savedQueryPathTemplate.match(savedQueryName)
       .saved_query;
+  }
+
+  /**
+   * Return a fully-qualified schedule resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} schedule
+   * @returns {string} Resource name string.
+   */
+  schedulePath(project: string, location: string, schedule: string) {
+    return this.pathTemplates.schedulePathTemplate.render({
+      project: project,
+      location: location,
+      schedule: schedule,
+    });
+  }
+
+  /**
+   * Parse the project from Schedule resource.
+   *
+   * @param {string} scheduleName
+   *   A fully-qualified path representing Schedule resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromScheduleName(scheduleName: string) {
+    return this.pathTemplates.schedulePathTemplate.match(scheduleName).project;
+  }
+
+  /**
+   * Parse the location from Schedule resource.
+   *
+   * @param {string} scheduleName
+   *   A fully-qualified path representing Schedule resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromScheduleName(scheduleName: string) {
+    return this.pathTemplates.schedulePathTemplate.match(scheduleName).location;
+  }
+
+  /**
+   * Parse the schedule from Schedule resource.
+   *
+   * @param {string} scheduleName
+   *   A fully-qualified path representing Schedule resource.
+   * @returns {string} A string representing the schedule.
+   */
+  matchScheduleFromScheduleName(scheduleName: string) {
+    return this.pathTemplates.schedulePathTemplate.match(scheduleName).schedule;
   }
 
   /**
@@ -5319,6 +6706,58 @@ export class IndexServiceClient {
    */
   matchTrialFromTrialName(trialName: string) {
     return this.pathTemplates.trialPathTemplate.match(trialName).trial;
+  }
+
+  /**
+   * Return a fully-qualified tuningJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} tuning_job
+   * @returns {string} Resource name string.
+   */
+  tuningJobPath(project: string, location: string, tuningJob: string) {
+    return this.pathTemplates.tuningJobPathTemplate.render({
+      project: project,
+      location: location,
+      tuning_job: tuningJob,
+    });
+  }
+
+  /**
+   * Parse the project from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .project;
+  }
+
+  /**
+   * Parse the location from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .location;
+  }
+
+  /**
+   * Parse the tuning_job from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the tuning_job.
+   */
+  matchTuningJobFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .tuning_job;
   }
 
   /**

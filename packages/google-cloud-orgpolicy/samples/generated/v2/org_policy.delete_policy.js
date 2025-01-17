@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,9 +30,15 @@ function main(name) {
    */
   /**
    *  Required. Name of the policy to delete.
-   *  See `Policy` for naming rules.
+   *  See the policy entry for naming rules.
    */
   // const name = 'abc123'
+  /**
+   *  Optional. The current etag of policy. If an etag is provided and does not
+   *  match the current etag of the policy, deletion will be blocked and an
+   *  ABORTED error will be returned.
+   */
+  // const etag = 'abc123'
 
   // Imports the Orgpolicy library
   const {OrgPolicyClient} = require('@google-cloud/org-policy').v2;

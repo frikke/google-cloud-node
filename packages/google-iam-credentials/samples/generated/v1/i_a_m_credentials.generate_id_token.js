@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ function main(name, audience) {
    *  `projects/-/serviceAccounts/{ACCOUNT_EMAIL_OR_UNIQUEID}`. The `-` wildcard
    *  character is required; replacing it with a project ID is invalid.
    */
-  // const delegates = 'abc123'
+  // const delegates = ['abc','def']
   /**
    *  Required. The audience for the token, such as the API or account that this token
    *  grants access to.

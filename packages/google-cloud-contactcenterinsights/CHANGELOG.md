@@ -1,5 +1,94 @@
 # Changelog
 
+## [3.8.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.7.0...contact-center-insights-v3.8.0) (2024-12-18)
+
+
+### Features
+
+* [contactcenterinsights] A new resource pattern value `projects/{project}/locations/{location}/authorizedViewSets/{authorized_view_set}/authorizedViews/{authorized_view}/conversations/{conversation}` added to the resource definition `contactcenter... ([#5890](https://github.com/googleapis/google-cloud-node/issues/5890)) ([5564d05](https://github.com/googleapis/google-cloud-node/commit/5564d0548d8681e7647c46e4e33df4af4da4d6aa))
+
+## [3.7.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.6.0...contact-center-insights-v3.7.0) (2024-11-21)
+
+
+### Features
+
+* [contactcenterinsights] Add FeedbackLabel resource and APIs ([#5817](https://github.com/googleapis/google-cloud-node/issues/5817)) ([d5acb00](https://github.com/googleapis/google-cloud-node/commit/d5acb00e881256ec5866d14556b9a013157288a6))
+
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.5.0...contact-center-insights-v3.6.0) (2024-10-10)
+
+
+### Features
+
+* [contactcenterinsights] Add import / export IssueModel ([#5738](https://github.com/googleapis/google-cloud-node/issues/5738)) ([f3060f2](https://github.com/googleapis/google-cloud-node/commit/f3060f2fad34867307825e591ae49ad38c221371))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.4.0...contact-center-insights-v3.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.3.0...contact-center-insights-v3.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5187](https://github.com/googleapis/google-cloud-node/issues/5187)) ([1952fbe](https://github.com/googleapis/google-cloud-node/commit/1952fbe432b96115278d42e5c1dbdbc7de39036b))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.2.0...contact-center-insights-v3.3.0) (2024-02-07)
+
+
+### Features
+
+* [contactcenterinsights] add Conversation QualityMetadata ([#4985](https://github.com/googleapis/google-cloud-node/issues/4985)) ([95a772b](https://github.com/googleapis/google-cloud-node/commit/95a772b601c50681144717a20042146e6d60a95c))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.1.0...contact-center-insights-v3.2.0) (2023-11-03)
+
+
+### Features
+
+* [contactcenterinsights] Launch BulkDelete API, and bulk audio import via the IngestConversations API ([#4789](https://github.com/googleapis/google-cloud-node/issues/4789)) ([e7129c6](https://github.com/googleapis/google-cloud-node/commit/e7129c613335a9495c11c5c3dd87986f21d84339))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.0.1...contact-center-insights-v3.1.0) (2023-10-18)
+
+
+### Features
+
+* [contactcenterinsights] add optional SpeechConfig to UploadConversationRequest ([#4695](https://github.com/googleapis/google-cloud-node/issues/4695)) ([44b3333](https://github.com/googleapis/google-cloud-node/commit/44b33333493ac4a458e84c1d3231f5571e63fd33))
+
+## [3.0.1](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v3.0.0...contact-center-insights-v3.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4584](https://github.com/googleapis/google-cloud-node/issues/4584)) ([13537fc](https://github.com/googleapis/google-cloud-node/commit/13537fcd6e3c552199d5057daf3b00c24033c908))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v2.9.0...contact-center-insights-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4460](https://github.com/googleapis/google-cloud-node/issues/4460)) ([c32965c](https://github.com/googleapis/google-cloud-node/commit/c32965c0c4a5975ba37371ecd819d9cffb080aa5))
+* **deps:** Update dependency @google-cloud/bigquery to v7 ([#4478](https://github.com/googleapis/google-cloud-node/issues/4478)) ([49b51bd](https://github.com/googleapis/google-cloud-node/commit/49b51bdeef5c30a38ff37f68c3b3961353624a82))
+* **deps:** Update dependency @google-cloud/pubsub to v4 ([#4490](https://github.com/googleapis/google-cloud-node/issues/4490)) ([9c47713](https://github.com/googleapis/google-cloud-node/commit/9c477133e3de3f5fdb7f4a57417a821770a5acb3))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [2.9.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v2.8.0...contact-center-insights-v2.9.0) (2023-07-11)
+
+
+### Features
+
+* [contactcenterinsights] Support topic model type V2 ([#4397](https://github.com/googleapis/google-cloud-node/issues/4397)) ([8af0377](https://github.com/googleapis/google-cloud-node/commit/8af03771ca5c239cf234ac4b9ee59f290eb5071c))
+
 ## [2.8.0](https://github.com/googleapis/google-cloud-node/compare/contact-center-insights-v2.7.0...contact-center-insights-v2.8.0) (2023-06-06)
 
 

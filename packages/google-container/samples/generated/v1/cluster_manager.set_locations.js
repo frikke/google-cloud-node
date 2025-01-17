@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ function main(locations) {
    *  depending on whether locations are being added or removed.
    *  This list must always include the cluster's primary zone.
    */
-  // const locations = 'abc123'
+  // const locations = ['abc','def']
   /**
    *  The name (project, location, cluster) of the cluster to set locations.
    *  Specified in the format `projects/* /locations/* /clusters/*`.

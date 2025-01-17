@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,17 +34,17 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  The Backup resource to create.
+   *  Optional. The Backup resource to create.
    */
   // const backup = {}
   /**
-   *  The client-provided short name for the Backup resource.
+   *  Optional. The client-provided short name for the Backup resource.
    *  This name must:
-   *   - be between 1 and 63 characters long (inclusive)
-   *   - consist of only lower-case ASCII letters, numbers, and dashes
-   *   - start with a lower-case letter
-   *   - end with a lower-case letter or number
-   *   - be unique within the set of Backups in this BackupPlan
+   *  - be between 1 and 63 characters long (inclusive)
+   *  - consist of only lower-case ASCII letters, numbers, and dashes
+   *  - start with a lower-case letter
+   *  - end with a lower-case letter or number
+   *  - be unique within the set of Backups in this BackupPlan
    */
   // const backupId = 'abc123'
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ function main(product, placeIds) {
    *  Required. A list of place IDs to have their inventory deleted.
    *  At most 3000 place IDs are allowed per request.
    */
-  // const placeIds = 'abc123'
+  // const placeIds = ['abc','def']
   /**
    *  The time when the inventory deletions are issued. Used to prevent
    *  out-of-order updates and deletions on local inventory fields. If not

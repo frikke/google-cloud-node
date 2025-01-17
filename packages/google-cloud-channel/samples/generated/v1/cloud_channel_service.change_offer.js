@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ function main(name, offer) {
    *  Offer.parameter_definitions google.cloud.channel.v1.Offer.parameter_definitions 
    *  from the desired offer.
    */
-  // const parameters = 1234
+  // const parameters = [1,2,3,4]
   /**
    *  Optional. Purchase order id provided by the reseller.
    */
@@ -63,6 +63,13 @@ function main(name, offer) {
    *  (`00000000-0000-0000-0000-000000000000`).
    */
   // const requestId = 'abc123'
+  /**
+   *  Optional. The billing account resource name that is used to pay for this
+   *  entitlement when setting up billing on a trial subscription.
+   *  This field is only relevant for multi-currency accounts. It should be
+   *  left empty for single currency accounts.
+   */
+  // const billingAccount = 'abc123'
 
   // Imports the Channel library
   const {CloudChannelServiceClient} = require('@google-cloud/channel').v1;

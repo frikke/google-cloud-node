@@ -1,5 +1,121 @@
 # Changelog
 
+## [4.12.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.11.0...data-v4.12.0) (2024-12-18)
+
+
+### Features
+
+* [analytics-data] add the `EmptyFilter` type to the Data API v1alpha ([#5845](https://github.com/googleapis/google-cloud-node/issues/5845)) ([1bcd241](https://github.com/googleapis/google-cloud-node/commit/1bcd2412bd72ce3c3d9b03128c44138964c8a0e6))
+
+## [4.11.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.10.0...data-v4.11.0) (2024-11-21)
+
+
+### Features
+
+* [analytics-data] add `EmptyFilter` type to the Data API v1beta ([#5831](https://github.com/googleapis/google-cloud-node/issues/5831)) ([ced8054](https://github.com/googleapis/google-cloud-node/commit/ced80544ee74321deb881ee42dc5c2db05fbd0a4))
+
+## [4.10.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.9.0...data-v4.10.0) (2024-10-30)
+
+
+### Features
+
+* [analytics-data] add `SamplingLevel` type to Data API v1alpha ([#5759](https://github.com/googleapis/google-cloud-node/issues/5759)) ([96bb1b5](https://github.com/googleapis/google-cloud-node/commit/96bb1b51a7d1481cb16d2d9ca6bc984b3258688d))
+
+## [4.9.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.8.0...data-v4.9.0) (2024-09-24)
+
+
+### Features
+
+* [analytics-data] add `GetPropertyQuotasSnapshot` method to the Data API v1alpha ([#5692](https://github.com/googleapis/google-cloud-node/issues/5692)) ([a143a79](https://github.com/googleapis/google-cloud-node/commit/a143a7926ab91dce75a2db2d831d498d3f3524d8))
+
+## [4.8.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.7.0...data-v4.8.0) (2024-08-09)
+
+
+### Features
+
+* [analytics-data] add the `comparisons` field to the `Metadata` resource ([#5600](https://github.com/googleapis/google-cloud-node/issues/5600)) ([e77b934](https://github.com/googleapis/google-cloud-node/commit/e77b9348a198e3a3e60e71474ac3320273d17f6e))
+
+## [4.7.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.6.0...data-v4.7.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [4.6.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.5.0...data-v4.6.0) (2024-05-08)
+
+
+### Features
+
+* Add `ReportTask`, `Metric`, `OrderBy`, `Cohort`, `CohortsRange`, `CohortReportSettings`, `ResponseMetaData`, `MetricAggregation`, `RestrictedMetricType` types to the Data API v1alpha ([#5318](https://github.com/googleapis/google-cloud-node/issues/5318)) ([76ae561](https://github.com/googleapis/google-cloud-node/commit/76ae561ee40d66cbba815cd7c9c964a6b92cc00c))
+
+## [4.5.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.4.0...data-v4.5.0) (2024-04-16)
+
+
+### Features
+
+* [Many APIs] support GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable ([#5185](https://github.com/googleapis/google-cloud-node/issues/5185)) ([cc54e98](https://github.com/googleapis/google-cloud-node/commit/cc54e98f7f51598e88277ac50310b07b778acbc7))
+
+## [4.4.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.3.0...data-v4.4.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5022](https://github.com/googleapis/google-cloud-node/issues/5022)) ([b6498d8](https://github.com/googleapis/google-cloud-node/commit/b6498d8580d056817981dedbaa0ea5d82e9dccc2))
+
+## [4.3.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.2.0...data-v4.3.0) (2023-12-11)
+
+
+### Features
+
+* [analytics-data] add `CreateAudienceExport`, `QueryAudienceExport`, `GetAudienceExport`, `ListAudienceExports` methods to the Data API v1 beta ([#4878](https://github.com/googleapis/google-cloud-node/issues/4878)) ([1f9dc5a](https://github.com/googleapis/google-cloud-node/commit/1f9dc5ae6faf68324ab358b3f4f40328f62e7b64))
+
+## [4.2.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.1.0...data-v4.2.0) (2023-11-30)
+
+
+### Features
+
+* [analytics-data] add `CreateRecurringAudienceList`, `GetRecurringAudienceList`, `ListRecurringAudienceLists` methods to the Data API v1 alpha ([#4851](https://github.com/googleapis/google-cloud-node/issues/4851)) ([400c893](https://github.com/googleapis/google-cloud-node/commit/400c893def58322eb686fc16841622b8aeb83b14))
+
+## [4.1.0](https://github.com/googleapis/google-cloud-node/compare/data-v4.0.1...data-v4.1.0) (2023-11-16)
+
+
+### Features
+
+* [analytics-data] add the `SheetExportAudienceList` method to the Data API v1 alpha ([#4804](https://github.com/googleapis/google-cloud-node/issues/4804)) ([279e77c](https://github.com/googleapis/google-cloud-node/commit/279e77c39982c98fb2f9f6b9305ee9097ae10352))
+
+## [4.0.1](https://github.com/googleapis/google-cloud-node/compare/data-v4.0.0...data-v4.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4583](https://github.com/googleapis/google-cloud-node/issues/4583)) ([c3ddba8](https://github.com/googleapis/google-cloud-node/commit/c3ddba8df9fee6185e36a4e99f7c67b0319f1242))
+* **deps:** Update dependency google-auth-library to v9 ([#4560](https://github.com/googleapis/google-cloud-node/issues/4560)) ([e5099b7](https://github.com/googleapis/google-cloud-node/commit/e5099b7a475e0cfaf0d25aa8d6755cd7bc43cbe0))
+
+## [4.0.0](https://github.com/googleapis/google-cloud-node/compare/data-v3.3.0...data-v4.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4459](https://github.com/googleapis/google-cloud-node/issues/4459)) ([1d510be](https://github.com/googleapis/google-cloud-node/commit/1d510bef5bd7b0ac3552b4729ef3d9ebe1ac3dc4))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/data-v3.2.2...data-v3.3.0) (2023-07-11)
+
+
+### Features
+
+* [analytics-data] add `CreateAudienceList`, `QueryAudienceList`,`GetAudienceList`,`ListAudienceLists` methods to the Data API v1 alpha ([#4409](https://github.com/googleapis/google-cloud-node/issues/4409)) ([b81d695](https://github.com/googleapis/google-cloud-node/commit/b81d695e7f0a70d0b2821a8c2de8dbf34f801b70))
+
 ## [3.2.2](https://github.com/googleapis/google-cloud-node/compare/data-v3.2.1...data-v3.2.2) (2023-04-13)
 
 

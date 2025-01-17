@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,6 +49,21 @@ function main(parent) {
    *  the page token.
    */
   // const pageToken = 'abc123'
+  /**
+   *  Optional. An expression for filtering the results of the ListDataScanJobs
+   *  request.
+   *  If unspecified, all datascan jobs will be returned. Multiple filters can be
+   *  applied (with `AND`, `OR` logical operators). Filters are case-sensitive.
+   *  Allowed fields are:
+   *  - `start_time`
+   *  - `end_time`
+   *  `start_time` and `end_time` expect RFC-3339 formatted strings (e.g.
+   *  2018-10-08T18:30:00-07:00).
+   *  For instance, 'start_time > 2018-10-08T00:00:00.123456789Z AND end_time <
+   *  2018-10-09T00:00:00.123456789Z' limits results to DataScanJobs between
+   *  specified start and end times.
+   */
+  // const filter = 'abc123'
 
   // Imports the Dataplex library
   const {DataScanServiceClient} = require('@google-cloud/dataplex').v1;
@@ -63,7 +78,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await dataplexClient.listDataScanJobsAsync(request);
+    const iterable = dataplexClient.listDataScanJobsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

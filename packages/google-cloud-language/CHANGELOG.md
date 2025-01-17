@@ -4,6 +4,72 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/language?activeTab=versions
 
+## [6.5.0](https://github.com/googleapis/google-cloud-node/compare/language-v6.4.0...language-v6.5.0) (2024-08-09)
+
+
+### Features
+
+* [language] add model_version in ModerateTextRequest and expose severity score in ClassificationCategory ([#5580](https://github.com/googleapis/google-cloud-node/issues/5580)) ([cf11f56](https://github.com/googleapis/google-cloud-node/commit/cf11f56c22b481a8e26d30f01357cf5a6d519b3e))
+
+## [6.4.0](https://github.com/googleapis/google-cloud-node/compare/language-v6.3.0...language-v6.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5353](https://github.com/googleapis/google-cloud-node/issues/5353)) ([1a2388d](https://github.com/googleapis/google-cloud-node/commit/1a2388d7096176b4155a0c4f01e15ffb8c4d5096))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [6.3.0](https://github.com/googleapis/google-cloud-node/compare/language-v6.2.0...language-v6.3.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5189](https://github.com/googleapis/google-cloud-node/issues/5189)) ([64b5a75](https://github.com/googleapis/google-cloud-node/commit/64b5a759caa979837199086c2d546a565ad2b3b1))
+
+## [6.2.0](https://github.com/googleapis/google-cloud-node/compare/language-v6.1.1...language-v6.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5025](https://github.com/googleapis/google-cloud-node/issues/5025)) ([7244cab](https://github.com/googleapis/google-cloud-node/commit/7244cab107973bef57c5ea84ae77c51718126822))
+
+## [6.1.1](https://github.com/googleapis/google-cloud-node/compare/language-v6.1.0...language-v6.1.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency mathjs to v12 ([#4765](https://github.com/googleapis/google-cloud-node/issues/4765)) ([e1ca310](https://github.com/googleapis/google-cloud-node/commit/e1ca3103786e35ee41710aebd4b216a7d33a5115))
+
+## [6.1.0](https://github.com/googleapis/google-cloud-node/compare/language-v6.0.0...language-v6.1.0) (2023-09-06)
+
+
+### Features
+
+* [language] Add support for the v2 API ([#4538](https://github.com/googleapis/google-cloud-node/issues/4538)) ([f6ae7e4](https://github.com/googleapis/google-cloud-node/commit/f6ae7e464084f5d6f931e43b19479fa6219427f3))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4586](https://github.com/googleapis/google-cloud-node/issues/4586)) ([4b18686](https://github.com/googleapis/google-cloud-node/commit/4b186867323b8b15469bf5e1cb890bf703b531b3))
+* **deps:** Update dependency @google-cloud/automl to v4 ([#4545](https://github.com/googleapis/google-cloud-node/issues/4545)) ([ccf817a](https://github.com/googleapis/google-cloud-node/commit/ccf817a2ce9f54b6cab93920a29b27fa30105846))
+
+## [6.0.0](https://github.com/googleapis/google-cloud-node/compare/language-v5.3.0...language-v6.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4462](https://github.com/googleapis/google-cloud-node/issues/4462)) ([6df8854](https://github.com/googleapis/google-cloud-node/commit/6df8854fdfbf62e6374f79d785f142b2f2e6cfae))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/language-v5.2.2...language-v5.3.0) (2023-05-26)
 
 

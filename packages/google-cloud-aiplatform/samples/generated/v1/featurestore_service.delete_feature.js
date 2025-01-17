@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ function main(name) {
    *  Required. The name of the Features to be deleted.
    *  Format:
    *  `projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}`
+   *  `projects/{project}/locations/{location}/featureGroups/{feature_group}/features/{feature}`
    */
   // const name = 'abc123'
 

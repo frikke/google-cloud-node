@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,28 +30,27 @@ function main(name) {
    */
   /**
    *  Required. The resource name of the Assessment, in the format
-   *  "projects/{project_number}/assessments/{assessment_id}".
+   *  `projects/{project_number}/assessments/{assessment_id}`.
    */
   // const name = 'abc123'
   /**
-   *  Optional. The annotation that will be assigned to the Event. This field can
-   *  be left empty to provide reasons that apply to an event without concluding
+   *  Optional. The annotation that is assigned to the Event. This field can be
+   *  left empty to provide reasons that apply to an event without concluding
    *  whether the event is legitimate or fraudulent.
    */
   // const annotation = {}
   /**
-   *  Optional. Optional reasons for the annotation that will be assigned to the
-   *  Event.
+   *  Optional. Reasons for the annotation that are assigned to the event.
    */
-  // const reasons = 1234
+  // const reasons = [1,2,3,4]
   /**
-   *  Optional. Optional unique stable hashed user identifier to apply to the
-   *  assessment. This is an alternative to setting the hashed_account_id in
-   *  CreateAssessment, for example when the account identifier is not yet known
-   *  in the initial request. It is recommended that the identifier is hashed
-   *  using hmac-sha256 with stable secret.
+   *  Optional. Unique stable hashed user identifier to apply to the assessment.
+   *  This is an alternative to setting the `hashed_account_id` in
+   *  `CreateAssessment`, for example, when the account identifier is not yet
+   *  known in the initial request. It is recommended that the identifier is
+   *  hashed using hmac-sha256 with stable secret.
    */
-  // const hashedAccountId = 'Buffer.from('string')'
+  // const hashedAccountId = Buffer.from('string')
   /**
    *  Optional. If the assessment is part of a payment transaction, provide
    *  details on payment lifecycle events that occur in the transaction.

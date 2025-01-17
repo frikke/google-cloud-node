@@ -4,6 +4,94 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/asset?activeTab=versions
 
+## [5.7.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.6.0...asset-v5.7.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [5.6.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.5.0...asset-v5.6.0) (2024-03-29)
+
+
+### Features
+
+* [asset] add tag key id support ([#5206](https://github.com/googleapis/google-cloud-node/issues/5206)) ([1743452](https://github.com/googleapis/google-cloud-node/commit/17434529c8bae0685ad0b3289d813500a05939ac))
+
+## [5.5.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.4.0...asset-v5.5.0) (2024-03-07)
+
+
+### Features
+
+* [asset] Add `asset_type` field to `GovernedIamPolicy` and `GovernedResource` ([#5110](https://github.com/googleapis/google-cloud-node/issues/5110)) ([0bdb9c8](https://github.com/googleapis/google-cloud-node/commit/0bdb9c88ecc4598a3fdc4616e41bcd690b6e2cff))
+
+## [5.4.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.3.0...asset-v5.4.0) (2024-02-09)
+
+
+### Features
+
+* [asset ]Trusted Private Cloud support, use the universeDomain parameter ([#5019](https://github.com/googleapis/google-cloud-node/issues/5019)) ([1982935](https://github.com/googleapis/google-cloud-node/commit/19829355db55d4fed00536f8f5822d084a51c6cd))
+
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.2.0...asset-v5.3.0) (2024-01-15)
+
+
+### Features
+
+* [asset] add new types QueryMode, QueryPlan, ResultSetStats ([#4923](https://github.com/googleapis/google-cloud-node/issues/4923)) ([20b0f7c](https://github.com/googleapis/google-cloud-node/commit/20b0f7c4769dbca009922327d9704dd5dbbdc7f1))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.1.0...asset-v5.2.0) (2024-01-05)
+
+
+### Features
+
+* [asset] added new resource references to fields in AnalyzeMoveRequest ([#4881](https://github.com/googleapis/google-cloud-node/issues/4881)) ([3013057](https://github.com/googleapis/google-cloud-node/commit/301305708389288ad361f7ef5a7d239d94a61a9f))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/asset-v5.0.2...asset-v5.1.0) (2023-10-18)
+
+
+### Features
+
+* [asset] add support for directly attached and effective tags ([#4694](https://github.com/googleapis/google-cloud-node/issues/4694)) ([5865cc3](https://github.com/googleapis/google-cloud-node/commit/5865cc3232a99aa9146828d52928815bc082f1e5))
+
+## [5.0.2](https://github.com/googleapis/google-cloud-node/compare/asset-v5.0.1...asset-v5.0.2) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4583](https://github.com/googleapis/google-cloud-node/issues/4583)) ([c3ddba8](https://github.com/googleapis/google-cloud-node/commit/c3ddba8df9fee6185e36a4e99f7c67b0319f1242))
+
+## [5.0.1](https://github.com/googleapis/google-cloud-node/compare/asset-v5.0.0...asset-v5.0.1) (2023-08-09)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @google-cloud/compute to v4 ([#4511](https://github.com/googleapis/google-cloud-node/issues/4511)) ([a964b5a](https://github.com/googleapis/google-cloud-node/commit/a964b5aad6bd1ad1cff67c1594ff424553a2e3a3))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/asset-v4.6.4...asset-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4459](https://github.com/googleapis/google-cloud-node/issues/4459)) ([1d510be](https://github.com/googleapis/google-cloud-node/commit/1d510bef5bd7b0ac3552b4729ef3d9ebe1ac3dc4))
+* **deps:** Update dependency @google-cloud/bigquery to v7 ([#4478](https://github.com/googleapis/google-cloud-node/issues/4478)) ([49b51bd](https://github.com/googleapis/google-cloud-node/commit/49b51bdeef5c30a38ff37f68c3b3961353624a82))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [4.6.4](https://github.com/googleapis/google-cloud-node/compare/asset-v4.6.3...asset-v4.6.4) (2023-06-28)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency yargs to v17 ([#4351](https://github.com/googleapis/google-cloud-node/issues/4351)) ([4fb5285](https://github.com/googleapis/google-cloud-node/commit/4fb528559c204cee33329c4e55021aa1fd0e4974))
+
 ## [4.6.3](https://github.com/googleapis/google-cloud-node/compare/asset-v4.6.2...asset-v4.6.3) (2023-04-13)
 
 

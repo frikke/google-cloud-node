@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import type {
 
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/address_validation_client_config.json`.
@@ -48,6 +49,8 @@ export class AddressValidationClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -87,8 +90,7 @@ export class AddressValidationClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -96,7 +98,7 @@ export class AddressValidationClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new AddressValidationClient({fallback: 'rest'}, gax);
+   *     const client = new AddressValidationClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -105,8 +107,27 @@ export class AddressValidationClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof AddressValidationClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'addressvalidation.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -121,7 +142,7 @@ export class AddressValidationClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -146,23 +167,23 @@ export class AddressValidationClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -256,19 +277,50 @@ export class AddressValidationClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'addressvalidation.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'addressvalidation.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -314,22 +366,22 @@ export class AddressValidationClient {
    *   The request object that will be sent.
    * @param {google.type.PostalAddress} request.address
    *   Required. The address being validated. Unformatted addresses should be
-   *   submitted via {@link google.type.PostalAddress.address_lines|`address_lines`}.
+   *   submitted via {@link protos.google.type.PostalAddress.address_lines|`address_lines`}.
    *
    *   The total length of the fields in this input must not exceed 280
    *   characters.
    *
-   *   Supported regions can be found in the
-   *   [FAQ](https://developers.google.com/maps/documentation/address-validation/faq#which_regions_are_currently_supported).
+   *   Supported regions can be found
+   *   [here](https://developers.google.com/maps/documentation/address-validation/coverage).
    *
-   *   The {@link google.type.PostalAddress.language_code|language_code} value in the
+   *   The {@link protos.google.type.PostalAddress.language_code|language_code} value in the
    *   input address is reserved for future uses and is ignored today. The
    *   validated address result will be populated based on the preferred language
    *   for the given address, as identified by the system.
    *
    *   The Address Validation API ignores the values in
-   *   {@link google.type.PostalAddress.recipients|recipients} and
-   *   {@link google.type.PostalAddress.organization|organization}. Any values in those
+   *   {@link protos.google.type.PostalAddress.recipients|recipients} and
+   *   {@link protos.google.type.PostalAddress.organization|organization}. Any values in those
    *   fields will be discarded and not returned. Please do not set them.
    * @param {string} request.previousResponseId
    *   This field must be empty for the first address validation request. If
@@ -337,7 +389,7 @@ export class AddressValidationClient {
    *   example if the changes the user makes after the initial validation need to
    *   be re-validated), then each followup request must populate this field with
    *   the
-   *   {@link google.maps.addressvalidation.v1.ValidateAddressResponse.response_id|response_id}
+   *   {@link protos.google.maps.addressvalidation.v1.ValidateAddressResponse.response_id|response_id}
    *   from the very first response in the validation sequence.
    * @param {boolean} request.enableUspsCass
    *   Enables USPS CASS compatible mode. This affects _only_ the
@@ -352,12 +404,32 @@ export class AddressValidationClient {
    *   at least two [google.type.PostalAddress.address_lines] where the first line
    *   contains the street number and name and the second line contains the city,
    *   state, and zip code.
+   * @param {string} [request.sessionToken]
+   *   Optional. A string which identifies an Autocomplete session for billing
+   *   purposes. Must be a URL and filename safe base64 string with at most 36
+   *   ASCII characters in length. Otherwise an INVALID_ARGUMENT error is
+   *   returned.
+   *
+   *   The session begins when the user starts typing a query, and concludes when
+   *   they select a place and a call to Place Details or Address Validation is
+   *   made. Each session can have multiple autocomplete queries, followed by one
+   *   Place Details or Address Validation request. The credentials used for each
+   *   request within a session must belong to the same Google Cloud Console
+   *   project. Once a session has concluded, the token is no longer valid; your
+   *   app must generate a fresh token for each session. If the `session_token`
+   *   parameter is omitted, or if you reuse a session token, the session is
+   *   charged as if no session token was provided (each request is billed
+   *   separately).
+   *
+   *   Note: Address Validation can only be used in sessions with the
+   *   Autocomplete (New) API, not the old Autocomplete API. See
+   *   https://developers.google.com/maps/documentation/places/web-service/session-pricing
+   *   for more details.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.maps.addressvalidation.v1.ValidateAddressResponse | ValidateAddressResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.maps.addressvalidation.v1.ValidateAddressResponse|ValidateAddressResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/address_validation.validate_address.js</caption>
    * region_tag:addressvalidation_v1_generated_AddressValidation_ValidateAddress_async
@@ -372,7 +444,7 @@ export class AddressValidationClient {
         | protos.google.maps.addressvalidation.v1.IValidateAddressRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   validateAddress(
@@ -421,7 +493,7 @@ export class AddressValidationClient {
         | protos.google.maps.addressvalidation.v1.IValidateAddressRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -455,14 +527,13 @@ export class AddressValidationClient {
    * @param {string} request.responseId
    *   Required. The ID of the response that this feedback is for. This should be
    *   the
-   *   {@link google.maps.addressvalidation.v1.ValidateAddressRequest.response_id|response_id}
+   *   {@link protos.google.maps.addressvalidation.v1.ValidateAddressRequest.response_id|response_id}
    *   from the first response in a series of address validation attempts.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.maps.addressvalidation.v1.ProvideValidationFeedbackResponse | ProvideValidationFeedbackResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.maps.addressvalidation.v1.ProvideValidationFeedbackResponse|ProvideValidationFeedbackResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/address_validation.provide_validation_feedback.js</caption>
    * region_tag:addressvalidation_v1_generated_AddressValidation_ProvideValidationFeedback_async
@@ -477,7 +548,7 @@ export class AddressValidationClient {
         | protos.google.maps.addressvalidation.v1.IProvideValidationFeedbackRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   provideValidationFeedback(
@@ -526,7 +597,7 @@ export class AddressValidationClient {
         | protos.google.maps.addressvalidation.v1.IProvideValidationFeedbackRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};

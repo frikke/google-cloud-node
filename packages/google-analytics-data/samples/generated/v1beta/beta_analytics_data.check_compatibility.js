@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,26 +29,23 @@ function main() {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  A Google Analytics GA4 property identifier whose events are tracked. To
+   *  A Google Analytics property identifier whose events are tracked. To
    *  learn more, see where to find your Property
    *  ID (https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
    *  `property` should be the same value as in your `runReport` request.
    *  Example: properties/1234
-   *  Set the Property ID to 0 for compatibility checking on dimensions and
-   *  metrics common to all properties. In this special mode, this method will
-   *  not return custom dimensions and metrics.
    */
   // const property = 'abc123'
   /**
    *  The dimensions in this report. `dimensions` should be the same value as in
    *  your `runReport` request.
    */
-  // const dimensions = 1234
+  // const dimensions = [1,2,3,4]
   /**
    *  The metrics in this report. `metrics` should be the same value as in your
    *  `runReport` request.
    */
-  // const metrics = 1234
+  // const metrics = [1,2,3,4]
   /**
    *  The filter clause of dimensions. `dimensionFilter` should be the same value
    *  as in your `runReport` request.

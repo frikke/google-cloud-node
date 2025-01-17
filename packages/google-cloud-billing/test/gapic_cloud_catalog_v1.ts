@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -129,14 +129,97 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.CloudCatalogClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath = cloudcatalogModule.v1.CloudCatalogClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new cloudcatalogModule.v1.CloudCatalogClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'cloudbilling.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint = cloudcatalogModule.v1.CloudCatalogClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new cloudcatalogModule.v1.CloudCatalogClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          cloudcatalogModule.v1.CloudCatalogClient.servicePath;
+        assert.strictEqual(servicePath, 'cloudbilling.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          cloudcatalogModule.v1.CloudCatalogClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'cloudbilling.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new cloudcatalogModule.v1.CloudCatalogClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudbilling.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new cloudcatalogModule.v1.CloudCatalogClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudbilling.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new cloudcatalogModule.v1.CloudCatalogClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'cloudbilling.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new cloudcatalogModule.v1.CloudCatalogClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(
+            servicePath,
+            'cloudbilling.configured.example.com'
+          );
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new cloudcatalogModule.v1.CloudCatalogClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -590,9 +673,9 @@ describe('v1.CloudCatalogClient', () => {
       assert(
         (client.descriptors.page.listSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -638,9 +721,9 @@ describe('v1.CloudCatalogClient', () => {
       assert(
         (client.descriptors.page.listSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -680,9 +763,9 @@ describe('v1.CloudCatalogClient', () => {
       assert(
         (client.descriptors.page.listSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -721,14 +804,162 @@ describe('v1.CloudCatalogClient', () => {
       assert(
         (client.descriptors.page.listSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
 
   describe('Path templates', () => {
+    describe('billingAccount', () => {
+      const fakePath = '/rendered/path/billingAccount';
+      const expectedParameters = {
+        billing_account: 'billingAccountValue',
+      };
+      const client = new cloudcatalogModule.v1.CloudCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.billingAccountPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.billingAccountPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('billingAccountPath', () => {
+        const result = client.billingAccountPath('billingAccountValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.billingAccountPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchBillingAccountFromBillingAccountName', () => {
+        const result =
+          client.matchBillingAccountFromBillingAccountName(fakePath);
+        assert.strictEqual(result, 'billingAccountValue');
+        assert(
+          (client.pathTemplates.billingAccountPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('organizationBillingAccount', () => {
+      const fakePath = '/rendered/path/organizationBillingAccount';
+      const expectedParameters = {
+        organization: 'organizationValue',
+        billing_account: 'billingAccountValue',
+      };
+      const client = new cloudcatalogModule.v1.CloudCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.organizationBillingAccountPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.organizationBillingAccountPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('organizationBillingAccountPath', () => {
+        const result = client.organizationBillingAccountPath(
+          'organizationValue',
+          'billingAccountValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.organizationBillingAccountPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchOrganizationFromOrganizationBillingAccountName', () => {
+        const result =
+          client.matchOrganizationFromOrganizationBillingAccountName(fakePath);
+        assert.strictEqual(result, 'organizationValue');
+        assert(
+          (
+            client.pathTemplates.organizationBillingAccountPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchBillingAccountFromOrganizationBillingAccountName', () => {
+        const result =
+          client.matchBillingAccountFromOrganizationBillingAccountName(
+            fakePath
+          );
+        assert.strictEqual(result, 'billingAccountValue');
+        assert(
+          (
+            client.pathTemplates.organizationBillingAccountPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectBillingInfo', () => {
+      const fakePath = '/rendered/path/projectBillingInfo';
+      const expectedParameters = {
+        project: 'projectValue',
+      };
+      const client = new cloudcatalogModule.v1.CloudCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectBillingInfoPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.projectBillingInfoPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('projectBillingInfoPath', () => {
+        const result = client.projectBillingInfoPath('projectValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.projectBillingInfoPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectBillingInfoName', () => {
+        const result = client.matchProjectFromProjectBillingInfoName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.projectBillingInfoPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('service', () => {
       const fakePath = '/rendered/path/service';
       const expectedParameters = {

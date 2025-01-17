@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -167,16 +167,95 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v2.RepositoryManagerClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        repositorymanagerModule.v2.RepositoryManagerClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'cloudbuild.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        repositorymanagerModule.v2.RepositoryManagerClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          repositorymanagerModule.v2.RepositoryManagerClient.servicePath;
+        assert.strictEqual(servicePath, 'cloudbuild.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          repositorymanagerModule.v2.RepositoryManagerClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'cloudbuild.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudbuild.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudbuild.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new repositorymanagerModule.v2.RepositoryManagerClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'cloudbuild.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new repositorymanagerModule.v2.RepositoryManagerClient(
+            {universeDomain: 'configured.example.com'}
+          );
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'cloudbuild.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new repositorymanagerModule.v2.RepositoryManagerClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -783,6 +862,136 @@ describe('v2.RepositoryManagerClient', () => {
       const expectedError = new Error('The client has already been closed.');
       client.close();
       await assert.rejects(client.fetchReadToken(request), expectedError);
+    });
+  });
+
+  describe('fetchGitRefs', () => {
+    it('invokes fetchGitRefs without error', async () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.devtools.cloudbuild.v2.FetchGitRefsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.devtools.cloudbuild.v2.FetchGitRefsRequest',
+        ['repository']
+      );
+      request.repository = defaultValue1;
+      const expectedHeaderRequestParams = `repository=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.devtools.cloudbuild.v2.FetchGitRefsResponse()
+      );
+      client.innerApiCalls.fetchGitRefs = stubSimpleCall(expectedResponse);
+      const [response] = await client.fetchGitRefs(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.fetchGitRefs as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.fetchGitRefs as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes fetchGitRefs without error using callback', async () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.devtools.cloudbuild.v2.FetchGitRefsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.devtools.cloudbuild.v2.FetchGitRefsRequest',
+        ['repository']
+      );
+      request.repository = defaultValue1;
+      const expectedHeaderRequestParams = `repository=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.devtools.cloudbuild.v2.FetchGitRefsResponse()
+      );
+      client.innerApiCalls.fetchGitRefs =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.fetchGitRefs(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.devtools.cloudbuild.v2.IFetchGitRefsResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.fetchGitRefs as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.fetchGitRefs as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes fetchGitRefs with error', async () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.devtools.cloudbuild.v2.FetchGitRefsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.devtools.cloudbuild.v2.FetchGitRefsRequest',
+        ['repository']
+      );
+      request.repository = defaultValue1;
+      const expectedHeaderRequestParams = `repository=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.fetchGitRefs = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.fetchGitRefs(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.fetchGitRefs as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.fetchGitRefs as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes fetchGitRefs with closed client', async () => {
+      const client = new repositorymanagerModule.v2.RepositoryManagerClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.devtools.cloudbuild.v2.FetchGitRefsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.devtools.cloudbuild.v2.FetchGitRefsRequest',
+        ['repository']
+      );
+      request.repository = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.fetchGitRefs(request), expectedError);
     });
   });
 
@@ -2138,9 +2347,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listConnections.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2187,9 +2396,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listConnections.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2236,9 +2445,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listConnections.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2277,9 +2486,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listConnections.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -2464,9 +2673,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listRepositories.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2513,9 +2722,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listRepositories.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2562,9 +2771,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listRepositories.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2603,9 +2812,9 @@ describe('v2.RepositoryManagerClient', () => {
       assert(
         (client.descriptors.page.listRepositories.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });

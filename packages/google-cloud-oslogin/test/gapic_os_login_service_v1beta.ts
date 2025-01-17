@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -66,16 +66,94 @@ function stubSimpleCallWithCallback<ResponseType>(
 
 describe('v1beta.OsLoginServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        osloginserviceModule.v1beta.OsLoginServiceClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'oslogin.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        osloginserviceModule.v1beta.OsLoginServiceClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          osloginserviceModule.v1beta.OsLoginServiceClient.servicePath;
+        assert.strictEqual(servicePath, 'oslogin.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          osloginserviceModule.v1beta.OsLoginServiceClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'oslogin.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'oslogin.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'oslogin.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new osloginserviceModule.v1beta.OsLoginServiceClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'oslogin.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'oslogin.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new osloginserviceModule.v1beta.OsLoginServiceClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -1076,6 +1154,136 @@ describe('v1beta.OsLoginServiceClient', () => {
       const expectedError = new Error('The client has already been closed.');
       client.close();
       await assert.rejects(client.updateSshPublicKey(request), expectedError);
+    });
+  });
+
+  describe('signSshPublicKey', () => {
+    it('invokes signSshPublicKey without error', async () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.oslogin.v1beta.SignSshPublicKeyResponse()
+      );
+      client.innerApiCalls.signSshPublicKey = stubSimpleCall(expectedResponse);
+      const [response] = await client.signSshPublicKey(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.signSshPublicKey as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.signSshPublicKey as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes signSshPublicKey without error using callback', async () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.oslogin.v1beta.SignSshPublicKeyResponse()
+      );
+      client.innerApiCalls.signSshPublicKey =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.signSshPublicKey(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.oslogin.v1beta.ISignSshPublicKeyResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.signSshPublicKey as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.signSshPublicKey as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes signSshPublicKey with error', async () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.signSshPublicKey = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.signSshPublicKey(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.signSshPublicKey as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.signSshPublicKey as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes signSshPublicKey with closed client', async () => {
+      const client = new osloginserviceModule.v1beta.OsLoginServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.oslogin.v1beta.SignSshPublicKeyRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.signSshPublicKey(request), expectedError);
     });
   });
 

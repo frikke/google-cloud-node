@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ function main() {
    *  project number.
    *  A single request can get a maximum of 30 services at a time.
    */
-  // const names = 'abc123'
+  // const names = ['abc','def']
 
   // Imports the Serviceusage library
   const {ServiceUsageClient} = require('@google-cloud/service-usage').v1;

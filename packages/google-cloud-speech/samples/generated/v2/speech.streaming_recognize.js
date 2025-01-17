@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,11 +29,10 @@ function main(recognizer) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. Streaming recognition should start with an initial request having
-   *  a `recognizer`. Subsequent requests carry the audio data to be recognized.
-   *  The initial request with configuration can be omitted if the Recognizer
-   *  being used has a
-   *  default_recognition_config google.cloud.speech.v2.Recognizer.default_recognition_config.
+   *  Required. The name of the Recognizer to use during recognition. The
+   *  expected format is
+   *  `projects/{project}/locations/{location}/recognizers/{recognizer}`. The
+   *  {recognizer} segment may be set to `_` to use an empty implicit Recognizer.
    */
   // const recognizer = 'abc123'
   /**
@@ -46,7 +45,7 @@ function main(recognizer) {
    *  Inline audio bytes to be Recognized.
    *  Maximum size for this field is 15 KB per request.
    */
-  // const audio = 'Buffer.from('string')'
+  // const audio = Buffer.from('string')
 
   // Imports the Speech library
   const {SpeechClient} = require('@google-cloud/speech').v2;
@@ -66,7 +65,7 @@ function main(recognizer) {
     stream.on('error', (err) => { throw(err) });
     stream.on('end', () => { /* API call completed */ });
     stream.write(request);
-    stream.end(); 
+    stream.end();
   }
 
   callStreamingRecognize();

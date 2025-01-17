@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ function main(name) {
    *  Optional. Map from parameter names to values that should be used for those
    *  parameters. Values may not exceed 1000 characters.
    */
-  // const parameters = 1234
+  // const parameters = [1,2,3,4]
 
   // Imports the Dataproc library
   const {WorkflowTemplateServiceClient} = require('@google-cloud/dataproc').v1;

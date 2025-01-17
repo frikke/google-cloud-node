@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ function main(organization) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The organization resource path of the projects containing DataExchanges.
-   *  e.g. `organizations/myorg/locations/US`.
+   *  Required. The organization resource path of the projects containing
+   *  DataExchanges. e.g. `organizations/myorg/locations/US`.
    */
   // const organization = 'abc123'
   /**
@@ -57,7 +57,7 @@ function main(organization) {
     };
 
     // Run request
-    const iterable = await analyticshubClient.listOrgDataExchangesAsync(request);
+    const iterable = analyticshubClient.listOrgDataExchangesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

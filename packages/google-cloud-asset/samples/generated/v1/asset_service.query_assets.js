@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  Optional. A SQL statement that's compatible with BigQuery Standard
-   *  SQL (http://cloud/bigquery/docs/reference/standard-sql/enabling-standard-sql).
+   *  Optional. A SQL statement that's compatible with BigQuery
+   *  SQL (https://cloud.google.com/bigquery/docs/introduction-sql).
    */
   // const statement = 'abc123'
   /**

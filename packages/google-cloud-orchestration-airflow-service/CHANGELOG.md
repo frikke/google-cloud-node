@@ -1,5 +1,80 @@
 # Changelog
 
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.5.0...orchestration-airflow-v3.6.0) (2024-09-13)
+
+
+### Features
+
+* [orchestration] A new method `CheckUpgrade` is added to service `Environments` ([#5673](https://github.com/googleapis/google-cloud-node/issues/5673)) ([6f8373d](https://github.com/googleapis/google-cloud-node/commit/6f8373d0d04cda5593be12b8cc192a4447cdeb08))
+* [orchestration] add `satisfies_pzi` to `Environment` ([#5676](https://github.com/googleapis/google-cloud-node/issues/5676)) ([66ef73a](https://github.com/googleapis/google-cloud-node/commit/66ef73a560ba5566d263c99ce3940f2f7f2f4a82))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.4.0...orchestration-airflow-v3.5.0) (2024-07-22)
+
+
+### Features
+
+* [orchestration] add `airflow_database_retention_days` and `airflow_metadata_retention_config` to message `DataRetentionConfig` ([#5537](https://github.com/googleapis/google-cloud-node/issues/5537)) ([5ed36be](https://github.com/googleapis/google-cloud-node/commit/5ed36be19d66d18562c6a41441558cba4d84aa5f))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.3.0...orchestration-airflow-v3.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.2.0...orchestration-airflow-v3.3.0) (2024-04-05)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5190](https://github.com/googleapis/google-cloud-node/issues/5190)) ([b569fbe](https://github.com/googleapis/google-cloud-node/commit/b569fbe1472d0fd71c1bfb58d0b1661814ac5727))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.1.0...orchestration-airflow-v3.2.0) (2024-02-22)
+
+
+### Features
+
+* [orchestration] added ListWorkloads RPC ([#5044](https://github.com/googleapis/google-cloud-node/issues/5044)) ([8dcf23c](https://github.com/googleapis/google-cloud-node/commit/8dcf23c3f9d4ec94d4effd46eb2551568c029598))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.0.1...orchestration-airflow-v3.1.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5026](https://github.com/googleapis/google-cloud-node/issues/5026)) ([43acd89](https://github.com/googleapis/google-cloud-node/commit/43acd893e6c428f219d62f0c4264e4db78b99f99))
+
+## [3.0.1](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v3.0.0...orchestration-airflow-v3.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4587](https://github.com/googleapis/google-cloud-node/issues/4587)) ([e3b1e7e](https://github.com/googleapis/google-cloud-node/commit/e3b1e7e46d666abb4df28c3cd69e97c08b88445a))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v2.5.0...orchestration-airflow-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4462](https://github.com/googleapis/google-cloud-node/issues/4462)) ([6df8854](https://github.com/googleapis/google-cloud-node/commit/6df8854fdfbf62e6374f79d785f142b2f2e6cfae))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [2.5.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v2.4.0...orchestration-airflow-v2.5.0) (2023-06-14)
+
+
+### Features
+
+* [orchestration] added RPCs StopAirflowCommand, ExecuteAirflowCommand, PollAirflowCommand, DatabaseFailover, FetchDatabaseProperties ([33373fd](https://github.com/googleapis/google-cloud-node/commit/33373fd503fd476ed5d5a6ced1e48d86dc0459e1))
+* [orchestration] added RPCs StopAirflowCommand, ExecuteAirflowCommand, PollAirflowCommand, DatabaseFailover, FetchDatabaseProperties ([#4341](https://github.com/googleapis/google-cloud-node/issues/4341)) ([33373fd](https://github.com/googleapis/google-cloud-node/commit/33373fd503fd476ed5d5a6ced1e48d86dc0459e1))
+
 ## [2.4.0](https://github.com/googleapis/google-cloud-node/compare/orchestration-airflow-v2.3.2...orchestration-airflow-v2.4.0) (2023-05-02)
 
 

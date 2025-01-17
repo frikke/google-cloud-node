@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ function main(registration, updateMask) {
    *  The list of contact notices that the caller acknowledges. The notices
    *  needed here depend on the values specified in `contact_settings`.
    */
-  // const contactNotices = 1234
+  // const contactNotices = [1,2,3,4]
   /**
    *  Validate the request without actually updating the contact settings.
    */

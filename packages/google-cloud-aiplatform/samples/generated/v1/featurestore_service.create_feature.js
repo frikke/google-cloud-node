@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,9 +29,11 @@ function main(parent, feature, featureId) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The resource name of the EntityType to create a Feature.
-   *  Format:
+   *  Required. The resource name of the EntityType or FeatureGroup to create a
+   *  Feature. Format for entity_type as parent:
    *  `projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}`
+   *  Format for feature_group as parent:
+   *  `projects/{project}/locations/{location}/featureGroups/{feature_group}`
    */
   // const parent = 'abc123'
   /**
@@ -43,7 +45,7 @@ function main(parent, feature, featureId) {
    *  component of the Feature's resource name.
    *  This value may be up to 128 characters, and valid characters are
    *  `[a-z0-9_]`. The first character cannot be a number.
-   *  The value must be unique within an EntityType.
+   *  The value must be unique within an EntityType/FeatureGroup.
    */
   // const featureId = 'abc123'
 

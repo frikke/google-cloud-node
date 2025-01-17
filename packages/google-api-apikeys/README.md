@@ -2,9 +2,9 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [API Keys API: Node.js Client](https://github.com/googleapis/google-cloud-node)
+# [API Keys API: Node.js Client](https://github.com/googleapis/google-cloud-node/tree/main/packages/google-api-apikeys)
 
-[![release level](https://img.shields.io/badge/release%20level-preview-yellow.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
+[![release level](https://img.shields.io/badge/release%20level-stable-brightgreen.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
 [![npm version](https://img.shields.io/npm/v/@google-cloud/apikeys.svg)](https://www.npmjs.org/package/@google-cloud/apikeys)
 
 
@@ -44,7 +44,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 1.  [Select or create a Cloud Platform project][projects].
 1.  [Enable billing for your project][billing].
 1.  [Enable the API Keys API API][enable_api].
-1.  [Set up authentication with a service account][auth] so you can access the
+1.  [Set up authentication][auth] so you can access the
     API from your local workstation.
 
 ### Installing the client library
@@ -108,20 +108,19 @@ callListKeys();
 
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-node/tree/main/samples) directory. Each sample's `README.md` has instructions for running its sample.
+Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-node/tree/main/packages/google-api-apikeys/samples) directory. Each sample's `README.md` has instructions for running its sample.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-| Api_keys.create_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.create_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.create_key.js,samples/README.md) |
-| Api_keys.delete_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.delete_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.delete_key.js,samples/README.md) |
-| Api_keys.get_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.get_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.get_key.js,samples/README.md) |
-| Api_keys.get_key_string | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.get_key_string.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.get_key_string.js,samples/README.md) |
-| Api_keys.list_keys | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.list_keys.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.list_keys.js,samples/README.md) |
-| Api_keys.lookup_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.lookup_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.lookup_key.js,samples/README.md) |
-| Api_keys.undelete_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.undelete_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.undelete_key.js,samples/README.md) |
-| Api_keys.update_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.update_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.update_key.js,samples/README.md) |
-| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/quickstart.js,samples/README.md) |
-| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/test/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/test/quickstart.js,samples/README.md) |
+| Api_keys.create_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.create_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.create_key.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.delete_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.delete_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.delete_key.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.get_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.get_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.get_key.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.get_key_string | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.get_key_string.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.get_key_string.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.list_keys | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.list_keys.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.list_keys.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.lookup_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.lookup_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.lookup_key.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.undelete_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.undelete_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.undelete_key.js,packages/google-api-apikeys/samples/README.md) |
+| Api_keys.update_key | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/generated/v2/api_keys.update_key.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/generated/v2/api_keys.update_key.js,packages/google-api-apikeys/samples/README.md) |
+| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-api-apikeys/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-api-apikeys/samples/quickstart.js,packages/google-api-apikeys/samples/README.md) |
 
 
 
@@ -130,7 +129,7 @@ also contains samples.
 
 ## Supported Node.js Versions
 
-Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/).
+Our client libraries follow the [Node.js release schedule](https://github.com/nodejs/release#release-schedule).
 Libraries are compatible with all current _active_ and _maintenance_ versions of
 Node.js.
 If you are using an end-of-life version of Node.js, we recommend that you update
@@ -155,13 +154,14 @@ This library follows [Semantic Versioning](http://semver.org/).
 
 
 
+This library is considered to be **stable**. The code surface will not change in backwards-incompatible ways
+unless absolutely necessary (e.g. because of critical security issues) or with
+an extensive deprecation period. Issues and requests against **stable** libraries
+are addressed with the highest priority.
 
 
 
 
-This library is considered to be in **preview**. This means it is still a
-work-in-progress and under active development. Any release is subject to
-backwards-incompatible changes at any time.
 
 
 More Information: [Google Cloud Platform Launch Stages][launch_stages]
@@ -190,4 +190,4 @@ See [LICENSE](https://github.com/googleapis/google-cloud-node/blob/main/LICENSE)
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=apikeys.googleapis.com
-[auth]: https://cloud.google.com/docs/authentication/getting-started
+[auth]: https://cloud.google.com/docs/authentication/external/set-up-adc-local

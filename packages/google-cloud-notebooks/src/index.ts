@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,16 +18,18 @@
 
 import * as v1 from './v1';
 import * as v1beta1 from './v1beta1';
+import * as v2 from './v2';
 
 const ManagedNotebookServiceClient = v1.ManagedNotebookServiceClient;
 type ManagedNotebookServiceClient = v1.ManagedNotebookServiceClient;
 const NotebookServiceClient = v1.NotebookServiceClient;
 type NotebookServiceClient = v1.NotebookServiceClient;
 
-export {v1, v1beta1, ManagedNotebookServiceClient, NotebookServiceClient};
+export {v1, v1beta1, v2, ManagedNotebookServiceClient, NotebookServiceClient};
 export default {
   v1,
   v1beta1,
+  v2,
   ManagedNotebookServiceClient,
   NotebookServiceClient,
 };

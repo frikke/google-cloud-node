@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -86,10 +86,10 @@ function main(scope) {
   // const query = 'abc123'
   /**
    *  Optional. The page size for search result pagination. Page size is capped
-   *  at 500 even if a larger value is given. If set to zero, server will pick an
-   *  appropriate default. Returned results may be fewer than requested. When
-   *  this happens, there could be more results as long as `next_page_token` is
-   *  returned.
+   *  at 500 even if a larger value is given. If set to zero or a negative value,
+   *  server will pick an appropriate default. Returned results may be fewer than
+   *  requested. When this happens, there could be more results as long as
+   *  `next_page_token` is returned.
    */
   // const pageSize = 1234
   /**
@@ -101,9 +101,9 @@ function main(scope) {
   // const pageToken = 'abc123'
   /**
    *  Optional. A list of asset types that the IAM policies are attached to. If
-   *  empty, it will search the IAM policies that are attached to all the
-   *  searchable asset
-   *  types (https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *  empty, it will search the IAM policies that are attached to all the asset
+   *  types supported by search
+   *  APIs (https://cloud.google.com/asset-inventory/docs/supported-asset-types)
    *  Regular expressions are also supported. For example:
    *  * "compute.googleapis.com.*" snapshots IAM policies attached to asset type
    *  starts with "compute.googleapis.com".
@@ -115,7 +115,7 @@ function main(scope) {
    *  regular expression syntax. If the regular expression does not match any
    *  supported asset type, an INVALID_ARGUMENT error will be returned.
    */
-  // const assetTypes = 'abc123'
+  // const assetTypes = ['abc','def']
   /**
    *  Optional. A comma-separated list of fields specifying the sorting order of
    *  the results. The default order is ascending. Add " DESC" after the field
@@ -143,7 +143,7 @@ function main(scope) {
     };
 
     // Run request
-    const iterable = await assetClient.searchAllIamPoliciesAsync(request);
+    const iterable = assetClient.searchAllIamPoliciesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,14 +39,14 @@ function main(context) {
    *  Format:
    *  `projects/{project}/locations/{location}/metadataStores/{metadatastore}/artifacts/{artifact}`
    */
-  // const artifacts = 'abc123'
+  // const artifacts = ['abc','def']
   /**
    *  The resource names of the Executions to associate with the
    *  Context.
    *  Format:
    *  `projects/{project}/locations/{location}/metadataStores/{metadatastore}/executions/{execution}`
    */
-  // const executions = 'abc123'
+  // const executions = ['abc','def']
 
   // Imports the Aiplatform library
   const {MetadataServiceClient} = require('@google-cloud/aiplatform').v1beta1;

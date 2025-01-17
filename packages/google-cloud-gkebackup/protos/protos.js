@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -99,6 +99,7 @@
                          * @property {string|null} [description] Backup description
                          * @property {number|null} [podCount] Backup podCount
                          * @property {number|Long|null} [configBackupSizeBytes] Backup configBackupSizeBytes
+                         * @property {boolean|null} [permissiveMode] Backup permissiveMode
                          */
     
                         /**
@@ -333,6 +334,14 @@
                          */
                         Backup.prototype.configBackupSizeBytes = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
     
+                        /**
+                         * Backup permissiveMode.
+                         * @member {boolean} permissiveMode
+                         * @memberof google.cloud.gkebackup.v1.Backup
+                         * @instance
+                         */
+                        Backup.prototype.permissiveMode = false;
+    
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
     
@@ -426,6 +435,8 @@
                                 writer.uint32(/* id 26, wireType 0 =*/208).int32(message.podCount);
                             if (message.configBackupSizeBytes != null && Object.hasOwnProperty.call(message, "configBackupSizeBytes"))
                                 writer.uint32(/* id 27, wireType 0 =*/216).int64(message.configBackupSizeBytes);
+                            if (message.permissiveMode != null && Object.hasOwnProperty.call(message, "permissiveMode"))
+                                writer.uint32(/* id 28, wireType 0 =*/224).bool(message.permissiveMode);
                             return writer;
                         };
     
@@ -585,6 +596,10 @@
                                     }
                                 case 27: {
                                         message.configBackupSizeBytes = reader.int64();
+                                        break;
+                                    }
+                                case 28: {
+                                        message.permissiveMode = reader.bool();
                                         break;
                                     }
                                 default:
@@ -748,6 +763,9 @@
                             if (message.configBackupSizeBytes != null && message.hasOwnProperty("configBackupSizeBytes"))
                                 if (!$util.isInteger(message.configBackupSizeBytes) && !(message.configBackupSizeBytes && $util.isInteger(message.configBackupSizeBytes.low) && $util.isInteger(message.configBackupSizeBytes.high)))
                                     return "configBackupSizeBytes: integer|Long expected";
+                            if (message.permissiveMode != null && message.hasOwnProperty("permissiveMode"))
+                                if (typeof message.permissiveMode !== "boolean")
+                                    return "permissiveMode: boolean expected";
                             return null;
                         };
     
@@ -893,6 +911,8 @@
                                     message.configBackupSizeBytes = object.configBackupSizeBytes;
                                 else if (typeof object.configBackupSizeBytes === "object")
                                     message.configBackupSizeBytes = new $util.LongBits(object.configBackupSizeBytes.low >>> 0, object.configBackupSizeBytes.high >>> 0).toNumber();
+                            if (object.permissiveMode != null)
+                                message.permissiveMode = Boolean(object.permissiveMode);
                             return message;
                         };
     
@@ -943,6 +963,7 @@
                                     object.configBackupSizeBytes = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                                 } else
                                     object.configBackupSizeBytes = options.longs === String ? "0" : 0;
+                                object.permissiveMode = false;
                             }
                             if (message.name != null && message.hasOwnProperty("name"))
                                 object.name = message.name;
@@ -1017,6 +1038,8 @@
                                     object.configBackupSizeBytes = options.longs === String ? String(message.configBackupSizeBytes) : message.configBackupSizeBytes;
                                 else
                                     object.configBackupSizeBytes = options.longs === String ? $util.Long.prototype.toString.call(message.configBackupSizeBytes) : options.longs === Number ? new $util.LongBits(message.configBackupSizeBytes.low >>> 0, message.configBackupSizeBytes.high >>> 0).toNumber() : message.configBackupSizeBytes;
+                            if (message.permissiveMode != null && message.hasOwnProperty("permissiveMode"))
+                                object.permissiveMode = message.permissiveMode;
                             return object;
                         };
     
@@ -2301,6 +2324,195 @@
                         return EncryptionKey;
                     })();
     
+                    v1.VolumeTypeEnum = (function() {
+    
+                        /**
+                         * Properties of a VolumeTypeEnum.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IVolumeTypeEnum
+                         */
+    
+                        /**
+                         * Constructs a new VolumeTypeEnum.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents a VolumeTypeEnum.
+                         * @implements IVolumeTypeEnum
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IVolumeTypeEnum=} [properties] Properties to set
+                         */
+                        function VolumeTypeEnum(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * Creates a new VolumeTypeEnum instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IVolumeTypeEnum=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.VolumeTypeEnum} VolumeTypeEnum instance
+                         */
+                        VolumeTypeEnum.create = function create(properties) {
+                            return new VolumeTypeEnum(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified VolumeTypeEnum message. Does not implicitly {@link google.cloud.gkebackup.v1.VolumeTypeEnum.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IVolumeTypeEnum} message VolumeTypeEnum message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        VolumeTypeEnum.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified VolumeTypeEnum message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.VolumeTypeEnum.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IVolumeTypeEnum} message VolumeTypeEnum message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        VolumeTypeEnum.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a VolumeTypeEnum message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.VolumeTypeEnum} VolumeTypeEnum
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        VolumeTypeEnum.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.VolumeTypeEnum();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a VolumeTypeEnum message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.VolumeTypeEnum} VolumeTypeEnum
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        VolumeTypeEnum.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a VolumeTypeEnum message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        VolumeTypeEnum.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a VolumeTypeEnum message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.VolumeTypeEnum} VolumeTypeEnum
+                         */
+                        VolumeTypeEnum.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.VolumeTypeEnum)
+                                return object;
+                            return new $root.google.cloud.gkebackup.v1.VolumeTypeEnum();
+                        };
+    
+                        /**
+                         * Creates a plain object from a VolumeTypeEnum message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.VolumeTypeEnum} message VolumeTypeEnum
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        VolumeTypeEnum.toObject = function toObject() {
+                            return {};
+                        };
+    
+                        /**
+                         * Converts this VolumeTypeEnum to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        VolumeTypeEnum.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for VolumeTypeEnum
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.VolumeTypeEnum
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        VolumeTypeEnum.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.VolumeTypeEnum";
+                        };
+    
+                        /**
+                         * VolumeType enum.
+                         * @name google.cloud.gkebackup.v1.VolumeTypeEnum.VolumeType
+                         * @enum {number}
+                         * @property {number} VOLUME_TYPE_UNSPECIFIED=0 VOLUME_TYPE_UNSPECIFIED value
+                         * @property {number} GCE_PERSISTENT_DISK=1 GCE_PERSISTENT_DISK value
+                         */
+                        VolumeTypeEnum.VolumeType = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "VOLUME_TYPE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "GCE_PERSISTENT_DISK"] = 1;
+                            return values;
+                        })();
+    
+                        return VolumeTypeEnum;
+                    })();
+    
                     v1.BackupPlan = (function() {
     
                         /**
@@ -2320,6 +2532,10 @@
                          * @property {boolean|null} [deactivated] BackupPlan deactivated
                          * @property {google.cloud.gkebackup.v1.BackupPlan.IBackupConfig|null} [backupConfig] BackupPlan backupConfig
                          * @property {number|null} [protectedPodCount] BackupPlan protectedPodCount
+                         * @property {google.cloud.gkebackup.v1.BackupPlan.State|null} [state] BackupPlan state
+                         * @property {string|null} [stateReason] BackupPlan stateReason
+                         * @property {number|null} [rpoRiskLevel] BackupPlan rpoRiskLevel
+                         * @property {string|null} [rpoRiskReason] BackupPlan rpoRiskReason
                          */
     
                         /**
@@ -2443,6 +2659,38 @@
                         BackupPlan.prototype.protectedPodCount = 0;
     
                         /**
+                         * BackupPlan state.
+                         * @member {google.cloud.gkebackup.v1.BackupPlan.State} state
+                         * @memberof google.cloud.gkebackup.v1.BackupPlan
+                         * @instance
+                         */
+                        BackupPlan.prototype.state = 0;
+    
+                        /**
+                         * BackupPlan stateReason.
+                         * @member {string} stateReason
+                         * @memberof google.cloud.gkebackup.v1.BackupPlan
+                         * @instance
+                         */
+                        BackupPlan.prototype.stateReason = "";
+    
+                        /**
+                         * BackupPlan rpoRiskLevel.
+                         * @member {number} rpoRiskLevel
+                         * @memberof google.cloud.gkebackup.v1.BackupPlan
+                         * @instance
+                         */
+                        BackupPlan.prototype.rpoRiskLevel = 0;
+    
+                        /**
+                         * BackupPlan rpoRiskReason.
+                         * @member {string} rpoRiskReason
+                         * @memberof google.cloud.gkebackup.v1.BackupPlan
+                         * @instance
+                         */
+                        BackupPlan.prototype.rpoRiskReason = "";
+    
+                        /**
                          * Creates a new BackupPlan instance using the specified properties.
                          * @function create
                          * @memberof google.cloud.gkebackup.v1.BackupPlan
@@ -2493,6 +2741,14 @@
                                 $root.google.cloud.gkebackup.v1.BackupPlan.BackupConfig.encode(message.backupConfig, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                             if (message.protectedPodCount != null && Object.hasOwnProperty.call(message, "protectedPodCount"))
                                 writer.uint32(/* id 13, wireType 0 =*/104).int32(message.protectedPodCount);
+                            if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                                writer.uint32(/* id 14, wireType 0 =*/112).int32(message.state);
+                            if (message.stateReason != null && Object.hasOwnProperty.call(message, "stateReason"))
+                                writer.uint32(/* id 15, wireType 2 =*/122).string(message.stateReason);
+                            if (message.rpoRiskLevel != null && Object.hasOwnProperty.call(message, "rpoRiskLevel"))
+                                writer.uint32(/* id 16, wireType 0 =*/128).int32(message.rpoRiskLevel);
+                            if (message.rpoRiskReason != null && Object.hasOwnProperty.call(message, "rpoRiskReason"))
+                                writer.uint32(/* id 17, wireType 2 =*/138).string(message.rpoRiskReason);
                             return writer;
                         };
     
@@ -2598,6 +2854,22 @@
                                         message.protectedPodCount = reader.int32();
                                         break;
                                     }
+                                case 14: {
+                                        message.state = reader.int32();
+                                        break;
+                                    }
+                                case 15: {
+                                        message.stateReason = reader.string();
+                                        break;
+                                    }
+                                case 16: {
+                                        message.rpoRiskLevel = reader.int32();
+                                        break;
+                                    }
+                                case 17: {
+                                        message.rpoRiskReason = reader.string();
+                                        break;
+                                    }
                                 default:
                                     reader.skipType(tag & 7);
                                     break;
@@ -2687,6 +2959,28 @@
                             if (message.protectedPodCount != null && message.hasOwnProperty("protectedPodCount"))
                                 if (!$util.isInteger(message.protectedPodCount))
                                     return "protectedPodCount: integer expected";
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                switch (message.state) {
+                                default:
+                                    return "state: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                case 5:
+                                case 6:
+                                    break;
+                                }
+                            if (message.stateReason != null && message.hasOwnProperty("stateReason"))
+                                if (!$util.isString(message.stateReason))
+                                    return "stateReason: string expected";
+                            if (message.rpoRiskLevel != null && message.hasOwnProperty("rpoRiskLevel"))
+                                if (!$util.isInteger(message.rpoRiskLevel))
+                                    return "rpoRiskLevel: integer expected";
+                            if (message.rpoRiskReason != null && message.hasOwnProperty("rpoRiskReason"))
+                                if (!$util.isString(message.rpoRiskReason))
+                                    return "rpoRiskReason: string expected";
                             return null;
                         };
     
@@ -2748,6 +3042,48 @@
                             }
                             if (object.protectedPodCount != null)
                                 message.protectedPodCount = object.protectedPodCount | 0;
+                            switch (object.state) {
+                            default:
+                                if (typeof object.state === "number") {
+                                    message.state = object.state;
+                                    break;
+                                }
+                                break;
+                            case "STATE_UNSPECIFIED":
+                            case 0:
+                                message.state = 0;
+                                break;
+                            case "CLUSTER_PENDING":
+                            case 1:
+                                message.state = 1;
+                                break;
+                            case "PROVISIONING":
+                            case 2:
+                                message.state = 2;
+                                break;
+                            case "READY":
+                            case 3:
+                                message.state = 3;
+                                break;
+                            case "FAILED":
+                            case 4:
+                                message.state = 4;
+                                break;
+                            case "DEACTIVATED":
+                            case 5:
+                                message.state = 5;
+                                break;
+                            case "DELETING":
+                            case 6:
+                                message.state = 6;
+                                break;
+                            }
+                            if (object.stateReason != null)
+                                message.stateReason = String(object.stateReason);
+                            if (object.rpoRiskLevel != null)
+                                message.rpoRiskLevel = object.rpoRiskLevel | 0;
+                            if (object.rpoRiskReason != null)
+                                message.rpoRiskReason = String(object.rpoRiskReason);
                             return message;
                         };
     
@@ -2779,6 +3115,10 @@
                                 object.deactivated = false;
                                 object.backupConfig = null;
                                 object.protectedPodCount = 0;
+                                object.state = options.enums === String ? "STATE_UNSPECIFIED" : 0;
+                                object.stateReason = "";
+                                object.rpoRiskLevel = 0;
+                                object.rpoRiskReason = "";
                             }
                             if (message.name != null && message.hasOwnProperty("name"))
                                 object.name = message.name;
@@ -2810,6 +3150,14 @@
                                 object.backupConfig = $root.google.cloud.gkebackup.v1.BackupPlan.BackupConfig.toObject(message.backupConfig, options);
                             if (message.protectedPodCount != null && message.hasOwnProperty("protectedPodCount"))
                                 object.protectedPodCount = message.protectedPodCount;
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                object.state = options.enums === String ? $root.google.cloud.gkebackup.v1.BackupPlan.State[message.state] === undefined ? message.state : $root.google.cloud.gkebackup.v1.BackupPlan.State[message.state] : message.state;
+                            if (message.stateReason != null && message.hasOwnProperty("stateReason"))
+                                object.stateReason = message.stateReason;
+                            if (message.rpoRiskLevel != null && message.hasOwnProperty("rpoRiskLevel"))
+                                object.rpoRiskLevel = message.rpoRiskLevel;
+                            if (message.rpoRiskReason != null && message.hasOwnProperty("rpoRiskReason"))
+                                object.rpoRiskReason = message.rpoRiskReason;
                             return object;
                         };
     
@@ -3097,6 +3445,8 @@
                              * @interface ISchedule
                              * @property {string|null} [cronSchedule] Schedule cronSchedule
                              * @property {boolean|null} [paused] Schedule paused
+                             * @property {google.cloud.gkebackup.v1.IRpoConfig|null} [rpoConfig] Schedule rpoConfig
+                             * @property {google.protobuf.ITimestamp|null} [nextScheduledBackupTime] Schedule nextScheduledBackupTime
                              */
     
                             /**
@@ -3131,6 +3481,22 @@
                             Schedule.prototype.paused = false;
     
                             /**
+                             * Schedule rpoConfig.
+                             * @member {google.cloud.gkebackup.v1.IRpoConfig|null|undefined} rpoConfig
+                             * @memberof google.cloud.gkebackup.v1.BackupPlan.Schedule
+                             * @instance
+                             */
+                            Schedule.prototype.rpoConfig = null;
+    
+                            /**
+                             * Schedule nextScheduledBackupTime.
+                             * @member {google.protobuf.ITimestamp|null|undefined} nextScheduledBackupTime
+                             * @memberof google.cloud.gkebackup.v1.BackupPlan.Schedule
+                             * @instance
+                             */
+                            Schedule.prototype.nextScheduledBackupTime = null;
+    
+                            /**
                              * Creates a new Schedule instance using the specified properties.
                              * @function create
                              * @memberof google.cloud.gkebackup.v1.BackupPlan.Schedule
@@ -3158,6 +3524,10 @@
                                     writer.uint32(/* id 1, wireType 2 =*/10).string(message.cronSchedule);
                                 if (message.paused != null && Object.hasOwnProperty.call(message, "paused"))
                                     writer.uint32(/* id 2, wireType 0 =*/16).bool(message.paused);
+                                if (message.rpoConfig != null && Object.hasOwnProperty.call(message, "rpoConfig"))
+                                    $root.google.cloud.gkebackup.v1.RpoConfig.encode(message.rpoConfig, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                                if (message.nextScheduledBackupTime != null && Object.hasOwnProperty.call(message, "nextScheduledBackupTime"))
+                                    $root.google.protobuf.Timestamp.encode(message.nextScheduledBackupTime, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                                 return writer;
                             };
     
@@ -3198,6 +3568,14 @@
                                         }
                                     case 2: {
                                             message.paused = reader.bool();
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.rpoConfig = $root.google.cloud.gkebackup.v1.RpoConfig.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.nextScheduledBackupTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
                                             break;
                                         }
                                     default:
@@ -3241,6 +3619,16 @@
                                 if (message.paused != null && message.hasOwnProperty("paused"))
                                     if (typeof message.paused !== "boolean")
                                         return "paused: boolean expected";
+                                if (message.rpoConfig != null && message.hasOwnProperty("rpoConfig")) {
+                                    var error = $root.google.cloud.gkebackup.v1.RpoConfig.verify(message.rpoConfig);
+                                    if (error)
+                                        return "rpoConfig." + error;
+                                }
+                                if (message.nextScheduledBackupTime != null && message.hasOwnProperty("nextScheduledBackupTime")) {
+                                    var error = $root.google.protobuf.Timestamp.verify(message.nextScheduledBackupTime);
+                                    if (error)
+                                        return "nextScheduledBackupTime." + error;
+                                }
                                 return null;
                             };
     
@@ -3260,6 +3648,16 @@
                                     message.cronSchedule = String(object.cronSchedule);
                                 if (object.paused != null)
                                     message.paused = Boolean(object.paused);
+                                if (object.rpoConfig != null) {
+                                    if (typeof object.rpoConfig !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.BackupPlan.Schedule.rpoConfig: object expected");
+                                    message.rpoConfig = $root.google.cloud.gkebackup.v1.RpoConfig.fromObject(object.rpoConfig);
+                                }
+                                if (object.nextScheduledBackupTime != null) {
+                                    if (typeof object.nextScheduledBackupTime !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.BackupPlan.Schedule.nextScheduledBackupTime: object expected");
+                                    message.nextScheduledBackupTime = $root.google.protobuf.Timestamp.fromObject(object.nextScheduledBackupTime);
+                                }
                                 return message;
                             };
     
@@ -3279,11 +3677,17 @@
                                 if (options.defaults) {
                                     object.cronSchedule = "";
                                     object.paused = false;
+                                    object.rpoConfig = null;
+                                    object.nextScheduledBackupTime = null;
                                 }
                                 if (message.cronSchedule != null && message.hasOwnProperty("cronSchedule"))
                                     object.cronSchedule = message.cronSchedule;
                                 if (message.paused != null && message.hasOwnProperty("paused"))
                                     object.paused = message.paused;
+                                if (message.rpoConfig != null && message.hasOwnProperty("rpoConfig"))
+                                    object.rpoConfig = $root.google.cloud.gkebackup.v1.RpoConfig.toObject(message.rpoConfig, options);
+                                if (message.nextScheduledBackupTime != null && message.hasOwnProperty("nextScheduledBackupTime"))
+                                    object.nextScheduledBackupTime = $root.google.protobuf.Timestamp.toObject(message.nextScheduledBackupTime, options);
                                 return object;
                             };
     
@@ -3328,6 +3732,7 @@
                              * @property {boolean|null} [includeVolumeData] BackupConfig includeVolumeData
                              * @property {boolean|null} [includeSecrets] BackupConfig includeSecrets
                              * @property {google.cloud.gkebackup.v1.IEncryptionKey|null} [encryptionKey] BackupConfig encryptionKey
+                             * @property {boolean|null} [permissiveMode] BackupConfig permissiveMode
                              */
     
                             /**
@@ -3393,6 +3798,14 @@
                              */
                             BackupConfig.prototype.encryptionKey = null;
     
+                            /**
+                             * BackupConfig permissiveMode.
+                             * @member {boolean} permissiveMode
+                             * @memberof google.cloud.gkebackup.v1.BackupPlan.BackupConfig
+                             * @instance
+                             */
+                            BackupConfig.prototype.permissiveMode = false;
+    
                             // OneOf field names bound to virtual getters and setters
                             var $oneOfFields;
     
@@ -3443,6 +3856,8 @@
                                     writer.uint32(/* id 5, wireType 0 =*/40).bool(message.includeSecrets);
                                 if (message.encryptionKey != null && Object.hasOwnProperty.call(message, "encryptionKey"))
                                     $root.google.cloud.gkebackup.v1.EncryptionKey.encode(message.encryptionKey, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                                if (message.permissiveMode != null && Object.hasOwnProperty.call(message, "permissiveMode"))
+                                    writer.uint32(/* id 7, wireType 0 =*/56).bool(message.permissiveMode);
                                 return writer;
                             };
     
@@ -3499,6 +3914,10 @@
                                         }
                                     case 6: {
                                             message.encryptionKey = $root.google.cloud.gkebackup.v1.EncryptionKey.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 7: {
+                                            message.permissiveMode = reader.bool();
                                             break;
                                         }
                                     default:
@@ -3573,6 +3992,9 @@
                                     if (error)
                                         return "encryptionKey." + error;
                                 }
+                                if (message.permissiveMode != null && message.hasOwnProperty("permissiveMode"))
+                                    if (typeof message.permissiveMode !== "boolean")
+                                        return "permissiveMode: boolean expected";
                                 return null;
                             };
     
@@ -3609,6 +4031,8 @@
                                         throw TypeError(".google.cloud.gkebackup.v1.BackupPlan.BackupConfig.encryptionKey: object expected");
                                     message.encryptionKey = $root.google.cloud.gkebackup.v1.EncryptionKey.fromObject(object.encryptionKey);
                                 }
+                                if (object.permissiveMode != null)
+                                    message.permissiveMode = Boolean(object.permissiveMode);
                                 return message;
                             };
     
@@ -3629,6 +4053,7 @@
                                     object.includeVolumeData = false;
                                     object.includeSecrets = false;
                                     object.encryptionKey = null;
+                                    object.permissiveMode = false;
                                 }
                                 if (message.allNamespaces != null && message.hasOwnProperty("allNamespaces")) {
                                     object.allNamespaces = message.allNamespaces;
@@ -3651,6 +4076,8 @@
                                     object.includeSecrets = message.includeSecrets;
                                 if (message.encryptionKey != null && message.hasOwnProperty("encryptionKey"))
                                     object.encryptionKey = $root.google.cloud.gkebackup.v1.EncryptionKey.toObject(message.encryptionKey, options);
+                                if (message.permissiveMode != null && message.hasOwnProperty("permissiveMode"))
+                                    object.permissiveMode = message.permissiveMode;
                                 return object;
                             };
     
@@ -3683,7 +4110,904 @@
                             return BackupConfig;
                         })();
     
+                        /**
+                         * State enum.
+                         * @name google.cloud.gkebackup.v1.BackupPlan.State
+                         * @enum {number}
+                         * @property {number} STATE_UNSPECIFIED=0 STATE_UNSPECIFIED value
+                         * @property {number} CLUSTER_PENDING=1 CLUSTER_PENDING value
+                         * @property {number} PROVISIONING=2 PROVISIONING value
+                         * @property {number} READY=3 READY value
+                         * @property {number} FAILED=4 FAILED value
+                         * @property {number} DEACTIVATED=5 DEACTIVATED value
+                         * @property {number} DELETING=6 DELETING value
+                         */
+                        BackupPlan.State = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "STATE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "CLUSTER_PENDING"] = 1;
+                            values[valuesById[2] = "PROVISIONING"] = 2;
+                            values[valuesById[3] = "READY"] = 3;
+                            values[valuesById[4] = "FAILED"] = 4;
+                            values[valuesById[5] = "DEACTIVATED"] = 5;
+                            values[valuesById[6] = "DELETING"] = 6;
+                            return values;
+                        })();
+    
                         return BackupPlan;
+                    })();
+    
+                    v1.RpoConfig = (function() {
+    
+                        /**
+                         * Properties of a RpoConfig.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IRpoConfig
+                         * @property {number|null} [targetRpoMinutes] RpoConfig targetRpoMinutes
+                         * @property {Array.<google.cloud.gkebackup.v1.IExclusionWindow>|null} [exclusionWindows] RpoConfig exclusionWindows
+                         */
+    
+                        /**
+                         * Constructs a new RpoConfig.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents a RpoConfig.
+                         * @implements IRpoConfig
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IRpoConfig=} [properties] Properties to set
+                         */
+                        function RpoConfig(properties) {
+                            this.exclusionWindows = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * RpoConfig targetRpoMinutes.
+                         * @member {number} targetRpoMinutes
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @instance
+                         */
+                        RpoConfig.prototype.targetRpoMinutes = 0;
+    
+                        /**
+                         * RpoConfig exclusionWindows.
+                         * @member {Array.<google.cloud.gkebackup.v1.IExclusionWindow>} exclusionWindows
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @instance
+                         */
+                        RpoConfig.prototype.exclusionWindows = $util.emptyArray;
+    
+                        /**
+                         * Creates a new RpoConfig instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IRpoConfig=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.RpoConfig} RpoConfig instance
+                         */
+                        RpoConfig.create = function create(properties) {
+                            return new RpoConfig(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified RpoConfig message. Does not implicitly {@link google.cloud.gkebackup.v1.RpoConfig.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IRpoConfig} message RpoConfig message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        RpoConfig.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.targetRpoMinutes != null && Object.hasOwnProperty.call(message, "targetRpoMinutes"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.targetRpoMinutes);
+                            if (message.exclusionWindows != null && message.exclusionWindows.length)
+                                for (var i = 0; i < message.exclusionWindows.length; ++i)
+                                    $root.google.cloud.gkebackup.v1.ExclusionWindow.encode(message.exclusionWindows[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified RpoConfig message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RpoConfig.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IRpoConfig} message RpoConfig message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        RpoConfig.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a RpoConfig message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.RpoConfig} RpoConfig
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        RpoConfig.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RpoConfig();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.targetRpoMinutes = reader.int32();
+                                        break;
+                                    }
+                                case 2: {
+                                        if (!(message.exclusionWindows && message.exclusionWindows.length))
+                                            message.exclusionWindows = [];
+                                        message.exclusionWindows.push($root.google.cloud.gkebackup.v1.ExclusionWindow.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a RpoConfig message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.RpoConfig} RpoConfig
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        RpoConfig.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a RpoConfig message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        RpoConfig.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.targetRpoMinutes != null && message.hasOwnProperty("targetRpoMinutes"))
+                                if (!$util.isInteger(message.targetRpoMinutes))
+                                    return "targetRpoMinutes: integer expected";
+                            if (message.exclusionWindows != null && message.hasOwnProperty("exclusionWindows")) {
+                                if (!Array.isArray(message.exclusionWindows))
+                                    return "exclusionWindows: array expected";
+                                for (var i = 0; i < message.exclusionWindows.length; ++i) {
+                                    var error = $root.google.cloud.gkebackup.v1.ExclusionWindow.verify(message.exclusionWindows[i]);
+                                    if (error)
+                                        return "exclusionWindows." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a RpoConfig message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.RpoConfig} RpoConfig
+                         */
+                        RpoConfig.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.RpoConfig)
+                                return object;
+                            var message = new $root.google.cloud.gkebackup.v1.RpoConfig();
+                            if (object.targetRpoMinutes != null)
+                                message.targetRpoMinutes = object.targetRpoMinutes | 0;
+                            if (object.exclusionWindows) {
+                                if (!Array.isArray(object.exclusionWindows))
+                                    throw TypeError(".google.cloud.gkebackup.v1.RpoConfig.exclusionWindows: array expected");
+                                message.exclusionWindows = [];
+                                for (var i = 0; i < object.exclusionWindows.length; ++i) {
+                                    if (typeof object.exclusionWindows[i] !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.RpoConfig.exclusionWindows: object expected");
+                                    message.exclusionWindows[i] = $root.google.cloud.gkebackup.v1.ExclusionWindow.fromObject(object.exclusionWindows[i]);
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a RpoConfig message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.RpoConfig} message RpoConfig
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        RpoConfig.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults)
+                                object.exclusionWindows = [];
+                            if (options.defaults)
+                                object.targetRpoMinutes = 0;
+                            if (message.targetRpoMinutes != null && message.hasOwnProperty("targetRpoMinutes"))
+                                object.targetRpoMinutes = message.targetRpoMinutes;
+                            if (message.exclusionWindows && message.exclusionWindows.length) {
+                                object.exclusionWindows = [];
+                                for (var j = 0; j < message.exclusionWindows.length; ++j)
+                                    object.exclusionWindows[j] = $root.google.cloud.gkebackup.v1.ExclusionWindow.toObject(message.exclusionWindows[j], options);
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this RpoConfig to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        RpoConfig.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for RpoConfig
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.RpoConfig
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        RpoConfig.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.RpoConfig";
+                        };
+    
+                        return RpoConfig;
+                    })();
+    
+                    v1.ExclusionWindow = (function() {
+    
+                        /**
+                         * Properties of an ExclusionWindow.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IExclusionWindow
+                         * @property {google.type.ITimeOfDay|null} [startTime] ExclusionWindow startTime
+                         * @property {google.protobuf.IDuration|null} [duration] ExclusionWindow duration
+                         * @property {google.type.IDate|null} [singleOccurrenceDate] ExclusionWindow singleOccurrenceDate
+                         * @property {boolean|null} [daily] ExclusionWindow daily
+                         * @property {google.cloud.gkebackup.v1.ExclusionWindow.IDayOfWeekList|null} [daysOfWeek] ExclusionWindow daysOfWeek
+                         */
+    
+                        /**
+                         * Constructs a new ExclusionWindow.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents an ExclusionWindow.
+                         * @implements IExclusionWindow
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IExclusionWindow=} [properties] Properties to set
+                         */
+                        function ExclusionWindow(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ExclusionWindow startTime.
+                         * @member {google.type.ITimeOfDay|null|undefined} startTime
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         */
+                        ExclusionWindow.prototype.startTime = null;
+    
+                        /**
+                         * ExclusionWindow duration.
+                         * @member {google.protobuf.IDuration|null|undefined} duration
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         */
+                        ExclusionWindow.prototype.duration = null;
+    
+                        /**
+                         * ExclusionWindow singleOccurrenceDate.
+                         * @member {google.type.IDate|null|undefined} singleOccurrenceDate
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         */
+                        ExclusionWindow.prototype.singleOccurrenceDate = null;
+    
+                        /**
+                         * ExclusionWindow daily.
+                         * @member {boolean|null|undefined} daily
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         */
+                        ExclusionWindow.prototype.daily = null;
+    
+                        /**
+                         * ExclusionWindow daysOfWeek.
+                         * @member {google.cloud.gkebackup.v1.ExclusionWindow.IDayOfWeekList|null|undefined} daysOfWeek
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         */
+                        ExclusionWindow.prototype.daysOfWeek = null;
+    
+                        // OneOf field names bound to virtual getters and setters
+                        var $oneOfFields;
+    
+                        /**
+                         * ExclusionWindow recurrence.
+                         * @member {"singleOccurrenceDate"|"daily"|"daysOfWeek"|undefined} recurrence
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         */
+                        Object.defineProperty(ExclusionWindow.prototype, "recurrence", {
+                            get: $util.oneOfGetter($oneOfFields = ["singleOccurrenceDate", "daily", "daysOfWeek"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+    
+                        /**
+                         * Creates a new ExclusionWindow instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IExclusionWindow=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.ExclusionWindow} ExclusionWindow instance
+                         */
+                        ExclusionWindow.create = function create(properties) {
+                            return new ExclusionWindow(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ExclusionWindow message. Does not implicitly {@link google.cloud.gkebackup.v1.ExclusionWindow.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IExclusionWindow} message ExclusionWindow message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ExclusionWindow.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.startTime != null && Object.hasOwnProperty.call(message, "startTime"))
+                                $root.google.type.TimeOfDay.encode(message.startTime, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.duration != null && Object.hasOwnProperty.call(message, "duration"))
+                                $root.google.protobuf.Duration.encode(message.duration, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            if (message.singleOccurrenceDate != null && Object.hasOwnProperty.call(message, "singleOccurrenceDate"))
+                                $root.google.type.Date.encode(message.singleOccurrenceDate, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                            if (message.daily != null && Object.hasOwnProperty.call(message, "daily"))
+                                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.daily);
+                            if (message.daysOfWeek != null && Object.hasOwnProperty.call(message, "daysOfWeek"))
+                                $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.encode(message.daysOfWeek, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ExclusionWindow message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.ExclusionWindow.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IExclusionWindow} message ExclusionWindow message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ExclusionWindow.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes an ExclusionWindow message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.ExclusionWindow} ExclusionWindow
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ExclusionWindow.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.ExclusionWindow();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.startTime = $root.google.type.TimeOfDay.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 2: {
+                                        message.duration = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 3: {
+                                        message.singleOccurrenceDate = $root.google.type.Date.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 4: {
+                                        message.daily = reader.bool();
+                                        break;
+                                    }
+                                case 5: {
+                                        message.daysOfWeek = $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes an ExclusionWindow message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.ExclusionWindow} ExclusionWindow
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ExclusionWindow.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies an ExclusionWindow message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ExclusionWindow.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            var properties = {};
+                            if (message.startTime != null && message.hasOwnProperty("startTime")) {
+                                var error = $root.google.type.TimeOfDay.verify(message.startTime);
+                                if (error)
+                                    return "startTime." + error;
+                            }
+                            if (message.duration != null && message.hasOwnProperty("duration")) {
+                                var error = $root.google.protobuf.Duration.verify(message.duration);
+                                if (error)
+                                    return "duration." + error;
+                            }
+                            if (message.singleOccurrenceDate != null && message.hasOwnProperty("singleOccurrenceDate")) {
+                                properties.recurrence = 1;
+                                {
+                                    var error = $root.google.type.Date.verify(message.singleOccurrenceDate);
+                                    if (error)
+                                        return "singleOccurrenceDate." + error;
+                                }
+                            }
+                            if (message.daily != null && message.hasOwnProperty("daily")) {
+                                if (properties.recurrence === 1)
+                                    return "recurrence: multiple values";
+                                properties.recurrence = 1;
+                                if (typeof message.daily !== "boolean")
+                                    return "daily: boolean expected";
+                            }
+                            if (message.daysOfWeek != null && message.hasOwnProperty("daysOfWeek")) {
+                                if (properties.recurrence === 1)
+                                    return "recurrence: multiple values";
+                                properties.recurrence = 1;
+                                {
+                                    var error = $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.verify(message.daysOfWeek);
+                                    if (error)
+                                        return "daysOfWeek." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates an ExclusionWindow message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.ExclusionWindow} ExclusionWindow
+                         */
+                        ExclusionWindow.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.ExclusionWindow)
+                                return object;
+                            var message = new $root.google.cloud.gkebackup.v1.ExclusionWindow();
+                            if (object.startTime != null) {
+                                if (typeof object.startTime !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.ExclusionWindow.startTime: object expected");
+                                message.startTime = $root.google.type.TimeOfDay.fromObject(object.startTime);
+                            }
+                            if (object.duration != null) {
+                                if (typeof object.duration !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.ExclusionWindow.duration: object expected");
+                                message.duration = $root.google.protobuf.Duration.fromObject(object.duration);
+                            }
+                            if (object.singleOccurrenceDate != null) {
+                                if (typeof object.singleOccurrenceDate !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.ExclusionWindow.singleOccurrenceDate: object expected");
+                                message.singleOccurrenceDate = $root.google.type.Date.fromObject(object.singleOccurrenceDate);
+                            }
+                            if (object.daily != null)
+                                message.daily = Boolean(object.daily);
+                            if (object.daysOfWeek != null) {
+                                if (typeof object.daysOfWeek !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.ExclusionWindow.daysOfWeek: object expected");
+                                message.daysOfWeek = $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.fromObject(object.daysOfWeek);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from an ExclusionWindow message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.ExclusionWindow} message ExclusionWindow
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ExclusionWindow.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.startTime = null;
+                                object.duration = null;
+                            }
+                            if (message.startTime != null && message.hasOwnProperty("startTime"))
+                                object.startTime = $root.google.type.TimeOfDay.toObject(message.startTime, options);
+                            if (message.duration != null && message.hasOwnProperty("duration"))
+                                object.duration = $root.google.protobuf.Duration.toObject(message.duration, options);
+                            if (message.singleOccurrenceDate != null && message.hasOwnProperty("singleOccurrenceDate")) {
+                                object.singleOccurrenceDate = $root.google.type.Date.toObject(message.singleOccurrenceDate, options);
+                                if (options.oneofs)
+                                    object.recurrence = "singleOccurrenceDate";
+                            }
+                            if (message.daily != null && message.hasOwnProperty("daily")) {
+                                object.daily = message.daily;
+                                if (options.oneofs)
+                                    object.recurrence = "daily";
+                            }
+                            if (message.daysOfWeek != null && message.hasOwnProperty("daysOfWeek")) {
+                                object.daysOfWeek = $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.toObject(message.daysOfWeek, options);
+                                if (options.oneofs)
+                                    object.recurrence = "daysOfWeek";
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ExclusionWindow to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ExclusionWindow.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ExclusionWindow
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ExclusionWindow.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.ExclusionWindow";
+                        };
+    
+                        ExclusionWindow.DayOfWeekList = (function() {
+    
+                            /**
+                             * Properties of a DayOfWeekList.
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                             * @interface IDayOfWeekList
+                             * @property {Array.<google.type.DayOfWeek>|null} [daysOfWeek] DayOfWeekList daysOfWeek
+                             */
+    
+                            /**
+                             * Constructs a new DayOfWeekList.
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow
+                             * @classdesc Represents a DayOfWeekList.
+                             * @implements IDayOfWeekList
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.ExclusionWindow.IDayOfWeekList=} [properties] Properties to set
+                             */
+                            function DayOfWeekList(properties) {
+                                this.daysOfWeek = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * DayOfWeekList daysOfWeek.
+                             * @member {Array.<google.type.DayOfWeek>} daysOfWeek
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @instance
+                             */
+                            DayOfWeekList.prototype.daysOfWeek = $util.emptyArray;
+    
+                            /**
+                             * Creates a new DayOfWeekList instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.ExclusionWindow.IDayOfWeekList=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList} DayOfWeekList instance
+                             */
+                            DayOfWeekList.create = function create(properties) {
+                                return new DayOfWeekList(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified DayOfWeekList message. Does not implicitly {@link google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.ExclusionWindow.IDayOfWeekList} message DayOfWeekList message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            DayOfWeekList.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.daysOfWeek != null && message.daysOfWeek.length) {
+                                    writer.uint32(/* id 1, wireType 2 =*/10).fork();
+                                    for (var i = 0; i < message.daysOfWeek.length; ++i)
+                                        writer.int32(message.daysOfWeek[i]);
+                                    writer.ldelim();
+                                }
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified DayOfWeekList message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.ExclusionWindow.IDayOfWeekList} message DayOfWeekList message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            DayOfWeekList.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a DayOfWeekList message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList} DayOfWeekList
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            DayOfWeekList.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            if (!(message.daysOfWeek && message.daysOfWeek.length))
+                                                message.daysOfWeek = [];
+                                            if ((tag & 7) === 2) {
+                                                var end2 = reader.uint32() + reader.pos;
+                                                while (reader.pos < end2)
+                                                    message.daysOfWeek.push(reader.int32());
+                                            } else
+                                                message.daysOfWeek.push(reader.int32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a DayOfWeekList message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList} DayOfWeekList
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            DayOfWeekList.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a DayOfWeekList message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            DayOfWeekList.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.daysOfWeek != null && message.hasOwnProperty("daysOfWeek")) {
+                                    if (!Array.isArray(message.daysOfWeek))
+                                        return "daysOfWeek: array expected";
+                                    for (var i = 0; i < message.daysOfWeek.length; ++i)
+                                        switch (message.daysOfWeek[i]) {
+                                        default:
+                                            return "daysOfWeek: enum value[] expected";
+                                        case 0:
+                                        case 1:
+                                        case 2:
+                                        case 3:
+                                        case 4:
+                                        case 5:
+                                        case 6:
+                                        case 7:
+                                            break;
+                                        }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a DayOfWeekList message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList} DayOfWeekList
+                             */
+                            DayOfWeekList.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList();
+                                if (object.daysOfWeek) {
+                                    if (!Array.isArray(object.daysOfWeek))
+                                        throw TypeError(".google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList.daysOfWeek: array expected");
+                                    message.daysOfWeek = [];
+                                    for (var i = 0; i < object.daysOfWeek.length; ++i)
+                                        switch (object.daysOfWeek[i]) {
+                                        default:
+                                            if (typeof object.daysOfWeek[i] === "number") {
+                                                message.daysOfWeek[i] = object.daysOfWeek[i];
+                                                break;
+                                            }
+                                        case "DAY_OF_WEEK_UNSPECIFIED":
+                                        case 0:
+                                            message.daysOfWeek[i] = 0;
+                                            break;
+                                        case "MONDAY":
+                                        case 1:
+                                            message.daysOfWeek[i] = 1;
+                                            break;
+                                        case "TUESDAY":
+                                        case 2:
+                                            message.daysOfWeek[i] = 2;
+                                            break;
+                                        case "WEDNESDAY":
+                                        case 3:
+                                            message.daysOfWeek[i] = 3;
+                                            break;
+                                        case "THURSDAY":
+                                        case 4:
+                                            message.daysOfWeek[i] = 4;
+                                            break;
+                                        case "FRIDAY":
+                                        case 5:
+                                            message.daysOfWeek[i] = 5;
+                                            break;
+                                        case "SATURDAY":
+                                        case 6:
+                                            message.daysOfWeek[i] = 6;
+                                            break;
+                                        case "SUNDAY":
+                                        case 7:
+                                            message.daysOfWeek[i] = 7;
+                                            break;
+                                        }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a DayOfWeekList message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList} message DayOfWeekList
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            DayOfWeekList.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults)
+                                    object.daysOfWeek = [];
+                                if (message.daysOfWeek && message.daysOfWeek.length) {
+                                    object.daysOfWeek = [];
+                                    for (var j = 0; j < message.daysOfWeek.length; ++j)
+                                        object.daysOfWeek[j] = options.enums === String ? $root.google.type.DayOfWeek[message.daysOfWeek[j]] === undefined ? message.daysOfWeek[j] : $root.google.type.DayOfWeek[message.daysOfWeek[j]] : message.daysOfWeek[j];
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this DayOfWeekList to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            DayOfWeekList.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for DayOfWeekList
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            DayOfWeekList.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.ExclusionWindow.DayOfWeekList";
+                            };
+    
+                            return DayOfWeekList;
+                        })();
+    
+                        return ExclusionWindow;
                     })();
     
                     v1.BackupForGKE = (function() {
@@ -4507,6 +5831,39 @@
                          * @instance
                          * @param {google.cloud.gkebackup.v1.IGetVolumeRestoreRequest} request GetVolumeRestoreRequest message or plain object
                          * @returns {Promise<google.cloud.gkebackup.v1.VolumeRestore>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.cloud.gkebackup.v1.BackupForGKE|getBackupIndexDownloadUrl}.
+                         * @memberof google.cloud.gkebackup.v1.BackupForGKE
+                         * @typedef GetBackupIndexDownloadUrlCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse} [response] GetBackupIndexDownloadUrlResponse
+                         */
+    
+                        /**
+                         * Calls GetBackupIndexDownloadUrl.
+                         * @function getBackupIndexDownloadUrl
+                         * @memberof google.cloud.gkebackup.v1.BackupForGKE
+                         * @instance
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlRequest} request GetBackupIndexDownloadUrlRequest message or plain object
+                         * @param {google.cloud.gkebackup.v1.BackupForGKE.GetBackupIndexDownloadUrlCallback} callback Node-style callback called with the error, if any, and GetBackupIndexDownloadUrlResponse
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(BackupForGKE.prototype.getBackupIndexDownloadUrl = function getBackupIndexDownloadUrl(request, callback) {
+                            return this.rpcCall(getBackupIndexDownloadUrl, $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest, $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse, request, callback);
+                        }, "name", { value: "GetBackupIndexDownloadUrl" });
+    
+                        /**
+                         * Calls GetBackupIndexDownloadUrl.
+                         * @function getBackupIndexDownloadUrl
+                         * @memberof google.cloud.gkebackup.v1.BackupForGKE
+                         * @instance
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlRequest} request GetBackupIndexDownloadUrlRequest message or plain object
+                         * @returns {Promise<google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse>} Promise
                          * @variation 2
                          */
     
@@ -12412,6 +13769,412 @@
                         return GetVolumeRestoreRequest;
                     })();
     
+                    v1.GetBackupIndexDownloadUrlRequest = (function() {
+    
+                        /**
+                         * Properties of a GetBackupIndexDownloadUrlRequest.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IGetBackupIndexDownloadUrlRequest
+                         * @property {string|null} [backup] GetBackupIndexDownloadUrlRequest backup
+                         */
+    
+                        /**
+                         * Constructs a new GetBackupIndexDownloadUrlRequest.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents a GetBackupIndexDownloadUrlRequest.
+                         * @implements IGetBackupIndexDownloadUrlRequest
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlRequest=} [properties] Properties to set
+                         */
+                        function GetBackupIndexDownloadUrlRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * GetBackupIndexDownloadUrlRequest backup.
+                         * @member {string} backup
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @instance
+                         */
+                        GetBackupIndexDownloadUrlRequest.prototype.backup = "";
+    
+                        /**
+                         * Creates a new GetBackupIndexDownloadUrlRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlRequest=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest} GetBackupIndexDownloadUrlRequest instance
+                         */
+                        GetBackupIndexDownloadUrlRequest.create = function create(properties) {
+                            return new GetBackupIndexDownloadUrlRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified GetBackupIndexDownloadUrlRequest message. Does not implicitly {@link google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlRequest} message GetBackupIndexDownloadUrlRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        GetBackupIndexDownloadUrlRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.backup != null && Object.hasOwnProperty.call(message, "backup"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.backup);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified GetBackupIndexDownloadUrlRequest message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlRequest} message GetBackupIndexDownloadUrlRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        GetBackupIndexDownloadUrlRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a GetBackupIndexDownloadUrlRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest} GetBackupIndexDownloadUrlRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        GetBackupIndexDownloadUrlRequest.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.backup = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a GetBackupIndexDownloadUrlRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest} GetBackupIndexDownloadUrlRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        GetBackupIndexDownloadUrlRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a GetBackupIndexDownloadUrlRequest message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        GetBackupIndexDownloadUrlRequest.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.backup != null && message.hasOwnProperty("backup"))
+                                if (!$util.isString(message.backup))
+                                    return "backup: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a GetBackupIndexDownloadUrlRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest} GetBackupIndexDownloadUrlRequest
+                         */
+                        GetBackupIndexDownloadUrlRequest.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest)
+                                return object;
+                            var message = new $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest();
+                            if (object.backup != null)
+                                message.backup = String(object.backup);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a GetBackupIndexDownloadUrlRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest} message GetBackupIndexDownloadUrlRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        GetBackupIndexDownloadUrlRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.backup = "";
+                            if (message.backup != null && message.hasOwnProperty("backup"))
+                                object.backup = message.backup;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this GetBackupIndexDownloadUrlRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        GetBackupIndexDownloadUrlRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for GetBackupIndexDownloadUrlRequest
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        GetBackupIndexDownloadUrlRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlRequest";
+                        };
+    
+                        return GetBackupIndexDownloadUrlRequest;
+                    })();
+    
+                    v1.GetBackupIndexDownloadUrlResponse = (function() {
+    
+                        /**
+                         * Properties of a GetBackupIndexDownloadUrlResponse.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IGetBackupIndexDownloadUrlResponse
+                         * @property {string|null} [signedUrl] GetBackupIndexDownloadUrlResponse signedUrl
+                         */
+    
+                        /**
+                         * Constructs a new GetBackupIndexDownloadUrlResponse.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents a GetBackupIndexDownloadUrlResponse.
+                         * @implements IGetBackupIndexDownloadUrlResponse
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlResponse=} [properties] Properties to set
+                         */
+                        function GetBackupIndexDownloadUrlResponse(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * GetBackupIndexDownloadUrlResponse signedUrl.
+                         * @member {string} signedUrl
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @instance
+                         */
+                        GetBackupIndexDownloadUrlResponse.prototype.signedUrl = "";
+    
+                        /**
+                         * Creates a new GetBackupIndexDownloadUrlResponse instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlResponse=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse} GetBackupIndexDownloadUrlResponse instance
+                         */
+                        GetBackupIndexDownloadUrlResponse.create = function create(properties) {
+                            return new GetBackupIndexDownloadUrlResponse(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified GetBackupIndexDownloadUrlResponse message. Does not implicitly {@link google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlResponse} message GetBackupIndexDownloadUrlResponse message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        GetBackupIndexDownloadUrlResponse.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.signedUrl != null && Object.hasOwnProperty.call(message, "signedUrl"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.signedUrl);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified GetBackupIndexDownloadUrlResponse message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IGetBackupIndexDownloadUrlResponse} message GetBackupIndexDownloadUrlResponse message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        GetBackupIndexDownloadUrlResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a GetBackupIndexDownloadUrlResponse message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse} GetBackupIndexDownloadUrlResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        GetBackupIndexDownloadUrlResponse.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.signedUrl = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a GetBackupIndexDownloadUrlResponse message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse} GetBackupIndexDownloadUrlResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        GetBackupIndexDownloadUrlResponse.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a GetBackupIndexDownloadUrlResponse message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        GetBackupIndexDownloadUrlResponse.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.signedUrl != null && message.hasOwnProperty("signedUrl"))
+                                if (!$util.isString(message.signedUrl))
+                                    return "signedUrl: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a GetBackupIndexDownloadUrlResponse message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse} GetBackupIndexDownloadUrlResponse
+                         */
+                        GetBackupIndexDownloadUrlResponse.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse)
+                                return object;
+                            var message = new $root.google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse();
+                            if (object.signedUrl != null)
+                                message.signedUrl = String(object.signedUrl);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a GetBackupIndexDownloadUrlResponse message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse} message GetBackupIndexDownloadUrlResponse
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        GetBackupIndexDownloadUrlResponse.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.signedUrl = "";
+                            if (message.signedUrl != null && message.hasOwnProperty("signedUrl"))
+                                object.signedUrl = message.signedUrl;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this GetBackupIndexDownloadUrlResponse to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        GetBackupIndexDownloadUrlResponse.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for GetBackupIndexDownloadUrlResponse
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        GetBackupIndexDownloadUrlResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.GetBackupIndexDownloadUrlResponse";
+                        };
+    
+                        return GetBackupIndexDownloadUrlResponse;
+                    })();
+    
                     v1.Restore = (function() {
     
                         /**
@@ -12435,6 +14198,8 @@
                          * @property {number|null} [resourcesFailedCount] Restore resourcesFailedCount
                          * @property {number|null} [volumesRestoredCount] Restore volumesRestoredCount
                          * @property {string|null} [etag] Restore etag
+                         * @property {google.cloud.gkebackup.v1.Restore.IFilter|null} [filter] Restore filter
+                         * @property {Array.<google.cloud.gkebackup.v1.IVolumeDataRestorePolicyOverride>|null} [volumeDataRestorePolicyOverrides] Restore volumeDataRestorePolicyOverrides
                          */
     
                         /**
@@ -12447,6 +14212,7 @@
                          */
                         function Restore(properties) {
                             this.labels = {};
+                            this.volumeDataRestorePolicyOverrides = [];
                             if (properties)
                                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                     if (properties[keys[i]] != null)
@@ -12590,6 +14356,22 @@
                         Restore.prototype.etag = "";
     
                         /**
+                         * Restore filter.
+                         * @member {google.cloud.gkebackup.v1.Restore.IFilter|null|undefined} filter
+                         * @memberof google.cloud.gkebackup.v1.Restore
+                         * @instance
+                         */
+                        Restore.prototype.filter = null;
+    
+                        /**
+                         * Restore volumeDataRestorePolicyOverrides.
+                         * @member {Array.<google.cloud.gkebackup.v1.IVolumeDataRestorePolicyOverride>} volumeDataRestorePolicyOverrides
+                         * @memberof google.cloud.gkebackup.v1.Restore
+                         * @instance
+                         */
+                        Restore.prototype.volumeDataRestorePolicyOverrides = $util.emptyArray;
+    
+                        /**
                          * Creates a new Restore instance using the specified properties.
                          * @function create
                          * @memberof google.cloud.gkebackup.v1.Restore
@@ -12648,6 +14430,11 @@
                                 writer.uint32(/* id 16, wireType 0 =*/128).int32(message.volumesRestoredCount);
                             if (message.etag != null && Object.hasOwnProperty.call(message, "etag"))
                                 writer.uint32(/* id 17, wireType 2 =*/138).string(message.etag);
+                            if (message.filter != null && Object.hasOwnProperty.call(message, "filter"))
+                                $root.google.cloud.gkebackup.v1.Restore.Filter.encode(message.filter, writer.uint32(/* id 18, wireType 2 =*/146).fork()).ldelim();
+                            if (message.volumeDataRestorePolicyOverrides != null && message.volumeDataRestorePolicyOverrides.length)
+                                for (var i = 0; i < message.volumeDataRestorePolicyOverrides.length; ++i)
+                                    $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.encode(message.volumeDataRestorePolicyOverrides[i], writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
                             return writer;
                         };
     
@@ -12769,6 +14556,16 @@
                                         message.etag = reader.string();
                                         break;
                                     }
+                                case 18: {
+                                        message.filter = $root.google.cloud.gkebackup.v1.Restore.Filter.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 19: {
+                                        if (!(message.volumeDataRestorePolicyOverrides && message.volumeDataRestorePolicyOverrides.length))
+                                            message.volumeDataRestorePolicyOverrides = [];
+                                        message.volumeDataRestorePolicyOverrides.push($root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.decode(reader, reader.uint32()));
+                                        break;
+                                    }
                                 default:
                                     reader.skipType(tag & 7);
                                     break;
@@ -12877,6 +14674,20 @@
                             if (message.etag != null && message.hasOwnProperty("etag"))
                                 if (!$util.isString(message.etag))
                                     return "etag: string expected";
+                            if (message.filter != null && message.hasOwnProperty("filter")) {
+                                var error = $root.google.cloud.gkebackup.v1.Restore.Filter.verify(message.filter);
+                                if (error)
+                                    return "filter." + error;
+                            }
+                            if (message.volumeDataRestorePolicyOverrides != null && message.hasOwnProperty("volumeDataRestorePolicyOverrides")) {
+                                if (!Array.isArray(message.volumeDataRestorePolicyOverrides))
+                                    return "volumeDataRestorePolicyOverrides: array expected";
+                                for (var i = 0; i < message.volumeDataRestorePolicyOverrides.length; ++i) {
+                                    var error = $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.verify(message.volumeDataRestorePolicyOverrides[i]);
+                                    if (error)
+                                        return "volumeDataRestorePolicyOverrides." + error;
+                                }
+                            }
                             return null;
                         };
     
@@ -12973,6 +14784,21 @@
                                 message.volumesRestoredCount = object.volumesRestoredCount | 0;
                             if (object.etag != null)
                                 message.etag = String(object.etag);
+                            if (object.filter != null) {
+                                if (typeof object.filter !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.Restore.filter: object expected");
+                                message.filter = $root.google.cloud.gkebackup.v1.Restore.Filter.fromObject(object.filter);
+                            }
+                            if (object.volumeDataRestorePolicyOverrides) {
+                                if (!Array.isArray(object.volumeDataRestorePolicyOverrides))
+                                    throw TypeError(".google.cloud.gkebackup.v1.Restore.volumeDataRestorePolicyOverrides: array expected");
+                                message.volumeDataRestorePolicyOverrides = [];
+                                for (var i = 0; i < object.volumeDataRestorePolicyOverrides.length; ++i) {
+                                    if (typeof object.volumeDataRestorePolicyOverrides[i] !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.Restore.volumeDataRestorePolicyOverrides: object expected");
+                                    message.volumeDataRestorePolicyOverrides[i] = $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.fromObject(object.volumeDataRestorePolicyOverrides[i]);
+                                }
+                            }
                             return message;
                         };
     
@@ -12989,6 +14815,8 @@
                             if (!options)
                                 options = {};
                             var object = {};
+                            if (options.arrays || options.defaults)
+                                object.volumeDataRestorePolicyOverrides = [];
                             if (options.objects || options.defaults)
                                 object.labels = {};
                             if (options.defaults) {
@@ -13008,6 +14836,7 @@
                                 object.resourcesFailedCount = 0;
                                 object.volumesRestoredCount = 0;
                                 object.etag = "";
+                                object.filter = null;
                             }
                             if (message.name != null && message.hasOwnProperty("name"))
                                 object.name = message.name;
@@ -13047,6 +14876,13 @@
                                 object.volumesRestoredCount = message.volumesRestoredCount;
                             if (message.etag != null && message.hasOwnProperty("etag"))
                                 object.etag = message.etag;
+                            if (message.filter != null && message.hasOwnProperty("filter"))
+                                object.filter = $root.google.cloud.gkebackup.v1.Restore.Filter.toObject(message.filter, options);
+                            if (message.volumeDataRestorePolicyOverrides && message.volumeDataRestorePolicyOverrides.length) {
+                                object.volumeDataRestorePolicyOverrides = [];
+                                for (var j = 0; j < message.volumeDataRestorePolicyOverrides.length; ++j)
+                                    object.volumeDataRestorePolicyOverrides[j] = $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.toObject(message.volumeDataRestorePolicyOverrides[j], options);
+                            }
                             return object;
                         };
     
@@ -13098,6 +14934,275 @@
                             return values;
                         })();
     
+                        Restore.Filter = (function() {
+    
+                            /**
+                             * Properties of a Filter.
+                             * @memberof google.cloud.gkebackup.v1.Restore
+                             * @interface IFilter
+                             * @property {Array.<google.cloud.gkebackup.v1.IResourceSelector>|null} [inclusionFilters] Filter inclusionFilters
+                             * @property {Array.<google.cloud.gkebackup.v1.IResourceSelector>|null} [exclusionFilters] Filter exclusionFilters
+                             */
+    
+                            /**
+                             * Constructs a new Filter.
+                             * @memberof google.cloud.gkebackup.v1.Restore
+                             * @classdesc Represents a Filter.
+                             * @implements IFilter
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.Restore.IFilter=} [properties] Properties to set
+                             */
+                            function Filter(properties) {
+                                this.inclusionFilters = [];
+                                this.exclusionFilters = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * Filter inclusionFilters.
+                             * @member {Array.<google.cloud.gkebackup.v1.IResourceSelector>} inclusionFilters
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @instance
+                             */
+                            Filter.prototype.inclusionFilters = $util.emptyArray;
+    
+                            /**
+                             * Filter exclusionFilters.
+                             * @member {Array.<google.cloud.gkebackup.v1.IResourceSelector>} exclusionFilters
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @instance
+                             */
+                            Filter.prototype.exclusionFilters = $util.emptyArray;
+    
+                            /**
+                             * Creates a new Filter instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.Restore.IFilter=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.Restore.Filter} Filter instance
+                             */
+                            Filter.create = function create(properties) {
+                                return new Filter(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified Filter message. Does not implicitly {@link google.cloud.gkebackup.v1.Restore.Filter.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.Restore.IFilter} message Filter message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            Filter.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.inclusionFilters != null && message.inclusionFilters.length)
+                                    for (var i = 0; i < message.inclusionFilters.length; ++i)
+                                        $root.google.cloud.gkebackup.v1.ResourceSelector.encode(message.inclusionFilters[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.exclusionFilters != null && message.exclusionFilters.length)
+                                    for (var i = 0; i < message.exclusionFilters.length; ++i)
+                                        $root.google.cloud.gkebackup.v1.ResourceSelector.encode(message.exclusionFilters[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified Filter message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.Restore.Filter.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.Restore.IFilter} message Filter message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            Filter.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a Filter message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.Restore.Filter} Filter
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            Filter.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.Restore.Filter();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            if (!(message.inclusionFilters && message.inclusionFilters.length))
+                                                message.inclusionFilters = [];
+                                            message.inclusionFilters.push($root.google.cloud.gkebackup.v1.ResourceSelector.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    case 2: {
+                                            if (!(message.exclusionFilters && message.exclusionFilters.length))
+                                                message.exclusionFilters = [];
+                                            message.exclusionFilters.push($root.google.cloud.gkebackup.v1.ResourceSelector.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a Filter message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.Restore.Filter} Filter
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            Filter.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a Filter message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            Filter.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.inclusionFilters != null && message.hasOwnProperty("inclusionFilters")) {
+                                    if (!Array.isArray(message.inclusionFilters))
+                                        return "inclusionFilters: array expected";
+                                    for (var i = 0; i < message.inclusionFilters.length; ++i) {
+                                        var error = $root.google.cloud.gkebackup.v1.ResourceSelector.verify(message.inclusionFilters[i]);
+                                        if (error)
+                                            return "inclusionFilters." + error;
+                                    }
+                                }
+                                if (message.exclusionFilters != null && message.hasOwnProperty("exclusionFilters")) {
+                                    if (!Array.isArray(message.exclusionFilters))
+                                        return "exclusionFilters: array expected";
+                                    for (var i = 0; i < message.exclusionFilters.length; ++i) {
+                                        var error = $root.google.cloud.gkebackup.v1.ResourceSelector.verify(message.exclusionFilters[i]);
+                                        if (error)
+                                            return "exclusionFilters." + error;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a Filter message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.Restore.Filter} Filter
+                             */
+                            Filter.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.Restore.Filter)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.Restore.Filter();
+                                if (object.inclusionFilters) {
+                                    if (!Array.isArray(object.inclusionFilters))
+                                        throw TypeError(".google.cloud.gkebackup.v1.Restore.Filter.inclusionFilters: array expected");
+                                    message.inclusionFilters = [];
+                                    for (var i = 0; i < object.inclusionFilters.length; ++i) {
+                                        if (typeof object.inclusionFilters[i] !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.Restore.Filter.inclusionFilters: object expected");
+                                        message.inclusionFilters[i] = $root.google.cloud.gkebackup.v1.ResourceSelector.fromObject(object.inclusionFilters[i]);
+                                    }
+                                }
+                                if (object.exclusionFilters) {
+                                    if (!Array.isArray(object.exclusionFilters))
+                                        throw TypeError(".google.cloud.gkebackup.v1.Restore.Filter.exclusionFilters: array expected");
+                                    message.exclusionFilters = [];
+                                    for (var i = 0; i < object.exclusionFilters.length; ++i) {
+                                        if (typeof object.exclusionFilters[i] !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.Restore.Filter.exclusionFilters: object expected");
+                                        message.exclusionFilters[i] = $root.google.cloud.gkebackup.v1.ResourceSelector.fromObject(object.exclusionFilters[i]);
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a Filter message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.Restore.Filter} message Filter
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            Filter.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults) {
+                                    object.inclusionFilters = [];
+                                    object.exclusionFilters = [];
+                                }
+                                if (message.inclusionFilters && message.inclusionFilters.length) {
+                                    object.inclusionFilters = [];
+                                    for (var j = 0; j < message.inclusionFilters.length; ++j)
+                                        object.inclusionFilters[j] = $root.google.cloud.gkebackup.v1.ResourceSelector.toObject(message.inclusionFilters[j], options);
+                                }
+                                if (message.exclusionFilters && message.exclusionFilters.length) {
+                                    object.exclusionFilters = [];
+                                    for (var j = 0; j < message.exclusionFilters.length; ++j)
+                                        object.exclusionFilters[j] = $root.google.cloud.gkebackup.v1.ResourceSelector.toObject(message.exclusionFilters[j], options);
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this Filter to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            Filter.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for Filter
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.Restore.Filter
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            Filter.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.Restore.Filter";
+                            };
+    
+                            return Filter;
+                        })();
+    
                         return Restore;
                     })();
     
@@ -13114,7 +15219,12 @@
                          * @property {boolean|null} [allNamespaces] RestoreConfig allNamespaces
                          * @property {google.cloud.gkebackup.v1.INamespaces|null} [selectedNamespaces] RestoreConfig selectedNamespaces
                          * @property {google.cloud.gkebackup.v1.INamespacedNames|null} [selectedApplications] RestoreConfig selectedApplications
+                         * @property {boolean|null} [noNamespaces] RestoreConfig noNamespaces
+                         * @property {google.cloud.gkebackup.v1.INamespaces|null} [excludedNamespaces] RestoreConfig excludedNamespaces
                          * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.ISubstitutionRule>|null} [substitutionRules] RestoreConfig substitutionRules
+                         * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.ITransformationRule>|null} [transformationRules] RestoreConfig transformationRules
+                         * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.IVolumeDataRestorePolicyBinding>|null} [volumeDataRestorePolicyBindings] RestoreConfig volumeDataRestorePolicyBindings
+                         * @property {google.cloud.gkebackup.v1.RestoreConfig.IRestoreOrder|null} [restoreOrder] RestoreConfig restoreOrder
                          */
     
                         /**
@@ -13127,6 +15237,8 @@
                          */
                         function RestoreConfig(properties) {
                             this.substitutionRules = [];
+                            this.transformationRules = [];
+                            this.volumeDataRestorePolicyBindings = [];
                             if (properties)
                                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                     if (properties[keys[i]] != null)
@@ -13190,6 +15302,22 @@
                         RestoreConfig.prototype.selectedApplications = null;
     
                         /**
+                         * RestoreConfig noNamespaces.
+                         * @member {boolean|null|undefined} noNamespaces
+                         * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                         * @instance
+                         */
+                        RestoreConfig.prototype.noNamespaces = null;
+    
+                        /**
+                         * RestoreConfig excludedNamespaces.
+                         * @member {google.cloud.gkebackup.v1.INamespaces|null|undefined} excludedNamespaces
+                         * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                         * @instance
+                         */
+                        RestoreConfig.prototype.excludedNamespaces = null;
+    
+                        /**
                          * RestoreConfig substitutionRules.
                          * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.ISubstitutionRule>} substitutionRules
                          * @memberof google.cloud.gkebackup.v1.RestoreConfig
@@ -13197,17 +15325,41 @@
                          */
                         RestoreConfig.prototype.substitutionRules = $util.emptyArray;
     
+                        /**
+                         * RestoreConfig transformationRules.
+                         * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.ITransformationRule>} transformationRules
+                         * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                         * @instance
+                         */
+                        RestoreConfig.prototype.transformationRules = $util.emptyArray;
+    
+                        /**
+                         * RestoreConfig volumeDataRestorePolicyBindings.
+                         * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.IVolumeDataRestorePolicyBinding>} volumeDataRestorePolicyBindings
+                         * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                         * @instance
+                         */
+                        RestoreConfig.prototype.volumeDataRestorePolicyBindings = $util.emptyArray;
+    
+                        /**
+                         * RestoreConfig restoreOrder.
+                         * @member {google.cloud.gkebackup.v1.RestoreConfig.IRestoreOrder|null|undefined} restoreOrder
+                         * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                         * @instance
+                         */
+                        RestoreConfig.prototype.restoreOrder = null;
+    
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
     
                         /**
                          * RestoreConfig namespacedResourceRestoreScope.
-                         * @member {"allNamespaces"|"selectedNamespaces"|"selectedApplications"|undefined} namespacedResourceRestoreScope
+                         * @member {"allNamespaces"|"selectedNamespaces"|"selectedApplications"|"noNamespaces"|"excludedNamespaces"|undefined} namespacedResourceRestoreScope
                          * @memberof google.cloud.gkebackup.v1.RestoreConfig
                          * @instance
                          */
                         Object.defineProperty(RestoreConfig.prototype, "namespacedResourceRestoreScope", {
-                            get: $util.oneOfGetter($oneOfFields = ["allNamespaces", "selectedNamespaces", "selectedApplications"]),
+                            get: $util.oneOfGetter($oneOfFields = ["allNamespaces", "selectedNamespaces", "selectedApplications", "noNamespaces", "excludedNamespaces"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
     
@@ -13252,6 +15404,18 @@
                             if (message.substitutionRules != null && message.substitutionRules.length)
                                 for (var i = 0; i < message.substitutionRules.length; ++i)
                                     $root.google.cloud.gkebackup.v1.RestoreConfig.SubstitutionRule.encode(message.substitutionRules[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                            if (message.noNamespaces != null && Object.hasOwnProperty.call(message, "noNamespaces"))
+                                writer.uint32(/* id 9, wireType 0 =*/72).bool(message.noNamespaces);
+                            if (message.excludedNamespaces != null && Object.hasOwnProperty.call(message, "excludedNamespaces"))
+                                $root.google.cloud.gkebackup.v1.Namespaces.encode(message.excludedNamespaces, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                            if (message.transformationRules != null && message.transformationRules.length)
+                                for (var i = 0; i < message.transformationRules.length; ++i)
+                                    $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.encode(message.transformationRules[i], writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                            if (message.volumeDataRestorePolicyBindings != null && message.volumeDataRestorePolicyBindings.length)
+                                for (var i = 0; i < message.volumeDataRestorePolicyBindings.length; ++i)
+                                    $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.encode(message.volumeDataRestorePolicyBindings[i], writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                            if (message.restoreOrder != null && Object.hasOwnProperty.call(message, "restoreOrder"))
+                                $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.encode(message.restoreOrder, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
                             return writer;
                         };
     
@@ -13314,10 +15478,34 @@
                                         message.selectedApplications = $root.google.cloud.gkebackup.v1.NamespacedNames.decode(reader, reader.uint32());
                                         break;
                                     }
+                                case 9: {
+                                        message.noNamespaces = reader.bool();
+                                        break;
+                                    }
+                                case 10: {
+                                        message.excludedNamespaces = $root.google.cloud.gkebackup.v1.Namespaces.decode(reader, reader.uint32());
+                                        break;
+                                    }
                                 case 8: {
                                         if (!(message.substitutionRules && message.substitutionRules.length))
                                             message.substitutionRules = [];
                                         message.substitutionRules.push($root.google.cloud.gkebackup.v1.RestoreConfig.SubstitutionRule.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 11: {
+                                        if (!(message.transformationRules && message.transformationRules.length))
+                                            message.transformationRules = [];
+                                        message.transformationRules.push($root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 12: {
+                                        if (!(message.volumeDataRestorePolicyBindings && message.volumeDataRestorePolicyBindings.length))
+                                            message.volumeDataRestorePolicyBindings = [];
+                                        message.volumeDataRestorePolicyBindings.push($root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 13: {
+                                        message.restoreOrder = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -13382,6 +15570,9 @@
                                 case 0:
                                 case 1:
                                 case 2:
+                                case 3:
+                                case 4:
+                                case 5:
                                     break;
                                 }
                             if (message.clusterResourceRestoreScope != null && message.hasOwnProperty("clusterResourceRestoreScope")) {
@@ -13414,6 +15605,23 @@
                                         return "selectedApplications." + error;
                                 }
                             }
+                            if (message.noNamespaces != null && message.hasOwnProperty("noNamespaces")) {
+                                if (properties.namespacedResourceRestoreScope === 1)
+                                    return "namespacedResourceRestoreScope: multiple values";
+                                properties.namespacedResourceRestoreScope = 1;
+                                if (typeof message.noNamespaces !== "boolean")
+                                    return "noNamespaces: boolean expected";
+                            }
+                            if (message.excludedNamespaces != null && message.hasOwnProperty("excludedNamespaces")) {
+                                if (properties.namespacedResourceRestoreScope === 1)
+                                    return "namespacedResourceRestoreScope: multiple values";
+                                properties.namespacedResourceRestoreScope = 1;
+                                {
+                                    var error = $root.google.cloud.gkebackup.v1.Namespaces.verify(message.excludedNamespaces);
+                                    if (error)
+                                        return "excludedNamespaces." + error;
+                                }
+                            }
                             if (message.substitutionRules != null && message.hasOwnProperty("substitutionRules")) {
                                 if (!Array.isArray(message.substitutionRules))
                                     return "substitutionRules: array expected";
@@ -13422,6 +15630,29 @@
                                     if (error)
                                         return "substitutionRules." + error;
                                 }
+                            }
+                            if (message.transformationRules != null && message.hasOwnProperty("transformationRules")) {
+                                if (!Array.isArray(message.transformationRules))
+                                    return "transformationRules: array expected";
+                                for (var i = 0; i < message.transformationRules.length; ++i) {
+                                    var error = $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.verify(message.transformationRules[i]);
+                                    if (error)
+                                        return "transformationRules." + error;
+                                }
+                            }
+                            if (message.volumeDataRestorePolicyBindings != null && message.hasOwnProperty("volumeDataRestorePolicyBindings")) {
+                                if (!Array.isArray(message.volumeDataRestorePolicyBindings))
+                                    return "volumeDataRestorePolicyBindings: array expected";
+                                for (var i = 0; i < message.volumeDataRestorePolicyBindings.length; ++i) {
+                                    var error = $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.verify(message.volumeDataRestorePolicyBindings[i]);
+                                    if (error)
+                                        return "volumeDataRestorePolicyBindings." + error;
+                                }
+                            }
+                            if (message.restoreOrder != null && message.hasOwnProperty("restoreOrder")) {
+                                var error = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.verify(message.restoreOrder);
+                                if (error)
+                                    return "restoreOrder." + error;
                             }
                             return null;
                         };
@@ -13501,6 +15732,18 @@
                             case 2:
                                 message.namespacedResourceRestoreMode = 2;
                                 break;
+                            case "MERGE_SKIP_ON_CONFLICT":
+                            case 3:
+                                message.namespacedResourceRestoreMode = 3;
+                                break;
+                            case "MERGE_REPLACE_VOLUME_ON_CONFLICT":
+                            case 4:
+                                message.namespacedResourceRestoreMode = 4;
+                                break;
+                            case "MERGE_REPLACE_ON_CONFLICT":
+                            case 5:
+                                message.namespacedResourceRestoreMode = 5;
+                                break;
                             }
                             if (object.clusterResourceRestoreScope != null) {
                                 if (typeof object.clusterResourceRestoreScope !== "object")
@@ -13519,6 +15762,13 @@
                                     throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.selectedApplications: object expected");
                                 message.selectedApplications = $root.google.cloud.gkebackup.v1.NamespacedNames.fromObject(object.selectedApplications);
                             }
+                            if (object.noNamespaces != null)
+                                message.noNamespaces = Boolean(object.noNamespaces);
+                            if (object.excludedNamespaces != null) {
+                                if (typeof object.excludedNamespaces !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.excludedNamespaces: object expected");
+                                message.excludedNamespaces = $root.google.cloud.gkebackup.v1.Namespaces.fromObject(object.excludedNamespaces);
+                            }
                             if (object.substitutionRules) {
                                 if (!Array.isArray(object.substitutionRules))
                                     throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.substitutionRules: array expected");
@@ -13528,6 +15778,31 @@
                                         throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.substitutionRules: object expected");
                                     message.substitutionRules[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.SubstitutionRule.fromObject(object.substitutionRules[i]);
                                 }
+                            }
+                            if (object.transformationRules) {
+                                if (!Array.isArray(object.transformationRules))
+                                    throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.transformationRules: array expected");
+                                message.transformationRules = [];
+                                for (var i = 0; i < object.transformationRules.length; ++i) {
+                                    if (typeof object.transformationRules[i] !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.transformationRules: object expected");
+                                    message.transformationRules[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.fromObject(object.transformationRules[i]);
+                                }
+                            }
+                            if (object.volumeDataRestorePolicyBindings) {
+                                if (!Array.isArray(object.volumeDataRestorePolicyBindings))
+                                    throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.volumeDataRestorePolicyBindings: array expected");
+                                message.volumeDataRestorePolicyBindings = [];
+                                for (var i = 0; i < object.volumeDataRestorePolicyBindings.length; ++i) {
+                                    if (typeof object.volumeDataRestorePolicyBindings[i] !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.volumeDataRestorePolicyBindings: object expected");
+                                    message.volumeDataRestorePolicyBindings[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.fromObject(object.volumeDataRestorePolicyBindings[i]);
+                                }
+                            }
+                            if (object.restoreOrder != null) {
+                                if (typeof object.restoreOrder !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.restoreOrder: object expected");
+                                message.restoreOrder = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.fromObject(object.restoreOrder);
                             }
                             return message;
                         };
@@ -13545,13 +15820,17 @@
                             if (!options)
                                 options = {};
                             var object = {};
-                            if (options.arrays || options.defaults)
+                            if (options.arrays || options.defaults) {
                                 object.substitutionRules = [];
+                                object.transformationRules = [];
+                                object.volumeDataRestorePolicyBindings = [];
+                            }
                             if (options.defaults) {
                                 object.volumeDataRestorePolicy = options.enums === String ? "VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED" : 0;
                                 object.clusterResourceConflictPolicy = options.enums === String ? "CLUSTER_RESOURCE_CONFLICT_POLICY_UNSPECIFIED" : 0;
                                 object.namespacedResourceRestoreMode = options.enums === String ? "NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED" : 0;
                                 object.clusterResourceRestoreScope = null;
+                                object.restoreOrder = null;
                             }
                             if (message.volumeDataRestorePolicy != null && message.hasOwnProperty("volumeDataRestorePolicy"))
                                 object.volumeDataRestorePolicy = options.enums === String ? $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy[message.volumeDataRestorePolicy] === undefined ? message.volumeDataRestorePolicy : $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy[message.volumeDataRestorePolicy] : message.volumeDataRestorePolicy;
@@ -13581,6 +15860,28 @@
                                 for (var j = 0; j < message.substitutionRules.length; ++j)
                                     object.substitutionRules[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.SubstitutionRule.toObject(message.substitutionRules[j], options);
                             }
+                            if (message.noNamespaces != null && message.hasOwnProperty("noNamespaces")) {
+                                object.noNamespaces = message.noNamespaces;
+                                if (options.oneofs)
+                                    object.namespacedResourceRestoreScope = "noNamespaces";
+                            }
+                            if (message.excludedNamespaces != null && message.hasOwnProperty("excludedNamespaces")) {
+                                object.excludedNamespaces = $root.google.cloud.gkebackup.v1.Namespaces.toObject(message.excludedNamespaces, options);
+                                if (options.oneofs)
+                                    object.namespacedResourceRestoreScope = "excludedNamespaces";
+                            }
+                            if (message.transformationRules && message.transformationRules.length) {
+                                object.transformationRules = [];
+                                for (var j = 0; j < message.transformationRules.length; ++j)
+                                    object.transformationRules[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.toObject(message.transformationRules[j], options);
+                            }
+                            if (message.volumeDataRestorePolicyBindings && message.volumeDataRestorePolicyBindings.length) {
+                                object.volumeDataRestorePolicyBindings = [];
+                                for (var j = 0; j < message.volumeDataRestorePolicyBindings.length; ++j)
+                                    object.volumeDataRestorePolicyBindings[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.toObject(message.volumeDataRestorePolicyBindings[j], options);
+                            }
+                            if (message.restoreOrder != null && message.hasOwnProperty("restoreOrder"))
+                                object.restoreOrder = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.toObject(message.restoreOrder, options);
                             return object;
                         };
     
@@ -13651,12 +15952,18 @@
                          * @property {number} NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED=0 NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED value
                          * @property {number} DELETE_AND_RESTORE=1 DELETE_AND_RESTORE value
                          * @property {number} FAIL_ON_CONFLICT=2 FAIL_ON_CONFLICT value
+                         * @property {number} MERGE_SKIP_ON_CONFLICT=3 MERGE_SKIP_ON_CONFLICT value
+                         * @property {number} MERGE_REPLACE_VOLUME_ON_CONFLICT=4 MERGE_REPLACE_VOLUME_ON_CONFLICT value
+                         * @property {number} MERGE_REPLACE_ON_CONFLICT=5 MERGE_REPLACE_ON_CONFLICT value
                          */
                         RestoreConfig.NamespacedResourceRestoreMode = (function() {
                             var valuesById = {}, values = Object.create(valuesById);
                             values[valuesById[0] = "NAMESPACED_RESOURCE_RESTORE_MODE_UNSPECIFIED"] = 0;
                             values[valuesById[1] = "DELETE_AND_RESTORE"] = 1;
                             values[valuesById[2] = "FAIL_ON_CONFLICT"] = 2;
+                            values[valuesById[3] = "MERGE_SKIP_ON_CONFLICT"] = 3;
+                            values[valuesById[4] = "MERGE_REPLACE_VOLUME_ON_CONFLICT"] = 4;
+                            values[valuesById[5] = "MERGE_REPLACE_ON_CONFLICT"] = 5;
                             return values;
                         })();
     
@@ -13894,6 +16201,9 @@
                              * @memberof google.cloud.gkebackup.v1.RestoreConfig
                              * @interface IClusterResourceRestoreScope
                              * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.IGroupKind>|null} [selectedGroupKinds] ClusterResourceRestoreScope selectedGroupKinds
+                             * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.IGroupKind>|null} [excludedGroupKinds] ClusterResourceRestoreScope excludedGroupKinds
+                             * @property {boolean|null} [allGroupKinds] ClusterResourceRestoreScope allGroupKinds
+                             * @property {boolean|null} [noGroupKinds] ClusterResourceRestoreScope noGroupKinds
                              */
     
                             /**
@@ -13906,6 +16216,7 @@
                              */
                             function ClusterResourceRestoreScope(properties) {
                                 this.selectedGroupKinds = [];
+                                this.excludedGroupKinds = [];
                                 if (properties)
                                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
@@ -13919,6 +16230,30 @@
                              * @instance
                              */
                             ClusterResourceRestoreScope.prototype.selectedGroupKinds = $util.emptyArray;
+    
+                            /**
+                             * ClusterResourceRestoreScope excludedGroupKinds.
+                             * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.IGroupKind>} excludedGroupKinds
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ClusterResourceRestoreScope
+                             * @instance
+                             */
+                            ClusterResourceRestoreScope.prototype.excludedGroupKinds = $util.emptyArray;
+    
+                            /**
+                             * ClusterResourceRestoreScope allGroupKinds.
+                             * @member {boolean} allGroupKinds
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ClusterResourceRestoreScope
+                             * @instance
+                             */
+                            ClusterResourceRestoreScope.prototype.allGroupKinds = false;
+    
+                            /**
+                             * ClusterResourceRestoreScope noGroupKinds.
+                             * @member {boolean} noGroupKinds
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ClusterResourceRestoreScope
+                             * @instance
+                             */
+                            ClusterResourceRestoreScope.prototype.noGroupKinds = false;
     
                             /**
                              * Creates a new ClusterResourceRestoreScope instance using the specified properties.
@@ -13947,6 +16282,13 @@
                                 if (message.selectedGroupKinds != null && message.selectedGroupKinds.length)
                                     for (var i = 0; i < message.selectedGroupKinds.length; ++i)
                                         $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.encode(message.selectedGroupKinds[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.excludedGroupKinds != null && message.excludedGroupKinds.length)
+                                    for (var i = 0; i < message.excludedGroupKinds.length; ++i)
+                                        $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.encode(message.excludedGroupKinds[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.allGroupKinds != null && Object.hasOwnProperty.call(message, "allGroupKinds"))
+                                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.allGroupKinds);
+                                if (message.noGroupKinds != null && Object.hasOwnProperty.call(message, "noGroupKinds"))
+                                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.noGroupKinds);
                                 return writer;
                             };
     
@@ -13985,6 +16327,20 @@
                                             if (!(message.selectedGroupKinds && message.selectedGroupKinds.length))
                                                 message.selectedGroupKinds = [];
                                             message.selectedGroupKinds.push($root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    case 2: {
+                                            if (!(message.excludedGroupKinds && message.excludedGroupKinds.length))
+                                                message.excludedGroupKinds = [];
+                                            message.excludedGroupKinds.push($root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.allGroupKinds = reader.bool();
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.noGroupKinds = reader.bool();
                                             break;
                                         }
                                     default:
@@ -14031,6 +16387,21 @@
                                             return "selectedGroupKinds." + error;
                                     }
                                 }
+                                if (message.excludedGroupKinds != null && message.hasOwnProperty("excludedGroupKinds")) {
+                                    if (!Array.isArray(message.excludedGroupKinds))
+                                        return "excludedGroupKinds: array expected";
+                                    for (var i = 0; i < message.excludedGroupKinds.length; ++i) {
+                                        var error = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.verify(message.excludedGroupKinds[i]);
+                                        if (error)
+                                            return "excludedGroupKinds." + error;
+                                    }
+                                }
+                                if (message.allGroupKinds != null && message.hasOwnProperty("allGroupKinds"))
+                                    if (typeof message.allGroupKinds !== "boolean")
+                                        return "allGroupKinds: boolean expected";
+                                if (message.noGroupKinds != null && message.hasOwnProperty("noGroupKinds"))
+                                    if (typeof message.noGroupKinds !== "boolean")
+                                        return "noGroupKinds: boolean expected";
                                 return null;
                             };
     
@@ -14056,6 +16427,20 @@
                                         message.selectedGroupKinds[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.fromObject(object.selectedGroupKinds[i]);
                                     }
                                 }
+                                if (object.excludedGroupKinds) {
+                                    if (!Array.isArray(object.excludedGroupKinds))
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.ClusterResourceRestoreScope.excludedGroupKinds: array expected");
+                                    message.excludedGroupKinds = [];
+                                    for (var i = 0; i < object.excludedGroupKinds.length; ++i) {
+                                        if (typeof object.excludedGroupKinds[i] !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.ClusterResourceRestoreScope.excludedGroupKinds: object expected");
+                                        message.excludedGroupKinds[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.fromObject(object.excludedGroupKinds[i]);
+                                    }
+                                }
+                                if (object.allGroupKinds != null)
+                                    message.allGroupKinds = Boolean(object.allGroupKinds);
+                                if (object.noGroupKinds != null)
+                                    message.noGroupKinds = Boolean(object.noGroupKinds);
                                 return message;
                             };
     
@@ -14072,13 +16457,28 @@
                                 if (!options)
                                     options = {};
                                 var object = {};
-                                if (options.arrays || options.defaults)
+                                if (options.arrays || options.defaults) {
                                     object.selectedGroupKinds = [];
+                                    object.excludedGroupKinds = [];
+                                }
+                                if (options.defaults) {
+                                    object.allGroupKinds = false;
+                                    object.noGroupKinds = false;
+                                }
                                 if (message.selectedGroupKinds && message.selectedGroupKinds.length) {
                                     object.selectedGroupKinds = [];
                                     for (var j = 0; j < message.selectedGroupKinds.length; ++j)
                                         object.selectedGroupKinds[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.toObject(message.selectedGroupKinds[j], options);
                                 }
+                                if (message.excludedGroupKinds && message.excludedGroupKinds.length) {
+                                    object.excludedGroupKinds = [];
+                                    for (var j = 0; j < message.excludedGroupKinds.length; ++j)
+                                        object.excludedGroupKinds[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.toObject(message.excludedGroupKinds[j], options);
+                                }
+                                if (message.allGroupKinds != null && message.hasOwnProperty("allGroupKinds"))
+                                    object.allGroupKinds = message.allGroupKinds;
+                                if (message.noGroupKinds != null && message.hasOwnProperty("noGroupKinds"))
+                                    object.noGroupKinds = message.noGroupKinds;
                                 return object;
                             };
     
@@ -14446,7 +16846,2261 @@
                             return SubstitutionRule;
                         })();
     
+                        RestoreConfig.TransformationRuleAction = (function() {
+    
+                            /**
+                             * Properties of a TransformationRuleAction.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @interface ITransformationRuleAction
+                             * @property {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.Op|null} [op] TransformationRuleAction op
+                             * @property {string|null} [fromPath] TransformationRuleAction fromPath
+                             * @property {string|null} [path] TransformationRuleAction path
+                             * @property {string|null} [value] TransformationRuleAction value
+                             */
+    
+                            /**
+                             * Constructs a new TransformationRuleAction.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @classdesc Represents a TransformationRuleAction.
+                             * @implements ITransformationRuleAction
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRuleAction=} [properties] Properties to set
+                             */
+                            function TransformationRuleAction(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * TransformationRuleAction op.
+                             * @member {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.Op} op
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @instance
+                             */
+                            TransformationRuleAction.prototype.op = 0;
+    
+                            /**
+                             * TransformationRuleAction fromPath.
+                             * @member {string} fromPath
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @instance
+                             */
+                            TransformationRuleAction.prototype.fromPath = "";
+    
+                            /**
+                             * TransformationRuleAction path.
+                             * @member {string} path
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @instance
+                             */
+                            TransformationRuleAction.prototype.path = "";
+    
+                            /**
+                             * TransformationRuleAction value.
+                             * @member {string} value
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @instance
+                             */
+                            TransformationRuleAction.prototype.value = "";
+    
+                            /**
+                             * Creates a new TransformationRuleAction instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRuleAction=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction} TransformationRuleAction instance
+                             */
+                            TransformationRuleAction.create = function create(properties) {
+                                return new TransformationRuleAction(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified TransformationRuleAction message. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRuleAction} message TransformationRuleAction message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransformationRuleAction.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.op != null && Object.hasOwnProperty.call(message, "op"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.op);
+                                if (message.fromPath != null && Object.hasOwnProperty.call(message, "fromPath"))
+                                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.fromPath);
+                                if (message.path != null && Object.hasOwnProperty.call(message, "path"))
+                                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.path);
+                                if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.value);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified TransformationRuleAction message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRuleAction} message TransformationRuleAction message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransformationRuleAction.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a TransformationRuleAction message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction} TransformationRuleAction
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransformationRuleAction.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.op = reader.int32();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.fromPath = reader.string();
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.path = reader.string();
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.value = reader.string();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a TransformationRuleAction message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction} TransformationRuleAction
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransformationRuleAction.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a TransformationRuleAction message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            TransformationRuleAction.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.op != null && message.hasOwnProperty("op"))
+                                    switch (message.op) {
+                                    default:
+                                        return "op: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                    case 5:
+                                    case 6:
+                                        break;
+                                    }
+                                if (message.fromPath != null && message.hasOwnProperty("fromPath"))
+                                    if (!$util.isString(message.fromPath))
+                                        return "fromPath: string expected";
+                                if (message.path != null && message.hasOwnProperty("path"))
+                                    if (!$util.isString(message.path))
+                                        return "path: string expected";
+                                if (message.value != null && message.hasOwnProperty("value"))
+                                    if (!$util.isString(message.value))
+                                        return "value: string expected";
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a TransformationRuleAction message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction} TransformationRuleAction
+                             */
+                            TransformationRuleAction.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction();
+                                switch (object.op) {
+                                default:
+                                    if (typeof object.op === "number") {
+                                        message.op = object.op;
+                                        break;
+                                    }
+                                    break;
+                                case "OP_UNSPECIFIED":
+                                case 0:
+                                    message.op = 0;
+                                    break;
+                                case "REMOVE":
+                                case 1:
+                                    message.op = 1;
+                                    break;
+                                case "MOVE":
+                                case 2:
+                                    message.op = 2;
+                                    break;
+                                case "COPY":
+                                case 3:
+                                    message.op = 3;
+                                    break;
+                                case "ADD":
+                                case 4:
+                                    message.op = 4;
+                                    break;
+                                case "TEST":
+                                case 5:
+                                    message.op = 5;
+                                    break;
+                                case "REPLACE":
+                                case 6:
+                                    message.op = 6;
+                                    break;
+                                }
+                                if (object.fromPath != null)
+                                    message.fromPath = String(object.fromPath);
+                                if (object.path != null)
+                                    message.path = String(object.path);
+                                if (object.value != null)
+                                    message.value = String(object.value);
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a TransformationRuleAction message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction} message TransformationRuleAction
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            TransformationRuleAction.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.op = options.enums === String ? "OP_UNSPECIFIED" : 0;
+                                    object.fromPath = "";
+                                    object.path = "";
+                                    object.value = "";
+                                }
+                                if (message.op != null && message.hasOwnProperty("op"))
+                                    object.op = options.enums === String ? $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.Op[message.op] === undefined ? message.op : $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.Op[message.op] : message.op;
+                                if (message.fromPath != null && message.hasOwnProperty("fromPath"))
+                                    object.fromPath = message.fromPath;
+                                if (message.path != null && message.hasOwnProperty("path"))
+                                    object.path = message.path;
+                                if (message.value != null && message.hasOwnProperty("value"))
+                                    object.value = message.value;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this TransformationRuleAction to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            TransformationRuleAction.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for TransformationRuleAction
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            TransformationRuleAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction";
+                            };
+    
+                            /**
+                             * Op enum.
+                             * @name google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.Op
+                             * @enum {number}
+                             * @property {number} OP_UNSPECIFIED=0 OP_UNSPECIFIED value
+                             * @property {number} REMOVE=1 REMOVE value
+                             * @property {number} MOVE=2 MOVE value
+                             * @property {number} COPY=3 COPY value
+                             * @property {number} ADD=4 ADD value
+                             * @property {number} TEST=5 TEST value
+                             * @property {number} REPLACE=6 REPLACE value
+                             */
+                            TransformationRuleAction.Op = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "OP_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "REMOVE"] = 1;
+                                values[valuesById[2] = "MOVE"] = 2;
+                                values[valuesById[3] = "COPY"] = 3;
+                                values[valuesById[4] = "ADD"] = 4;
+                                values[valuesById[5] = "TEST"] = 5;
+                                values[valuesById[6] = "REPLACE"] = 6;
+                                return values;
+                            })();
+    
+                            return TransformationRuleAction;
+                        })();
+    
+                        RestoreConfig.ResourceFilter = (function() {
+    
+                            /**
+                             * Properties of a ResourceFilter.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @interface IResourceFilter
+                             * @property {Array.<string>|null} [namespaces] ResourceFilter namespaces
+                             * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.IGroupKind>|null} [groupKinds] ResourceFilter groupKinds
+                             * @property {string|null} [jsonPath] ResourceFilter jsonPath
+                             */
+    
+                            /**
+                             * Constructs a new ResourceFilter.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @classdesc Represents a ResourceFilter.
+                             * @implements IResourceFilter
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IResourceFilter=} [properties] Properties to set
+                             */
+                            function ResourceFilter(properties) {
+                                this.namespaces = [];
+                                this.groupKinds = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * ResourceFilter namespaces.
+                             * @member {Array.<string>} namespaces
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @instance
+                             */
+                            ResourceFilter.prototype.namespaces = $util.emptyArray;
+    
+                            /**
+                             * ResourceFilter groupKinds.
+                             * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.IGroupKind>} groupKinds
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @instance
+                             */
+                            ResourceFilter.prototype.groupKinds = $util.emptyArray;
+    
+                            /**
+                             * ResourceFilter jsonPath.
+                             * @member {string} jsonPath
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @instance
+                             */
+                            ResourceFilter.prototype.jsonPath = "";
+    
+                            /**
+                             * Creates a new ResourceFilter instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IResourceFilter=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter} ResourceFilter instance
+                             */
+                            ResourceFilter.create = function create(properties) {
+                                return new ResourceFilter(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified ResourceFilter message. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IResourceFilter} message ResourceFilter message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            ResourceFilter.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.namespaces != null && message.namespaces.length)
+                                    for (var i = 0; i < message.namespaces.length; ++i)
+                                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.namespaces[i]);
+                                if (message.groupKinds != null && message.groupKinds.length)
+                                    for (var i = 0; i < message.groupKinds.length; ++i)
+                                        $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.encode(message.groupKinds[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.jsonPath != null && Object.hasOwnProperty.call(message, "jsonPath"))
+                                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.jsonPath);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified ResourceFilter message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IResourceFilter} message ResourceFilter message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            ResourceFilter.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a ResourceFilter message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter} ResourceFilter
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            ResourceFilter.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            if (!(message.namespaces && message.namespaces.length))
+                                                message.namespaces = [];
+                                            message.namespaces.push(reader.string());
+                                            break;
+                                        }
+                                    case 2: {
+                                            if (!(message.groupKinds && message.groupKinds.length))
+                                                message.groupKinds = [];
+                                            message.groupKinds.push($root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.jsonPath = reader.string();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a ResourceFilter message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter} ResourceFilter
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            ResourceFilter.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a ResourceFilter message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            ResourceFilter.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.namespaces != null && message.hasOwnProperty("namespaces")) {
+                                    if (!Array.isArray(message.namespaces))
+                                        return "namespaces: array expected";
+                                    for (var i = 0; i < message.namespaces.length; ++i)
+                                        if (!$util.isString(message.namespaces[i]))
+                                            return "namespaces: string[] expected";
+                                }
+                                if (message.groupKinds != null && message.hasOwnProperty("groupKinds")) {
+                                    if (!Array.isArray(message.groupKinds))
+                                        return "groupKinds: array expected";
+                                    for (var i = 0; i < message.groupKinds.length; ++i) {
+                                        var error = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.verify(message.groupKinds[i]);
+                                        if (error)
+                                            return "groupKinds." + error;
+                                    }
+                                }
+                                if (message.jsonPath != null && message.hasOwnProperty("jsonPath"))
+                                    if (!$util.isString(message.jsonPath))
+                                        return "jsonPath: string expected";
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a ResourceFilter message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter} ResourceFilter
+                             */
+                            ResourceFilter.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter();
+                                if (object.namespaces) {
+                                    if (!Array.isArray(object.namespaces))
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.namespaces: array expected");
+                                    message.namespaces = [];
+                                    for (var i = 0; i < object.namespaces.length; ++i)
+                                        message.namespaces[i] = String(object.namespaces[i]);
+                                }
+                                if (object.groupKinds) {
+                                    if (!Array.isArray(object.groupKinds))
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.groupKinds: array expected");
+                                    message.groupKinds = [];
+                                    for (var i = 0; i < object.groupKinds.length; ++i) {
+                                        if (typeof object.groupKinds[i] !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.groupKinds: object expected");
+                                        message.groupKinds[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.fromObject(object.groupKinds[i]);
+                                    }
+                                }
+                                if (object.jsonPath != null)
+                                    message.jsonPath = String(object.jsonPath);
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a ResourceFilter message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter} message ResourceFilter
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            ResourceFilter.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults) {
+                                    object.namespaces = [];
+                                    object.groupKinds = [];
+                                }
+                                if (options.defaults)
+                                    object.jsonPath = "";
+                                if (message.namespaces && message.namespaces.length) {
+                                    object.namespaces = [];
+                                    for (var j = 0; j < message.namespaces.length; ++j)
+                                        object.namespaces[j] = message.namespaces[j];
+                                }
+                                if (message.groupKinds && message.groupKinds.length) {
+                                    object.groupKinds = [];
+                                    for (var j = 0; j < message.groupKinds.length; ++j)
+                                        object.groupKinds[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.toObject(message.groupKinds[j], options);
+                                }
+                                if (message.jsonPath != null && message.hasOwnProperty("jsonPath"))
+                                    object.jsonPath = message.jsonPath;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this ResourceFilter to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            ResourceFilter.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for ResourceFilter
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            ResourceFilter.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter";
+                            };
+    
+                            return ResourceFilter;
+                        })();
+    
+                        RestoreConfig.TransformationRule = (function() {
+    
+                            /**
+                             * Properties of a TransformationRule.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @interface ITransformationRule
+                             * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.ITransformationRuleAction>|null} [fieldActions] TransformationRule fieldActions
+                             * @property {google.cloud.gkebackup.v1.RestoreConfig.IResourceFilter|null} [resourceFilter] TransformationRule resourceFilter
+                             * @property {string|null} [description] TransformationRule description
+                             */
+    
+                            /**
+                             * Constructs a new TransformationRule.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @classdesc Represents a TransformationRule.
+                             * @implements ITransformationRule
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRule=} [properties] Properties to set
+                             */
+                            function TransformationRule(properties) {
+                                this.fieldActions = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * TransformationRule fieldActions.
+                             * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.ITransformationRuleAction>} fieldActions
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @instance
+                             */
+                            TransformationRule.prototype.fieldActions = $util.emptyArray;
+    
+                            /**
+                             * TransformationRule resourceFilter.
+                             * @member {google.cloud.gkebackup.v1.RestoreConfig.IResourceFilter|null|undefined} resourceFilter
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @instance
+                             */
+                            TransformationRule.prototype.resourceFilter = null;
+    
+                            /**
+                             * TransformationRule description.
+                             * @member {string} description
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @instance
+                             */
+                            TransformationRule.prototype.description = "";
+    
+                            /**
+                             * Creates a new TransformationRule instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRule=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRule} TransformationRule instance
+                             */
+                            TransformationRule.create = function create(properties) {
+                                return new TransformationRule(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified TransformationRule message. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRule} message TransformationRule message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransformationRule.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.fieldActions != null && message.fieldActions.length)
+                                    for (var i = 0; i < message.fieldActions.length; ++i)
+                                        $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.encode(message.fieldActions[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.resourceFilter != null && Object.hasOwnProperty.call(message, "resourceFilter"))
+                                    $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.encode(message.resourceFilter, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.description);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified TransformationRule message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.ITransformationRule} message TransformationRule message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TransformationRule.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a TransformationRule message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRule} TransformationRule
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransformationRule.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            if (!(message.fieldActions && message.fieldActions.length))
+                                                message.fieldActions = [];
+                                            message.fieldActions.push($root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.resourceFilter = $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.description = reader.string();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a TransformationRule message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRule} TransformationRule
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TransformationRule.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a TransformationRule message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            TransformationRule.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.fieldActions != null && message.hasOwnProperty("fieldActions")) {
+                                    if (!Array.isArray(message.fieldActions))
+                                        return "fieldActions: array expected";
+                                    for (var i = 0; i < message.fieldActions.length; ++i) {
+                                        var error = $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.verify(message.fieldActions[i]);
+                                        if (error)
+                                            return "fieldActions." + error;
+                                    }
+                                }
+                                if (message.resourceFilter != null && message.hasOwnProperty("resourceFilter")) {
+                                    var error = $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.verify(message.resourceFilter);
+                                    if (error)
+                                        return "resourceFilter." + error;
+                                }
+                                if (message.description != null && message.hasOwnProperty("description"))
+                                    if (!$util.isString(message.description))
+                                        return "description: string expected";
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a TransformationRule message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.TransformationRule} TransformationRule
+                             */
+                            TransformationRule.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRule();
+                                if (object.fieldActions) {
+                                    if (!Array.isArray(object.fieldActions))
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.fieldActions: array expected");
+                                    message.fieldActions = [];
+                                    for (var i = 0; i < object.fieldActions.length; ++i) {
+                                        if (typeof object.fieldActions[i] !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.fieldActions: object expected");
+                                        message.fieldActions[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.fromObject(object.fieldActions[i]);
+                                    }
+                                }
+                                if (object.resourceFilter != null) {
+                                    if (typeof object.resourceFilter !== "object")
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.TransformationRule.resourceFilter: object expected");
+                                    message.resourceFilter = $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.fromObject(object.resourceFilter);
+                                }
+                                if (object.description != null)
+                                    message.description = String(object.description);
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a TransformationRule message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.TransformationRule} message TransformationRule
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            TransformationRule.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults)
+                                    object.fieldActions = [];
+                                if (options.defaults) {
+                                    object.resourceFilter = null;
+                                    object.description = "";
+                                }
+                                if (message.fieldActions && message.fieldActions.length) {
+                                    object.fieldActions = [];
+                                    for (var j = 0; j < message.fieldActions.length; ++j)
+                                        object.fieldActions[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.TransformationRuleAction.toObject(message.fieldActions[j], options);
+                                }
+                                if (message.resourceFilter != null && message.hasOwnProperty("resourceFilter"))
+                                    object.resourceFilter = $root.google.cloud.gkebackup.v1.RestoreConfig.ResourceFilter.toObject(message.resourceFilter, options);
+                                if (message.description != null && message.hasOwnProperty("description"))
+                                    object.description = message.description;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this TransformationRule to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            TransformationRule.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for TransformationRule
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.TransformationRule
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            TransformationRule.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestoreConfig.TransformationRule";
+                            };
+    
+                            return TransformationRule;
+                        })();
+    
+                        RestoreConfig.VolumeDataRestorePolicyBinding = (function() {
+    
+                            /**
+                             * Properties of a VolumeDataRestorePolicyBinding.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @interface IVolumeDataRestorePolicyBinding
+                             * @property {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy|null} [policy] VolumeDataRestorePolicyBinding policy
+                             * @property {google.cloud.gkebackup.v1.VolumeTypeEnum.VolumeType|null} [volumeType] VolumeDataRestorePolicyBinding volumeType
+                             */
+    
+                            /**
+                             * Constructs a new VolumeDataRestorePolicyBinding.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @classdesc Represents a VolumeDataRestorePolicyBinding.
+                             * @implements IVolumeDataRestorePolicyBinding
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IVolumeDataRestorePolicyBinding=} [properties] Properties to set
+                             */
+                            function VolumeDataRestorePolicyBinding(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * VolumeDataRestorePolicyBinding policy.
+                             * @member {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy} policy
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @instance
+                             */
+                            VolumeDataRestorePolicyBinding.prototype.policy = 0;
+    
+                            /**
+                             * VolumeDataRestorePolicyBinding volumeType.
+                             * @member {google.cloud.gkebackup.v1.VolumeTypeEnum.VolumeType|null|undefined} volumeType
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @instance
+                             */
+                            VolumeDataRestorePolicyBinding.prototype.volumeType = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * VolumeDataRestorePolicyBinding scope.
+                             * @member {"volumeType"|undefined} scope
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @instance
+                             */
+                            Object.defineProperty(VolumeDataRestorePolicyBinding.prototype, "scope", {
+                                get: $util.oneOfGetter($oneOfFields = ["volumeType"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Creates a new VolumeDataRestorePolicyBinding instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IVolumeDataRestorePolicyBinding=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding} VolumeDataRestorePolicyBinding instance
+                             */
+                            VolumeDataRestorePolicyBinding.create = function create(properties) {
+                                return new VolumeDataRestorePolicyBinding(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified VolumeDataRestorePolicyBinding message. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IVolumeDataRestorePolicyBinding} message VolumeDataRestorePolicyBinding message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            VolumeDataRestorePolicyBinding.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.policy != null && Object.hasOwnProperty.call(message, "policy"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.policy);
+                                if (message.volumeType != null && Object.hasOwnProperty.call(message, "volumeType"))
+                                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.volumeType);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified VolumeDataRestorePolicyBinding message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IVolumeDataRestorePolicyBinding} message VolumeDataRestorePolicyBinding message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            VolumeDataRestorePolicyBinding.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a VolumeDataRestorePolicyBinding message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding} VolumeDataRestorePolicyBinding
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            VolumeDataRestorePolicyBinding.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.policy = reader.int32();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.volumeType = reader.int32();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a VolumeDataRestorePolicyBinding message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding} VolumeDataRestorePolicyBinding
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            VolumeDataRestorePolicyBinding.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a VolumeDataRestorePolicyBinding message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            VolumeDataRestorePolicyBinding.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                var properties = {};
+                                if (message.policy != null && message.hasOwnProperty("policy"))
+                                    switch (message.policy) {
+                                    default:
+                                        return "policy: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                        break;
+                                    }
+                                if (message.volumeType != null && message.hasOwnProperty("volumeType")) {
+                                    properties.scope = 1;
+                                    switch (message.volumeType) {
+                                    default:
+                                        return "volumeType: enum value expected";
+                                    case 0:
+                                    case 1:
+                                        break;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a VolumeDataRestorePolicyBinding message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding} VolumeDataRestorePolicyBinding
+                             */
+                            VolumeDataRestorePolicyBinding.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding();
+                                switch (object.policy) {
+                                default:
+                                    if (typeof object.policy === "number") {
+                                        message.policy = object.policy;
+                                        break;
+                                    }
+                                    break;
+                                case "VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED":
+                                case 0:
+                                    message.policy = 0;
+                                    break;
+                                case "RESTORE_VOLUME_DATA_FROM_BACKUP":
+                                case 1:
+                                    message.policy = 1;
+                                    break;
+                                case "REUSE_VOLUME_HANDLE_FROM_BACKUP":
+                                case 2:
+                                    message.policy = 2;
+                                    break;
+                                case "NO_VOLUME_DATA_RESTORATION":
+                                case 3:
+                                    message.policy = 3;
+                                    break;
+                                }
+                                switch (object.volumeType) {
+                                default:
+                                    if (typeof object.volumeType === "number") {
+                                        message.volumeType = object.volumeType;
+                                        break;
+                                    }
+                                    break;
+                                case "VOLUME_TYPE_UNSPECIFIED":
+                                case 0:
+                                    message.volumeType = 0;
+                                    break;
+                                case "GCE_PERSISTENT_DISK":
+                                case 1:
+                                    message.volumeType = 1;
+                                    break;
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a VolumeDataRestorePolicyBinding message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding} message VolumeDataRestorePolicyBinding
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            VolumeDataRestorePolicyBinding.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults)
+                                    object.policy = options.enums === String ? "VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED" : 0;
+                                if (message.policy != null && message.hasOwnProperty("policy"))
+                                    object.policy = options.enums === String ? $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy[message.policy] === undefined ? message.policy : $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy[message.policy] : message.policy;
+                                if (message.volumeType != null && message.hasOwnProperty("volumeType")) {
+                                    object.volumeType = options.enums === String ? $root.google.cloud.gkebackup.v1.VolumeTypeEnum.VolumeType[message.volumeType] === undefined ? message.volumeType : $root.google.cloud.gkebackup.v1.VolumeTypeEnum.VolumeType[message.volumeType] : message.volumeType;
+                                    if (options.oneofs)
+                                        object.scope = "volumeType";
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this VolumeDataRestorePolicyBinding to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            VolumeDataRestorePolicyBinding.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for VolumeDataRestorePolicyBinding
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            VolumeDataRestorePolicyBinding.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicyBinding";
+                            };
+    
+                            return VolumeDataRestorePolicyBinding;
+                        })();
+    
+                        RestoreConfig.RestoreOrder = (function() {
+    
+                            /**
+                             * Properties of a RestoreOrder.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @interface IRestoreOrder
+                             * @property {Array.<google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.IGroupKindDependency>|null} [groupKindDependencies] RestoreOrder groupKindDependencies
+                             */
+    
+                            /**
+                             * Constructs a new RestoreOrder.
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig
+                             * @classdesc Represents a RestoreOrder.
+                             * @implements IRestoreOrder
+                             * @constructor
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IRestoreOrder=} [properties] Properties to set
+                             */
+                            function RestoreOrder(properties) {
+                                this.groupKindDependencies = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * RestoreOrder groupKindDependencies.
+                             * @member {Array.<google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.IGroupKindDependency>} groupKindDependencies
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @instance
+                             */
+                            RestoreOrder.prototype.groupKindDependencies = $util.emptyArray;
+    
+                            /**
+                             * Creates a new RestoreOrder instance using the specified properties.
+                             * @function create
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IRestoreOrder=} [properties] Properties to set
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder} RestoreOrder instance
+                             */
+                            RestoreOrder.create = function create(properties) {
+                                return new RestoreOrder(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified RestoreOrder message. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IRestoreOrder} message RestoreOrder message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RestoreOrder.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.groupKindDependencies != null && message.groupKindDependencies.length)
+                                    for (var i = 0; i < message.groupKindDependencies.length; ++i)
+                                        $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.encode(message.groupKindDependencies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified RestoreOrder message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.IRestoreOrder} message RestoreOrder message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            RestoreOrder.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a RestoreOrder message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder} RestoreOrder
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RestoreOrder.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            if (!(message.groupKindDependencies && message.groupKindDependencies.length))
+                                                message.groupKindDependencies = [];
+                                            message.groupKindDependencies.push($root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.decode(reader, reader.uint32()));
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a RestoreOrder message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder} RestoreOrder
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            RestoreOrder.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a RestoreOrder message.
+                             * @function verify
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            RestoreOrder.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.groupKindDependencies != null && message.hasOwnProperty("groupKindDependencies")) {
+                                    if (!Array.isArray(message.groupKindDependencies))
+                                        return "groupKindDependencies: array expected";
+                                    for (var i = 0; i < message.groupKindDependencies.length; ++i) {
+                                        var error = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.verify(message.groupKindDependencies[i]);
+                                        if (error)
+                                            return "groupKindDependencies." + error;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a RestoreOrder message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder} RestoreOrder
+                             */
+                            RestoreOrder.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder)
+                                    return object;
+                                var message = new $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder();
+                                if (object.groupKindDependencies) {
+                                    if (!Array.isArray(object.groupKindDependencies))
+                                        throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.groupKindDependencies: array expected");
+                                    message.groupKindDependencies = [];
+                                    for (var i = 0; i < object.groupKindDependencies.length; ++i) {
+                                        if (typeof object.groupKindDependencies[i] !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.groupKindDependencies: object expected");
+                                        message.groupKindDependencies[i] = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.fromObject(object.groupKindDependencies[i]);
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a RestoreOrder message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder} message RestoreOrder
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            RestoreOrder.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults)
+                                    object.groupKindDependencies = [];
+                                if (message.groupKindDependencies && message.groupKindDependencies.length) {
+                                    object.groupKindDependencies = [];
+                                    for (var j = 0; j < message.groupKindDependencies.length; ++j)
+                                        object.groupKindDependencies[j] = $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.toObject(message.groupKindDependencies[j], options);
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this RestoreOrder to JSON.
+                             * @function toJSON
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            RestoreOrder.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for RestoreOrder
+                             * @function getTypeUrl
+                             * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            RestoreOrder.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder";
+                            };
+    
+                            RestoreOrder.GroupKindDependency = (function() {
+    
+                                /**
+                                 * Properties of a GroupKindDependency.
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                                 * @interface IGroupKindDependency
+                                 * @property {google.cloud.gkebackup.v1.RestoreConfig.IGroupKind|null} [satisfying] GroupKindDependency satisfying
+                                 * @property {google.cloud.gkebackup.v1.RestoreConfig.IGroupKind|null} [requiring] GroupKindDependency requiring
+                                 */
+    
+                                /**
+                                 * Constructs a new GroupKindDependency.
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder
+                                 * @classdesc Represents a GroupKindDependency.
+                                 * @implements IGroupKindDependency
+                                 * @constructor
+                                 * @param {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.IGroupKindDependency=} [properties] Properties to set
+                                 */
+                                function GroupKindDependency(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null)
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * GroupKindDependency satisfying.
+                                 * @member {google.cloud.gkebackup.v1.RestoreConfig.IGroupKind|null|undefined} satisfying
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @instance
+                                 */
+                                GroupKindDependency.prototype.satisfying = null;
+    
+                                /**
+                                 * GroupKindDependency requiring.
+                                 * @member {google.cloud.gkebackup.v1.RestoreConfig.IGroupKind|null|undefined} requiring
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @instance
+                                 */
+                                GroupKindDependency.prototype.requiring = null;
+    
+                                /**
+                                 * Creates a new GroupKindDependency instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.IGroupKindDependency=} [properties] Properties to set
+                                 * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency} GroupKindDependency instance
+                                 */
+                                GroupKindDependency.create = function create(properties) {
+                                    return new GroupKindDependency(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified GroupKindDependency message. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.IGroupKindDependency} message GroupKindDependency message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                GroupKindDependency.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.satisfying != null && Object.hasOwnProperty.call(message, "satisfying"))
+                                        $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.encode(message.satisfying, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                    if (message.requiring != null && Object.hasOwnProperty.call(message, "requiring"))
+                                        $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.encode(message.requiring, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified GroupKindDependency message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.IGroupKindDependency} message GroupKindDependency message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                GroupKindDependency.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a GroupKindDependency message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency} GroupKindDependency
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                GroupKindDependency.decode = function decode(reader, length) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.satisfying = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        case 2: {
+                                                message.requiring = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.decode(reader, reader.uint32());
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a GroupKindDependency message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency} GroupKindDependency
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                GroupKindDependency.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a GroupKindDependency message.
+                                 * @function verify
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                GroupKindDependency.verify = function verify(message) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (message.satisfying != null && message.hasOwnProperty("satisfying")) {
+                                        var error = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.verify(message.satisfying);
+                                        if (error)
+                                            return "satisfying." + error;
+                                    }
+                                    if (message.requiring != null && message.hasOwnProperty("requiring")) {
+                                        var error = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.verify(message.requiring);
+                                        if (error)
+                                            return "requiring." + error;
+                                    }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a GroupKindDependency message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency} GroupKindDependency
+                                 */
+                                GroupKindDependency.fromObject = function fromObject(object) {
+                                    if (object instanceof $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency)
+                                        return object;
+                                    var message = new $root.google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency();
+                                    if (object.satisfying != null) {
+                                        if (typeof object.satisfying !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.satisfying: object expected");
+                                        message.satisfying = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.fromObject(object.satisfying);
+                                    }
+                                    if (object.requiring != null) {
+                                        if (typeof object.requiring !== "object")
+                                            throw TypeError(".google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency.requiring: object expected");
+                                        message.requiring = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.fromObject(object.requiring);
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a GroupKindDependency message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency} message GroupKindDependency
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                GroupKindDependency.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults) {
+                                        object.satisfying = null;
+                                        object.requiring = null;
+                                    }
+                                    if (message.satisfying != null && message.hasOwnProperty("satisfying"))
+                                        object.satisfying = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.toObject(message.satisfying, options);
+                                    if (message.requiring != null && message.hasOwnProperty("requiring"))
+                                        object.requiring = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.toObject(message.requiring, options);
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this GroupKindDependency to JSON.
+                                 * @function toJSON
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                GroupKindDependency.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for GroupKindDependency
+                                 * @function getTypeUrl
+                                 * @memberof google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                GroupKindDependency.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestoreConfig.RestoreOrder.GroupKindDependency";
+                                };
+    
+                                return GroupKindDependency;
+                            })();
+    
+                            return RestoreOrder;
+                        })();
+    
                         return RestoreConfig;
+                    })();
+    
+                    v1.ResourceSelector = (function() {
+    
+                        /**
+                         * Properties of a ResourceSelector.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IResourceSelector
+                         * @property {google.cloud.gkebackup.v1.RestoreConfig.IGroupKind|null} [groupKind] ResourceSelector groupKind
+                         * @property {string|null} [name] ResourceSelector name
+                         * @property {string|null} [namespace] ResourceSelector namespace
+                         * @property {Object.<string,string>|null} [labels] ResourceSelector labels
+                         */
+    
+                        /**
+                         * Constructs a new ResourceSelector.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents a ResourceSelector.
+                         * @implements IResourceSelector
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IResourceSelector=} [properties] Properties to set
+                         */
+                        function ResourceSelector(properties) {
+                            this.labels = {};
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ResourceSelector groupKind.
+                         * @member {google.cloud.gkebackup.v1.RestoreConfig.IGroupKind|null|undefined} groupKind
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @instance
+                         */
+                        ResourceSelector.prototype.groupKind = null;
+    
+                        /**
+                         * ResourceSelector name.
+                         * @member {string} name
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @instance
+                         */
+                        ResourceSelector.prototype.name = "";
+    
+                        /**
+                         * ResourceSelector namespace.
+                         * @member {string} namespace
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @instance
+                         */
+                        ResourceSelector.prototype.namespace = "";
+    
+                        /**
+                         * ResourceSelector labels.
+                         * @member {Object.<string,string>} labels
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @instance
+                         */
+                        ResourceSelector.prototype.labels = $util.emptyObject;
+    
+                        /**
+                         * Creates a new ResourceSelector instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IResourceSelector=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.ResourceSelector} ResourceSelector instance
+                         */
+                        ResourceSelector.create = function create(properties) {
+                            return new ResourceSelector(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ResourceSelector message. Does not implicitly {@link google.cloud.gkebackup.v1.ResourceSelector.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IResourceSelector} message ResourceSelector message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ResourceSelector.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.groupKind != null && Object.hasOwnProperty.call(message, "groupKind"))
+                                $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.encode(message.groupKind, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.name);
+                            if (message.namespace != null && Object.hasOwnProperty.call(message, "namespace"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.namespace);
+                            if (message.labels != null && Object.hasOwnProperty.call(message, "labels"))
+                                for (var keys = Object.keys(message.labels), i = 0; i < keys.length; ++i)
+                                    writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.labels[keys[i]]).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ResourceSelector message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.ResourceSelector.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IResourceSelector} message ResourceSelector message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ResourceSelector.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ResourceSelector message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.ResourceSelector} ResourceSelector
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ResourceSelector.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.ResourceSelector(), key, value;
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.groupKind = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 2: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                case 3: {
+                                        message.namespace = reader.string();
+                                        break;
+                                    }
+                                case 4: {
+                                        if (message.labels === $util.emptyObject)
+                                            message.labels = {};
+                                        var end2 = reader.uint32() + reader.pos;
+                                        key = "";
+                                        value = "";
+                                        while (reader.pos < end2) {
+                                            var tag2 = reader.uint32();
+                                            switch (tag2 >>> 3) {
+                                            case 1:
+                                                key = reader.string();
+                                                break;
+                                            case 2:
+                                                value = reader.string();
+                                                break;
+                                            default:
+                                                reader.skipType(tag2 & 7);
+                                                break;
+                                            }
+                                        }
+                                        message.labels[key] = value;
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ResourceSelector message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.ResourceSelector} ResourceSelector
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ResourceSelector.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ResourceSelector message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ResourceSelector.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.groupKind != null && message.hasOwnProperty("groupKind")) {
+                                var error = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.verify(message.groupKind);
+                                if (error)
+                                    return "groupKind." + error;
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            if (message.namespace != null && message.hasOwnProperty("namespace"))
+                                if (!$util.isString(message.namespace))
+                                    return "namespace: string expected";
+                            if (message.labels != null && message.hasOwnProperty("labels")) {
+                                if (!$util.isObject(message.labels))
+                                    return "labels: object expected";
+                                var key = Object.keys(message.labels);
+                                for (var i = 0; i < key.length; ++i)
+                                    if (!$util.isString(message.labels[key[i]]))
+                                        return "labels: string{k:string} expected";
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ResourceSelector message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.ResourceSelector} ResourceSelector
+                         */
+                        ResourceSelector.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.ResourceSelector)
+                                return object;
+                            var message = new $root.google.cloud.gkebackup.v1.ResourceSelector();
+                            if (object.groupKind != null) {
+                                if (typeof object.groupKind !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.ResourceSelector.groupKind: object expected");
+                                message.groupKind = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.fromObject(object.groupKind);
+                            }
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            if (object.namespace != null)
+                                message.namespace = String(object.namespace);
+                            if (object.labels) {
+                                if (typeof object.labels !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.ResourceSelector.labels: object expected");
+                                message.labels = {};
+                                for (var keys = Object.keys(object.labels), i = 0; i < keys.length; ++i)
+                                    message.labels[keys[i]] = String(object.labels[keys[i]]);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ResourceSelector message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.ResourceSelector} message ResourceSelector
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ResourceSelector.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.objects || options.defaults)
+                                object.labels = {};
+                            if (options.defaults) {
+                                object.groupKind = null;
+                                object.name = "";
+                                object.namespace = "";
+                            }
+                            if (message.groupKind != null && message.hasOwnProperty("groupKind"))
+                                object.groupKind = $root.google.cloud.gkebackup.v1.RestoreConfig.GroupKind.toObject(message.groupKind, options);
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            if (message.namespace != null && message.hasOwnProperty("namespace"))
+                                object.namespace = message.namespace;
+                            var keys2;
+                            if (message.labels && (keys2 = Object.keys(message.labels)).length) {
+                                object.labels = {};
+                                for (var j = 0; j < keys2.length; ++j)
+                                    object.labels[keys2[j]] = message.labels[keys2[j]];
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ResourceSelector to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ResourceSelector.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ResourceSelector
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.ResourceSelector
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ResourceSelector.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.ResourceSelector";
+                        };
+    
+                        return ResourceSelector;
+                    })();
+    
+                    v1.VolumeDataRestorePolicyOverride = (function() {
+    
+                        /**
+                         * Properties of a VolumeDataRestorePolicyOverride.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @interface IVolumeDataRestorePolicyOverride
+                         * @property {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy|null} [policy] VolumeDataRestorePolicyOverride policy
+                         * @property {google.cloud.gkebackup.v1.INamespacedNames|null} [selectedPvcs] VolumeDataRestorePolicyOverride selectedPvcs
+                         */
+    
+                        /**
+                         * Constructs a new VolumeDataRestorePolicyOverride.
+                         * @memberof google.cloud.gkebackup.v1
+                         * @classdesc Represents a VolumeDataRestorePolicyOverride.
+                         * @implements IVolumeDataRestorePolicyOverride
+                         * @constructor
+                         * @param {google.cloud.gkebackup.v1.IVolumeDataRestorePolicyOverride=} [properties] Properties to set
+                         */
+                        function VolumeDataRestorePolicyOverride(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * VolumeDataRestorePolicyOverride policy.
+                         * @member {google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy} policy
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @instance
+                         */
+                        VolumeDataRestorePolicyOverride.prototype.policy = 0;
+    
+                        /**
+                         * VolumeDataRestorePolicyOverride selectedPvcs.
+                         * @member {google.cloud.gkebackup.v1.INamespacedNames|null|undefined} selectedPvcs
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @instance
+                         */
+                        VolumeDataRestorePolicyOverride.prototype.selectedPvcs = null;
+    
+                        // OneOf field names bound to virtual getters and setters
+                        var $oneOfFields;
+    
+                        /**
+                         * VolumeDataRestorePolicyOverride scope.
+                         * @member {"selectedPvcs"|undefined} scope
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @instance
+                         */
+                        Object.defineProperty(VolumeDataRestorePolicyOverride.prototype, "scope", {
+                            get: $util.oneOfGetter($oneOfFields = ["selectedPvcs"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+    
+                        /**
+                         * Creates a new VolumeDataRestorePolicyOverride instance using the specified properties.
+                         * @function create
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IVolumeDataRestorePolicyOverride=} [properties] Properties to set
+                         * @returns {google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride} VolumeDataRestorePolicyOverride instance
+                         */
+                        VolumeDataRestorePolicyOverride.create = function create(properties) {
+                            return new VolumeDataRestorePolicyOverride(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified VolumeDataRestorePolicyOverride message. Does not implicitly {@link google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IVolumeDataRestorePolicyOverride} message VolumeDataRestorePolicyOverride message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        VolumeDataRestorePolicyOverride.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.policy != null && Object.hasOwnProperty.call(message, "policy"))
+                                writer.uint32(/* id 1, wireType 0 =*/8).int32(message.policy);
+                            if (message.selectedPvcs != null && Object.hasOwnProperty.call(message, "selectedPvcs"))
+                                $root.google.cloud.gkebackup.v1.NamespacedNames.encode(message.selectedPvcs, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified VolumeDataRestorePolicyOverride message, length delimited. Does not implicitly {@link google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.IVolumeDataRestorePolicyOverride} message VolumeDataRestorePolicyOverride message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        VolumeDataRestorePolicyOverride.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a VolumeDataRestorePolicyOverride message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride} VolumeDataRestorePolicyOverride
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        VolumeDataRestorePolicyOverride.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.policy = reader.int32();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.selectedPvcs = $root.google.cloud.gkebackup.v1.NamespacedNames.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a VolumeDataRestorePolicyOverride message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride} VolumeDataRestorePolicyOverride
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        VolumeDataRestorePolicyOverride.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a VolumeDataRestorePolicyOverride message.
+                         * @function verify
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        VolumeDataRestorePolicyOverride.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            var properties = {};
+                            if (message.policy != null && message.hasOwnProperty("policy"))
+                                switch (message.policy) {
+                                default:
+                                    return "policy: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                    break;
+                                }
+                            if (message.selectedPvcs != null && message.hasOwnProperty("selectedPvcs")) {
+                                properties.scope = 1;
+                                {
+                                    var error = $root.google.cloud.gkebackup.v1.NamespacedNames.verify(message.selectedPvcs);
+                                    if (error)
+                                        return "selectedPvcs." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a VolumeDataRestorePolicyOverride message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride} VolumeDataRestorePolicyOverride
+                         */
+                        VolumeDataRestorePolicyOverride.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride)
+                                return object;
+                            var message = new $root.google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride();
+                            switch (object.policy) {
+                            default:
+                                if (typeof object.policy === "number") {
+                                    message.policy = object.policy;
+                                    break;
+                                }
+                                break;
+                            case "VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED":
+                            case 0:
+                                message.policy = 0;
+                                break;
+                            case "RESTORE_VOLUME_DATA_FROM_BACKUP":
+                            case 1:
+                                message.policy = 1;
+                                break;
+                            case "REUSE_VOLUME_HANDLE_FROM_BACKUP":
+                            case 2:
+                                message.policy = 2;
+                                break;
+                            case "NO_VOLUME_DATA_RESTORATION":
+                            case 3:
+                                message.policy = 3;
+                                break;
+                            }
+                            if (object.selectedPvcs != null) {
+                                if (typeof object.selectedPvcs !== "object")
+                                    throw TypeError(".google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride.selectedPvcs: object expected");
+                                message.selectedPvcs = $root.google.cloud.gkebackup.v1.NamespacedNames.fromObject(object.selectedPvcs);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a VolumeDataRestorePolicyOverride message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride} message VolumeDataRestorePolicyOverride
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        VolumeDataRestorePolicyOverride.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.policy = options.enums === String ? "VOLUME_DATA_RESTORE_POLICY_UNSPECIFIED" : 0;
+                            if (message.policy != null && message.hasOwnProperty("policy"))
+                                object.policy = options.enums === String ? $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy[message.policy] === undefined ? message.policy : $root.google.cloud.gkebackup.v1.RestoreConfig.VolumeDataRestorePolicy[message.policy] : message.policy;
+                            if (message.selectedPvcs != null && message.hasOwnProperty("selectedPvcs")) {
+                                object.selectedPvcs = $root.google.cloud.gkebackup.v1.NamespacedNames.toObject(message.selectedPvcs, options);
+                                if (options.oneofs)
+                                    object.scope = "selectedPvcs";
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this VolumeDataRestorePolicyOverride to JSON.
+                         * @function toJSON
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        VolumeDataRestorePolicyOverride.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for VolumeDataRestorePolicyOverride
+                         * @function getTypeUrl
+                         * @memberof google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        VolumeDataRestorePolicyOverride.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.cloud.gkebackup.v1.VolumeDataRestorePolicyOverride";
+                        };
+    
+                        return VolumeDataRestorePolicyOverride;
                     })();
     
                     v1.RestorePlan = (function() {
@@ -14465,6 +19119,8 @@
                          * @property {google.cloud.gkebackup.v1.IRestoreConfig|null} [restoreConfig] RestorePlan restoreConfig
                          * @property {Object.<string,string>|null} [labels] RestorePlan labels
                          * @property {string|null} [etag] RestorePlan etag
+                         * @property {google.cloud.gkebackup.v1.RestorePlan.State|null} [state] RestorePlan state
+                         * @property {string|null} [stateReason] RestorePlan stateReason
                          */
     
                         /**
@@ -14564,6 +19220,22 @@
                         RestorePlan.prototype.etag = "";
     
                         /**
+                         * RestorePlan state.
+                         * @member {google.cloud.gkebackup.v1.RestorePlan.State} state
+                         * @memberof google.cloud.gkebackup.v1.RestorePlan
+                         * @instance
+                         */
+                        RestorePlan.prototype.state = 0;
+    
+                        /**
+                         * RestorePlan stateReason.
+                         * @member {string} stateReason
+                         * @memberof google.cloud.gkebackup.v1.RestorePlan
+                         * @instance
+                         */
+                        RestorePlan.prototype.stateReason = "";
+    
+                        /**
                          * Creates a new RestorePlan instance using the specified properties.
                          * @function create
                          * @memberof google.cloud.gkebackup.v1.RestorePlan
@@ -14608,6 +19280,10 @@
                                     writer.uint32(/* id 9, wireType 2 =*/74).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.labels[keys[i]]).ldelim();
                             if (message.etag != null && Object.hasOwnProperty.call(message, "etag"))
                                 writer.uint32(/* id 10, wireType 2 =*/82).string(message.etag);
+                            if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+                                writer.uint32(/* id 11, wireType 0 =*/88).int32(message.state);
+                            if (message.stateReason != null && Object.hasOwnProperty.call(message, "stateReason"))
+                                writer.uint32(/* id 12, wireType 2 =*/98).string(message.stateReason);
                             return writer;
                         };
     
@@ -14701,6 +19377,14 @@
                                         message.etag = reader.string();
                                         break;
                                     }
+                                case 11: {
+                                        message.state = reader.int32();
+                                        break;
+                                    }
+                                case 12: {
+                                        message.stateReason = reader.string();
+                                        break;
+                                    }
                                 default:
                                     reader.skipType(tag & 7);
                                     break;
@@ -14777,6 +19461,20 @@
                             if (message.etag != null && message.hasOwnProperty("etag"))
                                 if (!$util.isString(message.etag))
                                     return "etag: string expected";
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                switch (message.state) {
+                                default:
+                                    return "state: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                    break;
+                                }
+                            if (message.stateReason != null && message.hasOwnProperty("stateReason"))
+                                if (!$util.isString(message.stateReason))
+                                    return "stateReason: string expected";
                             return null;
                         };
     
@@ -14826,6 +19524,36 @@
                             }
                             if (object.etag != null)
                                 message.etag = String(object.etag);
+                            switch (object.state) {
+                            default:
+                                if (typeof object.state === "number") {
+                                    message.state = object.state;
+                                    break;
+                                }
+                                break;
+                            case "STATE_UNSPECIFIED":
+                            case 0:
+                                message.state = 0;
+                                break;
+                            case "CLUSTER_PENDING":
+                            case 1:
+                                message.state = 1;
+                                break;
+                            case "READY":
+                            case 2:
+                                message.state = 2;
+                                break;
+                            case "FAILED":
+                            case 3:
+                                message.state = 3;
+                                break;
+                            case "DELETING":
+                            case 4:
+                                message.state = 4;
+                                break;
+                            }
+                            if (object.stateReason != null)
+                                message.stateReason = String(object.stateReason);
                             return message;
                         };
     
@@ -14854,6 +19582,8 @@
                                 object.cluster = "";
                                 object.restoreConfig = null;
                                 object.etag = "";
+                                object.state = options.enums === String ? "STATE_UNSPECIFIED" : 0;
+                                object.stateReason = "";
                             }
                             if (message.name != null && message.hasOwnProperty("name"))
                                 object.name = message.name;
@@ -14879,6 +19609,10 @@
                             }
                             if (message.etag != null && message.hasOwnProperty("etag"))
                                 object.etag = message.etag;
+                            if (message.state != null && message.hasOwnProperty("state"))
+                                object.state = options.enums === String ? $root.google.cloud.gkebackup.v1.RestorePlan.State[message.state] === undefined ? message.state : $root.google.cloud.gkebackup.v1.RestorePlan.State[message.state] : message.state;
+                            if (message.stateReason != null && message.hasOwnProperty("stateReason"))
+                                object.stateReason = message.stateReason;
                             return object;
                         };
     
@@ -14907,6 +19641,26 @@
                             }
                             return typeUrlPrefix + "/google.cloud.gkebackup.v1.RestorePlan";
                         };
+    
+                        /**
+                         * State enum.
+                         * @name google.cloud.gkebackup.v1.RestorePlan.State
+                         * @enum {number}
+                         * @property {number} STATE_UNSPECIFIED=0 STATE_UNSPECIFIED value
+                         * @property {number} CLUSTER_PENDING=1 CLUSTER_PENDING value
+                         * @property {number} READY=2 READY value
+                         * @property {number} FAILED=3 FAILED value
+                         * @property {number} DELETING=4 DELETING value
+                         */
+                        RestorePlan.State = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "STATE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "CLUSTER_PENDING"] = 1;
+                            values[valuesById[2] = "READY"] = 2;
+                            values[valuesById[3] = "FAILED"] = 3;
+                            values[valuesById[4] = "DELETING"] = 4;
+                            return values;
+                        })();
     
                         return RestorePlan;
                     })();
@@ -16141,6 +20895,7 @@
              * @property {number} IMMUTABLE=5 IMMUTABLE value
              * @property {number} UNORDERED_LIST=6 UNORDERED_LIST value
              * @property {number} NON_EMPTY_DEFAULT=7 NON_EMPTY_DEFAULT value
+             * @property {number} IDENTIFIER=8 IDENTIFIER value
              */
             api.FieldBehavior = (function() {
                 var valuesById = {}, values = Object.create(valuesById);
@@ -16152,6 +20907,7 @@
                 values[valuesById[5] = "IMMUTABLE"] = 5;
                 values[valuesById[6] = "UNORDERED_LIST"] = 6;
                 values[valuesById[7] = "NON_EMPTY_DEFAULT"] = 7;
+                values[valuesById[8] = "IDENTIFIER"] = 8;
                 return values;
             })();
     
@@ -17802,6 +22558,3935 @@
                 return CustomHttpPattern;
             })();
     
+            api.CommonLanguageSettings = (function() {
+    
+                /**
+                 * Properties of a CommonLanguageSettings.
+                 * @memberof google.api
+                 * @interface ICommonLanguageSettings
+                 * @property {string|null} [referenceDocsUri] CommonLanguageSettings referenceDocsUri
+                 * @property {Array.<google.api.ClientLibraryDestination>|null} [destinations] CommonLanguageSettings destinations
+                 */
+    
+                /**
+                 * Constructs a new CommonLanguageSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CommonLanguageSettings.
+                 * @implements ICommonLanguageSettings
+                 * @constructor
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 */
+                function CommonLanguageSettings(properties) {
+                    this.destinations = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CommonLanguageSettings referenceDocsUri.
+                 * @member {string} referenceDocsUri
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.referenceDocsUri = "";
+    
+                /**
+                 * CommonLanguageSettings destinations.
+                 * @member {Array.<google.api.ClientLibraryDestination>} destinations
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.destinations = $util.emptyArray;
+    
+                /**
+                 * Creates a new CommonLanguageSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings instance
+                 */
+                CommonLanguageSettings.create = function create(properties) {
+                    return new CommonLanguageSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.referenceDocsUri != null && Object.hasOwnProperty.call(message, "referenceDocsUri"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.referenceDocsUri);
+                    if (message.destinations != null && message.destinations.length) {
+                        writer.uint32(/* id 2, wireType 2 =*/18).fork();
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            writer.int32(message.destinations[i]);
+                        writer.ldelim();
+                    }
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CommonLanguageSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.referenceDocsUri = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.destinations && message.destinations.length))
+                                    message.destinations = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.destinations.push(reader.int32());
+                                } else
+                                    message.destinations.push(reader.int32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CommonLanguageSettings message.
+                 * @function verify
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CommonLanguageSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        if (!$util.isString(message.referenceDocsUri))
+                            return "referenceDocsUri: string expected";
+                    if (message.destinations != null && message.hasOwnProperty("destinations")) {
+                        if (!Array.isArray(message.destinations))
+                            return "destinations: array expected";
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            switch (message.destinations[i]) {
+                            default:
+                                return "destinations: enum value[] expected";
+                            case 0:
+                            case 10:
+                            case 20:
+                                break;
+                            }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 */
+                CommonLanguageSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CommonLanguageSettings)
+                        return object;
+                    var message = new $root.google.api.CommonLanguageSettings();
+                    if (object.referenceDocsUri != null)
+                        message.referenceDocsUri = String(object.referenceDocsUri);
+                    if (object.destinations) {
+                        if (!Array.isArray(object.destinations))
+                            throw TypeError(".google.api.CommonLanguageSettings.destinations: array expected");
+                        message.destinations = [];
+                        for (var i = 0; i < object.destinations.length; ++i)
+                            switch (object.destinations[i]) {
+                            default:
+                                if (typeof object.destinations[i] === "number") {
+                                    message.destinations[i] = object.destinations[i];
+                                    break;
+                                }
+                            case "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED":
+                            case 0:
+                                message.destinations[i] = 0;
+                                break;
+                            case "GITHUB":
+                            case 10:
+                                message.destinations[i] = 10;
+                                break;
+                            case "PACKAGE_MANAGER":
+                            case 20:
+                                message.destinations[i] = 20;
+                                break;
+                            }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.CommonLanguageSettings} message CommonLanguageSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CommonLanguageSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.destinations = [];
+                    if (options.defaults)
+                        object.referenceDocsUri = "";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        object.referenceDocsUri = message.referenceDocsUri;
+                    if (message.destinations && message.destinations.length) {
+                        object.destinations = [];
+                        for (var j = 0; j < message.destinations.length; ++j)
+                            object.destinations[j] = options.enums === String ? $root.google.api.ClientLibraryDestination[message.destinations[j]] === undefined ? message.destinations[j] : $root.google.api.ClientLibraryDestination[message.destinations[j]] : message.destinations[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this CommonLanguageSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CommonLanguageSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CommonLanguageSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CommonLanguageSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CommonLanguageSettings";
+                };
+    
+                return CommonLanguageSettings;
+            })();
+    
+            api.ClientLibrarySettings = (function() {
+    
+                /**
+                 * Properties of a ClientLibrarySettings.
+                 * @memberof google.api
+                 * @interface IClientLibrarySettings
+                 * @property {string|null} [version] ClientLibrarySettings version
+                 * @property {google.api.LaunchStage|null} [launchStage] ClientLibrarySettings launchStage
+                 * @property {boolean|null} [restNumericEnums] ClientLibrarySettings restNumericEnums
+                 * @property {google.api.IJavaSettings|null} [javaSettings] ClientLibrarySettings javaSettings
+                 * @property {google.api.ICppSettings|null} [cppSettings] ClientLibrarySettings cppSettings
+                 * @property {google.api.IPhpSettings|null} [phpSettings] ClientLibrarySettings phpSettings
+                 * @property {google.api.IPythonSettings|null} [pythonSettings] ClientLibrarySettings pythonSettings
+                 * @property {google.api.INodeSettings|null} [nodeSettings] ClientLibrarySettings nodeSettings
+                 * @property {google.api.IDotnetSettings|null} [dotnetSettings] ClientLibrarySettings dotnetSettings
+                 * @property {google.api.IRubySettings|null} [rubySettings] ClientLibrarySettings rubySettings
+                 * @property {google.api.IGoSettings|null} [goSettings] ClientLibrarySettings goSettings
+                 */
+    
+                /**
+                 * Constructs a new ClientLibrarySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a ClientLibrarySettings.
+                 * @implements IClientLibrarySettings
+                 * @constructor
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 */
+                function ClientLibrarySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ClientLibrarySettings version.
+                 * @member {string} version
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.version = "";
+    
+                /**
+                 * ClientLibrarySettings launchStage.
+                 * @member {google.api.LaunchStage} launchStage
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.launchStage = 0;
+    
+                /**
+                 * ClientLibrarySettings restNumericEnums.
+                 * @member {boolean} restNumericEnums
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.restNumericEnums = false;
+    
+                /**
+                 * ClientLibrarySettings javaSettings.
+                 * @member {google.api.IJavaSettings|null|undefined} javaSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.javaSettings = null;
+    
+                /**
+                 * ClientLibrarySettings cppSettings.
+                 * @member {google.api.ICppSettings|null|undefined} cppSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.cppSettings = null;
+    
+                /**
+                 * ClientLibrarySettings phpSettings.
+                 * @member {google.api.IPhpSettings|null|undefined} phpSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.phpSettings = null;
+    
+                /**
+                 * ClientLibrarySettings pythonSettings.
+                 * @member {google.api.IPythonSettings|null|undefined} pythonSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.pythonSettings = null;
+    
+                /**
+                 * ClientLibrarySettings nodeSettings.
+                 * @member {google.api.INodeSettings|null|undefined} nodeSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.nodeSettings = null;
+    
+                /**
+                 * ClientLibrarySettings dotnetSettings.
+                 * @member {google.api.IDotnetSettings|null|undefined} dotnetSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.dotnetSettings = null;
+    
+                /**
+                 * ClientLibrarySettings rubySettings.
+                 * @member {google.api.IRubySettings|null|undefined} rubySettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.rubySettings = null;
+    
+                /**
+                 * ClientLibrarySettings goSettings.
+                 * @member {google.api.IGoSettings|null|undefined} goSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.goSettings = null;
+    
+                /**
+                 * Creates a new ClientLibrarySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings instance
+                 */
+                ClientLibrarySettings.create = function create(properties) {
+                    return new ClientLibrarySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.version != null && Object.hasOwnProperty.call(message, "version"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.version);
+                    if (message.launchStage != null && Object.hasOwnProperty.call(message, "launchStage"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.launchStage);
+                    if (message.restNumericEnums != null && Object.hasOwnProperty.call(message, "restNumericEnums"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.restNumericEnums);
+                    if (message.javaSettings != null && Object.hasOwnProperty.call(message, "javaSettings"))
+                        $root.google.api.JavaSettings.encode(message.javaSettings, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                    if (message.cppSettings != null && Object.hasOwnProperty.call(message, "cppSettings"))
+                        $root.google.api.CppSettings.encode(message.cppSettings, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                    if (message.phpSettings != null && Object.hasOwnProperty.call(message, "phpSettings"))
+                        $root.google.api.PhpSettings.encode(message.phpSettings, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
+                    if (message.pythonSettings != null && Object.hasOwnProperty.call(message, "pythonSettings"))
+                        $root.google.api.PythonSettings.encode(message.pythonSettings, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
+                    if (message.nodeSettings != null && Object.hasOwnProperty.call(message, "nodeSettings"))
+                        $root.google.api.NodeSettings.encode(message.nodeSettings, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
+                    if (message.dotnetSettings != null && Object.hasOwnProperty.call(message, "dotnetSettings"))
+                        $root.google.api.DotnetSettings.encode(message.dotnetSettings, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
+                    if (message.rubySettings != null && Object.hasOwnProperty.call(message, "rubySettings"))
+                        $root.google.api.RubySettings.encode(message.rubySettings, writer.uint32(/* id 27, wireType 2 =*/218).fork()).ldelim();
+                    if (message.goSettings != null && Object.hasOwnProperty.call(message, "goSettings"))
+                        $root.google.api.GoSettings.encode(message.goSettings, writer.uint32(/* id 28, wireType 2 =*/226).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.ClientLibrarySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.version = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.launchStage = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.restNumericEnums = reader.bool();
+                                break;
+                            }
+                        case 21: {
+                                message.javaSettings = $root.google.api.JavaSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 22: {
+                                message.cppSettings = $root.google.api.CppSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 23: {
+                                message.phpSettings = $root.google.api.PhpSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 24: {
+                                message.pythonSettings = $root.google.api.PythonSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 25: {
+                                message.nodeSettings = $root.google.api.NodeSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 26: {
+                                message.dotnetSettings = $root.google.api.DotnetSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 27: {
+                                message.rubySettings = $root.google.api.RubySettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 28: {
+                                message.goSettings = $root.google.api.GoSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a ClientLibrarySettings message.
+                 * @function verify
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ClientLibrarySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        if (!$util.isString(message.version))
+                            return "version: string expected";
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        switch (message.launchStage) {
+                        default:
+                            return "launchStage: enum value expected";
+                        case 0:
+                        case 6:
+                        case 7:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            break;
+                        }
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        if (typeof message.restNumericEnums !== "boolean")
+                            return "restNumericEnums: boolean expected";
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings")) {
+                        var error = $root.google.api.JavaSettings.verify(message.javaSettings);
+                        if (error)
+                            return "javaSettings." + error;
+                    }
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings")) {
+                        var error = $root.google.api.CppSettings.verify(message.cppSettings);
+                        if (error)
+                            return "cppSettings." + error;
+                    }
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings")) {
+                        var error = $root.google.api.PhpSettings.verify(message.phpSettings);
+                        if (error)
+                            return "phpSettings." + error;
+                    }
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings")) {
+                        var error = $root.google.api.PythonSettings.verify(message.pythonSettings);
+                        if (error)
+                            return "pythonSettings." + error;
+                    }
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings")) {
+                        var error = $root.google.api.NodeSettings.verify(message.nodeSettings);
+                        if (error)
+                            return "nodeSettings." + error;
+                    }
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings")) {
+                        var error = $root.google.api.DotnetSettings.verify(message.dotnetSettings);
+                        if (error)
+                            return "dotnetSettings." + error;
+                    }
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings")) {
+                        var error = $root.google.api.RubySettings.verify(message.rubySettings);
+                        if (error)
+                            return "rubySettings." + error;
+                    }
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings")) {
+                        var error = $root.google.api.GoSettings.verify(message.goSettings);
+                        if (error)
+                            return "goSettings." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 */
+                ClientLibrarySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.ClientLibrarySettings)
+                        return object;
+                    var message = new $root.google.api.ClientLibrarySettings();
+                    if (object.version != null)
+                        message.version = String(object.version);
+                    switch (object.launchStage) {
+                    default:
+                        if (typeof object.launchStage === "number") {
+                            message.launchStage = object.launchStage;
+                            break;
+                        }
+                        break;
+                    case "LAUNCH_STAGE_UNSPECIFIED":
+                    case 0:
+                        message.launchStage = 0;
+                        break;
+                    case "UNIMPLEMENTED":
+                    case 6:
+                        message.launchStage = 6;
+                        break;
+                    case "PRELAUNCH":
+                    case 7:
+                        message.launchStage = 7;
+                        break;
+                    case "EARLY_ACCESS":
+                    case 1:
+                        message.launchStage = 1;
+                        break;
+                    case "ALPHA":
+                    case 2:
+                        message.launchStage = 2;
+                        break;
+                    case "BETA":
+                    case 3:
+                        message.launchStage = 3;
+                        break;
+                    case "GA":
+                    case 4:
+                        message.launchStage = 4;
+                        break;
+                    case "DEPRECATED":
+                    case 5:
+                        message.launchStage = 5;
+                        break;
+                    }
+                    if (object.restNumericEnums != null)
+                        message.restNumericEnums = Boolean(object.restNumericEnums);
+                    if (object.javaSettings != null) {
+                        if (typeof object.javaSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.javaSettings: object expected");
+                        message.javaSettings = $root.google.api.JavaSettings.fromObject(object.javaSettings);
+                    }
+                    if (object.cppSettings != null) {
+                        if (typeof object.cppSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.cppSettings: object expected");
+                        message.cppSettings = $root.google.api.CppSettings.fromObject(object.cppSettings);
+                    }
+                    if (object.phpSettings != null) {
+                        if (typeof object.phpSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.phpSettings: object expected");
+                        message.phpSettings = $root.google.api.PhpSettings.fromObject(object.phpSettings);
+                    }
+                    if (object.pythonSettings != null) {
+                        if (typeof object.pythonSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.pythonSettings: object expected");
+                        message.pythonSettings = $root.google.api.PythonSettings.fromObject(object.pythonSettings);
+                    }
+                    if (object.nodeSettings != null) {
+                        if (typeof object.nodeSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.nodeSettings: object expected");
+                        message.nodeSettings = $root.google.api.NodeSettings.fromObject(object.nodeSettings);
+                    }
+                    if (object.dotnetSettings != null) {
+                        if (typeof object.dotnetSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.dotnetSettings: object expected");
+                        message.dotnetSettings = $root.google.api.DotnetSettings.fromObject(object.dotnetSettings);
+                    }
+                    if (object.rubySettings != null) {
+                        if (typeof object.rubySettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.rubySettings: object expected");
+                        message.rubySettings = $root.google.api.RubySettings.fromObject(object.rubySettings);
+                    }
+                    if (object.goSettings != null) {
+                        if (typeof object.goSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.goSettings: object expected");
+                        message.goSettings = $root.google.api.GoSettings.fromObject(object.goSettings);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.ClientLibrarySettings} message ClientLibrarySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ClientLibrarySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.version = "";
+                        object.launchStage = options.enums === String ? "LAUNCH_STAGE_UNSPECIFIED" : 0;
+                        object.restNumericEnums = false;
+                        object.javaSettings = null;
+                        object.cppSettings = null;
+                        object.phpSettings = null;
+                        object.pythonSettings = null;
+                        object.nodeSettings = null;
+                        object.dotnetSettings = null;
+                        object.rubySettings = null;
+                        object.goSettings = null;
+                    }
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        object.version = message.version;
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        object.launchStage = options.enums === String ? $root.google.api.LaunchStage[message.launchStage] === undefined ? message.launchStage : $root.google.api.LaunchStage[message.launchStage] : message.launchStage;
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        object.restNumericEnums = message.restNumericEnums;
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings"))
+                        object.javaSettings = $root.google.api.JavaSettings.toObject(message.javaSettings, options);
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings"))
+                        object.cppSettings = $root.google.api.CppSettings.toObject(message.cppSettings, options);
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings"))
+                        object.phpSettings = $root.google.api.PhpSettings.toObject(message.phpSettings, options);
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings"))
+                        object.pythonSettings = $root.google.api.PythonSettings.toObject(message.pythonSettings, options);
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings"))
+                        object.nodeSettings = $root.google.api.NodeSettings.toObject(message.nodeSettings, options);
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings"))
+                        object.dotnetSettings = $root.google.api.DotnetSettings.toObject(message.dotnetSettings, options);
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings"))
+                        object.rubySettings = $root.google.api.RubySettings.toObject(message.rubySettings, options);
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings"))
+                        object.goSettings = $root.google.api.GoSettings.toObject(message.goSettings, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this ClientLibrarySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ClientLibrarySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for ClientLibrarySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                ClientLibrarySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.ClientLibrarySettings";
+                };
+    
+                return ClientLibrarySettings;
+            })();
+    
+            api.Publishing = (function() {
+    
+                /**
+                 * Properties of a Publishing.
+                 * @memberof google.api
+                 * @interface IPublishing
+                 * @property {Array.<google.api.IMethodSettings>|null} [methodSettings] Publishing methodSettings
+                 * @property {string|null} [newIssueUri] Publishing newIssueUri
+                 * @property {string|null} [documentationUri] Publishing documentationUri
+                 * @property {string|null} [apiShortName] Publishing apiShortName
+                 * @property {string|null} [githubLabel] Publishing githubLabel
+                 * @property {Array.<string>|null} [codeownerGithubTeams] Publishing codeownerGithubTeams
+                 * @property {string|null} [docTagPrefix] Publishing docTagPrefix
+                 * @property {google.api.ClientLibraryOrganization|null} [organization] Publishing organization
+                 * @property {Array.<google.api.IClientLibrarySettings>|null} [librarySettings] Publishing librarySettings
+                 * @property {string|null} [protoReferenceDocumentationUri] Publishing protoReferenceDocumentationUri
+                 */
+    
+                /**
+                 * Constructs a new Publishing.
+                 * @memberof google.api
+                 * @classdesc Represents a Publishing.
+                 * @implements IPublishing
+                 * @constructor
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 */
+                function Publishing(properties) {
+                    this.methodSettings = [];
+                    this.codeownerGithubTeams = [];
+                    this.librarySettings = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Publishing methodSettings.
+                 * @member {Array.<google.api.IMethodSettings>} methodSettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.methodSettings = $util.emptyArray;
+    
+                /**
+                 * Publishing newIssueUri.
+                 * @member {string} newIssueUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.newIssueUri = "";
+    
+                /**
+                 * Publishing documentationUri.
+                 * @member {string} documentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.documentationUri = "";
+    
+                /**
+                 * Publishing apiShortName.
+                 * @member {string} apiShortName
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.apiShortName = "";
+    
+                /**
+                 * Publishing githubLabel.
+                 * @member {string} githubLabel
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.githubLabel = "";
+    
+                /**
+                 * Publishing codeownerGithubTeams.
+                 * @member {Array.<string>} codeownerGithubTeams
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.codeownerGithubTeams = $util.emptyArray;
+    
+                /**
+                 * Publishing docTagPrefix.
+                 * @member {string} docTagPrefix
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.docTagPrefix = "";
+    
+                /**
+                 * Publishing organization.
+                 * @member {google.api.ClientLibraryOrganization} organization
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.organization = 0;
+    
+                /**
+                 * Publishing librarySettings.
+                 * @member {Array.<google.api.IClientLibrarySettings>} librarySettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.librarySettings = $util.emptyArray;
+    
+                /**
+                 * Publishing protoReferenceDocumentationUri.
+                 * @member {string} protoReferenceDocumentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.protoReferenceDocumentationUri = "";
+    
+                /**
+                 * Creates a new Publishing instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 * @returns {google.api.Publishing} Publishing instance
+                 */
+                Publishing.create = function create(properties) {
+                    return new Publishing(properties);
+                };
+    
+                /**
+                 * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.methodSettings != null && message.methodSettings.length)
+                        for (var i = 0; i < message.methodSettings.length; ++i)
+                            $root.google.api.MethodSettings.encode(message.methodSettings[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.newIssueUri != null && Object.hasOwnProperty.call(message, "newIssueUri"))
+                        writer.uint32(/* id 101, wireType 2 =*/810).string(message.newIssueUri);
+                    if (message.documentationUri != null && Object.hasOwnProperty.call(message, "documentationUri"))
+                        writer.uint32(/* id 102, wireType 2 =*/818).string(message.documentationUri);
+                    if (message.apiShortName != null && Object.hasOwnProperty.call(message, "apiShortName"))
+                        writer.uint32(/* id 103, wireType 2 =*/826).string(message.apiShortName);
+                    if (message.githubLabel != null && Object.hasOwnProperty.call(message, "githubLabel"))
+                        writer.uint32(/* id 104, wireType 2 =*/834).string(message.githubLabel);
+                    if (message.codeownerGithubTeams != null && message.codeownerGithubTeams.length)
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            writer.uint32(/* id 105, wireType 2 =*/842).string(message.codeownerGithubTeams[i]);
+                    if (message.docTagPrefix != null && Object.hasOwnProperty.call(message, "docTagPrefix"))
+                        writer.uint32(/* id 106, wireType 2 =*/850).string(message.docTagPrefix);
+                    if (message.organization != null && Object.hasOwnProperty.call(message, "organization"))
+                        writer.uint32(/* id 107, wireType 0 =*/856).int32(message.organization);
+                    if (message.librarySettings != null && message.librarySettings.length)
+                        for (var i = 0; i < message.librarySettings.length; ++i)
+                            $root.google.api.ClientLibrarySettings.encode(message.librarySettings[i], writer.uint32(/* id 109, wireType 2 =*/874).fork()).ldelim();
+                    if (message.protoReferenceDocumentationUri != null && Object.hasOwnProperty.call(message, "protoReferenceDocumentationUri"))
+                        writer.uint32(/* id 110, wireType 2 =*/882).string(message.protoReferenceDocumentationUri);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.Publishing();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 2: {
+                                if (!(message.methodSettings && message.methodSettings.length))
+                                    message.methodSettings = [];
+                                message.methodSettings.push($root.google.api.MethodSettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 101: {
+                                message.newIssueUri = reader.string();
+                                break;
+                            }
+                        case 102: {
+                                message.documentationUri = reader.string();
+                                break;
+                            }
+                        case 103: {
+                                message.apiShortName = reader.string();
+                                break;
+                            }
+                        case 104: {
+                                message.githubLabel = reader.string();
+                                break;
+                            }
+                        case 105: {
+                                if (!(message.codeownerGithubTeams && message.codeownerGithubTeams.length))
+                                    message.codeownerGithubTeams = [];
+                                message.codeownerGithubTeams.push(reader.string());
+                                break;
+                            }
+                        case 106: {
+                                message.docTagPrefix = reader.string();
+                                break;
+                            }
+                        case 107: {
+                                message.organization = reader.int32();
+                                break;
+                            }
+                        case 109: {
+                                if (!(message.librarySettings && message.librarySettings.length))
+                                    message.librarySettings = [];
+                                message.librarySettings.push($root.google.api.ClientLibrarySettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 110: {
+                                message.protoReferenceDocumentationUri = reader.string();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Publishing message.
+                 * @function verify
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Publishing.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.methodSettings != null && message.hasOwnProperty("methodSettings")) {
+                        if (!Array.isArray(message.methodSettings))
+                            return "methodSettings: array expected";
+                        for (var i = 0; i < message.methodSettings.length; ++i) {
+                            var error = $root.google.api.MethodSettings.verify(message.methodSettings[i]);
+                            if (error)
+                                return "methodSettings." + error;
+                        }
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        if (!$util.isString(message.newIssueUri))
+                            return "newIssueUri: string expected";
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        if (!$util.isString(message.documentationUri))
+                            return "documentationUri: string expected";
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        if (!$util.isString(message.apiShortName))
+                            return "apiShortName: string expected";
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        if (!$util.isString(message.githubLabel))
+                            return "githubLabel: string expected";
+                    if (message.codeownerGithubTeams != null && message.hasOwnProperty("codeownerGithubTeams")) {
+                        if (!Array.isArray(message.codeownerGithubTeams))
+                            return "codeownerGithubTeams: array expected";
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            if (!$util.isString(message.codeownerGithubTeams[i]))
+                                return "codeownerGithubTeams: string[] expected";
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        if (!$util.isString(message.docTagPrefix))
+                            return "docTagPrefix: string expected";
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        switch (message.organization) {
+                        default:
+                            return "organization: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                            break;
+                        }
+                    if (message.librarySettings != null && message.hasOwnProperty("librarySettings")) {
+                        if (!Array.isArray(message.librarySettings))
+                            return "librarySettings: array expected";
+                        for (var i = 0; i < message.librarySettings.length; ++i) {
+                            var error = $root.google.api.ClientLibrarySettings.verify(message.librarySettings[i]);
+                            if (error)
+                                return "librarySettings." + error;
+                        }
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        if (!$util.isString(message.protoReferenceDocumentationUri))
+                            return "protoReferenceDocumentationUri: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.Publishing} Publishing
+                 */
+                Publishing.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.Publishing)
+                        return object;
+                    var message = new $root.google.api.Publishing();
+                    if (object.methodSettings) {
+                        if (!Array.isArray(object.methodSettings))
+                            throw TypeError(".google.api.Publishing.methodSettings: array expected");
+                        message.methodSettings = [];
+                        for (var i = 0; i < object.methodSettings.length; ++i) {
+                            if (typeof object.methodSettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.methodSettings: object expected");
+                            message.methodSettings[i] = $root.google.api.MethodSettings.fromObject(object.methodSettings[i]);
+                        }
+                    }
+                    if (object.newIssueUri != null)
+                        message.newIssueUri = String(object.newIssueUri);
+                    if (object.documentationUri != null)
+                        message.documentationUri = String(object.documentationUri);
+                    if (object.apiShortName != null)
+                        message.apiShortName = String(object.apiShortName);
+                    if (object.githubLabel != null)
+                        message.githubLabel = String(object.githubLabel);
+                    if (object.codeownerGithubTeams) {
+                        if (!Array.isArray(object.codeownerGithubTeams))
+                            throw TypeError(".google.api.Publishing.codeownerGithubTeams: array expected");
+                        message.codeownerGithubTeams = [];
+                        for (var i = 0; i < object.codeownerGithubTeams.length; ++i)
+                            message.codeownerGithubTeams[i] = String(object.codeownerGithubTeams[i]);
+                    }
+                    if (object.docTagPrefix != null)
+                        message.docTagPrefix = String(object.docTagPrefix);
+                    switch (object.organization) {
+                    default:
+                        if (typeof object.organization === "number") {
+                            message.organization = object.organization;
+                            break;
+                        }
+                        break;
+                    case "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED":
+                    case 0:
+                        message.organization = 0;
+                        break;
+                    case "CLOUD":
+                    case 1:
+                        message.organization = 1;
+                        break;
+                    case "ADS":
+                    case 2:
+                        message.organization = 2;
+                        break;
+                    case "PHOTOS":
+                    case 3:
+                        message.organization = 3;
+                        break;
+                    case "STREET_VIEW":
+                    case 4:
+                        message.organization = 4;
+                        break;
+                    case "SHOPPING":
+                    case 5:
+                        message.organization = 5;
+                        break;
+                    case "GEO":
+                    case 6:
+                        message.organization = 6;
+                        break;
+                    case "GENERATIVE_AI":
+                    case 7:
+                        message.organization = 7;
+                        break;
+                    }
+                    if (object.librarySettings) {
+                        if (!Array.isArray(object.librarySettings))
+                            throw TypeError(".google.api.Publishing.librarySettings: array expected");
+                        message.librarySettings = [];
+                        for (var i = 0; i < object.librarySettings.length; ++i) {
+                            if (typeof object.librarySettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.librarySettings: object expected");
+                            message.librarySettings[i] = $root.google.api.ClientLibrarySettings.fromObject(object.librarySettings[i]);
+                        }
+                    }
+                    if (object.protoReferenceDocumentationUri != null)
+                        message.protoReferenceDocumentationUri = String(object.protoReferenceDocumentationUri);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.Publishing} message Publishing
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Publishing.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.methodSettings = [];
+                        object.codeownerGithubTeams = [];
+                        object.librarySettings = [];
+                    }
+                    if (options.defaults) {
+                        object.newIssueUri = "";
+                        object.documentationUri = "";
+                        object.apiShortName = "";
+                        object.githubLabel = "";
+                        object.docTagPrefix = "";
+                        object.organization = options.enums === String ? "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED" : 0;
+                        object.protoReferenceDocumentationUri = "";
+                    }
+                    if (message.methodSettings && message.methodSettings.length) {
+                        object.methodSettings = [];
+                        for (var j = 0; j < message.methodSettings.length; ++j)
+                            object.methodSettings[j] = $root.google.api.MethodSettings.toObject(message.methodSettings[j], options);
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        object.newIssueUri = message.newIssueUri;
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        object.documentationUri = message.documentationUri;
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        object.apiShortName = message.apiShortName;
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        object.githubLabel = message.githubLabel;
+                    if (message.codeownerGithubTeams && message.codeownerGithubTeams.length) {
+                        object.codeownerGithubTeams = [];
+                        for (var j = 0; j < message.codeownerGithubTeams.length; ++j)
+                            object.codeownerGithubTeams[j] = message.codeownerGithubTeams[j];
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        object.docTagPrefix = message.docTagPrefix;
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        object.organization = options.enums === String ? $root.google.api.ClientLibraryOrganization[message.organization] === undefined ? message.organization : $root.google.api.ClientLibraryOrganization[message.organization] : message.organization;
+                    if (message.librarySettings && message.librarySettings.length) {
+                        object.librarySettings = [];
+                        for (var j = 0; j < message.librarySettings.length; ++j)
+                            object.librarySettings[j] = $root.google.api.ClientLibrarySettings.toObject(message.librarySettings[j], options);
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        object.protoReferenceDocumentationUri = message.protoReferenceDocumentationUri;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Publishing to JSON.
+                 * @function toJSON
+                 * @memberof google.api.Publishing
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Publishing.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Publishing
+                 * @function getTypeUrl
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Publishing.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.Publishing";
+                };
+    
+                return Publishing;
+            })();
+    
+            api.JavaSettings = (function() {
+    
+                /**
+                 * Properties of a JavaSettings.
+                 * @memberof google.api
+                 * @interface IJavaSettings
+                 * @property {string|null} [libraryPackage] JavaSettings libraryPackage
+                 * @property {Object.<string,string>|null} [serviceClassNames] JavaSettings serviceClassNames
+                 * @property {google.api.ICommonLanguageSettings|null} [common] JavaSettings common
+                 */
+    
+                /**
+                 * Constructs a new JavaSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a JavaSettings.
+                 * @implements IJavaSettings
+                 * @constructor
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 */
+                function JavaSettings(properties) {
+                    this.serviceClassNames = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * JavaSettings libraryPackage.
+                 * @member {string} libraryPackage
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.libraryPackage = "";
+    
+                /**
+                 * JavaSettings serviceClassNames.
+                 * @member {Object.<string,string>} serviceClassNames
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.serviceClassNames = $util.emptyObject;
+    
+                /**
+                 * JavaSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new JavaSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 * @returns {google.api.JavaSettings} JavaSettings instance
+                 */
+                JavaSettings.create = function create(properties) {
+                    return new JavaSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.libraryPackage != null && Object.hasOwnProperty.call(message, "libraryPackage"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.libraryPackage);
+                    if (message.serviceClassNames != null && Object.hasOwnProperty.call(message, "serviceClassNames"))
+                        for (var keys = Object.keys(message.serviceClassNames), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.serviceClassNames[keys[i]]).ldelim();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.JavaSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.libraryPackage = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (message.serviceClassNames === $util.emptyObject)
+                                    message.serviceClassNames = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.serviceClassNames[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a JavaSettings message.
+                 * @function verify
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                JavaSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        if (!$util.isString(message.libraryPackage))
+                            return "libraryPackage: string expected";
+                    if (message.serviceClassNames != null && message.hasOwnProperty("serviceClassNames")) {
+                        if (!$util.isObject(message.serviceClassNames))
+                            return "serviceClassNames: object expected";
+                        var key = Object.keys(message.serviceClassNames);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.serviceClassNames[key[i]]))
+                                return "serviceClassNames: string{k:string} expected";
+                    }
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 */
+                JavaSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.JavaSettings)
+                        return object;
+                    var message = new $root.google.api.JavaSettings();
+                    if (object.libraryPackage != null)
+                        message.libraryPackage = String(object.libraryPackage);
+                    if (object.serviceClassNames) {
+                        if (typeof object.serviceClassNames !== "object")
+                            throw TypeError(".google.api.JavaSettings.serviceClassNames: object expected");
+                        message.serviceClassNames = {};
+                        for (var keys = Object.keys(object.serviceClassNames), i = 0; i < keys.length; ++i)
+                            message.serviceClassNames[keys[i]] = String(object.serviceClassNames[keys[i]]);
+                    }
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.JavaSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.JavaSettings} message JavaSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                JavaSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.serviceClassNames = {};
+                    if (options.defaults) {
+                        object.libraryPackage = "";
+                        object.common = null;
+                    }
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        object.libraryPackage = message.libraryPackage;
+                    var keys2;
+                    if (message.serviceClassNames && (keys2 = Object.keys(message.serviceClassNames)).length) {
+                        object.serviceClassNames = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.serviceClassNames[keys2[j]] = message.serviceClassNames[keys2[j]];
+                    }
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this JavaSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                JavaSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for JavaSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                JavaSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.JavaSettings";
+                };
+    
+                return JavaSettings;
+            })();
+    
+            api.CppSettings = (function() {
+    
+                /**
+                 * Properties of a CppSettings.
+                 * @memberof google.api
+                 * @interface ICppSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] CppSettings common
+                 */
+    
+                /**
+                 * Constructs a new CppSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CppSettings.
+                 * @implements ICppSettings
+                 * @constructor
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 */
+                function CppSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CppSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 */
+                CppSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new CppSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 * @returns {google.api.CppSettings} CppSettings instance
+                 */
+                CppSettings.create = function create(properties) {
+                    return new CppSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CppSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CppSettings message.
+                 * @function verify
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CppSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CppSettings} CppSettings
+                 */
+                CppSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CppSettings)
+                        return object;
+                    var message = new $root.google.api.CppSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.CppSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.CppSettings} message CppSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CppSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this CppSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CppSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CppSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CppSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CppSettings";
+                };
+    
+                return CppSettings;
+            })();
+    
+            api.PhpSettings = (function() {
+    
+                /**
+                 * Properties of a PhpSettings.
+                 * @memberof google.api
+                 * @interface IPhpSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PhpSettings common
+                 */
+    
+                /**
+                 * Constructs a new PhpSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PhpSettings.
+                 * @implements IPhpSettings
+                 * @constructor
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 */
+                function PhpSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PhpSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 */
+                PhpSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PhpSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 * @returns {google.api.PhpSettings} PhpSettings instance
+                 */
+                PhpSettings.create = function create(properties) {
+                    return new PhpSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PhpSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PhpSettings message.
+                 * @function verify
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PhpSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 */
+                PhpSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PhpSettings)
+                        return object;
+                    var message = new $root.google.api.PhpSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PhpSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.PhpSettings} message PhpSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PhpSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PhpSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PhpSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PhpSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PhpSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PhpSettings";
+                };
+    
+                return PhpSettings;
+            })();
+    
+            api.PythonSettings = (function() {
+    
+                /**
+                 * Properties of a PythonSettings.
+                 * @memberof google.api
+                 * @interface IPythonSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PythonSettings common
+                 */
+    
+                /**
+                 * Constructs a new PythonSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PythonSettings.
+                 * @implements IPythonSettings
+                 * @constructor
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 */
+                function PythonSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PythonSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 */
+                PythonSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PythonSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 * @returns {google.api.PythonSettings} PythonSettings instance
+                 */
+                PythonSettings.create = function create(properties) {
+                    return new PythonSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PythonSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PythonSettings message.
+                 * @function verify
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PythonSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 */
+                PythonSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PythonSettings)
+                        return object;
+                    var message = new $root.google.api.PythonSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PythonSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.PythonSettings} message PythonSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PythonSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PythonSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PythonSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PythonSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PythonSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PythonSettings";
+                };
+    
+                return PythonSettings;
+            })();
+    
+            api.NodeSettings = (function() {
+    
+                /**
+                 * Properties of a NodeSettings.
+                 * @memberof google.api
+                 * @interface INodeSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] NodeSettings common
+                 */
+    
+                /**
+                 * Constructs a new NodeSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a NodeSettings.
+                 * @implements INodeSettings
+                 * @constructor
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 */
+                function NodeSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * NodeSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 */
+                NodeSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new NodeSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 * @returns {google.api.NodeSettings} NodeSettings instance
+                 */
+                NodeSettings.create = function create(properties) {
+                    return new NodeSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.NodeSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a NodeSettings message.
+                 * @function verify
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                NodeSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 */
+                NodeSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.NodeSettings)
+                        return object;
+                    var message = new $root.google.api.NodeSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.NodeSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.NodeSettings} message NodeSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                NodeSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this NodeSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                NodeSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for NodeSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                NodeSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.NodeSettings";
+                };
+    
+                return NodeSettings;
+            })();
+    
+            api.DotnetSettings = (function() {
+    
+                /**
+                 * Properties of a DotnetSettings.
+                 * @memberof google.api
+                 * @interface IDotnetSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] DotnetSettings common
+                 * @property {Object.<string,string>|null} [renamedServices] DotnetSettings renamedServices
+                 * @property {Object.<string,string>|null} [renamedResources] DotnetSettings renamedResources
+                 * @property {Array.<string>|null} [ignoredResources] DotnetSettings ignoredResources
+                 * @property {Array.<string>|null} [forcedNamespaceAliases] DotnetSettings forcedNamespaceAliases
+                 * @property {Array.<string>|null} [handwrittenSignatures] DotnetSettings handwrittenSignatures
+                 */
+    
+                /**
+                 * Constructs a new DotnetSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a DotnetSettings.
+                 * @implements IDotnetSettings
+                 * @constructor
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 */
+                function DotnetSettings(properties) {
+                    this.renamedServices = {};
+                    this.renamedResources = {};
+                    this.ignoredResources = [];
+                    this.forcedNamespaceAliases = [];
+                    this.handwrittenSignatures = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * DotnetSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.common = null;
+    
+                /**
+                 * DotnetSettings renamedServices.
+                 * @member {Object.<string,string>} renamedServices
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedServices = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings renamedResources.
+                 * @member {Object.<string,string>} renamedResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedResources = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings ignoredResources.
+                 * @member {Array.<string>} ignoredResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.ignoredResources = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings forcedNamespaceAliases.
+                 * @member {Array.<string>} forcedNamespaceAliases
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.forcedNamespaceAliases = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings handwrittenSignatures.
+                 * @member {Array.<string>} handwrittenSignatures
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.handwrittenSignatures = $util.emptyArray;
+    
+                /**
+                 * Creates a new DotnetSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 * @returns {google.api.DotnetSettings} DotnetSettings instance
+                 */
+                DotnetSettings.create = function create(properties) {
+                    return new DotnetSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.renamedServices != null && Object.hasOwnProperty.call(message, "renamedServices"))
+                        for (var keys = Object.keys(message.renamedServices), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedServices[keys[i]]).ldelim();
+                    if (message.renamedResources != null && Object.hasOwnProperty.call(message, "renamedResources"))
+                        for (var keys = Object.keys(message.renamedResources), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedResources[keys[i]]).ldelim();
+                    if (message.ignoredResources != null && message.ignoredResources.length)
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            writer.uint32(/* id 4, wireType 2 =*/34).string(message.ignoredResources[i]);
+                    if (message.forcedNamespaceAliases != null && message.forcedNamespaceAliases.length)
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.forcedNamespaceAliases[i]);
+                    if (message.handwrittenSignatures != null && message.handwrittenSignatures.length)
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            writer.uint32(/* id 6, wireType 2 =*/50).string(message.handwrittenSignatures[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.DotnetSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 2: {
+                                if (message.renamedServices === $util.emptyObject)
+                                    message.renamedServices = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedServices[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                if (message.renamedResources === $util.emptyObject)
+                                    message.renamedResources = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedResources[key] = value;
+                                break;
+                            }
+                        case 4: {
+                                if (!(message.ignoredResources && message.ignoredResources.length))
+                                    message.ignoredResources = [];
+                                message.ignoredResources.push(reader.string());
+                                break;
+                            }
+                        case 5: {
+                                if (!(message.forcedNamespaceAliases && message.forcedNamespaceAliases.length))
+                                    message.forcedNamespaceAliases = [];
+                                message.forcedNamespaceAliases.push(reader.string());
+                                break;
+                            }
+                        case 6: {
+                                if (!(message.handwrittenSignatures && message.handwrittenSignatures.length))
+                                    message.handwrittenSignatures = [];
+                                message.handwrittenSignatures.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a DotnetSettings message.
+                 * @function verify
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                DotnetSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    if (message.renamedServices != null && message.hasOwnProperty("renamedServices")) {
+                        if (!$util.isObject(message.renamedServices))
+                            return "renamedServices: object expected";
+                        var key = Object.keys(message.renamedServices);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedServices[key[i]]))
+                                return "renamedServices: string{k:string} expected";
+                    }
+                    if (message.renamedResources != null && message.hasOwnProperty("renamedResources")) {
+                        if (!$util.isObject(message.renamedResources))
+                            return "renamedResources: object expected";
+                        var key = Object.keys(message.renamedResources);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedResources[key[i]]))
+                                return "renamedResources: string{k:string} expected";
+                    }
+                    if (message.ignoredResources != null && message.hasOwnProperty("ignoredResources")) {
+                        if (!Array.isArray(message.ignoredResources))
+                            return "ignoredResources: array expected";
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            if (!$util.isString(message.ignoredResources[i]))
+                                return "ignoredResources: string[] expected";
+                    }
+                    if (message.forcedNamespaceAliases != null && message.hasOwnProperty("forcedNamespaceAliases")) {
+                        if (!Array.isArray(message.forcedNamespaceAliases))
+                            return "forcedNamespaceAliases: array expected";
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            if (!$util.isString(message.forcedNamespaceAliases[i]))
+                                return "forcedNamespaceAliases: string[] expected";
+                    }
+                    if (message.handwrittenSignatures != null && message.hasOwnProperty("handwrittenSignatures")) {
+                        if (!Array.isArray(message.handwrittenSignatures))
+                            return "handwrittenSignatures: array expected";
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            if (!$util.isString(message.handwrittenSignatures[i]))
+                                return "handwrittenSignatures: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 */
+                DotnetSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.DotnetSettings)
+                        return object;
+                    var message = new $root.google.api.DotnetSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.DotnetSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    if (object.renamedServices) {
+                        if (typeof object.renamedServices !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedServices: object expected");
+                        message.renamedServices = {};
+                        for (var keys = Object.keys(object.renamedServices), i = 0; i < keys.length; ++i)
+                            message.renamedServices[keys[i]] = String(object.renamedServices[keys[i]]);
+                    }
+                    if (object.renamedResources) {
+                        if (typeof object.renamedResources !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedResources: object expected");
+                        message.renamedResources = {};
+                        for (var keys = Object.keys(object.renamedResources), i = 0; i < keys.length; ++i)
+                            message.renamedResources[keys[i]] = String(object.renamedResources[keys[i]]);
+                    }
+                    if (object.ignoredResources) {
+                        if (!Array.isArray(object.ignoredResources))
+                            throw TypeError(".google.api.DotnetSettings.ignoredResources: array expected");
+                        message.ignoredResources = [];
+                        for (var i = 0; i < object.ignoredResources.length; ++i)
+                            message.ignoredResources[i] = String(object.ignoredResources[i]);
+                    }
+                    if (object.forcedNamespaceAliases) {
+                        if (!Array.isArray(object.forcedNamespaceAliases))
+                            throw TypeError(".google.api.DotnetSettings.forcedNamespaceAliases: array expected");
+                        message.forcedNamespaceAliases = [];
+                        for (var i = 0; i < object.forcedNamespaceAliases.length; ++i)
+                            message.forcedNamespaceAliases[i] = String(object.forcedNamespaceAliases[i]);
+                    }
+                    if (object.handwrittenSignatures) {
+                        if (!Array.isArray(object.handwrittenSignatures))
+                            throw TypeError(".google.api.DotnetSettings.handwrittenSignatures: array expected");
+                        message.handwrittenSignatures = [];
+                        for (var i = 0; i < object.handwrittenSignatures.length; ++i)
+                            message.handwrittenSignatures[i] = String(object.handwrittenSignatures[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.DotnetSettings} message DotnetSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                DotnetSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.ignoredResources = [];
+                        object.forcedNamespaceAliases = [];
+                        object.handwrittenSignatures = [];
+                    }
+                    if (options.objects || options.defaults) {
+                        object.renamedServices = {};
+                        object.renamedResources = {};
+                    }
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    var keys2;
+                    if (message.renamedServices && (keys2 = Object.keys(message.renamedServices)).length) {
+                        object.renamedServices = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedServices[keys2[j]] = message.renamedServices[keys2[j]];
+                    }
+                    if (message.renamedResources && (keys2 = Object.keys(message.renamedResources)).length) {
+                        object.renamedResources = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedResources[keys2[j]] = message.renamedResources[keys2[j]];
+                    }
+                    if (message.ignoredResources && message.ignoredResources.length) {
+                        object.ignoredResources = [];
+                        for (var j = 0; j < message.ignoredResources.length; ++j)
+                            object.ignoredResources[j] = message.ignoredResources[j];
+                    }
+                    if (message.forcedNamespaceAliases && message.forcedNamespaceAliases.length) {
+                        object.forcedNamespaceAliases = [];
+                        for (var j = 0; j < message.forcedNamespaceAliases.length; ++j)
+                            object.forcedNamespaceAliases[j] = message.forcedNamespaceAliases[j];
+                    }
+                    if (message.handwrittenSignatures && message.handwrittenSignatures.length) {
+                        object.handwrittenSignatures = [];
+                        for (var j = 0; j < message.handwrittenSignatures.length; ++j)
+                            object.handwrittenSignatures[j] = message.handwrittenSignatures[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this DotnetSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                DotnetSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for DotnetSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                DotnetSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.DotnetSettings";
+                };
+    
+                return DotnetSettings;
+            })();
+    
+            api.RubySettings = (function() {
+    
+                /**
+                 * Properties of a RubySettings.
+                 * @memberof google.api
+                 * @interface IRubySettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] RubySettings common
+                 */
+    
+                /**
+                 * Constructs a new RubySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a RubySettings.
+                 * @implements IRubySettings
+                 * @constructor
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 */
+                function RubySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * RubySettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 */
+                RubySettings.prototype.common = null;
+    
+                /**
+                 * Creates a new RubySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 * @returns {google.api.RubySettings} RubySettings instance
+                 */
+                RubySettings.create = function create(properties) {
+                    return new RubySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RubySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a RubySettings message.
+                 * @function verify
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                RubySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.RubySettings} RubySettings
+                 */
+                RubySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.RubySettings)
+                        return object;
+                    var message = new $root.google.api.RubySettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.RubySettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.RubySettings} message RubySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                RubySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this RubySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                RubySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for RubySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                RubySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.RubySettings";
+                };
+    
+                return RubySettings;
+            })();
+    
+            api.GoSettings = (function() {
+    
+                /**
+                 * Properties of a GoSettings.
+                 * @memberof google.api
+                 * @interface IGoSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] GoSettings common
+                 */
+    
+                /**
+                 * Constructs a new GoSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a GoSettings.
+                 * @implements IGoSettings
+                 * @constructor
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 */
+                function GoSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * GoSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 */
+                GoSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new GoSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 * @returns {google.api.GoSettings} GoSettings instance
+                 */
+                GoSettings.create = function create(properties) {
+                    return new GoSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.GoSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a GoSettings message.
+                 * @function verify
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                GoSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.GoSettings} GoSettings
+                 */
+                GoSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.GoSettings)
+                        return object;
+                    var message = new $root.google.api.GoSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.GoSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.GoSettings} message GoSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                GoSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this GoSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                GoSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for GoSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                GoSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.GoSettings";
+                };
+    
+                return GoSettings;
+            })();
+    
+            api.MethodSettings = (function() {
+    
+                /**
+                 * Properties of a MethodSettings.
+                 * @memberof google.api
+                 * @interface IMethodSettings
+                 * @property {string|null} [selector] MethodSettings selector
+                 * @property {google.api.MethodSettings.ILongRunning|null} [longRunning] MethodSettings longRunning
+                 * @property {Array.<string>|null} [autoPopulatedFields] MethodSettings autoPopulatedFields
+                 */
+    
+                /**
+                 * Constructs a new MethodSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a MethodSettings.
+                 * @implements IMethodSettings
+                 * @constructor
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 */
+                function MethodSettings(properties) {
+                    this.autoPopulatedFields = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MethodSettings selector.
+                 * @member {string} selector
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.selector = "";
+    
+                /**
+                 * MethodSettings longRunning.
+                 * @member {google.api.MethodSettings.ILongRunning|null|undefined} longRunning
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.longRunning = null;
+    
+                /**
+                 * MethodSettings autoPopulatedFields.
+                 * @member {Array.<string>} autoPopulatedFields
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.autoPopulatedFields = $util.emptyArray;
+    
+                /**
+                 * Creates a new MethodSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 * @returns {google.api.MethodSettings} MethodSettings instance
+                 */
+                MethodSettings.create = function create(properties) {
+                    return new MethodSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.selector != null && Object.hasOwnProperty.call(message, "selector"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.selector);
+                    if (message.longRunning != null && Object.hasOwnProperty.call(message, "longRunning"))
+                        $root.google.api.MethodSettings.LongRunning.encode(message.longRunning, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.autoPopulatedFields != null && message.autoPopulatedFields.length)
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.autoPopulatedFields[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.selector = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.longRunning = $root.google.api.MethodSettings.LongRunning.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                if (!(message.autoPopulatedFields && message.autoPopulatedFields.length))
+                                    message.autoPopulatedFields = [];
+                                message.autoPopulatedFields.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MethodSettings message.
+                 * @function verify
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MethodSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        if (!$util.isString(message.selector))
+                            return "selector: string expected";
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning")) {
+                        var error = $root.google.api.MethodSettings.LongRunning.verify(message.longRunning);
+                        if (error)
+                            return "longRunning." + error;
+                    }
+                    if (message.autoPopulatedFields != null && message.hasOwnProperty("autoPopulatedFields")) {
+                        if (!Array.isArray(message.autoPopulatedFields))
+                            return "autoPopulatedFields: array expected";
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            if (!$util.isString(message.autoPopulatedFields[i]))
+                                return "autoPopulatedFields: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 */
+                MethodSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MethodSettings)
+                        return object;
+                    var message = new $root.google.api.MethodSettings();
+                    if (object.selector != null)
+                        message.selector = String(object.selector);
+                    if (object.longRunning != null) {
+                        if (typeof object.longRunning !== "object")
+                            throw TypeError(".google.api.MethodSettings.longRunning: object expected");
+                        message.longRunning = $root.google.api.MethodSettings.LongRunning.fromObject(object.longRunning);
+                    }
+                    if (object.autoPopulatedFields) {
+                        if (!Array.isArray(object.autoPopulatedFields))
+                            throw TypeError(".google.api.MethodSettings.autoPopulatedFields: array expected");
+                        message.autoPopulatedFields = [];
+                        for (var i = 0; i < object.autoPopulatedFields.length; ++i)
+                            message.autoPopulatedFields[i] = String(object.autoPopulatedFields[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.MethodSettings} message MethodSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MethodSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.autoPopulatedFields = [];
+                    if (options.defaults) {
+                        object.selector = "";
+                        object.longRunning = null;
+                    }
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        object.selector = message.selector;
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning"))
+                        object.longRunning = $root.google.api.MethodSettings.LongRunning.toObject(message.longRunning, options);
+                    if (message.autoPopulatedFields && message.autoPopulatedFields.length) {
+                        object.autoPopulatedFields = [];
+                        for (var j = 0; j < message.autoPopulatedFields.length; ++j)
+                            object.autoPopulatedFields[j] = message.autoPopulatedFields[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this MethodSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MethodSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MethodSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MethodSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MethodSettings";
+                };
+    
+                MethodSettings.LongRunning = (function() {
+    
+                    /**
+                     * Properties of a LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @interface ILongRunning
+                     * @property {google.protobuf.IDuration|null} [initialPollDelay] LongRunning initialPollDelay
+                     * @property {number|null} [pollDelayMultiplier] LongRunning pollDelayMultiplier
+                     * @property {google.protobuf.IDuration|null} [maxPollDelay] LongRunning maxPollDelay
+                     * @property {google.protobuf.IDuration|null} [totalPollTimeout] LongRunning totalPollTimeout
+                     */
+    
+                    /**
+                     * Constructs a new LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @classdesc Represents a LongRunning.
+                     * @implements ILongRunning
+                     * @constructor
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     */
+                    function LongRunning(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * LongRunning initialPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} initialPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.initialPollDelay = null;
+    
+                    /**
+                     * LongRunning pollDelayMultiplier.
+                     * @member {number} pollDelayMultiplier
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.pollDelayMultiplier = 0;
+    
+                    /**
+                     * LongRunning maxPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} maxPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.maxPollDelay = null;
+    
+                    /**
+                     * LongRunning totalPollTimeout.
+                     * @member {google.protobuf.IDuration|null|undefined} totalPollTimeout
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.totalPollTimeout = null;
+    
+                    /**
+                     * Creates a new LongRunning instance using the specified properties.
+                     * @function create
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning instance
+                     */
+                    LongRunning.create = function create(properties) {
+                        return new LongRunning(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.initialPollDelay != null && Object.hasOwnProperty.call(message, "initialPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.initialPollDelay, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.pollDelayMultiplier != null && Object.hasOwnProperty.call(message, "pollDelayMultiplier"))
+                            writer.uint32(/* id 2, wireType 5 =*/21).float(message.pollDelayMultiplier);
+                        if (message.maxPollDelay != null && Object.hasOwnProperty.call(message, "maxPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.maxPollDelay, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.totalPollTimeout != null && Object.hasOwnProperty.call(message, "totalPollTimeout"))
+                            $root.google.protobuf.Duration.encode(message.totalPollTimeout, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings.LongRunning();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.initialPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.pollDelayMultiplier = reader.float();
+                                    break;
+                                }
+                            case 3: {
+                                    message.maxPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 4: {
+                                    message.totalPollTimeout = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a LongRunning message.
+                     * @function verify
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    LongRunning.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.initialPollDelay);
+                            if (error)
+                                return "initialPollDelay." + error;
+                        }
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            if (typeof message.pollDelayMultiplier !== "number")
+                                return "pollDelayMultiplier: number expected";
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.maxPollDelay);
+                            if (error)
+                                return "maxPollDelay." + error;
+                        }
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout")) {
+                            var error = $root.google.protobuf.Duration.verify(message.totalPollTimeout);
+                            if (error)
+                                return "totalPollTimeout." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     */
+                    LongRunning.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.api.MethodSettings.LongRunning)
+                            return object;
+                        var message = new $root.google.api.MethodSettings.LongRunning();
+                        if (object.initialPollDelay != null) {
+                            if (typeof object.initialPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.initialPollDelay: object expected");
+                            message.initialPollDelay = $root.google.protobuf.Duration.fromObject(object.initialPollDelay);
+                        }
+                        if (object.pollDelayMultiplier != null)
+                            message.pollDelayMultiplier = Number(object.pollDelayMultiplier);
+                        if (object.maxPollDelay != null) {
+                            if (typeof object.maxPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.maxPollDelay: object expected");
+                            message.maxPollDelay = $root.google.protobuf.Duration.fromObject(object.maxPollDelay);
+                        }
+                        if (object.totalPollTimeout != null) {
+                            if (typeof object.totalPollTimeout !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.totalPollTimeout: object expected");
+                            message.totalPollTimeout = $root.google.protobuf.Duration.fromObject(object.totalPollTimeout);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.LongRunning} message LongRunning
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    LongRunning.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.initialPollDelay = null;
+                            object.pollDelayMultiplier = 0;
+                            object.maxPollDelay = null;
+                            object.totalPollTimeout = null;
+                        }
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay"))
+                            object.initialPollDelay = $root.google.protobuf.Duration.toObject(message.initialPollDelay, options);
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            object.pollDelayMultiplier = options.json && !isFinite(message.pollDelayMultiplier) ? String(message.pollDelayMultiplier) : message.pollDelayMultiplier;
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay"))
+                            object.maxPollDelay = $root.google.protobuf.Duration.toObject(message.maxPollDelay, options);
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout"))
+                            object.totalPollTimeout = $root.google.protobuf.Duration.toObject(message.totalPollTimeout, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this LongRunning to JSON.
+                     * @function toJSON
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    LongRunning.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for LongRunning
+                     * @function getTypeUrl
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    LongRunning.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.api.MethodSettings.LongRunning";
+                    };
+    
+                    return LongRunning;
+                })();
+    
+                return MethodSettings;
+            })();
+    
+            /**
+             * ClientLibraryOrganization enum.
+             * @name google.api.ClientLibraryOrganization
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED=0 CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED value
+             * @property {number} CLOUD=1 CLOUD value
+             * @property {number} ADS=2 ADS value
+             * @property {number} PHOTOS=3 PHOTOS value
+             * @property {number} STREET_VIEW=4 STREET_VIEW value
+             * @property {number} SHOPPING=5 SHOPPING value
+             * @property {number} GEO=6 GEO value
+             * @property {number} GENERATIVE_AI=7 GENERATIVE_AI value
+             */
+            api.ClientLibraryOrganization = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED"] = 0;
+                values[valuesById[1] = "CLOUD"] = 1;
+                values[valuesById[2] = "ADS"] = 2;
+                values[valuesById[3] = "PHOTOS"] = 3;
+                values[valuesById[4] = "STREET_VIEW"] = 4;
+                values[valuesById[5] = "SHOPPING"] = 5;
+                values[valuesById[6] = "GEO"] = 6;
+                values[valuesById[7] = "GENERATIVE_AI"] = 7;
+                return values;
+            })();
+    
+            /**
+             * ClientLibraryDestination enum.
+             * @name google.api.ClientLibraryDestination
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_DESTINATION_UNSPECIFIED=0 CLIENT_LIBRARY_DESTINATION_UNSPECIFIED value
+             * @property {number} GITHUB=10 GITHUB value
+             * @property {number} PACKAGE_MANAGER=20 PACKAGE_MANAGER value
+             */
+            api.ClientLibraryDestination = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED"] = 0;
+                values[valuesById[10] = "GITHUB"] = 10;
+                values[valuesById[20] = "PACKAGE_MANAGER"] = 20;
+                return values;
+            })();
+    
+            /**
+             * LaunchStage enum.
+             * @name google.api.LaunchStage
+             * @enum {number}
+             * @property {number} LAUNCH_STAGE_UNSPECIFIED=0 LAUNCH_STAGE_UNSPECIFIED value
+             * @property {number} UNIMPLEMENTED=6 UNIMPLEMENTED value
+             * @property {number} PRELAUNCH=7 PRELAUNCH value
+             * @property {number} EARLY_ACCESS=1 EARLY_ACCESS value
+             * @property {number} ALPHA=2 ALPHA value
+             * @property {number} BETA=3 BETA value
+             * @property {number} GA=4 GA value
+             * @property {number} DEPRECATED=5 DEPRECATED value
+             */
+            api.LaunchStage = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "LAUNCH_STAGE_UNSPECIFIED"] = 0;
+                values[valuesById[6] = "UNIMPLEMENTED"] = 6;
+                values[valuesById[7] = "PRELAUNCH"] = 7;
+                values[valuesById[1] = "EARLY_ACCESS"] = 1;
+                values[valuesById[2] = "ALPHA"] = 2;
+                values[valuesById[3] = "BETA"] = 3;
+                values[valuesById[4] = "GA"] = 4;
+                values[valuesById[5] = "DEPRECATED"] = 5;
+                return values;
+            })();
+    
             return api;
         })();
     
@@ -18038,6 +26723,38 @@
                 return FileDescriptorSet;
             })();
     
+            /**
+             * Edition enum.
+             * @name google.protobuf.Edition
+             * @enum {number}
+             * @property {number} EDITION_UNKNOWN=0 EDITION_UNKNOWN value
+             * @property {number} EDITION_PROTO2=998 EDITION_PROTO2 value
+             * @property {number} EDITION_PROTO3=999 EDITION_PROTO3 value
+             * @property {number} EDITION_2023=1000 EDITION_2023 value
+             * @property {number} EDITION_2024=1001 EDITION_2024 value
+             * @property {number} EDITION_1_TEST_ONLY=1 EDITION_1_TEST_ONLY value
+             * @property {number} EDITION_2_TEST_ONLY=2 EDITION_2_TEST_ONLY value
+             * @property {number} EDITION_99997_TEST_ONLY=99997 EDITION_99997_TEST_ONLY value
+             * @property {number} EDITION_99998_TEST_ONLY=99998 EDITION_99998_TEST_ONLY value
+             * @property {number} EDITION_99999_TEST_ONLY=99999 EDITION_99999_TEST_ONLY value
+             * @property {number} EDITION_MAX=2147483647 EDITION_MAX value
+             */
+            protobuf.Edition = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "EDITION_UNKNOWN"] = 0;
+                values[valuesById[998] = "EDITION_PROTO2"] = 998;
+                values[valuesById[999] = "EDITION_PROTO3"] = 999;
+                values[valuesById[1000] = "EDITION_2023"] = 1000;
+                values[valuesById[1001] = "EDITION_2024"] = 1001;
+                values[valuesById[1] = "EDITION_1_TEST_ONLY"] = 1;
+                values[valuesById[2] = "EDITION_2_TEST_ONLY"] = 2;
+                values[valuesById[99997] = "EDITION_99997_TEST_ONLY"] = 99997;
+                values[valuesById[99998] = "EDITION_99998_TEST_ONLY"] = 99998;
+                values[valuesById[99999] = "EDITION_99999_TEST_ONLY"] = 99999;
+                values[valuesById[2147483647] = "EDITION_MAX"] = 2147483647;
+                return values;
+            })();
+    
             protobuf.FileDescriptorProto = (function() {
     
                 /**
@@ -18056,7 +26773,7 @@
                  * @property {google.protobuf.IFileOptions|null} [options] FileDescriptorProto options
                  * @property {google.protobuf.ISourceCodeInfo|null} [sourceCodeInfo] FileDescriptorProto sourceCodeInfo
                  * @property {string|null} [syntax] FileDescriptorProto syntax
-                 * @property {string|null} [edition] FileDescriptorProto edition
+                 * @property {google.protobuf.Edition|null} [edition] FileDescriptorProto edition
                  */
     
                 /**
@@ -18179,11 +26896,11 @@
     
                 /**
                  * FileDescriptorProto edition.
-                 * @member {string} edition
+                 * @member {google.protobuf.Edition} edition
                  * @memberof google.protobuf.FileDescriptorProto
                  * @instance
                  */
-                FileDescriptorProto.prototype.edition = "";
+                FileDescriptorProto.prototype.edition = 0;
     
                 /**
                  * Creates a new FileDescriptorProto instance using the specified properties.
@@ -18241,7 +26958,7 @@
                     if (message.syntax != null && Object.hasOwnProperty.call(message, "syntax"))
                         writer.uint32(/* id 12, wireType 2 =*/98).string(message.syntax);
                     if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
-                        writer.uint32(/* id 13, wireType 2 =*/106).string(message.edition);
+                        writer.uint32(/* id 14, wireType 0 =*/112).int32(message.edition);
                     return writer;
                 };
     
@@ -18348,8 +27065,8 @@
                                 message.syntax = reader.string();
                                 break;
                             }
-                        case 13: {
-                                message.edition = reader.string();
+                        case 14: {
+                                message.edition = reader.int32();
                                 break;
                             }
                         default:
@@ -18464,8 +27181,22 @@
                         if (!$util.isString(message.syntax))
                             return "syntax: string expected";
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        if (!$util.isString(message.edition))
-                            return "edition: string expected";
+                        switch (message.edition) {
+                        default:
+                            return "edition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
                     return null;
                 };
     
@@ -18558,8 +27289,58 @@
                     }
                     if (object.syntax != null)
                         message.syntax = String(object.syntax);
-                    if (object.edition != null)
-                        message.edition = String(object.edition);
+                    switch (object.edition) {
+                    default:
+                        if (typeof object.edition === "number") {
+                            message.edition = object.edition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.edition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.edition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.edition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.edition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.edition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.edition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.edition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.edition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.edition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.edition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.edition = 2147483647;
+                        break;
+                    }
                     return message;
                 };
     
@@ -18591,7 +27372,7 @@
                         object.options = null;
                         object.sourceCodeInfo = null;
                         object.syntax = "";
-                        object.edition = "";
+                        object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
                     }
                     if (message.name != null && message.hasOwnProperty("name"))
                         object.name = message.name;
@@ -18639,7 +27420,7 @@
                     if (message.syntax != null && message.hasOwnProperty("syntax"))
                         object.syntax = message.syntax;
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        object.edition = message.edition;
+                        object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
                     return object;
                 };
     
@@ -19742,6 +28523,9 @@
                  * @memberof google.protobuf
                  * @interface IExtensionRangeOptions
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ExtensionRangeOptions uninterpretedOption
+                 * @property {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>|null} [declaration] ExtensionRangeOptions declaration
+                 * @property {google.protobuf.IFeatureSet|null} [features] ExtensionRangeOptions features
+                 * @property {google.protobuf.ExtensionRangeOptions.VerificationState|null} [verification] ExtensionRangeOptions verification
                  */
     
                 /**
@@ -19754,6 +28538,7 @@
                  */
                 function ExtensionRangeOptions(properties) {
                     this.uninterpretedOption = [];
+                    this.declaration = [];
                     if (properties)
                         for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                             if (properties[keys[i]] != null)
@@ -19767,6 +28552,30 @@
                  * @instance
                  */
                 ExtensionRangeOptions.prototype.uninterpretedOption = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions declaration.
+                 * @member {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>} declaration
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.declaration = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.features = null;
+    
+                /**
+                 * ExtensionRangeOptions verification.
+                 * @member {google.protobuf.ExtensionRangeOptions.VerificationState} verification
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.verification = 1;
     
                 /**
                  * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -19792,6 +28601,13 @@
                 ExtensionRangeOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.declaration != null && message.declaration.length)
+                        for (var i = 0; i < message.declaration.length; ++i)
+                            $root.google.protobuf.ExtensionRangeOptions.Declaration.encode(message.declaration[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.verification != null && Object.hasOwnProperty.call(message, "verification"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.verification);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -19833,6 +28649,20 @@
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
                                 message.uninterpretedOption.push($root.google.protobuf.UninterpretedOption.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.declaration && message.declaration.length))
+                                    message.declaration = [];
+                                message.declaration.push($root.google.protobuf.ExtensionRangeOptions.Declaration.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.verification = reader.int32();
                                 break;
                             }
                         default:
@@ -19879,6 +28709,28 @@
                                 return "uninterpretedOption." + error;
                         }
                     }
+                    if (message.declaration != null && message.hasOwnProperty("declaration")) {
+                        if (!Array.isArray(message.declaration))
+                            return "declaration: array expected";
+                        for (var i = 0; i < message.declaration.length; ++i) {
+                            var error = $root.google.protobuf.ExtensionRangeOptions.Declaration.verify(message.declaration[i]);
+                            if (error)
+                                return "declaration." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        switch (message.verification) {
+                        default:
+                            return "verification: enum value expected";
+                        case 0:
+                        case 1:
+                            break;
+                        }
                     return null;
                 };
     
@@ -19904,6 +28756,37 @@
                             message.uninterpretedOption[i] = $root.google.protobuf.UninterpretedOption.fromObject(object.uninterpretedOption[i]);
                         }
                     }
+                    if (object.declaration) {
+                        if (!Array.isArray(object.declaration))
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: array expected");
+                        message.declaration = [];
+                        for (var i = 0; i < object.declaration.length; ++i) {
+                            if (typeof object.declaration[i] !== "object")
+                                throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: object expected");
+                            message.declaration[i] = $root.google.protobuf.ExtensionRangeOptions.Declaration.fromObject(object.declaration[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    switch (object.verification) {
+                    case "DECLARATION":
+                    case 0:
+                        message.verification = 0;
+                        break;
+                    default:
+                        if (typeof object.verification === "number") {
+                            message.verification = object.verification;
+                            break;
+                        }
+                        break;
+                    case "UNVERIFIED":
+                    case 1:
+                        message.verification = 1;
+                        break;
+                    }
                     return message;
                 };
     
@@ -19920,8 +28803,23 @@
                     if (!options)
                         options = {};
                     var object = {};
-                    if (options.arrays || options.defaults)
+                    if (options.arrays || options.defaults) {
+                        object.declaration = [];
                         object.uninterpretedOption = [];
+                    }
+                    if (options.defaults) {
+                        object.verification = options.enums === String ? "UNVERIFIED" : 1;
+                        object.features = null;
+                    }
+                    if (message.declaration && message.declaration.length) {
+                        object.declaration = [];
+                        for (var j = 0; j < message.declaration.length; ++j)
+                            object.declaration[j] = $root.google.protobuf.ExtensionRangeOptions.Declaration.toObject(message.declaration[j], options);
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        object.verification = options.enums === String ? $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] === undefined ? message.verification : $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] : message.verification;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -19955,6 +28853,316 @@
                     }
                     return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions";
                 };
+    
+                ExtensionRangeOptions.Declaration = (function() {
+    
+                    /**
+                     * Properties of a Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @interface IDeclaration
+                     * @property {number|null} [number] Declaration number
+                     * @property {string|null} [fullName] Declaration fullName
+                     * @property {string|null} [type] Declaration type
+                     * @property {boolean|null} [reserved] Declaration reserved
+                     * @property {boolean|null} [repeated] Declaration repeated
+                     */
+    
+                    /**
+                     * Constructs a new Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @classdesc Represents a Declaration.
+                     * @implements IDeclaration
+                     * @constructor
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     */
+                    function Declaration(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Declaration number.
+                     * @member {number} number
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.number = 0;
+    
+                    /**
+                     * Declaration fullName.
+                     * @member {string} fullName
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.fullName = "";
+    
+                    /**
+                     * Declaration type.
+                     * @member {string} type
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.type = "";
+    
+                    /**
+                     * Declaration reserved.
+                     * @member {boolean} reserved
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.reserved = false;
+    
+                    /**
+                     * Declaration repeated.
+                     * @member {boolean} repeated
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.repeated = false;
+    
+                    /**
+                     * Creates a new Declaration instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration instance
+                     */
+                    Declaration.create = function create(properties) {
+                        return new Declaration(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.number != null && Object.hasOwnProperty.call(message, "number"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.number);
+                        if (message.fullName != null && Object.hasOwnProperty.call(message, "fullName"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.fullName);
+                        if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
+                        if (message.reserved != null && Object.hasOwnProperty.call(message, "reserved"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).bool(message.reserved);
+                        if (message.repeated != null && Object.hasOwnProperty.call(message, "repeated"))
+                            writer.uint32(/* id 6, wireType 0 =*/48).bool(message.repeated);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.number = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.fullName = reader.string();
+                                    break;
+                                }
+                            case 3: {
+                                    message.type = reader.string();
+                                    break;
+                                }
+                            case 5: {
+                                    message.reserved = reader.bool();
+                                    break;
+                                }
+                            case 6: {
+                                    message.repeated = reader.bool();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a Declaration message.
+                     * @function verify
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    Declaration.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            if (!$util.isInteger(message.number))
+                                return "number: integer expected";
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            if (!$util.isString(message.fullName))
+                                return "fullName: string expected";
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            if (!$util.isString(message.type))
+                                return "type: string expected";
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            if (typeof message.reserved !== "boolean")
+                                return "reserved: boolean expected";
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            if (typeof message.repeated !== "boolean")
+                                return "repeated: boolean expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     */
+                    Declaration.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.ExtensionRangeOptions.Declaration)
+                            return object;
+                        var message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        if (object.number != null)
+                            message.number = object.number | 0;
+                        if (object.fullName != null)
+                            message.fullName = String(object.fullName);
+                        if (object.type != null)
+                            message.type = String(object.type);
+                        if (object.reserved != null)
+                            message.reserved = Boolean(object.reserved);
+                        if (object.repeated != null)
+                            message.repeated = Boolean(object.repeated);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.Declaration} message Declaration
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    Declaration.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.number = 0;
+                            object.fullName = "";
+                            object.type = "";
+                            object.reserved = false;
+                            object.repeated = false;
+                        }
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            object.number = message.number;
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            object.fullName = message.fullName;
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            object.type = message.type;
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            object.reserved = message.reserved;
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            object.repeated = message.repeated;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this Declaration to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    Declaration.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for Declaration
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    Declaration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions.Declaration";
+                    };
+    
+                    return Declaration;
+                })();
+    
+                /**
+                 * VerificationState enum.
+                 * @name google.protobuf.ExtensionRangeOptions.VerificationState
+                 * @enum {number}
+                 * @property {number} DECLARATION=0 DECLARATION value
+                 * @property {number} UNVERIFIED=1 UNVERIFIED value
+                 */
+                ExtensionRangeOptions.VerificationState = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "DECLARATION"] = 0;
+                    values[valuesById[1] = "UNVERIFIED"] = 1;
+                    return values;
+                })();
     
                 return ExtensionRangeOptions;
             })();
@@ -20251,8 +29459,8 @@
                         default:
                             return "label: enum value expected";
                         case 1:
-                        case 2:
                         case 3:
+                        case 2:
                             break;
                         }
                     if (message.type != null && message.hasOwnProperty("type"))
@@ -20332,13 +29540,13 @@
                     case 1:
                         message.label = 1;
                         break;
-                    case "LABEL_REQUIRED":
-                    case 2:
-                        message.label = 2;
-                        break;
                     case "LABEL_REPEATED":
                     case 3:
                         message.label = 3;
+                        break;
+                    case "LABEL_REQUIRED":
+                    case 2:
+                        message.label = 2;
                         break;
                     }
                     switch (object.type) {
@@ -20569,14 +29777,14 @@
                  * @name google.protobuf.FieldDescriptorProto.Label
                  * @enum {number}
                  * @property {number} LABEL_OPTIONAL=1 LABEL_OPTIONAL value
-                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  * @property {number} LABEL_REPEATED=3 LABEL_REPEATED value
+                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  */
                 FieldDescriptorProto.Label = (function() {
                     var valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[1] = "LABEL_OPTIONAL"] = 1;
-                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     values[valuesById[3] = "LABEL_REPEATED"] = 3;
+                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     return values;
                 })();
     
@@ -22275,7 +31483,6 @@
                  * @property {boolean|null} [ccGenericServices] FileOptions ccGenericServices
                  * @property {boolean|null} [javaGenericServices] FileOptions javaGenericServices
                  * @property {boolean|null} [pyGenericServices] FileOptions pyGenericServices
-                 * @property {boolean|null} [phpGenericServices] FileOptions phpGenericServices
                  * @property {boolean|null} [deprecated] FileOptions deprecated
                  * @property {boolean|null} [ccEnableArenas] FileOptions ccEnableArenas
                  * @property {string|null} [objcClassPrefix] FileOptions objcClassPrefix
@@ -22285,6 +31492,7 @@
                  * @property {string|null} [phpNamespace] FileOptions phpNamespace
                  * @property {string|null} [phpMetadataNamespace] FileOptions phpMetadataNamespace
                  * @property {string|null} [rubyPackage] FileOptions rubyPackage
+                 * @property {google.protobuf.IFeatureSet|null} [features] FileOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FileOptions uninterpretedOption
                  * @property {Array.<google.api.IResourceDescriptor>|null} [".google.api.resourceDefinition"] FileOptions .google.api.resourceDefinition
                  */
@@ -22387,14 +31595,6 @@
                 FileOptions.prototype.pyGenericServices = false;
     
                 /**
-                 * FileOptions phpGenericServices.
-                 * @member {boolean} phpGenericServices
-                 * @memberof google.protobuf.FileOptions
-                 * @instance
-                 */
-                FileOptions.prototype.phpGenericServices = false;
-    
-                /**
                  * FileOptions deprecated.
                  * @member {boolean} deprecated
                  * @memberof google.protobuf.FileOptions
@@ -22465,6 +31665,14 @@
                  * @instance
                  */
                 FileOptions.prototype.rubyPackage = "";
+    
+                /**
+                 * FileOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FileOptions
+                 * @instance
+                 */
+                FileOptions.prototype.features = null;
     
                 /**
                  * FileOptions uninterpretedOption.
@@ -22540,12 +31748,12 @@
                         writer.uint32(/* id 40, wireType 2 =*/322).string(message.phpClassPrefix);
                     if (message.phpNamespace != null && Object.hasOwnProperty.call(message, "phpNamespace"))
                         writer.uint32(/* id 41, wireType 2 =*/330).string(message.phpNamespace);
-                    if (message.phpGenericServices != null && Object.hasOwnProperty.call(message, "phpGenericServices"))
-                        writer.uint32(/* id 42, wireType 0 =*/336).bool(message.phpGenericServices);
                     if (message.phpMetadataNamespace != null && Object.hasOwnProperty.call(message, "phpMetadataNamespace"))
                         writer.uint32(/* id 44, wireType 2 =*/354).string(message.phpMetadataNamespace);
                     if (message.rubyPackage != null && Object.hasOwnProperty.call(message, "rubyPackage"))
                         writer.uint32(/* id 45, wireType 2 =*/362).string(message.rubyPackage);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -22626,10 +31834,6 @@
                                 message.pyGenericServices = reader.bool();
                                 break;
                             }
-                        case 42: {
-                                message.phpGenericServices = reader.bool();
-                                break;
-                            }
                         case 23: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -22664,6 +31868,10 @@
                             }
                         case 45: {
                                 message.rubyPackage = reader.string();
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -22749,9 +31957,6 @@
                     if (message.pyGenericServices != null && message.hasOwnProperty("pyGenericServices"))
                         if (typeof message.pyGenericServices !== "boolean")
                             return "pyGenericServices: boolean expected";
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        if (typeof message.phpGenericServices !== "boolean")
-                            return "phpGenericServices: boolean expected";
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -22779,6 +31984,11 @@
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         if (!$util.isString(message.rubyPackage))
                             return "rubyPackage: string expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -22850,8 +32060,6 @@
                         message.javaGenericServices = Boolean(object.javaGenericServices);
                     if (object.pyGenericServices != null)
                         message.pyGenericServices = Boolean(object.pyGenericServices);
-                    if (object.phpGenericServices != null)
-                        message.phpGenericServices = Boolean(object.phpGenericServices);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.ccEnableArenas != null)
@@ -22870,6 +32078,11 @@
                         message.phpMetadataNamespace = String(object.phpMetadataNamespace);
                     if (object.rubyPackage != null)
                         message.rubyPackage = String(object.rubyPackage);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FileOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FileOptions.uninterpretedOption: array expected");
@@ -22928,9 +32141,9 @@
                         object.swiftPrefix = "";
                         object.phpClassPrefix = "";
                         object.phpNamespace = "";
-                        object.phpGenericServices = false;
                         object.phpMetadataNamespace = "";
                         object.rubyPackage = "";
+                        object.features = null;
                     }
                     if (message.javaPackage != null && message.hasOwnProperty("javaPackage"))
                         object.javaPackage = message.javaPackage;
@@ -22966,12 +32179,12 @@
                         object.phpClassPrefix = message.phpClassPrefix;
                     if (message.phpNamespace != null && message.hasOwnProperty("phpNamespace"))
                         object.phpNamespace = message.phpNamespace;
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        object.phpGenericServices = message.phpGenericServices;
                     if (message.phpMetadataNamespace != null && message.hasOwnProperty("phpMetadataNamespace"))
                         object.phpMetadataNamespace = message.phpMetadataNamespace;
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         object.rubyPackage = message.rubyPackage;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23040,6 +32253,8 @@
                  * @property {boolean|null} [noStandardDescriptorAccessor] MessageOptions noStandardDescriptorAccessor
                  * @property {boolean|null} [deprecated] MessageOptions deprecated
                  * @property {boolean|null} [mapEntry] MessageOptions mapEntry
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] MessageOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] MessageOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MessageOptions uninterpretedOption
                  * @property {google.api.IResourceDescriptor|null} [".google.api.resource"] MessageOptions .google.api.resource
                  */
@@ -23093,6 +32308,22 @@
                 MessageOptions.prototype.mapEntry = false;
     
                 /**
+                 * MessageOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * MessageOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.features = null;
+    
+                /**
                  * MessageOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.MessageOptions
@@ -23140,6 +32371,10 @@
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
                     if (message.mapEntry != null && Object.hasOwnProperty.call(message, "mapEntry"))
                         writer.uint32(/* id 7, wireType 0 =*/56).bool(message.mapEntry);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 11, wireType 0 =*/88).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -23193,6 +32428,14 @@
                             }
                         case 7: {
                                 message.mapEntry = reader.bool();
+                                break;
+                            }
+                        case 11: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 12: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -23252,6 +32495,14 @@
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         if (typeof message.mapEntry !== "boolean")
                             return "mapEntry: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -23289,6 +32540,13 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.mapEntry != null)
                         message.mapEntry = Boolean(object.mapEntry);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MessageOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MessageOptions.uninterpretedOption: array expected");
@@ -23327,6 +32585,8 @@
                         object.noStandardDescriptorAccessor = false;
                         object.deprecated = false;
                         object.mapEntry = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                         object[".google.api.resource"] = null;
                     }
                     if (message.messageSetWireFormat != null && message.hasOwnProperty("messageSetWireFormat"))
@@ -23337,6 +32597,10 @@
                         object.deprecated = message.deprecated;
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         object.mapEntry = message.mapEntry;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23389,6 +32653,11 @@
                  * @property {boolean|null} [unverifiedLazy] FieldOptions unverifiedLazy
                  * @property {boolean|null} [deprecated] FieldOptions deprecated
                  * @property {boolean|null} [weak] FieldOptions weak
+                 * @property {boolean|null} [debugRedact] FieldOptions debugRedact
+                 * @property {google.protobuf.FieldOptions.OptionRetention|null} [retention] FieldOptions retention
+                 * @property {Array.<google.protobuf.FieldOptions.OptionTargetType>|null} [targets] FieldOptions targets
+                 * @property {Array.<google.protobuf.FieldOptions.IEditionDefault>|null} [editionDefaults] FieldOptions editionDefaults
+                 * @property {google.protobuf.IFeatureSet|null} [features] FieldOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FieldOptions uninterpretedOption
                  * @property {Array.<google.api.FieldBehavior>|null} [".google.api.fieldBehavior"] FieldOptions .google.api.fieldBehavior
                  * @property {google.api.IResourceReference|null} [".google.api.resourceReference"] FieldOptions .google.api.resourceReference
@@ -23403,6 +32672,8 @@
                  * @param {google.protobuf.IFieldOptions=} [properties] Properties to set
                  */
                 function FieldOptions(properties) {
+                    this.targets = [];
+                    this.editionDefaults = [];
                     this.uninterpretedOption = [];
                     this[".google.api.fieldBehavior"] = [];
                     if (properties)
@@ -23468,6 +32739,46 @@
                 FieldOptions.prototype.weak = false;
     
                 /**
+                 * FieldOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.debugRedact = false;
+    
+                /**
+                 * FieldOptions retention.
+                 * @member {google.protobuf.FieldOptions.OptionRetention} retention
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.retention = 0;
+    
+                /**
+                 * FieldOptions targets.
+                 * @member {Array.<google.protobuf.FieldOptions.OptionTargetType>} targets
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.targets = $util.emptyArray;
+    
+                /**
+                 * FieldOptions editionDefaults.
+                 * @member {Array.<google.protobuf.FieldOptions.IEditionDefault>} editionDefaults
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.editionDefaults = $util.emptyArray;
+    
+                /**
+                 * FieldOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.features = null;
+    
+                /**
                  * FieldOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.FieldOptions
@@ -23529,6 +32840,18 @@
                         writer.uint32(/* id 10, wireType 0 =*/80).bool(message.weak);
                     if (message.unverifiedLazy != null && Object.hasOwnProperty.call(message, "unverifiedLazy"))
                         writer.uint32(/* id 15, wireType 0 =*/120).bool(message.unverifiedLazy);
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 16, wireType 0 =*/128).bool(message.debugRedact);
+                    if (message.retention != null && Object.hasOwnProperty.call(message, "retention"))
+                        writer.uint32(/* id 17, wireType 0 =*/136).int32(message.retention);
+                    if (message.targets != null && message.targets.length)
+                        for (var i = 0; i < message.targets.length; ++i)
+                            writer.uint32(/* id 19, wireType 0 =*/152).int32(message.targets[i]);
+                    if (message.editionDefaults != null && message.editionDefaults.length)
+                        for (var i = 0; i < message.editionDefaults.length; ++i)
+                            $root.google.protobuf.FieldOptions.EditionDefault.encode(message.editionDefaults[i], writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -23600,6 +32923,35 @@
                             }
                         case 10: {
                                 message.weak = reader.bool();
+                                break;
+                            }
+                        case 16: {
+                                message.debugRedact = reader.bool();
+                                break;
+                            }
+                        case 17: {
+                                message.retention = reader.int32();
+                                break;
+                            }
+                        case 19: {
+                                if (!(message.targets && message.targets.length))
+                                    message.targets = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.targets.push(reader.int32());
+                                } else
+                                    message.targets.push(reader.int32());
+                                break;
+                            }
+                        case 20: {
+                                if (!(message.editionDefaults && message.editionDefaults.length))
+                                    message.editionDefaults = [];
+                                message.editionDefaults.push($root.google.protobuf.FieldOptions.EditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 21: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -23691,6 +33043,52 @@
                     if (message.weak != null && message.hasOwnProperty("weak"))
                         if (typeof message.weak !== "boolean")
                             return "weak: boolean expected";
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        switch (message.retention) {
+                        default:
+                            return "retention: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.targets != null && message.hasOwnProperty("targets")) {
+                        if (!Array.isArray(message.targets))
+                            return "targets: array expected";
+                        for (var i = 0; i < message.targets.length; ++i)
+                            switch (message.targets[i]) {
+                            default:
+                                return "targets: enum value[] expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6:
+                            case 7:
+                            case 8:
+                            case 9:
+                                break;
+                            }
+                    }
+                    if (message.editionDefaults != null && message.hasOwnProperty("editionDefaults")) {
+                        if (!Array.isArray(message.editionDefaults))
+                            return "editionDefaults: array expected";
+                        for (var i = 0; i < message.editionDefaults.length; ++i) {
+                            var error = $root.google.protobuf.FieldOptions.EditionDefault.verify(message.editionDefaults[i]);
+                            if (error)
+                                return "editionDefaults." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -23715,6 +33113,7 @@
                             case 5:
                             case 6:
                             case 7:
+                            case 8:
                                 break;
                             }
                     }
@@ -23788,6 +33187,96 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.weak != null)
                         message.weak = Boolean(object.weak);
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
+                    switch (object.retention) {
+                    default:
+                        if (typeof object.retention === "number") {
+                            message.retention = object.retention;
+                            break;
+                        }
+                        break;
+                    case "RETENTION_UNKNOWN":
+                    case 0:
+                        message.retention = 0;
+                        break;
+                    case "RETENTION_RUNTIME":
+                    case 1:
+                        message.retention = 1;
+                        break;
+                    case "RETENTION_SOURCE":
+                    case 2:
+                        message.retention = 2;
+                        break;
+                    }
+                    if (object.targets) {
+                        if (!Array.isArray(object.targets))
+                            throw TypeError(".google.protobuf.FieldOptions.targets: array expected");
+                        message.targets = [];
+                        for (var i = 0; i < object.targets.length; ++i)
+                            switch (object.targets[i]) {
+                            default:
+                                if (typeof object.targets[i] === "number") {
+                                    message.targets[i] = object.targets[i];
+                                    break;
+                                }
+                            case "TARGET_TYPE_UNKNOWN":
+                            case 0:
+                                message.targets[i] = 0;
+                                break;
+                            case "TARGET_TYPE_FILE":
+                            case 1:
+                                message.targets[i] = 1;
+                                break;
+                            case "TARGET_TYPE_EXTENSION_RANGE":
+                            case 2:
+                                message.targets[i] = 2;
+                                break;
+                            case "TARGET_TYPE_MESSAGE":
+                            case 3:
+                                message.targets[i] = 3;
+                                break;
+                            case "TARGET_TYPE_FIELD":
+                            case 4:
+                                message.targets[i] = 4;
+                                break;
+                            case "TARGET_TYPE_ONEOF":
+                            case 5:
+                                message.targets[i] = 5;
+                                break;
+                            case "TARGET_TYPE_ENUM":
+                            case 6:
+                                message.targets[i] = 6;
+                                break;
+                            case "TARGET_TYPE_ENUM_ENTRY":
+                            case 7:
+                                message.targets[i] = 7;
+                                break;
+                            case "TARGET_TYPE_SERVICE":
+                            case 8:
+                                message.targets[i] = 8;
+                                break;
+                            case "TARGET_TYPE_METHOD":
+                            case 9:
+                                message.targets[i] = 9;
+                                break;
+                            }
+                    }
+                    if (object.editionDefaults) {
+                        if (!Array.isArray(object.editionDefaults))
+                            throw TypeError(".google.protobuf.FieldOptions.editionDefaults: array expected");
+                        message.editionDefaults = [];
+                        for (var i = 0; i < object.editionDefaults.length; ++i) {
+                            if (typeof object.editionDefaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FieldOptions.editionDefaults: object expected");
+                            message.editionDefaults[i] = $root.google.protobuf.FieldOptions.EditionDefault.fromObject(object.editionDefaults[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FieldOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FieldOptions.uninterpretedOption: array expected");
@@ -23841,6 +33330,10 @@
                             case 7:
                                 message[".google.api.fieldBehavior"][i] = 7;
                                 break;
+                            case "IDENTIFIER":
+                            case 8:
+                                message[".google.api.fieldBehavior"][i] = 8;
+                                break;
                             }
                     }
                     if (object[".google.api.resourceReference"] != null) {
@@ -23865,6 +33358,8 @@
                         options = {};
                     var object = {};
                     if (options.arrays || options.defaults) {
+                        object.targets = [];
+                        object.editionDefaults = [];
                         object.uninterpretedOption = [];
                         object[".google.api.fieldBehavior"] = [];
                     }
@@ -23876,6 +33371,9 @@
                         object.jstype = options.enums === String ? "JS_NORMAL" : 0;
                         object.weak = false;
                         object.unverifiedLazy = false;
+                        object.debugRedact = false;
+                        object.retention = options.enums === String ? "RETENTION_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.api.resourceReference"] = null;
                     }
                     if (message.ctype != null && message.hasOwnProperty("ctype"))
@@ -23892,6 +33390,22 @@
                         object.weak = message.weak;
                     if (message.unverifiedLazy != null && message.hasOwnProperty("unverifiedLazy"))
                         object.unverifiedLazy = message.unverifiedLazy;
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        object.retention = options.enums === String ? $root.google.protobuf.FieldOptions.OptionRetention[message.retention] === undefined ? message.retention : $root.google.protobuf.FieldOptions.OptionRetention[message.retention] : message.retention;
+                    if (message.targets && message.targets.length) {
+                        object.targets = [];
+                        for (var j = 0; j < message.targets.length; ++j)
+                            object.targets[j] = options.enums === String ? $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] === undefined ? message.targets[j] : $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] : message.targets[j];
+                    }
+                    if (message.editionDefaults && message.editionDefaults.length) {
+                        object.editionDefaults = [];
+                        for (var j = 0; j < message.editionDefaults.length; ++j)
+                            object.editionDefaults[j] = $root.google.protobuf.FieldOptions.EditionDefault.toObject(message.editionDefaults[j], options);
+                    }
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -23965,6 +33479,343 @@
                     return values;
                 })();
     
+                /**
+                 * OptionRetention enum.
+                 * @name google.protobuf.FieldOptions.OptionRetention
+                 * @enum {number}
+                 * @property {number} RETENTION_UNKNOWN=0 RETENTION_UNKNOWN value
+                 * @property {number} RETENTION_RUNTIME=1 RETENTION_RUNTIME value
+                 * @property {number} RETENTION_SOURCE=2 RETENTION_SOURCE value
+                 */
+                FieldOptions.OptionRetention = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "RETENTION_UNKNOWN"] = 0;
+                    values[valuesById[1] = "RETENTION_RUNTIME"] = 1;
+                    values[valuesById[2] = "RETENTION_SOURCE"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * OptionTargetType enum.
+                 * @name google.protobuf.FieldOptions.OptionTargetType
+                 * @enum {number}
+                 * @property {number} TARGET_TYPE_UNKNOWN=0 TARGET_TYPE_UNKNOWN value
+                 * @property {number} TARGET_TYPE_FILE=1 TARGET_TYPE_FILE value
+                 * @property {number} TARGET_TYPE_EXTENSION_RANGE=2 TARGET_TYPE_EXTENSION_RANGE value
+                 * @property {number} TARGET_TYPE_MESSAGE=3 TARGET_TYPE_MESSAGE value
+                 * @property {number} TARGET_TYPE_FIELD=4 TARGET_TYPE_FIELD value
+                 * @property {number} TARGET_TYPE_ONEOF=5 TARGET_TYPE_ONEOF value
+                 * @property {number} TARGET_TYPE_ENUM=6 TARGET_TYPE_ENUM value
+                 * @property {number} TARGET_TYPE_ENUM_ENTRY=7 TARGET_TYPE_ENUM_ENTRY value
+                 * @property {number} TARGET_TYPE_SERVICE=8 TARGET_TYPE_SERVICE value
+                 * @property {number} TARGET_TYPE_METHOD=9 TARGET_TYPE_METHOD value
+                 */
+                FieldOptions.OptionTargetType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "TARGET_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "TARGET_TYPE_FILE"] = 1;
+                    values[valuesById[2] = "TARGET_TYPE_EXTENSION_RANGE"] = 2;
+                    values[valuesById[3] = "TARGET_TYPE_MESSAGE"] = 3;
+                    values[valuesById[4] = "TARGET_TYPE_FIELD"] = 4;
+                    values[valuesById[5] = "TARGET_TYPE_ONEOF"] = 5;
+                    values[valuesById[6] = "TARGET_TYPE_ENUM"] = 6;
+                    values[valuesById[7] = "TARGET_TYPE_ENUM_ENTRY"] = 7;
+                    values[valuesById[8] = "TARGET_TYPE_SERVICE"] = 8;
+                    values[valuesById[9] = "TARGET_TYPE_METHOD"] = 9;
+                    return values;
+                })();
+    
+                FieldOptions.EditionDefault = (function() {
+    
+                    /**
+                     * Properties of an EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @interface IEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] EditionDefault edition
+                     * @property {string|null} [value] EditionDefault value
+                     */
+    
+                    /**
+                     * Constructs a new EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @classdesc Represents an EditionDefault.
+                     * @implements IEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     */
+                    function EditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * EditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * EditionDefault value.
+                     * @member {string} value
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.value = "";
+    
+                    /**
+                     * Creates a new EditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault instance
+                     */
+                    EditionDefault.create = function create(properties) {
+                        return new EditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.value);
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.value = reader.string();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an EditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    EditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            if (!$util.isString(message.value))
+                                return "value: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     */
+                    EditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FieldOptions.EditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.value != null)
+                            message.value = String(object.value);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.EditionDefault} message EditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    EditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.value = "";
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            object.value = message.value;
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this EditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    EditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for EditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    EditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FieldOptions.EditionDefault";
+                    };
+    
+                    return EditionDefault;
+                })();
+    
                 return FieldOptions;
             })();
     
@@ -23974,6 +33825,7 @@
                  * Properties of an OneofOptions.
                  * @memberof google.protobuf
                  * @interface IOneofOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] OneofOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] OneofOptions uninterpretedOption
                  */
     
@@ -23992,6 +33844,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * OneofOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.OneofOptions
+                 * @instance
+                 */
+                OneofOptions.prototype.features = null;
     
                 /**
                  * OneofOptions uninterpretedOption.
@@ -24025,6 +33885,8 @@
                 OneofOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -24062,6 +33924,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 1: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 999: {
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
@@ -24103,6 +33969,11 @@
                 OneofOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -24127,6 +33998,11 @@
                     if (object instanceof $root.google.protobuf.OneofOptions)
                         return object;
                     var message = new $root.google.protobuf.OneofOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.OneofOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.OneofOptions.uninterpretedOption: array expected");
@@ -24155,6 +34031,10 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
+                    if (options.defaults)
+                        object.features = null;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -24200,6 +34080,8 @@
                  * @interface IEnumOptions
                  * @property {boolean|null} [allowAlias] EnumOptions allowAlias
                  * @property {boolean|null} [deprecated] EnumOptions deprecated
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] EnumOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumOptions uninterpretedOption
                  */
     
@@ -24234,6 +34116,22 @@
                  * @instance
                  */
                 EnumOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * EnumOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.features = null;
     
                 /**
                  * EnumOptions uninterpretedOption.
@@ -24271,6 +34169,10 @@
                         writer.uint32(/* id 2, wireType 0 =*/16).bool(message.allowAlias);
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -24314,6 +34216,14 @@
                             }
                         case 3: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 6: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 7: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -24363,6 +34273,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -24391,6 +34309,13 @@
                         message.allowAlias = Boolean(object.allowAlias);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumOptions.uninterpretedOption: array expected");
@@ -24422,11 +34347,17 @@
                     if (options.defaults) {
                         object.allowAlias = false;
                         object.deprecated = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                     }
                     if (message.allowAlias != null && message.hasOwnProperty("allowAlias"))
                         object.allowAlias = message.allowAlias;
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -24471,6 +34402,8 @@
                  * @memberof google.protobuf
                  * @interface IEnumValueOptions
                  * @property {boolean|null} [deprecated] EnumValueOptions deprecated
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumValueOptions features
+                 * @property {boolean|null} [debugRedact] EnumValueOptions debugRedact
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumValueOptions uninterpretedOption
                  */
     
@@ -24497,6 +34430,22 @@
                  * @instance
                  */
                 EnumValueOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumValueOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.features = null;
+    
+                /**
+                 * EnumValueOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.debugRedact = false;
     
                 /**
                  * EnumValueOptions uninterpretedOption.
@@ -24532,6 +34481,10 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 1, wireType 0 =*/8).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.debugRedact);
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -24571,6 +34524,14 @@
                         switch (tag >>> 3) {
                         case 1: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 2: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.debugRedact = reader.bool();
                                 break;
                             }
                         case 999: {
@@ -24617,6 +34578,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -24643,6 +34612,13 @@
                     var message = new $root.google.protobuf.EnumValueOptions();
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumValueOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumValueOptions.uninterpretedOption: array expected");
@@ -24671,10 +34647,17 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
-                    if (options.defaults)
+                    if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
+                        object.debugRedact = false;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -24718,6 +34701,7 @@
                  * Properties of a ServiceOptions.
                  * @memberof google.protobuf
                  * @interface IServiceOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] ServiceOptions features
                  * @property {boolean|null} [deprecated] ServiceOptions deprecated
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ServiceOptions uninterpretedOption
                  * @property {string|null} [".google.api.defaultHost"] ServiceOptions .google.api.defaultHost
@@ -24739,6 +34723,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * ServiceOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ServiceOptions
+                 * @instance
+                 */
+                ServiceOptions.prototype.features = null;
     
                 /**
                  * ServiceOptions deprecated.
@@ -24798,6 +34790,8 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 34, wireType 2 =*/274).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -24839,6 +34833,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 34: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 33: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -24892,6 +34890,11 @@
                 ServiceOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -24925,6 +34928,11 @@
                     if (object instanceof $root.google.protobuf.ServiceOptions)
                         return object;
                     var message = new $root.google.protobuf.ServiceOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ServiceOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.uninterpretedOption) {
@@ -24961,11 +34969,14 @@
                         object.uninterpretedOption = [];
                     if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
                         object[".google.api.defaultHost"] = "";
                         object[".google.api.oauthScopes"] = "";
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -25015,6 +35026,7 @@
                  * @interface IMethodOptions
                  * @property {boolean|null} [deprecated] MethodOptions deprecated
                  * @property {google.protobuf.MethodOptions.IdempotencyLevel|null} [idempotencyLevel] MethodOptions idempotencyLevel
+                 * @property {google.protobuf.IFeatureSet|null} [features] MethodOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MethodOptions uninterpretedOption
                  * @property {google.api.IHttpRule|null} [".google.api.http"] MethodOptions .google.api.http
                  * @property {Array.<string>|null} [".google.api.methodSignature"] MethodOptions .google.api.methodSignature
@@ -25053,6 +35065,14 @@
                  * @instance
                  */
                 MethodOptions.prototype.idempotencyLevel = 0;
+    
+                /**
+                 * MethodOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MethodOptions
+                 * @instance
+                 */
+                MethodOptions.prototype.features = null;
     
                 /**
                  * MethodOptions uninterpretedOption.
@@ -25114,6 +35134,8 @@
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
                     if (message.idempotencyLevel != null && Object.hasOwnProperty.call(message, "idempotencyLevel"))
                         writer.uint32(/* id 34, wireType 0 =*/272).int32(message.idempotencyLevel);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 35, wireType 2 =*/282).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -25164,6 +35186,10 @@
                             }
                         case 34: {
                                 message.idempotencyLevel = reader.int32();
+                                break;
+                            }
+                        case 35: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -25233,6 +35259,11 @@
                         case 2:
                             break;
                         }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -25296,6 +35327,11 @@
                         message.idempotencyLevel = 2;
                         break;
                     }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MethodOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MethodOptions.uninterpretedOption: array expected");
@@ -25346,6 +35382,7 @@
                     if (options.defaults) {
                         object.deprecated = false;
                         object.idempotencyLevel = options.enums === String ? "IDEMPOTENCY_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.longrunning.operationInfo"] = null;
                         object[".google.api.http"] = null;
                     }
@@ -25353,6 +35390,8 @@
                         object.deprecated = message.deprecated;
                     if (message.idempotencyLevel != null && message.hasOwnProperty("idempotencyLevel"))
                         object.idempotencyLevel = options.enums === String ? $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] === undefined ? message.idempotencyLevel : $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] : message.idempotencyLevel;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -26041,6 +36080,1268 @@
                 })();
     
                 return UninterpretedOption;
+            })();
+    
+            protobuf.FeatureSet = (function() {
+    
+                /**
+                 * Properties of a FeatureSet.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSet
+                 * @property {google.protobuf.FeatureSet.FieldPresence|null} [fieldPresence] FeatureSet fieldPresence
+                 * @property {google.protobuf.FeatureSet.EnumType|null} [enumType] FeatureSet enumType
+                 * @property {google.protobuf.FeatureSet.RepeatedFieldEncoding|null} [repeatedFieldEncoding] FeatureSet repeatedFieldEncoding
+                 * @property {google.protobuf.FeatureSet.Utf8Validation|null} [utf8Validation] FeatureSet utf8Validation
+                 * @property {google.protobuf.FeatureSet.MessageEncoding|null} [messageEncoding] FeatureSet messageEncoding
+                 * @property {google.protobuf.FeatureSet.JsonFormat|null} [jsonFormat] FeatureSet jsonFormat
+                 */
+    
+                /**
+                 * Constructs a new FeatureSet.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSet.
+                 * @implements IFeatureSet
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 */
+                function FeatureSet(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSet fieldPresence.
+                 * @member {google.protobuf.FeatureSet.FieldPresence} fieldPresence
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.fieldPresence = 0;
+    
+                /**
+                 * FeatureSet enumType.
+                 * @member {google.protobuf.FeatureSet.EnumType} enumType
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.enumType = 0;
+    
+                /**
+                 * FeatureSet repeatedFieldEncoding.
+                 * @member {google.protobuf.FeatureSet.RepeatedFieldEncoding} repeatedFieldEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.repeatedFieldEncoding = 0;
+    
+                /**
+                 * FeatureSet utf8Validation.
+                 * @member {google.protobuf.FeatureSet.Utf8Validation} utf8Validation
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.utf8Validation = 0;
+    
+                /**
+                 * FeatureSet messageEncoding.
+                 * @member {google.protobuf.FeatureSet.MessageEncoding} messageEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.messageEncoding = 0;
+    
+                /**
+                 * FeatureSet jsonFormat.
+                 * @member {google.protobuf.FeatureSet.JsonFormat} jsonFormat
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.jsonFormat = 0;
+    
+                /**
+                 * Creates a new FeatureSet instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSet} FeatureSet instance
+                 */
+                FeatureSet.create = function create(properties) {
+                    return new FeatureSet(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.fieldPresence != null && Object.hasOwnProperty.call(message, "fieldPresence"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.fieldPresence);
+                    if (message.enumType != null && Object.hasOwnProperty.call(message, "enumType"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.enumType);
+                    if (message.repeatedFieldEncoding != null && Object.hasOwnProperty.call(message, "repeatedFieldEncoding"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.repeatedFieldEncoding);
+                    if (message.utf8Validation != null && Object.hasOwnProperty.call(message, "utf8Validation"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.utf8Validation);
+                    if (message.messageEncoding != null && Object.hasOwnProperty.call(message, "messageEncoding"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.messageEncoding);
+                    if (message.jsonFormat != null && Object.hasOwnProperty.call(message, "jsonFormat"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).int32(message.jsonFormat);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSet();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.fieldPresence = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.enumType = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.repeatedFieldEncoding = reader.int32();
+                                break;
+                            }
+                        case 4: {
+                                message.utf8Validation = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.messageEncoding = reader.int32();
+                                break;
+                            }
+                        case 6: {
+                                message.jsonFormat = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSet message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSet.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        switch (message.fieldPresence) {
+                        default:
+                            return "fieldPresence: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        switch (message.enumType) {
+                        default:
+                            return "enumType: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        switch (message.repeatedFieldEncoding) {
+                        default:
+                            return "repeatedFieldEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        switch (message.utf8Validation) {
+                        default:
+                            return "utf8Validation: enum value expected";
+                        case 0:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        switch (message.messageEncoding) {
+                        default:
+                            return "messageEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        switch (message.jsonFormat) {
+                        default:
+                            return "jsonFormat: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 */
+                FeatureSet.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSet)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSet();
+                    switch (object.fieldPresence) {
+                    default:
+                        if (typeof object.fieldPresence === "number") {
+                            message.fieldPresence = object.fieldPresence;
+                            break;
+                        }
+                        break;
+                    case "FIELD_PRESENCE_UNKNOWN":
+                    case 0:
+                        message.fieldPresence = 0;
+                        break;
+                    case "EXPLICIT":
+                    case 1:
+                        message.fieldPresence = 1;
+                        break;
+                    case "IMPLICIT":
+                    case 2:
+                        message.fieldPresence = 2;
+                        break;
+                    case "LEGACY_REQUIRED":
+                    case 3:
+                        message.fieldPresence = 3;
+                        break;
+                    }
+                    switch (object.enumType) {
+                    default:
+                        if (typeof object.enumType === "number") {
+                            message.enumType = object.enumType;
+                            break;
+                        }
+                        break;
+                    case "ENUM_TYPE_UNKNOWN":
+                    case 0:
+                        message.enumType = 0;
+                        break;
+                    case "OPEN":
+                    case 1:
+                        message.enumType = 1;
+                        break;
+                    case "CLOSED":
+                    case 2:
+                        message.enumType = 2;
+                        break;
+                    }
+                    switch (object.repeatedFieldEncoding) {
+                    default:
+                        if (typeof object.repeatedFieldEncoding === "number") {
+                            message.repeatedFieldEncoding = object.repeatedFieldEncoding;
+                            break;
+                        }
+                        break;
+                    case "REPEATED_FIELD_ENCODING_UNKNOWN":
+                    case 0:
+                        message.repeatedFieldEncoding = 0;
+                        break;
+                    case "PACKED":
+                    case 1:
+                        message.repeatedFieldEncoding = 1;
+                        break;
+                    case "EXPANDED":
+                    case 2:
+                        message.repeatedFieldEncoding = 2;
+                        break;
+                    }
+                    switch (object.utf8Validation) {
+                    default:
+                        if (typeof object.utf8Validation === "number") {
+                            message.utf8Validation = object.utf8Validation;
+                            break;
+                        }
+                        break;
+                    case "UTF8_VALIDATION_UNKNOWN":
+                    case 0:
+                        message.utf8Validation = 0;
+                        break;
+                    case "VERIFY":
+                    case 2:
+                        message.utf8Validation = 2;
+                        break;
+                    case "NONE":
+                    case 3:
+                        message.utf8Validation = 3;
+                        break;
+                    }
+                    switch (object.messageEncoding) {
+                    default:
+                        if (typeof object.messageEncoding === "number") {
+                            message.messageEncoding = object.messageEncoding;
+                            break;
+                        }
+                        break;
+                    case "MESSAGE_ENCODING_UNKNOWN":
+                    case 0:
+                        message.messageEncoding = 0;
+                        break;
+                    case "LENGTH_PREFIXED":
+                    case 1:
+                        message.messageEncoding = 1;
+                        break;
+                    case "DELIMITED":
+                    case 2:
+                        message.messageEncoding = 2;
+                        break;
+                    }
+                    switch (object.jsonFormat) {
+                    default:
+                        if (typeof object.jsonFormat === "number") {
+                            message.jsonFormat = object.jsonFormat;
+                            break;
+                        }
+                        break;
+                    case "JSON_FORMAT_UNKNOWN":
+                    case 0:
+                        message.jsonFormat = 0;
+                        break;
+                    case "ALLOW":
+                    case 1:
+                        message.jsonFormat = 1;
+                        break;
+                    case "LEGACY_BEST_EFFORT":
+                    case 2:
+                        message.jsonFormat = 2;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.FeatureSet} message FeatureSet
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSet.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.fieldPresence = options.enums === String ? "FIELD_PRESENCE_UNKNOWN" : 0;
+                        object.enumType = options.enums === String ? "ENUM_TYPE_UNKNOWN" : 0;
+                        object.repeatedFieldEncoding = options.enums === String ? "REPEATED_FIELD_ENCODING_UNKNOWN" : 0;
+                        object.utf8Validation = options.enums === String ? "UTF8_VALIDATION_UNKNOWN" : 0;
+                        object.messageEncoding = options.enums === String ? "MESSAGE_ENCODING_UNKNOWN" : 0;
+                        object.jsonFormat = options.enums === String ? "JSON_FORMAT_UNKNOWN" : 0;
+                    }
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        object.fieldPresence = options.enums === String ? $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] === undefined ? message.fieldPresence : $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] : message.fieldPresence;
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        object.enumType = options.enums === String ? $root.google.protobuf.FeatureSet.EnumType[message.enumType] === undefined ? message.enumType : $root.google.protobuf.FeatureSet.EnumType[message.enumType] : message.enumType;
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        object.repeatedFieldEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] === undefined ? message.repeatedFieldEncoding : $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] : message.repeatedFieldEncoding;
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        object.utf8Validation = options.enums === String ? $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] === undefined ? message.utf8Validation : $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] : message.utf8Validation;
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        object.messageEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] === undefined ? message.messageEncoding : $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] : message.messageEncoding;
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        object.jsonFormat = options.enums === String ? $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] === undefined ? message.jsonFormat : $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] : message.jsonFormat;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSet to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSet.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSet
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSet.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSet";
+                };
+    
+                /**
+                 * FieldPresence enum.
+                 * @name google.protobuf.FeatureSet.FieldPresence
+                 * @enum {number}
+                 * @property {number} FIELD_PRESENCE_UNKNOWN=0 FIELD_PRESENCE_UNKNOWN value
+                 * @property {number} EXPLICIT=1 EXPLICIT value
+                 * @property {number} IMPLICIT=2 IMPLICIT value
+                 * @property {number} LEGACY_REQUIRED=3 LEGACY_REQUIRED value
+                 */
+                FeatureSet.FieldPresence = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "FIELD_PRESENCE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "EXPLICIT"] = 1;
+                    values[valuesById[2] = "IMPLICIT"] = 2;
+                    values[valuesById[3] = "LEGACY_REQUIRED"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * EnumType enum.
+                 * @name google.protobuf.FeatureSet.EnumType
+                 * @enum {number}
+                 * @property {number} ENUM_TYPE_UNKNOWN=0 ENUM_TYPE_UNKNOWN value
+                 * @property {number} OPEN=1 OPEN value
+                 * @property {number} CLOSED=2 CLOSED value
+                 */
+                FeatureSet.EnumType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "ENUM_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "OPEN"] = 1;
+                    values[valuesById[2] = "CLOSED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * RepeatedFieldEncoding enum.
+                 * @name google.protobuf.FeatureSet.RepeatedFieldEncoding
+                 * @enum {number}
+                 * @property {number} REPEATED_FIELD_ENCODING_UNKNOWN=0 REPEATED_FIELD_ENCODING_UNKNOWN value
+                 * @property {number} PACKED=1 PACKED value
+                 * @property {number} EXPANDED=2 EXPANDED value
+                 */
+                FeatureSet.RepeatedFieldEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "REPEATED_FIELD_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "PACKED"] = 1;
+                    values[valuesById[2] = "EXPANDED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * Utf8Validation enum.
+                 * @name google.protobuf.FeatureSet.Utf8Validation
+                 * @enum {number}
+                 * @property {number} UTF8_VALIDATION_UNKNOWN=0 UTF8_VALIDATION_UNKNOWN value
+                 * @property {number} VERIFY=2 VERIFY value
+                 * @property {number} NONE=3 NONE value
+                 */
+                FeatureSet.Utf8Validation = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "UTF8_VALIDATION_UNKNOWN"] = 0;
+                    values[valuesById[2] = "VERIFY"] = 2;
+                    values[valuesById[3] = "NONE"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * MessageEncoding enum.
+                 * @name google.protobuf.FeatureSet.MessageEncoding
+                 * @enum {number}
+                 * @property {number} MESSAGE_ENCODING_UNKNOWN=0 MESSAGE_ENCODING_UNKNOWN value
+                 * @property {number} LENGTH_PREFIXED=1 LENGTH_PREFIXED value
+                 * @property {number} DELIMITED=2 DELIMITED value
+                 */
+                FeatureSet.MessageEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "MESSAGE_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "LENGTH_PREFIXED"] = 1;
+                    values[valuesById[2] = "DELIMITED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * JsonFormat enum.
+                 * @name google.protobuf.FeatureSet.JsonFormat
+                 * @enum {number}
+                 * @property {number} JSON_FORMAT_UNKNOWN=0 JSON_FORMAT_UNKNOWN value
+                 * @property {number} ALLOW=1 ALLOW value
+                 * @property {number} LEGACY_BEST_EFFORT=2 LEGACY_BEST_EFFORT value
+                 */
+                FeatureSet.JsonFormat = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "JSON_FORMAT_UNKNOWN"] = 0;
+                    values[valuesById[1] = "ALLOW"] = 1;
+                    values[valuesById[2] = "LEGACY_BEST_EFFORT"] = 2;
+                    return values;
+                })();
+    
+                return FeatureSet;
+            })();
+    
+            protobuf.FeatureSetDefaults = (function() {
+    
+                /**
+                 * Properties of a FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSetDefaults
+                 * @property {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>|null} [defaults] FeatureSetDefaults defaults
+                 * @property {google.protobuf.Edition|null} [minimumEdition] FeatureSetDefaults minimumEdition
+                 * @property {google.protobuf.Edition|null} [maximumEdition] FeatureSetDefaults maximumEdition
+                 */
+    
+                /**
+                 * Constructs a new FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSetDefaults.
+                 * @implements IFeatureSetDefaults
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 */
+                function FeatureSetDefaults(properties) {
+                    this.defaults = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSetDefaults defaults.
+                 * @member {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>} defaults
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.defaults = $util.emptyArray;
+    
+                /**
+                 * FeatureSetDefaults minimumEdition.
+                 * @member {google.protobuf.Edition} minimumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.minimumEdition = 0;
+    
+                /**
+                 * FeatureSetDefaults maximumEdition.
+                 * @member {google.protobuf.Edition} maximumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.maximumEdition = 0;
+    
+                /**
+                 * Creates a new FeatureSetDefaults instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults instance
+                 */
+                FeatureSetDefaults.create = function create(properties) {
+                    return new FeatureSetDefaults(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.defaults != null && message.defaults.length)
+                        for (var i = 0; i < message.defaults.length; ++i)
+                            $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.encode(message.defaults[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.minimumEdition != null && Object.hasOwnProperty.call(message, "minimumEdition"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.minimumEdition);
+                    if (message.maximumEdition != null && Object.hasOwnProperty.call(message, "maximumEdition"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.maximumEdition);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                if (!(message.defaults && message.defaults.length))
+                                    message.defaults = [];
+                                message.defaults.push($root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 4: {
+                                message.minimumEdition = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.maximumEdition = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSetDefaults message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSetDefaults.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.defaults != null && message.hasOwnProperty("defaults")) {
+                        if (!Array.isArray(message.defaults))
+                            return "defaults: array expected";
+                        for (var i = 0; i < message.defaults.length; ++i) {
+                            var error = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify(message.defaults[i]);
+                            if (error)
+                                return "defaults." + error;
+                        }
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        switch (message.minimumEdition) {
+                        default:
+                            return "minimumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        switch (message.maximumEdition) {
+                        default:
+                            return "maximumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 */
+                FeatureSetDefaults.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSetDefaults)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSetDefaults();
+                    if (object.defaults) {
+                        if (!Array.isArray(object.defaults))
+                            throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: array expected");
+                        message.defaults = [];
+                        for (var i = 0; i < object.defaults.length; ++i) {
+                            if (typeof object.defaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: object expected");
+                            message.defaults[i] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.fromObject(object.defaults[i]);
+                        }
+                    }
+                    switch (object.minimumEdition) {
+                    default:
+                        if (typeof object.minimumEdition === "number") {
+                            message.minimumEdition = object.minimumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.minimumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.minimumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.minimumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.minimumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.minimumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.minimumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.minimumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.minimumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.minimumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.minimumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.minimumEdition = 2147483647;
+                        break;
+                    }
+                    switch (object.maximumEdition) {
+                    default:
+                        if (typeof object.maximumEdition === "number") {
+                            message.maximumEdition = object.maximumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.maximumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.maximumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.maximumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.maximumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.maximumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.maximumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.maximumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.maximumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.maximumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.maximumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.maximumEdition = 2147483647;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.FeatureSetDefaults} message FeatureSetDefaults
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSetDefaults.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.defaults = [];
+                    if (options.defaults) {
+                        object.minimumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        object.maximumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                    }
+                    if (message.defaults && message.defaults.length) {
+                        object.defaults = [];
+                        for (var j = 0; j < message.defaults.length; ++j)
+                            object.defaults[j] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.toObject(message.defaults[j], options);
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        object.minimumEdition = options.enums === String ? $root.google.protobuf.Edition[message.minimumEdition] === undefined ? message.minimumEdition : $root.google.protobuf.Edition[message.minimumEdition] : message.minimumEdition;
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        object.maximumEdition = options.enums === String ? $root.google.protobuf.Edition[message.maximumEdition] === undefined ? message.maximumEdition : $root.google.protobuf.Edition[message.maximumEdition] : message.maximumEdition;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSetDefaults to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSetDefaults.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSetDefaults
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSetDefaults.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults";
+                };
+    
+                FeatureSetDefaults.FeatureSetEditionDefault = (function() {
+    
+                    /**
+                     * Properties of a FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @interface IFeatureSetEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] FeatureSetEditionDefault edition
+                     * @property {google.protobuf.IFeatureSet|null} [features] FeatureSetEditionDefault features
+                     */
+    
+                    /**
+                     * Constructs a new FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @classdesc Represents a FeatureSetEditionDefault.
+                     * @implements IFeatureSetEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     */
+                    function FeatureSetEditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * FeatureSetEditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * FeatureSetEditionDefault features.
+                     * @member {google.protobuf.IFeatureSet|null|undefined} features
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.features = null;
+    
+                    /**
+                     * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault instance
+                     */
+                    FeatureSetEditionDefault.create = function create(properties) {
+                        return new FeatureSetEditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                            $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a FeatureSetEditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    FeatureSetEditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.features != null && message.hasOwnProperty("features")) {
+                            var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                            if (error)
+                                return "features." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     */
+                    FeatureSetEditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.features != null) {
+                            if (typeof object.features !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.features: object expected");
+                            message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} message FeatureSetEditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    FeatureSetEditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.features = null;
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.features != null && message.hasOwnProperty("features"))
+                            object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this FeatureSetEditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    FeatureSetEditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for FeatureSetEditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    FeatureSetEditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault";
+                    };
+    
+                    return FeatureSetEditionDefault;
+                })();
+    
+                return FeatureSetDefaults;
             })();
     
             protobuf.SourceCodeInfo = (function() {
@@ -27455,242 +38756,6 @@
                 return Timestamp;
             })();
     
-            protobuf.Any = (function() {
-    
-                /**
-                 * Properties of an Any.
-                 * @memberof google.protobuf
-                 * @interface IAny
-                 * @property {string|null} [type_url] Any type_url
-                 * @property {Uint8Array|null} [value] Any value
-                 */
-    
-                /**
-                 * Constructs a new Any.
-                 * @memberof google.protobuf
-                 * @classdesc Represents an Any.
-                 * @implements IAny
-                 * @constructor
-                 * @param {google.protobuf.IAny=} [properties] Properties to set
-                 */
-                function Any(properties) {
-                    if (properties)
-                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                            if (properties[keys[i]] != null)
-                                this[keys[i]] = properties[keys[i]];
-                }
-    
-                /**
-                 * Any type_url.
-                 * @member {string} type_url
-                 * @memberof google.protobuf.Any
-                 * @instance
-                 */
-                Any.prototype.type_url = "";
-    
-                /**
-                 * Any value.
-                 * @member {Uint8Array} value
-                 * @memberof google.protobuf.Any
-                 * @instance
-                 */
-                Any.prototype.value = $util.newBuffer([]);
-    
-                /**
-                 * Creates a new Any instance using the specified properties.
-                 * @function create
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {google.protobuf.IAny=} [properties] Properties to set
-                 * @returns {google.protobuf.Any} Any instance
-                 */
-                Any.create = function create(properties) {
-                    return new Any(properties);
-                };
-    
-                /**
-                 * Encodes the specified Any message. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
-                 * @function encode
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {google.protobuf.IAny} message Any message or plain object to encode
-                 * @param {$protobuf.Writer} [writer] Writer to encode to
-                 * @returns {$protobuf.Writer} Writer
-                 */
-                Any.encode = function encode(message, writer) {
-                    if (!writer)
-                        writer = $Writer.create();
-                    if (message.type_url != null && Object.hasOwnProperty.call(message, "type_url"))
-                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.type_url);
-                    if (message.value != null && Object.hasOwnProperty.call(message, "value"))
-                        writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.value);
-                    return writer;
-                };
-    
-                /**
-                 * Encodes the specified Any message, length delimited. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
-                 * @function encodeDelimited
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {google.protobuf.IAny} message Any message or plain object to encode
-                 * @param {$protobuf.Writer} [writer] Writer to encode to
-                 * @returns {$protobuf.Writer} Writer
-                 */
-                Any.encodeDelimited = function encodeDelimited(message, writer) {
-                    return this.encode(message, writer).ldelim();
-                };
-    
-                /**
-                 * Decodes an Any message from the specified reader or buffer.
-                 * @function decode
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                 * @param {number} [length] Message length if known beforehand
-                 * @returns {google.protobuf.Any} Any
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                Any.decode = function decode(reader, length) {
-                    if (!(reader instanceof $Reader))
-                        reader = $Reader.create(reader);
-                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Any();
-                    while (reader.pos < end) {
-                        var tag = reader.uint32();
-                        switch (tag >>> 3) {
-                        case 1: {
-                                message.type_url = reader.string();
-                                break;
-                            }
-                        case 2: {
-                                message.value = reader.bytes();
-                                break;
-                            }
-                        default:
-                            reader.skipType(tag & 7);
-                            break;
-                        }
-                    }
-                    return message;
-                };
-    
-                /**
-                 * Decodes an Any message from the specified reader or buffer, length delimited.
-                 * @function decodeDelimited
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                 * @returns {google.protobuf.Any} Any
-                 * @throws {Error} If the payload is not a reader or valid buffer
-                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                 */
-                Any.decodeDelimited = function decodeDelimited(reader) {
-                    if (!(reader instanceof $Reader))
-                        reader = new $Reader(reader);
-                    return this.decode(reader, reader.uint32());
-                };
-    
-                /**
-                 * Verifies an Any message.
-                 * @function verify
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {Object.<string,*>} message Plain object to verify
-                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                 */
-                Any.verify = function verify(message) {
-                    if (typeof message !== "object" || message === null)
-                        return "object expected";
-                    if (message.type_url != null && message.hasOwnProperty("type_url"))
-                        if (!$util.isString(message.type_url))
-                            return "type_url: string expected";
-                    if (message.value != null && message.hasOwnProperty("value"))
-                        if (!(message.value && typeof message.value.length === "number" || $util.isString(message.value)))
-                            return "value: buffer expected";
-                    return null;
-                };
-    
-                /**
-                 * Creates an Any message from a plain object. Also converts values to their respective internal types.
-                 * @function fromObject
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {Object.<string,*>} object Plain object
-                 * @returns {google.protobuf.Any} Any
-                 */
-                Any.fromObject = function fromObject(object) {
-                    if (object instanceof $root.google.protobuf.Any)
-                        return object;
-                    var message = new $root.google.protobuf.Any();
-                    if (object.type_url != null)
-                        message.type_url = String(object.type_url);
-                    if (object.value != null)
-                        if (typeof object.value === "string")
-                            $util.base64.decode(object.value, message.value = $util.newBuffer($util.base64.length(object.value)), 0);
-                        else if (object.value.length >= 0)
-                            message.value = object.value;
-                    return message;
-                };
-    
-                /**
-                 * Creates a plain object from an Any message. Also converts values to other types if specified.
-                 * @function toObject
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {google.protobuf.Any} message Any
-                 * @param {$protobuf.IConversionOptions} [options] Conversion options
-                 * @returns {Object.<string,*>} Plain object
-                 */
-                Any.toObject = function toObject(message, options) {
-                    if (!options)
-                        options = {};
-                    var object = {};
-                    if (options.defaults) {
-                        object.type_url = "";
-                        if (options.bytes === String)
-                            object.value = "";
-                        else {
-                            object.value = [];
-                            if (options.bytes !== Array)
-                                object.value = $util.newBuffer(object.value);
-                        }
-                    }
-                    if (message.type_url != null && message.hasOwnProperty("type_url"))
-                        object.type_url = message.type_url;
-                    if (message.value != null && message.hasOwnProperty("value"))
-                        object.value = options.bytes === String ? $util.base64.encode(message.value, 0, message.value.length) : options.bytes === Array ? Array.prototype.slice.call(message.value) : message.value;
-                    return object;
-                };
-    
-                /**
-                 * Converts this Any to JSON.
-                 * @function toJSON
-                 * @memberof google.protobuf.Any
-                 * @instance
-                 * @returns {Object.<string,*>} JSON object
-                 */
-                Any.prototype.toJSON = function toJSON() {
-                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                };
-    
-                /**
-                 * Gets the default type url for Any
-                 * @function getTypeUrl
-                 * @memberof google.protobuf.Any
-                 * @static
-                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-                 * @returns {string} The default type url
-                 */
-                Any.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                    if (typeUrlPrefix === undefined) {
-                        typeUrlPrefix = "type.googleapis.com";
-                    }
-                    return typeUrlPrefix + "/google.protobuf.Any";
-                };
-    
-                return Any;
-            })();
-    
             protobuf.Duration = (function() {
     
                 /**
@@ -27930,6 +38995,242 @@
                 };
     
                 return Duration;
+            })();
+    
+            protobuf.Any = (function() {
+    
+                /**
+                 * Properties of an Any.
+                 * @memberof google.protobuf
+                 * @interface IAny
+                 * @property {string|null} [type_url] Any type_url
+                 * @property {Uint8Array|null} [value] Any value
+                 */
+    
+                /**
+                 * Constructs a new Any.
+                 * @memberof google.protobuf
+                 * @classdesc Represents an Any.
+                 * @implements IAny
+                 * @constructor
+                 * @param {google.protobuf.IAny=} [properties] Properties to set
+                 */
+                function Any(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Any type_url.
+                 * @member {string} type_url
+                 * @memberof google.protobuf.Any
+                 * @instance
+                 */
+                Any.prototype.type_url = "";
+    
+                /**
+                 * Any value.
+                 * @member {Uint8Array} value
+                 * @memberof google.protobuf.Any
+                 * @instance
+                 */
+                Any.prototype.value = $util.newBuffer([]);
+    
+                /**
+                 * Creates a new Any instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {google.protobuf.IAny=} [properties] Properties to set
+                 * @returns {google.protobuf.Any} Any instance
+                 */
+                Any.create = function create(properties) {
+                    return new Any(properties);
+                };
+    
+                /**
+                 * Encodes the specified Any message. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {google.protobuf.IAny} message Any message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Any.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.type_url != null && Object.hasOwnProperty.call(message, "type_url"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.type_url);
+                    if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).bytes(message.value);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Any message, length delimited. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {google.protobuf.IAny} message Any message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Any.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes an Any message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.Any} Any
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Any.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Any();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.type_url = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.value = reader.bytes();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes an Any message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.Any} Any
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Any.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies an Any message.
+                 * @function verify
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Any.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.type_url != null && message.hasOwnProperty("type_url"))
+                        if (!$util.isString(message.type_url))
+                            return "type_url: string expected";
+                    if (message.value != null && message.hasOwnProperty("value"))
+                        if (!(message.value && typeof message.value.length === "number" || $util.isString(message.value)))
+                            return "value: buffer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates an Any message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.Any} Any
+                 */
+                Any.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.Any)
+                        return object;
+                    var message = new $root.google.protobuf.Any();
+                    if (object.type_url != null)
+                        message.type_url = String(object.type_url);
+                    if (object.value != null)
+                        if (typeof object.value === "string")
+                            $util.base64.decode(object.value, message.value = $util.newBuffer($util.base64.length(object.value)), 0);
+                        else if (object.value.length >= 0)
+                            message.value = object.value;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from an Any message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {google.protobuf.Any} message Any
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Any.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.type_url = "";
+                        if (options.bytes === String)
+                            object.value = "";
+                        else {
+                            object.value = [];
+                            if (options.bytes !== Array)
+                                object.value = $util.newBuffer(object.value);
+                        }
+                    }
+                    if (message.type_url != null && message.hasOwnProperty("type_url"))
+                        object.type_url = message.type_url;
+                    if (message.value != null && message.hasOwnProperty("value"))
+                        object.value = options.bytes === String ? $util.base64.encode(message.value, 0, message.value.length) : options.bytes === Array ? Array.prototype.slice.call(message.value) : message.value;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Any to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.Any
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Any.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Any
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.Any
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Any.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.Any";
+                };
+    
+                return Any;
             })();
     
             protobuf.Empty = (function() {
@@ -28327,6 +39628,567 @@
             })();
     
             return protobuf;
+        })();
+    
+        google.type = (function() {
+    
+            /**
+             * Namespace type.
+             * @memberof google
+             * @namespace
+             */
+            var type = {};
+    
+            type.Date = (function() {
+    
+                /**
+                 * Properties of a Date.
+                 * @memberof google.type
+                 * @interface IDate
+                 * @property {number|null} [year] Date year
+                 * @property {number|null} [month] Date month
+                 * @property {number|null} [day] Date day
+                 */
+    
+                /**
+                 * Constructs a new Date.
+                 * @memberof google.type
+                 * @classdesc Represents a Date.
+                 * @implements IDate
+                 * @constructor
+                 * @param {google.type.IDate=} [properties] Properties to set
+                 */
+                function Date(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Date year.
+                 * @member {number} year
+                 * @memberof google.type.Date
+                 * @instance
+                 */
+                Date.prototype.year = 0;
+    
+                /**
+                 * Date month.
+                 * @member {number} month
+                 * @memberof google.type.Date
+                 * @instance
+                 */
+                Date.prototype.month = 0;
+    
+                /**
+                 * Date day.
+                 * @member {number} day
+                 * @memberof google.type.Date
+                 * @instance
+                 */
+                Date.prototype.day = 0;
+    
+                /**
+                 * Creates a new Date instance using the specified properties.
+                 * @function create
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {google.type.IDate=} [properties] Properties to set
+                 * @returns {google.type.Date} Date instance
+                 */
+                Date.create = function create(properties) {
+                    return new Date(properties);
+                };
+    
+                /**
+                 * Encodes the specified Date message. Does not implicitly {@link google.type.Date.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {google.type.IDate} message Date message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Date.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.year != null && Object.hasOwnProperty.call(message, "year"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.year);
+                    if (message.month != null && Object.hasOwnProperty.call(message, "month"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.month);
+                    if (message.day != null && Object.hasOwnProperty.call(message, "day"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.day);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Date message, length delimited. Does not implicitly {@link google.type.Date.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {google.type.IDate} message Date message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Date.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Date message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.type.Date} Date
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Date.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.type.Date();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.year = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.month = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.day = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Date message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.type.Date} Date
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Date.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Date message.
+                 * @function verify
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Date.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.year != null && message.hasOwnProperty("year"))
+                        if (!$util.isInteger(message.year))
+                            return "year: integer expected";
+                    if (message.month != null && message.hasOwnProperty("month"))
+                        if (!$util.isInteger(message.month))
+                            return "month: integer expected";
+                    if (message.day != null && message.hasOwnProperty("day"))
+                        if (!$util.isInteger(message.day))
+                            return "day: integer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Date message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.type.Date} Date
+                 */
+                Date.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.type.Date)
+                        return object;
+                    var message = new $root.google.type.Date();
+                    if (object.year != null)
+                        message.year = object.year | 0;
+                    if (object.month != null)
+                        message.month = object.month | 0;
+                    if (object.day != null)
+                        message.day = object.day | 0;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Date message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {google.type.Date} message Date
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Date.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.year = 0;
+                        object.month = 0;
+                        object.day = 0;
+                    }
+                    if (message.year != null && message.hasOwnProperty("year"))
+                        object.year = message.year;
+                    if (message.month != null && message.hasOwnProperty("month"))
+                        object.month = message.month;
+                    if (message.day != null && message.hasOwnProperty("day"))
+                        object.day = message.day;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Date to JSON.
+                 * @function toJSON
+                 * @memberof google.type.Date
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Date.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Date
+                 * @function getTypeUrl
+                 * @memberof google.type.Date
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Date.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.type.Date";
+                };
+    
+                return Date;
+            })();
+    
+            /**
+             * DayOfWeek enum.
+             * @name google.type.DayOfWeek
+             * @enum {number}
+             * @property {number} DAY_OF_WEEK_UNSPECIFIED=0 DAY_OF_WEEK_UNSPECIFIED value
+             * @property {number} MONDAY=1 MONDAY value
+             * @property {number} TUESDAY=2 TUESDAY value
+             * @property {number} WEDNESDAY=3 WEDNESDAY value
+             * @property {number} THURSDAY=4 THURSDAY value
+             * @property {number} FRIDAY=5 FRIDAY value
+             * @property {number} SATURDAY=6 SATURDAY value
+             * @property {number} SUNDAY=7 SUNDAY value
+             */
+            type.DayOfWeek = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "DAY_OF_WEEK_UNSPECIFIED"] = 0;
+                values[valuesById[1] = "MONDAY"] = 1;
+                values[valuesById[2] = "TUESDAY"] = 2;
+                values[valuesById[3] = "WEDNESDAY"] = 3;
+                values[valuesById[4] = "THURSDAY"] = 4;
+                values[valuesById[5] = "FRIDAY"] = 5;
+                values[valuesById[6] = "SATURDAY"] = 6;
+                values[valuesById[7] = "SUNDAY"] = 7;
+                return values;
+            })();
+    
+            type.TimeOfDay = (function() {
+    
+                /**
+                 * Properties of a TimeOfDay.
+                 * @memberof google.type
+                 * @interface ITimeOfDay
+                 * @property {number|null} [hours] TimeOfDay hours
+                 * @property {number|null} [minutes] TimeOfDay minutes
+                 * @property {number|null} [seconds] TimeOfDay seconds
+                 * @property {number|null} [nanos] TimeOfDay nanos
+                 */
+    
+                /**
+                 * Constructs a new TimeOfDay.
+                 * @memberof google.type
+                 * @classdesc Represents a TimeOfDay.
+                 * @implements ITimeOfDay
+                 * @constructor
+                 * @param {google.type.ITimeOfDay=} [properties] Properties to set
+                 */
+                function TimeOfDay(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * TimeOfDay hours.
+                 * @member {number} hours
+                 * @memberof google.type.TimeOfDay
+                 * @instance
+                 */
+                TimeOfDay.prototype.hours = 0;
+    
+                /**
+                 * TimeOfDay minutes.
+                 * @member {number} minutes
+                 * @memberof google.type.TimeOfDay
+                 * @instance
+                 */
+                TimeOfDay.prototype.minutes = 0;
+    
+                /**
+                 * TimeOfDay seconds.
+                 * @member {number} seconds
+                 * @memberof google.type.TimeOfDay
+                 * @instance
+                 */
+                TimeOfDay.prototype.seconds = 0;
+    
+                /**
+                 * TimeOfDay nanos.
+                 * @member {number} nanos
+                 * @memberof google.type.TimeOfDay
+                 * @instance
+                 */
+                TimeOfDay.prototype.nanos = 0;
+    
+                /**
+                 * Creates a new TimeOfDay instance using the specified properties.
+                 * @function create
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {google.type.ITimeOfDay=} [properties] Properties to set
+                 * @returns {google.type.TimeOfDay} TimeOfDay instance
+                 */
+                TimeOfDay.create = function create(properties) {
+                    return new TimeOfDay(properties);
+                };
+    
+                /**
+                 * Encodes the specified TimeOfDay message. Does not implicitly {@link google.type.TimeOfDay.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {google.type.ITimeOfDay} message TimeOfDay message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                TimeOfDay.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.hours != null && Object.hasOwnProperty.call(message, "hours"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.hours);
+                    if (message.minutes != null && Object.hasOwnProperty.call(message, "minutes"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.minutes);
+                    if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.seconds);
+                    if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.nanos);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified TimeOfDay message, length delimited. Does not implicitly {@link google.type.TimeOfDay.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {google.type.ITimeOfDay} message TimeOfDay message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                TimeOfDay.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a TimeOfDay message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.type.TimeOfDay} TimeOfDay
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                TimeOfDay.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.type.TimeOfDay();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.hours = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.minutes = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.seconds = reader.int32();
+                                break;
+                            }
+                        case 4: {
+                                message.nanos = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a TimeOfDay message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.type.TimeOfDay} TimeOfDay
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                TimeOfDay.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a TimeOfDay message.
+                 * @function verify
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                TimeOfDay.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.hours != null && message.hasOwnProperty("hours"))
+                        if (!$util.isInteger(message.hours))
+                            return "hours: integer expected";
+                    if (message.minutes != null && message.hasOwnProperty("minutes"))
+                        if (!$util.isInteger(message.minutes))
+                            return "minutes: integer expected";
+                    if (message.seconds != null && message.hasOwnProperty("seconds"))
+                        if (!$util.isInteger(message.seconds))
+                            return "seconds: integer expected";
+                    if (message.nanos != null && message.hasOwnProperty("nanos"))
+                        if (!$util.isInteger(message.nanos))
+                            return "nanos: integer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a TimeOfDay message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.type.TimeOfDay} TimeOfDay
+                 */
+                TimeOfDay.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.type.TimeOfDay)
+                        return object;
+                    var message = new $root.google.type.TimeOfDay();
+                    if (object.hours != null)
+                        message.hours = object.hours | 0;
+                    if (object.minutes != null)
+                        message.minutes = object.minutes | 0;
+                    if (object.seconds != null)
+                        message.seconds = object.seconds | 0;
+                    if (object.nanos != null)
+                        message.nanos = object.nanos | 0;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a TimeOfDay message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {google.type.TimeOfDay} message TimeOfDay
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                TimeOfDay.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.hours = 0;
+                        object.minutes = 0;
+                        object.seconds = 0;
+                        object.nanos = 0;
+                    }
+                    if (message.hours != null && message.hasOwnProperty("hours"))
+                        object.hours = message.hours;
+                    if (message.minutes != null && message.hasOwnProperty("minutes"))
+                        object.minutes = message.minutes;
+                    if (message.seconds != null && message.hasOwnProperty("seconds"))
+                        object.seconds = message.seconds;
+                    if (message.nanos != null && message.hasOwnProperty("nanos"))
+                        object.nanos = message.nanos;
+                    return object;
+                };
+    
+                /**
+                 * Converts this TimeOfDay to JSON.
+                 * @function toJSON
+                 * @memberof google.type.TimeOfDay
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                TimeOfDay.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for TimeOfDay
+                 * @function getTypeUrl
+                 * @memberof google.type.TimeOfDay
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                TimeOfDay.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.type.TimeOfDay";
+                };
+    
+                return TimeOfDay;
+            })();
+    
+            return type;
         })();
     
         google.longrunning = (function() {

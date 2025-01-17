@@ -1,5 +1,126 @@
 # Changelog
 
+## [4.8.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.7.0...cloudbuild-v4.8.0) (2025-01-11)
+
+
+### Features
+
+* [cloudbuild] Add option to enable structured logging ([#5934](https://github.com/googleapis/google-cloud-node/issues/5934)) ([36be8cd](https://github.com/googleapis/google-cloud-node/commit/36be8cdce58807b3ca02b31d9b4cf950ba386063))
+
+## [4.7.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.6.0...cloudbuild-v4.7.0) (2024-10-30)
+
+
+### Features
+
+* [cloudbuild] Add PrivateServiceConnect option to WorkerPool ([#5770](https://github.com/googleapis/google-cloud-node/issues/5770)) ([3aade58](https://github.com/googleapis/google-cloud-node/commit/3aade58c11e739c4652f5b1ab8e7f3cf12992ce9))
+
+## [4.6.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.5.0...cloudbuild-v4.6.0) (2024-10-10)
+
+
+### Features
+
+* [cloudbuild] Add LEGACY_BUCKET option to DefaultLogsBucketBehavior ([#5700](https://github.com/googleapis/google-cloud-node/issues/5700)) ([7cbf6b2](https://github.com/googleapis/google-cloud-node/commit/7cbf6b20d0e4944779ba71aaa3388abbf3840ed5))
+
+## [4.5.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.4.0...cloudbuild-v4.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [4.4.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.3.0...cloudbuild-v4.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5192](https://github.com/googleapis/google-cloud-node/issues/5192)) ([b926f13](https://github.com/googleapis/google-cloud-node/commit/b926f1326ea4df73c411dbeb7e529f8d9ccc3642))
+
+## [4.3.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.2.0...cloudbuild-v4.3.0) (2024-03-23)
+
+
+### Features
+
+* [cloudbuild] Add Bitbucket Data Center Config and Bitbucket Cloud config for Cloud Build Repositories ([#5132](https://github.com/googleapis/google-cloud-node/issues/5132)) ([334e7b9](https://github.com/googleapis/google-cloud-node/commit/334e7b93b4a996ca70fd4b95e98ca5e0c56eb623))
+
+## [4.2.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.1.1...cloudbuild-v4.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5028](https://github.com/googleapis/google-cloud-node/issues/5028)) ([852f3eb](https://github.com/googleapis/google-cloud-node/commit/852f3ebf065ee24e910580b9a1fc365acb3a744a))
+
+## [4.1.1](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.1.0...cloudbuild-v4.1.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* [Many APIs] improve retry logic for streaming API calls ([#4968](https://github.com/googleapis/google-cloud-node/issues/4968)) ([7fbf16c](https://github.com/googleapis/google-cloud-node/commit/7fbf16c98d0521a0533ab36a00f6ec932c72a02e))
+
+## [4.1.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.0.1...cloudbuild-v4.1.0) (2023-11-03)
+
+
+### Features
+
+* [cloudbuild] Add optional field "SourceFetcher" to choose source fetcher tool ([#4784](https://github.com/googleapis/google-cloud-node/issues/4784)) ([ff42e4e](https://github.com/googleapis/google-cloud-node/commit/ff42e4ee2fde54c1f370a16a065705e1f69f8b64))
+
+## [4.0.1](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v4.0.0...cloudbuild-v4.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4589](https://github.com/googleapis/google-cloud-node/issues/4589)) ([07967ad](https://github.com/googleapis/google-cloud-node/commit/07967add1b5fc28b548cf74721b595ea0ba90d5b))
+
+## [4.0.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v3.10.0...cloudbuild-v4.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Features
+
+* [cloudbuild] add update_mask to UpdateBuildTriggerRequest proto ([#4473](https://github.com/googleapis/google-cloud-node/issues/4473)) ([7fb6677](https://github.com/googleapis/google-cloud-node/commit/7fb6677bd4368c93b48b16aa4a4149b419b69c9f))
+
+
+### Bug Fixes
+
+* [cloudbuild] fix typings for IAM methods ([#4454](https://github.com/googleapis/google-cloud-node/issues/4454)) ([1f67b6c](https://github.com/googleapis/google-cloud-node/commit/1f67b6ce592ca6c6de3e2eef67e5aaa5271e8772))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [3.10.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v3.9.0...cloudbuild-v3.10.0) (2023-07-24)
+
+
+### Features
+
+* [cloudbuild] add git_file_source and git_repo_source to build_trigger ([#4434](https://github.com/googleapis/google-cloud-node/issues/4434)) ([5dcb3c2](https://github.com/googleapis/google-cloud-node/commit/5dcb3c28ad2cf68485fe535d83d281b0d95cba38))
+* [cloudbuild] Add routing information in Cloud Build GRPC clients ([#4410](https://github.com/googleapis/google-cloud-node/issues/4410)) ([58a5209](https://github.com/googleapis/google-cloud-node/commit/58a520990dab3fdc00f5838a9b875a4fc72cf158))
+
+## [3.9.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v3.8.0...cloudbuild-v3.9.0) (2023-07-11)
+
+
+### Features
+
+* [cloudbuild] added e2-medium machine type ([#4402](https://github.com/googleapis/google-cloud-node/issues/4402)) ([f3e866e](https://github.com/googleapis/google-cloud-node/commit/f3e866e2c16ba430d7fb3bf0abc723b04ea9e994))
+
+## [3.8.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v3.7.0...cloudbuild-v3.8.0) (2023-07-04)
+
+
+### Features
+
+* [cloudbuild] Add GitLabConfig and fetchGitRefs for Cloud Build Repositories ([#4380](https://github.com/googleapis/google-cloud-node/issues/4380)) ([a425fe2](https://github.com/googleapis/google-cloud-node/commit/a425fe255c2e1c002cb58e3c2c074366d7724de9))
+
+## [3.7.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v3.6.0...cloudbuild-v3.7.0) (2023-06-28)
+
+
+### Features
+
+* [cloudbuild] add repositoryevent to buildtrigger ([#4378](https://github.com/googleapis/google-cloud-node/issues/4378)) ([5ce2484](https://github.com/googleapis/google-cloud-node/commit/5ce24848470ada481a42e7739fdef41928266623))
+
 ## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/cloudbuild-v3.5.2...cloudbuild-v3.6.0) (2023-04-24)
 
 

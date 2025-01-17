@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import type {
 import {PassThrough} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v2beta1/sessions_client_config.json`.
@@ -53,6 +54,8 @@ export class SessionsClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -94,8 +97,7 @@ export class SessionsClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -103,7 +105,7 @@ export class SessionsClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new SessionsClient({fallback: 'rest'}, gax);
+   *     const client = new SessionsClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -112,8 +114,27 @@ export class SessionsClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof SessionsClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'dialogflow.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -128,7 +149,7 @@ export class SessionsClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -153,10 +174,10 @@ export class SessionsClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -166,14 +187,14 @@ export class SessionsClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -186,6 +207,12 @@ export class SessionsClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      encryptionSpecPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/encryptionSpec'
+      ),
+      generatorPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/generators/{generator}'
+      ),
       projectAgentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/agent'
       ),
@@ -319,6 +346,9 @@ export class SessionsClient {
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/knowledgeBases/{knowledge_base}/documents/{document}'
         ),
+      sipTrunkPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/sipTrunks/{siptrunk}'
+      ),
     };
 
     // Some of the methods on this service provide streaming responses.
@@ -326,7 +356,8 @@ export class SessionsClient {
     this.descriptors.stream = {
       streamingDetectIntent: new this._gaxModule.StreamDescriptor(
         this._gaxModule.StreamType.BIDI_STREAMING,
-        opts.fallback === 'rest'
+        !!opts.fallback,
+        !!opts.gaxServerStreamingRetries
       ),
     };
 
@@ -423,19 +454,50 @@ export class SessionsClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -486,7 +548,7 @@ export class SessionsClient {
    * If you might use
    * [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa)
    * or other CCAI products now or in the future, consider using
-   * {@link google.cloud.dialogflow.v2beta1.Participants.AnalyzeContent|AnalyzeContent}
+   * {@link protos.google.cloud.dialogflow.v2beta1.Participants.AnalyzeContent|AnalyzeContent}
    * instead of `DetectIntent`. `AnalyzeContent` has additional
    * functionality for Agent Assist and other CCAI products.
    *
@@ -525,24 +587,24 @@ export class SessionsClient {
    * @param {google.cloud.dialogflow.v2beta1.QueryInput} request.queryInput
    *   Required. The input specification. It can be set to:
    *
-   *   1.  an audio config
-   *       which instructs the speech recognizer how to process the speech audio,
+   *   1. an audio config which instructs the speech recognizer how to process
+   *   the speech audio,
    *
-   *   2.  a conversational query in the form of text, or
+   *   2. a conversational query in the form of text, or
    *
-   *   3.  an event that specifies which intent to trigger.
+   *   3. an event that specifies which intent to trigger.
    * @param {google.cloud.dialogflow.v2beta1.OutputAudioConfig} request.outputAudioConfig
    *   Instructs the speech synthesizer how to generate the output
    *   audio. If this field is not set and agent-level speech synthesizer is not
    *   configured, no output audio is generated.
    * @param {google.protobuf.FieldMask} request.outputAudioConfigMask
    *   Mask for
-   *   {@link google.cloud.dialogflow.v2beta1.DetectIntentRequest.output_audio_config|output_audio_config}
+   *   {@link protos.google.cloud.dialogflow.v2beta1.DetectIntentRequest.output_audio_config|output_audio_config}
    *   indicating which settings in this request-level config should override
    *   speech synthesizer settings defined at agent-level.
    *
    *   If unspecified or empty,
-   *   {@link google.cloud.dialogflow.v2beta1.DetectIntentRequest.output_audio_config|output_audio_config}
+   *   {@link protos.google.cloud.dialogflow.v2beta1.DetectIntentRequest.output_audio_config|output_audio_config}
    *   replaces the agent-level config in its entirety.
    * @param {Buffer} request.inputAudio
    *   The natural language speech audio to be processed. This field
@@ -551,9 +613,8 @@ export class SessionsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.v2beta1.DetectIntentResponse | DetectIntentResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.v2beta1.DetectIntentResponse|DetectIntentResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta1/sessions.detect_intent.js</caption>
    * region_tag:dialogflow_v2beta1_generated_Sessions_DetectIntent_async
@@ -565,7 +626,7 @@ export class SessionsClient {
     [
       protos.google.cloud.dialogflow.v2beta1.IDetectIntentResponse,
       protos.google.cloud.dialogflow.v2beta1.IDetectIntentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   detectIntent(
@@ -611,7 +672,7 @@ export class SessionsClient {
     [
       protos.google.cloud.dialogflow.v2beta1.IDetectIntentResponse,
       protos.google.cloud.dialogflow.v2beta1.IDetectIntentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -641,7 +702,7 @@ export class SessionsClient {
    * If you might use
    * [Agent Assist](https://cloud.google.com/dialogflow/docs/#aa)
    * or other CCAI products now or in the future, consider using
-   * {@link google.cloud.dialogflow.v2beta1.Participants.StreamingAnalyzeContent|StreamingAnalyzeContent}
+   * {@link protos.google.cloud.dialogflow.v2beta1.Participants.StreamingAnalyzeContent|StreamingAnalyzeContent}
    * instead of `StreamingDetectIntent`. `StreamingAnalyzeContent` has
    * additional functionality for Agent Assist and other CCAI products.
    *
@@ -653,10 +714,9 @@ export class SessionsClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
    *   An object stream which is both readable and writable. It accepts objects
-   *   representing {@link google.cloud.dialogflow.v2beta1.StreamingDetectIntentRequest | StreamingDetectIntentRequest} for write() method, and
-   *   will emit objects representing {@link google.cloud.dialogflow.v2beta1.StreamingDetectIntentResponse | StreamingDetectIntentResponse} on 'data' event asynchronously.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#bi-directional-streaming)
+   *   representing {@link protos.google.cloud.dialogflow.v2beta1.StreamingDetectIntentRequest|StreamingDetectIntentRequest} for write() method, and
+   *   will emit objects representing {@link protos.google.cloud.dialogflow.v2beta1.StreamingDetectIntentResponse|StreamingDetectIntentResponse} on 'data' event asynchronously.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#bi-directional-streaming | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta1/sessions.streaming_detect_intent.js</caption>
    * region_tag:dialogflow_v2beta1_generated_Sessions_StreamingDetectIntent_async
@@ -677,8 +737,7 @@ export class SessionsClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -724,12 +783,11 @@ export class SessionsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -749,6 +807,98 @@ export class SessionsClient {
   // --------------------
   // -- Path templates --
   // --------------------
+
+  /**
+   * Return a fully-qualified encryptionSpec resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @returns {string} Resource name string.
+   */
+  encryptionSpecPath(project: string, location: string) {
+    return this.pathTemplates.encryptionSpecPathTemplate.render({
+      project: project,
+      location: location,
+    });
+  }
+
+  /**
+   * Parse the project from EncryptionSpec resource.
+   *
+   * @param {string} encryptionSpecName
+   *   A fully-qualified path representing EncryptionSpec resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromEncryptionSpecName(encryptionSpecName: string) {
+    return this.pathTemplates.encryptionSpecPathTemplate.match(
+      encryptionSpecName
+    ).project;
+  }
+
+  /**
+   * Parse the location from EncryptionSpec resource.
+   *
+   * @param {string} encryptionSpecName
+   *   A fully-qualified path representing EncryptionSpec resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromEncryptionSpecName(encryptionSpecName: string) {
+    return this.pathTemplates.encryptionSpecPathTemplate.match(
+      encryptionSpecName
+    ).location;
+  }
+
+  /**
+   * Return a fully-qualified generator resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} generator
+   * @returns {string} Resource name string.
+   */
+  generatorPath(project: string, location: string, generator: string) {
+    return this.pathTemplates.generatorPathTemplate.render({
+      project: project,
+      location: location,
+      generator: generator,
+    });
+  }
+
+  /**
+   * Parse the project from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .location;
+  }
+
+  /**
+   * Parse the generator from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the generator.
+   */
+  matchGeneratorFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .generator;
+  }
 
   /**
    * Return a fully-qualified projectAgent resource name string.
@@ -3242,6 +3392,55 @@ export class SessionsClient {
     return this.pathTemplates.projectLocationKnowledgeBaseDocumentPathTemplate.match(
       projectLocationKnowledgeBaseDocumentName
     ).document;
+  }
+
+  /**
+   * Return a fully-qualified sipTrunk resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} siptrunk
+   * @returns {string} Resource name string.
+   */
+  sipTrunkPath(project: string, location: string, siptrunk: string) {
+    return this.pathTemplates.sipTrunkPathTemplate.render({
+      project: project,
+      location: location,
+      siptrunk: siptrunk,
+    });
+  }
+
+  /**
+   * Parse the project from SipTrunk resource.
+   *
+   * @param {string} sipTrunkName
+   *   A fully-qualified path representing SipTrunk resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromSipTrunkName(sipTrunkName: string) {
+    return this.pathTemplates.sipTrunkPathTemplate.match(sipTrunkName).project;
+  }
+
+  /**
+   * Parse the location from SipTrunk resource.
+   *
+   * @param {string} sipTrunkName
+   *   A fully-qualified path representing SipTrunk resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromSipTrunkName(sipTrunkName: string) {
+    return this.pathTemplates.sipTrunkPathTemplate.match(sipTrunkName).location;
+  }
+
+  /**
+   * Parse the siptrunk from SipTrunk resource.
+   *
+   * @param {string} sipTrunkName
+   *   A fully-qualified path representing SipTrunk resource.
+   * @returns {string} A string representing the siptrunk.
+   */
+  matchSiptrunkFromSipTrunkName(sipTrunkName: string) {
+    return this.pathTemplates.sipTrunkPathTemplate.match(sipTrunkName).siptrunk;
   }
 
   /**

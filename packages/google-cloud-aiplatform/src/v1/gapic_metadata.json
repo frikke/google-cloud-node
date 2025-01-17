@@ -20,6 +20,16 @@
                 "updateDataset"
               ]
             },
+            "UpdateDatasetVersion": {
+              "methods": [
+                "updateDatasetVersion"
+              ]
+            },
+            "GetDatasetVersion": {
+              "methods": [
+                "getDatasetVersion"
+              ]
+            },
             "GetAnnotationSpec": {
               "methods": [
                 "getAnnotationSpec"
@@ -45,11 +55,38 @@
                 "exportData"
               ]
             },
+            "CreateDatasetVersion": {
+              "methods": [
+                "createDatasetVersion"
+              ]
+            },
+            "DeleteDatasetVersion": {
+              "methods": [
+                "deleteDatasetVersion"
+              ]
+            },
+            "RestoreDatasetVersion": {
+              "methods": [
+                "restoreDatasetVersion"
+              ]
+            },
+            "DeleteSavedQuery": {
+              "methods": [
+                "deleteSavedQuery"
+              ]
+            },
             "ListDatasets": {
               "methods": [
                 "listDatasets",
                 "listDatasetsStream",
                 "listDatasetsAsync"
+              ]
+            },
+            "ListDatasetVersions": {
+              "methods": [
+                "listDatasetVersions",
+                "listDatasetVersionsStream",
+                "listDatasetVersionsAsync"
               ]
             },
             "ListDataItems": {
@@ -95,6 +132,16 @@
                 "updateDataset"
               ]
             },
+            "UpdateDatasetVersion": {
+              "methods": [
+                "updateDatasetVersion"
+              ]
+            },
+            "GetDatasetVersion": {
+              "methods": [
+                "getDatasetVersion"
+              ]
+            },
             "GetAnnotationSpec": {
               "methods": [
                 "getAnnotationSpec"
@@ -120,11 +167,38 @@
                 "exportData"
               ]
             },
+            "CreateDatasetVersion": {
+              "methods": [
+                "createDatasetVersion"
+              ]
+            },
+            "DeleteDatasetVersion": {
+              "methods": [
+                "deleteDatasetVersion"
+              ]
+            },
+            "RestoreDatasetVersion": {
+              "methods": [
+                "restoreDatasetVersion"
+              ]
+            },
+            "DeleteSavedQuery": {
+              "methods": [
+                "deleteSavedQuery"
+              ]
+            },
             "ListDatasets": {
               "methods": [
                 "listDatasets",
                 "listDatasetsStream",
                 "listDatasetsAsync"
+              ]
+            },
+            "ListDatasetVersions": {
+              "methods": [
+                "listDatasetVersions",
+                "listDatasetVersionsStream",
+                "listDatasetVersionsAsync"
               ]
             },
             "ListDataItems": {
@@ -159,6 +233,88 @@
         }
       }
     },
+    "DeploymentResourcePoolService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "DeploymentResourcePoolServiceClient",
+          "rpcs": {
+            "GetDeploymentResourcePool": {
+              "methods": [
+                "getDeploymentResourcePool"
+              ]
+            },
+            "CreateDeploymentResourcePool": {
+              "methods": [
+                "createDeploymentResourcePool"
+              ]
+            },
+            "UpdateDeploymentResourcePool": {
+              "methods": [
+                "updateDeploymentResourcePool"
+              ]
+            },
+            "DeleteDeploymentResourcePool": {
+              "methods": [
+                "deleteDeploymentResourcePool"
+              ]
+            },
+            "ListDeploymentResourcePools": {
+              "methods": [
+                "listDeploymentResourcePools",
+                "listDeploymentResourcePoolsStream",
+                "listDeploymentResourcePoolsAsync"
+              ]
+            },
+            "QueryDeployedModels": {
+              "methods": [
+                "queryDeployedModels",
+                "queryDeployedModelsStream",
+                "queryDeployedModelsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "DeploymentResourcePoolServiceClient",
+          "rpcs": {
+            "GetDeploymentResourcePool": {
+              "methods": [
+                "getDeploymentResourcePool"
+              ]
+            },
+            "CreateDeploymentResourcePool": {
+              "methods": [
+                "createDeploymentResourcePool"
+              ]
+            },
+            "UpdateDeploymentResourcePool": {
+              "methods": [
+                "updateDeploymentResourcePool"
+              ]
+            },
+            "DeleteDeploymentResourcePool": {
+              "methods": [
+                "deleteDeploymentResourcePool"
+              ]
+            },
+            "ListDeploymentResourcePools": {
+              "methods": [
+                "listDeploymentResourcePools",
+                "listDeploymentResourcePoolsStream",
+                "listDeploymentResourcePoolsAsync"
+              ]
+            },
+            "QueryDeployedModels": {
+              "methods": [
+                "queryDeployedModels",
+                "queryDeployedModelsStream",
+                "queryDeployedModelsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "EndpointService": {
       "clients": {
         "grpc": {
@@ -177,6 +333,11 @@
             "CreateEndpoint": {
               "methods": [
                 "createEndpoint"
+              ]
+            },
+            "UpdateEndpointLongRunning": {
+              "methods": [
+                "updateEndpointLongRunning"
               ]
             },
             "DeleteEndpoint": {
@@ -226,6 +387,11 @@
                 "createEndpoint"
               ]
             },
+            "UpdateEndpointLongRunning": {
+              "methods": [
+                "updateEndpointLongRunning"
+              ]
+            },
             "DeleteEndpoint": {
               "methods": [
                 "deleteEndpoint"
@@ -251,6 +417,352 @@
                 "listEndpoints",
                 "listEndpointsStream",
                 "listEndpointsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "EvaluationService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "EvaluationServiceClient",
+          "rpcs": {
+            "EvaluateInstances": {
+              "methods": [
+                "evaluateInstances"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "EvaluationServiceClient",
+          "rpcs": {
+            "EvaluateInstances": {
+              "methods": [
+                "evaluateInstances"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "FeatureOnlineStoreAdminService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "FeatureOnlineStoreAdminServiceClient",
+          "rpcs": {
+            "GetFeatureOnlineStore": {
+              "methods": [
+                "getFeatureOnlineStore"
+              ]
+            },
+            "GetFeatureView": {
+              "methods": [
+                "getFeatureView"
+              ]
+            },
+            "SyncFeatureView": {
+              "methods": [
+                "syncFeatureView"
+              ]
+            },
+            "GetFeatureViewSync": {
+              "methods": [
+                "getFeatureViewSync"
+              ]
+            },
+            "CreateFeatureOnlineStore": {
+              "methods": [
+                "createFeatureOnlineStore"
+              ]
+            },
+            "UpdateFeatureOnlineStore": {
+              "methods": [
+                "updateFeatureOnlineStore"
+              ]
+            },
+            "DeleteFeatureOnlineStore": {
+              "methods": [
+                "deleteFeatureOnlineStore"
+              ]
+            },
+            "CreateFeatureView": {
+              "methods": [
+                "createFeatureView"
+              ]
+            },
+            "UpdateFeatureView": {
+              "methods": [
+                "updateFeatureView"
+              ]
+            },
+            "DeleteFeatureView": {
+              "methods": [
+                "deleteFeatureView"
+              ]
+            },
+            "ListFeatureOnlineStores": {
+              "methods": [
+                "listFeatureOnlineStores",
+                "listFeatureOnlineStoresStream",
+                "listFeatureOnlineStoresAsync"
+              ]
+            },
+            "ListFeatureViews": {
+              "methods": [
+                "listFeatureViews",
+                "listFeatureViewsStream",
+                "listFeatureViewsAsync"
+              ]
+            },
+            "ListFeatureViewSyncs": {
+              "methods": [
+                "listFeatureViewSyncs",
+                "listFeatureViewSyncsStream",
+                "listFeatureViewSyncsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "FeatureOnlineStoreAdminServiceClient",
+          "rpcs": {
+            "GetFeatureOnlineStore": {
+              "methods": [
+                "getFeatureOnlineStore"
+              ]
+            },
+            "GetFeatureView": {
+              "methods": [
+                "getFeatureView"
+              ]
+            },
+            "SyncFeatureView": {
+              "methods": [
+                "syncFeatureView"
+              ]
+            },
+            "GetFeatureViewSync": {
+              "methods": [
+                "getFeatureViewSync"
+              ]
+            },
+            "CreateFeatureOnlineStore": {
+              "methods": [
+                "createFeatureOnlineStore"
+              ]
+            },
+            "UpdateFeatureOnlineStore": {
+              "methods": [
+                "updateFeatureOnlineStore"
+              ]
+            },
+            "DeleteFeatureOnlineStore": {
+              "methods": [
+                "deleteFeatureOnlineStore"
+              ]
+            },
+            "CreateFeatureView": {
+              "methods": [
+                "createFeatureView"
+              ]
+            },
+            "UpdateFeatureView": {
+              "methods": [
+                "updateFeatureView"
+              ]
+            },
+            "DeleteFeatureView": {
+              "methods": [
+                "deleteFeatureView"
+              ]
+            },
+            "ListFeatureOnlineStores": {
+              "methods": [
+                "listFeatureOnlineStores",
+                "listFeatureOnlineStoresStream",
+                "listFeatureOnlineStoresAsync"
+              ]
+            },
+            "ListFeatureViews": {
+              "methods": [
+                "listFeatureViews",
+                "listFeatureViewsStream",
+                "listFeatureViewsAsync"
+              ]
+            },
+            "ListFeatureViewSyncs": {
+              "methods": [
+                "listFeatureViewSyncs",
+                "listFeatureViewSyncsStream",
+                "listFeatureViewSyncsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "FeatureOnlineStoreService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "FeatureOnlineStoreServiceClient",
+          "rpcs": {
+            "FetchFeatureValues": {
+              "methods": [
+                "fetchFeatureValues"
+              ]
+            },
+            "SearchNearestEntities": {
+              "methods": [
+                "searchNearestEntities"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "FeatureOnlineStoreServiceClient",
+          "rpcs": {
+            "FetchFeatureValues": {
+              "methods": [
+                "fetchFeatureValues"
+              ]
+            },
+            "SearchNearestEntities": {
+              "methods": [
+                "searchNearestEntities"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "FeatureRegistryService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "FeatureRegistryServiceClient",
+          "rpcs": {
+            "GetFeatureGroup": {
+              "methods": [
+                "getFeatureGroup"
+              ]
+            },
+            "GetFeature": {
+              "methods": [
+                "getFeature"
+              ]
+            },
+            "CreateFeatureGroup": {
+              "methods": [
+                "createFeatureGroup"
+              ]
+            },
+            "UpdateFeatureGroup": {
+              "methods": [
+                "updateFeatureGroup"
+              ]
+            },
+            "DeleteFeatureGroup": {
+              "methods": [
+                "deleteFeatureGroup"
+              ]
+            },
+            "CreateFeature": {
+              "methods": [
+                "createFeature"
+              ]
+            },
+            "BatchCreateFeatures": {
+              "methods": [
+                "batchCreateFeatures"
+              ]
+            },
+            "UpdateFeature": {
+              "methods": [
+                "updateFeature"
+              ]
+            },
+            "DeleteFeature": {
+              "methods": [
+                "deleteFeature"
+              ]
+            },
+            "ListFeatureGroups": {
+              "methods": [
+                "listFeatureGroups",
+                "listFeatureGroupsStream",
+                "listFeatureGroupsAsync"
+              ]
+            },
+            "ListFeatures": {
+              "methods": [
+                "listFeatures",
+                "listFeaturesStream",
+                "listFeaturesAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "FeatureRegistryServiceClient",
+          "rpcs": {
+            "GetFeatureGroup": {
+              "methods": [
+                "getFeatureGroup"
+              ]
+            },
+            "GetFeature": {
+              "methods": [
+                "getFeature"
+              ]
+            },
+            "CreateFeatureGroup": {
+              "methods": [
+                "createFeatureGroup"
+              ]
+            },
+            "UpdateFeatureGroup": {
+              "methods": [
+                "updateFeatureGroup"
+              ]
+            },
+            "DeleteFeatureGroup": {
+              "methods": [
+                "deleteFeatureGroup"
+              ]
+            },
+            "CreateFeature": {
+              "methods": [
+                "createFeature"
+              ]
+            },
+            "BatchCreateFeatures": {
+              "methods": [
+                "batchCreateFeatures"
+              ]
+            },
+            "UpdateFeature": {
+              "methods": [
+                "updateFeature"
+              ]
+            },
+            "DeleteFeature": {
+              "methods": [
+                "deleteFeature"
+              ]
+            },
+            "ListFeatureGroups": {
+              "methods": [
+                "listFeatureGroups",
+                "listFeatureGroupsStream",
+                "listFeatureGroupsAsync"
+              ]
+            },
+            "ListFeatures": {
+              "methods": [
+                "listFeatures",
+                "listFeaturesStream",
+                "listFeaturesAsync"
               ]
             }
           }
@@ -530,6 +1042,74 @@
                 "searchFeatures",
                 "searchFeaturesStream",
                 "searchFeaturesAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "GenAiTuningService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "GenAiTuningServiceClient",
+          "rpcs": {
+            "CreateTuningJob": {
+              "methods": [
+                "createTuningJob"
+              ]
+            },
+            "GetTuningJob": {
+              "methods": [
+                "getTuningJob"
+              ]
+            },
+            "CancelTuningJob": {
+              "methods": [
+                "cancelTuningJob"
+              ]
+            },
+            "RebaseTunedModel": {
+              "methods": [
+                "rebaseTunedModel"
+              ]
+            },
+            "ListTuningJobs": {
+              "methods": [
+                "listTuningJobs",
+                "listTuningJobsStream",
+                "listTuningJobsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "GenAiTuningServiceClient",
+          "rpcs": {
+            "CreateTuningJob": {
+              "methods": [
+                "createTuningJob"
+              ]
+            },
+            "GetTuningJob": {
+              "methods": [
+                "getTuningJob"
+              ]
+            },
+            "CancelTuningJob": {
+              "methods": [
+                "cancelTuningJob"
+              ]
+            },
+            "RebaseTunedModel": {
+              "methods": [
+                "rebaseTunedModel"
+              ]
+            },
+            "ListTuningJobs": {
+              "methods": [
+                "listTuningJobs",
+                "listTuningJobsStream",
+                "listTuningJobsAsync"
               ]
             }
           }
@@ -1118,6 +1698,40 @@
         }
       }
     },
+    "LlmUtilityService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "LlmUtilityServiceClient",
+          "rpcs": {
+            "CountTokens": {
+              "methods": [
+                "countTokens"
+              ]
+            },
+            "ComputeTokens": {
+              "methods": [
+                "computeTokens"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "LlmUtilityServiceClient",
+          "rpcs": {
+            "CountTokens": {
+              "methods": [
+                "countTokens"
+              ]
+            },
+            "ComputeTokens": {
+              "methods": [
+                "computeTokens"
+              ]
+            }
+          }
+        }
+      }
+    },
     "MatchService": {
       "clients": {
         "grpc": {
@@ -1618,6 +2232,11 @@
                 "uploadModel"
               ]
             },
+            "UpdateExplanationDataset": {
+              "methods": [
+                "updateExplanationDataset"
+              ]
+            },
             "DeleteModel": {
               "methods": [
                 "deleteModel"
@@ -1716,6 +2335,11 @@
                 "uploadModel"
               ]
             },
+            "UpdateExplanationDataset": {
+              "methods": [
+                "updateExplanationDataset"
+              ]
+            },
             "DeleteModel": {
               "methods": [
                 "deleteModel"
@@ -1768,6 +2392,270 @@
         }
       }
     },
+    "NotebookService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "NotebookServiceClient",
+          "rpcs": {
+            "GetNotebookRuntimeTemplate": {
+              "methods": [
+                "getNotebookRuntimeTemplate"
+              ]
+            },
+            "UpdateNotebookRuntimeTemplate": {
+              "methods": [
+                "updateNotebookRuntimeTemplate"
+              ]
+            },
+            "GetNotebookRuntime": {
+              "methods": [
+                "getNotebookRuntime"
+              ]
+            },
+            "GetNotebookExecutionJob": {
+              "methods": [
+                "getNotebookExecutionJob"
+              ]
+            },
+            "CreateNotebookRuntimeTemplate": {
+              "methods": [
+                "createNotebookRuntimeTemplate"
+              ]
+            },
+            "DeleteNotebookRuntimeTemplate": {
+              "methods": [
+                "deleteNotebookRuntimeTemplate"
+              ]
+            },
+            "AssignNotebookRuntime": {
+              "methods": [
+                "assignNotebookRuntime"
+              ]
+            },
+            "DeleteNotebookRuntime": {
+              "methods": [
+                "deleteNotebookRuntime"
+              ]
+            },
+            "UpgradeNotebookRuntime": {
+              "methods": [
+                "upgradeNotebookRuntime"
+              ]
+            },
+            "StartNotebookRuntime": {
+              "methods": [
+                "startNotebookRuntime"
+              ]
+            },
+            "StopNotebookRuntime": {
+              "methods": [
+                "stopNotebookRuntime"
+              ]
+            },
+            "CreateNotebookExecutionJob": {
+              "methods": [
+                "createNotebookExecutionJob"
+              ]
+            },
+            "DeleteNotebookExecutionJob": {
+              "methods": [
+                "deleteNotebookExecutionJob"
+              ]
+            },
+            "ListNotebookRuntimeTemplates": {
+              "methods": [
+                "listNotebookRuntimeTemplates",
+                "listNotebookRuntimeTemplatesStream",
+                "listNotebookRuntimeTemplatesAsync"
+              ]
+            },
+            "ListNotebookRuntimes": {
+              "methods": [
+                "listNotebookRuntimes",
+                "listNotebookRuntimesStream",
+                "listNotebookRuntimesAsync"
+              ]
+            },
+            "ListNotebookExecutionJobs": {
+              "methods": [
+                "listNotebookExecutionJobs",
+                "listNotebookExecutionJobsStream",
+                "listNotebookExecutionJobsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "NotebookServiceClient",
+          "rpcs": {
+            "GetNotebookRuntimeTemplate": {
+              "methods": [
+                "getNotebookRuntimeTemplate"
+              ]
+            },
+            "UpdateNotebookRuntimeTemplate": {
+              "methods": [
+                "updateNotebookRuntimeTemplate"
+              ]
+            },
+            "GetNotebookRuntime": {
+              "methods": [
+                "getNotebookRuntime"
+              ]
+            },
+            "GetNotebookExecutionJob": {
+              "methods": [
+                "getNotebookExecutionJob"
+              ]
+            },
+            "CreateNotebookRuntimeTemplate": {
+              "methods": [
+                "createNotebookRuntimeTemplate"
+              ]
+            },
+            "DeleteNotebookRuntimeTemplate": {
+              "methods": [
+                "deleteNotebookRuntimeTemplate"
+              ]
+            },
+            "AssignNotebookRuntime": {
+              "methods": [
+                "assignNotebookRuntime"
+              ]
+            },
+            "DeleteNotebookRuntime": {
+              "methods": [
+                "deleteNotebookRuntime"
+              ]
+            },
+            "UpgradeNotebookRuntime": {
+              "methods": [
+                "upgradeNotebookRuntime"
+              ]
+            },
+            "StartNotebookRuntime": {
+              "methods": [
+                "startNotebookRuntime"
+              ]
+            },
+            "StopNotebookRuntime": {
+              "methods": [
+                "stopNotebookRuntime"
+              ]
+            },
+            "CreateNotebookExecutionJob": {
+              "methods": [
+                "createNotebookExecutionJob"
+              ]
+            },
+            "DeleteNotebookExecutionJob": {
+              "methods": [
+                "deleteNotebookExecutionJob"
+              ]
+            },
+            "ListNotebookRuntimeTemplates": {
+              "methods": [
+                "listNotebookRuntimeTemplates",
+                "listNotebookRuntimeTemplatesStream",
+                "listNotebookRuntimeTemplatesAsync"
+              ]
+            },
+            "ListNotebookRuntimes": {
+              "methods": [
+                "listNotebookRuntimes",
+                "listNotebookRuntimesStream",
+                "listNotebookRuntimesAsync"
+              ]
+            },
+            "ListNotebookExecutionJobs": {
+              "methods": [
+                "listNotebookExecutionJobs",
+                "listNotebookExecutionJobsStream",
+                "listNotebookExecutionJobsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "PersistentResourceService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "PersistentResourceServiceClient",
+          "rpcs": {
+            "GetPersistentResource": {
+              "methods": [
+                "getPersistentResource"
+              ]
+            },
+            "CreatePersistentResource": {
+              "methods": [
+                "createPersistentResource"
+              ]
+            },
+            "DeletePersistentResource": {
+              "methods": [
+                "deletePersistentResource"
+              ]
+            },
+            "UpdatePersistentResource": {
+              "methods": [
+                "updatePersistentResource"
+              ]
+            },
+            "RebootPersistentResource": {
+              "methods": [
+                "rebootPersistentResource"
+              ]
+            },
+            "ListPersistentResources": {
+              "methods": [
+                "listPersistentResources",
+                "listPersistentResourcesStream",
+                "listPersistentResourcesAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "PersistentResourceServiceClient",
+          "rpcs": {
+            "GetPersistentResource": {
+              "methods": [
+                "getPersistentResource"
+              ]
+            },
+            "CreatePersistentResource": {
+              "methods": [
+                "createPersistentResource"
+              ]
+            },
+            "DeletePersistentResource": {
+              "methods": [
+                "deletePersistentResource"
+              ]
+            },
+            "UpdatePersistentResource": {
+              "methods": [
+                "updatePersistentResource"
+              ]
+            },
+            "RebootPersistentResource": {
+              "methods": [
+                "rebootPersistentResource"
+              ]
+            },
+            "ListPersistentResources": {
+              "methods": [
+                "listPersistentResources",
+                "listPersistentResourcesStream",
+                "listPersistentResourcesAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "PipelineService": {
       "clients": {
         "grpc": {
@@ -1813,6 +2701,16 @@
                 "deletePipelineJob"
               ]
             },
+            "BatchDeletePipelineJobs": {
+              "methods": [
+                "batchDeletePipelineJobs"
+              ]
+            },
+            "BatchCancelPipelineJobs": {
+              "methods": [
+                "batchCancelPipelineJobs"
+              ]
+            },
             "ListTrainingPipelines": {
               "methods": [
                 "listTrainingPipelines",
@@ -1872,6 +2770,16 @@
                 "deletePipelineJob"
               ]
             },
+            "BatchDeletePipelineJobs": {
+              "methods": [
+                "batchDeletePipelineJobs"
+              ]
+            },
+            "BatchCancelPipelineJobs": {
+              "methods": [
+                "batchCancelPipelineJobs"
+              ]
+            },
             "ListTrainingPipelines": {
               "methods": [
                 "listTrainingPipelines",
@@ -1905,9 +2813,59 @@
                 "rawPredict"
               ]
             },
+            "DirectPredict": {
+              "methods": [
+                "directPredict"
+              ]
+            },
+            "DirectRawPredict": {
+              "methods": [
+                "directRawPredict"
+              ]
+            },
             "Explain": {
               "methods": [
                 "explain"
+              ]
+            },
+            "GenerateContent": {
+              "methods": [
+                "generateContent"
+              ]
+            },
+            "StreamRawPredict": {
+              "methods": [
+                "streamRawPredict"
+              ]
+            },
+            "StreamDirectPredict": {
+              "methods": [
+                "streamDirectPredict"
+              ]
+            },
+            "StreamDirectRawPredict": {
+              "methods": [
+                "streamDirectRawPredict"
+              ]
+            },
+            "StreamingPredict": {
+              "methods": [
+                "streamingPredict"
+              ]
+            },
+            "ServerStreamingPredict": {
+              "methods": [
+                "serverStreamingPredict"
+              ]
+            },
+            "StreamingRawPredict": {
+              "methods": [
+                "streamingRawPredict"
+              ]
+            },
+            "StreamGenerateContent": {
+              "methods": [
+                "streamGenerateContent"
               ]
             }
           }
@@ -1925,9 +2883,112 @@
                 "rawPredict"
               ]
             },
+            "DirectPredict": {
+              "methods": [
+                "directPredict"
+              ]
+            },
+            "DirectRawPredict": {
+              "methods": [
+                "directRawPredict"
+              ]
+            },
             "Explain": {
               "methods": [
                 "explain"
+              ]
+            },
+            "GenerateContent": {
+              "methods": [
+                "generateContent"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ScheduleService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "ScheduleServiceClient",
+          "rpcs": {
+            "CreateSchedule": {
+              "methods": [
+                "createSchedule"
+              ]
+            },
+            "GetSchedule": {
+              "methods": [
+                "getSchedule"
+              ]
+            },
+            "PauseSchedule": {
+              "methods": [
+                "pauseSchedule"
+              ]
+            },
+            "ResumeSchedule": {
+              "methods": [
+                "resumeSchedule"
+              ]
+            },
+            "UpdateSchedule": {
+              "methods": [
+                "updateSchedule"
+              ]
+            },
+            "DeleteSchedule": {
+              "methods": [
+                "deleteSchedule"
+              ]
+            },
+            "ListSchedules": {
+              "methods": [
+                "listSchedules",
+                "listSchedulesStream",
+                "listSchedulesAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "ScheduleServiceClient",
+          "rpcs": {
+            "CreateSchedule": {
+              "methods": [
+                "createSchedule"
+              ]
+            },
+            "GetSchedule": {
+              "methods": [
+                "getSchedule"
+              ]
+            },
+            "PauseSchedule": {
+              "methods": [
+                "pauseSchedule"
+              ]
+            },
+            "ResumeSchedule": {
+              "methods": [
+                "resumeSchedule"
+              ]
+            },
+            "UpdateSchedule": {
+              "methods": [
+                "updateSchedule"
+              ]
+            },
+            "DeleteSchedule": {
+              "methods": [
+                "deleteSchedule"
+              ]
+            },
+            "ListSchedules": {
+              "methods": [
+                "listSchedules",
+                "listSchedulesStream",
+                "listSchedulesAsync"
               ]
             }
           }
@@ -2015,6 +3076,11 @@
             "ReadTensorboardUsage": {
               "methods": [
                 "readTensorboardUsage"
+              ]
+            },
+            "ReadTensorboardSize": {
+              "methods": [
+                "readTensorboardSize"
               ]
             },
             "CreateTensorboardExperiment": {
@@ -2175,6 +3241,11 @@
             "ReadTensorboardUsage": {
               "methods": [
                 "readTensorboardUsage"
+              ]
+            },
+            "ReadTensorboardSize": {
+              "methods": [
+                "readTensorboardSize"
               ]
             },
             "CreateTensorboardExperiment": {

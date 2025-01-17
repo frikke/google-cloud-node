@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ function main(scope) {
    */
   // const query = 'abc123'
   /**
-   *  Number of results to return in a single search page.
+   *  Upper bound on the number of results you can get in a single response.
    *  Can't be negative or 0, defaults to 10 in this case.
    *  The maximum number is 1000. If exceeded, throws an "invalid argument"
    *  exception.
@@ -70,9 +70,23 @@ function main(scope) {
    *  * `relevance` that can only be descending
    *  * `last_modified_timestamp asc|desc` with descending (`desc`) as default
    *  * `default` that can only be descending
+   *  Search queries don't guarantee full recall. Results that match your query
+   *  might not be returned, even in subsequent result pages. Additionally,
+   *  returned (and not returned) results can vary if you repeat search queries.
+   *  If you are experiencing recall issues and you don't have to fetch the
+   *  results in any specific order, consider setting this parameter to
+   *  `default`.
    *  If this parameter is omitted, it defaults to the descending `relevance`.
    */
   // const orderBy = 'abc123'
+  /**
+   *  Optional. If set, use searchAll permission granted on organizations from
+   *  `include_org_ids` and projects from `include_project_ids` instead of the
+   *  fine grained per resource permissions when filtering the search results.
+   *  The only allowed `order_by` criteria for admin_search mode is `default`.
+   *  Using this flags guarantees a full recall of the search results.
+   */
+  // const adminSearch = true
 
   // Imports the Datacatalog library
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;
@@ -87,7 +101,7 @@ function main(scope) {
     };
 
     // Run request
-    const iterable = await datacatalogClient.searchCatalogAsync(request);
+    const iterable = datacatalogClient.searchCatalogAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

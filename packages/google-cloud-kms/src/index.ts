@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,12 +18,28 @@
 
 import * as v1 from './v1';
 
+const AutokeyClient = v1.AutokeyClient;
+type AutokeyClient = v1.AutokeyClient;
+const AutokeyAdminClient = v1.AutokeyAdminClient;
+type AutokeyAdminClient = v1.AutokeyAdminClient;
 const EkmServiceClient = v1.EkmServiceClient;
 type EkmServiceClient = v1.EkmServiceClient;
 const KeyManagementServiceClient = v1.KeyManagementServiceClient;
 type KeyManagementServiceClient = v1.KeyManagementServiceClient;
 
-export {v1, EkmServiceClient, KeyManagementServiceClient};
-export default {v1, EkmServiceClient, KeyManagementServiceClient};
+export {
+  v1,
+  AutokeyClient,
+  AutokeyAdminClient,
+  EkmServiceClient,
+  KeyManagementServiceClient,
+};
+export default {
+  v1,
+  AutokeyClient,
+  AutokeyAdminClient,
+  EkmServiceClient,
+  KeyManagementServiceClient,
+};
 import * as protos from '../protos/protos';
 export {protos};

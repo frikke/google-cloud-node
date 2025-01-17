@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,15 +33,16 @@ function main(parent) {
    *  `projects/{project}/locations/{location}/collections/{collection}/dataStores/{data_store}/branches/{branch}`.
    *  Use `default_branch` as the branch ID, to list documents under the default
    *  branch.
-   *  If the caller does not have permission to list Documents  s under this
-   *  branch, regardless of whether or not this branch exists, a
-   *  `PERMISSION_DENIED` error is returned.
+   *  If the caller does not have permission to list
+   *  Document google.cloud.discoveryengine.v1.Document s under this branch,
+   *  regardless of whether or not this branch exists, a `PERMISSION_DENIED`
+   *  error is returned.
    */
   // const parent = 'abc123'
   /**
    *  Maximum number of Document google.cloud.discoveryengine.v1.Document s to
    *  return. If unspecified, defaults to 100. The maximum allowed value is 1000.
-   *  Values above 1000 will be coerced to 1000.
+   *  Values above 1000 are set to 1000.
    *  If this field is negative, an `INVALID_ARGUMENT` error is returned.
    */
   // const pageSize = 1234
@@ -71,7 +72,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await discoveryengineClient.listDocumentsAsync(request);
+    const iterable = discoveryengineClient.listDocumentsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ function main(key) {
    */
   /**
    *  Required. The public key name linked to the requested secret key in the
-   *  format "projects/{project}/keys/{key}".
+   *  format `projects/{project}/keys/{key}`.
    */
   // const key = 'abc123'
 

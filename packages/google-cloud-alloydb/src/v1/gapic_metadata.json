@@ -20,9 +20,24 @@
                 "getInstance"
               ]
             },
+            "ExecuteSql": {
+              "methods": [
+                "executeSql"
+              ]
+            },
             "GetBackup": {
               "methods": [
                 "getBackup"
+              ]
+            },
+            "GenerateClientCertificate": {
+              "methods": [
+                "generateClientCertificate"
+              ]
+            },
+            "GetConnectionInfo": {
+              "methods": [
+                "getConnectionInfo"
               ]
             },
             "GetUser": {
@@ -63,6 +78,11 @@
             "PromoteCluster": {
               "methods": [
                 "promoteCluster"
+              ]
+            },
+            "SwitchoverCluster": {
+              "methods": [
+                "switchoverCluster"
               ]
             },
             "RestoreCluster": {
@@ -163,6 +183,13 @@
                 "listUsers",
                 "listUsersStream",
                 "listUsersAsync"
+              ]
+            },
+            "ListDatabases": {
+              "methods": [
+                "listDatabases",
+                "listDatabasesStream",
+                "listDatabasesAsync"
               ]
             }
           }
@@ -180,9 +207,24 @@
                 "getInstance"
               ]
             },
+            "ExecuteSql": {
+              "methods": [
+                "executeSql"
+              ]
+            },
             "GetBackup": {
               "methods": [
                 "getBackup"
+              ]
+            },
+            "GenerateClientCertificate": {
+              "methods": [
+                "generateClientCertificate"
+              ]
+            },
+            "GetConnectionInfo": {
+              "methods": [
+                "getConnectionInfo"
               ]
             },
             "GetUser": {
@@ -223,6 +265,11 @@
             "PromoteCluster": {
               "methods": [
                 "promoteCluster"
+              ]
+            },
+            "SwitchoverCluster": {
+              "methods": [
+                "switchoverCluster"
               ]
             },
             "RestoreCluster": {
@@ -323,6 +370,13 @@
                 "listUsers",
                 "listUsersStream",
                 "listUsersAsync"
+              ]
+            },
+            "ListDatabases": {
+              "methods": [
+                "listDatabases",
+                "listDatabasesStream",
+                "listDatabasesAsync"
               ]
             }
           }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ function main(name, size) {
    */
   // const requestId = 'abc123'
   /**
-   *  Optional. Timeout for graceful YARN decomissioning. Graceful
+   *  Optional. Timeout for graceful YARN decommissioning. Graceful
    *  decommissioning 
    *  (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/scaling-clusters#graceful_decommissioning)
    *  allows the removal of nodes from the Compute Engine node group

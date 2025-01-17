@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v3/test_cases_client_config.json`.
@@ -42,8 +43,8 @@ import * as gapicConfig from './test_cases_client_config.json';
 const version = require('../../../package.json').version;
 
 /**
- *  Service for managing {@link google.cloud.dialogflow.cx.v3.TestCase|Test Cases} and
- *  {@link google.cloud.dialogflow.cx.v3.TestCaseResult|Test Case Results}.
+ *  Service for managing {@link protos.google.cloud.dialogflow.cx.v3.TestCase|Test Cases} and
+ *  {@link protos.google.cloud.dialogflow.cx.v3.TestCaseResult|Test Case Results}.
  * @class
  * @memberof v3
  */
@@ -55,6 +56,8 @@ export class TestCasesClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -97,8 +100,7 @@ export class TestCasesClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -106,7 +108,7 @@ export class TestCasesClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new TestCasesClient({fallback: 'rest'}, gax);
+   *     const client = new TestCasesClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -115,8 +117,27 @@ export class TestCasesClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof TestCasesClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'dialogflow.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -131,7 +152,7 @@ export class TestCasesClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -156,10 +177,10 @@ export class TestCasesClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -169,14 +190,14 @@ export class TestCasesClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -191,6 +212,9 @@ export class TestCasesClient {
     this.pathTemplates = {
       agentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}'
+      ),
+      agentGenerativeSettingsPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/generativeSettings'
       ),
       agentValidationResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/validationResult'
@@ -219,6 +243,9 @@ export class TestCasesClient {
       flowValidationResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/validationResult'
       ),
+      generatorPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/generators/{generator}'
+      ),
       intentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/intents/{intent}'
       ),
@@ -235,9 +262,17 @@ export class TestCasesClient {
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/agents/{agent}/environments/{environment}/sessions/{session}/entityTypes/{entity_type}'
         ),
+      projectLocationAgentFlowTransitionRouteGroupPathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/transitionRouteGroups/{transition_route_group}'
+        ),
       projectLocationAgentSessionEntityTypePathTemplate:
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/agents/{agent}/sessions/{session}/entityTypes/{entity_type}'
+        ),
+      projectLocationAgentTransitionRouteGroupPathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/agents/{agent}/transitionRouteGroups/{transition_route_group}'
         ),
       securitySettingsPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/securitySettings/{security_settings}'
@@ -247,9 +282,6 @@ export class TestCasesClient {
       ),
       testCaseResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/testCases/{test_case}/results/{result}'
-      ),
-      transitionRouteGroupPathTemplate: new this._gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/transitionRouteGroups/{transition_route_group}'
       ),
       versionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/versions/{version}'
@@ -283,7 +315,7 @@ export class TestCasesClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -465,19 +497,50 @@ export class TestCasesClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -526,16 +589,15 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent to delete test cases from.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {string[]} request.names
-   *   Required. Format of test case names: `projects/<Project ID>/locations/
-   *   <Location ID>/agents/<AgentID>/testCases/<TestCase ID>`.
+   *   Required. Format of test case names:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.batch_delete_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_BatchDeleteTestCases_async
@@ -550,7 +612,7 @@ export class TestCasesClient {
         | protos.google.cloud.dialogflow.cx.v3.IBatchDeleteTestCasesRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchDeleteTestCases(
@@ -599,7 +661,7 @@ export class TestCasesClient {
         | protos.google.cloud.dialogflow.cx.v3.IBatchDeleteTestCasesRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -627,14 +689,13 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The name of the testcase.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/testCases/<TestCase ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.cx.v3.TestCase | TestCase}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.cx.v3.TestCase|TestCase}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.get_test_case.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_GetTestCase_async
@@ -646,7 +707,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase,
       protos.google.cloud.dialogflow.cx.v3.IGetTestCaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTestCase(
@@ -692,7 +753,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase,
       protos.google.cloud.dialogflow.cx.v3.IGetTestCaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -720,15 +781,14 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent to create the test case for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {google.cloud.dialogflow.cx.v3.TestCase} request.testCase
    *   Required. The test case to create.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.cx.v3.TestCase | TestCase}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.cx.v3.TestCase|TestCase}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.create_test_case.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_CreateTestCase_async
@@ -740,7 +800,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase,
       protos.google.cloud.dialogflow.cx.v3.ICreateTestCaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createTestCase(
@@ -786,7 +846,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase,
       protos.google.cloud.dialogflow.cx.v3.ICreateTestCaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -816,15 +876,14 @@ export class TestCasesClient {
    *   Required. The test case to update.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. The mask to specify which fields should be updated. The
-   *   {@link google.cloud.dialogflow.cx.v3.TestCase.creation_time|`creationTime`} and
-   *   {@link google.cloud.dialogflow.cx.v3.TestCase.last_test_result|`lastTestResult`}
+   *   {@link protos.google.cloud.dialogflow.cx.v3.TestCase.creation_time|`creationTime`} and
+   *   {@link protos.google.cloud.dialogflow.cx.v3.TestCase.last_test_result|`lastTestResult`}
    *   cannot be updated.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.cx.v3.TestCase | TestCase}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.cx.v3.TestCase|TestCase}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.update_test_case.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_UpdateTestCase_async
@@ -836,7 +895,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase,
       protos.google.cloud.dialogflow.cx.v3.IUpdateTestCaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateTestCase(
@@ -882,7 +941,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase,
       protos.google.cloud.dialogflow.cx.v3.IUpdateTestCaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -910,15 +969,14 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.agent
    *   Required. The agent to calculate coverage for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {google.cloud.dialogflow.cx.v3.CalculateCoverageRequest.CoverageType} request.type
    *   Required. The type of coverage requested.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.cx.v3.CalculateCoverageResponse | CalculateCoverageResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.cx.v3.CalculateCoverageResponse|CalculateCoverageResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.calculate_coverage.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_CalculateCoverage_async
@@ -933,7 +991,7 @@ export class TestCasesClient {
         | protos.google.cloud.dialogflow.cx.v3.ICalculateCoverageRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   calculateCoverage(
@@ -982,7 +1040,7 @@ export class TestCasesClient {
         | protos.google.cloud.dialogflow.cx.v3.ICalculateCoverageRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1010,14 +1068,13 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The name of the testcase.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/testCases/<TestCase ID>/results/<TestCaseResult ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>/results/<TestCaseResultID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.cx.v3.TestCaseResult | TestCaseResult}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.cx.v3.TestCaseResult|TestCaseResult}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.get_test_case_result.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_GetTestCaseResult_async
@@ -1032,7 +1089,7 @@ export class TestCasesClient {
         | protos.google.cloud.dialogflow.cx.v3.IGetTestCaseResultRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTestCaseResult(
@@ -1081,7 +1138,7 @@ export class TestCasesClient {
         | protos.google.cloud.dialogflow.cx.v3.IGetTestCaseResultRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1111,27 +1168,26 @@ export class TestCasesClient {
    * The returned `Operation` type has the following method-specific fields:
    *
    * - `metadata`:
-   * {@link google.cloud.dialogflow.cx.v3.RunTestCaseMetadata|RunTestCaseMetadata}
+   * {@link protos.google.cloud.dialogflow.cx.v3.RunTestCaseMetadata|RunTestCaseMetadata}
    * - `response`:
-   * {@link google.cloud.dialogflow.cx.v3.RunTestCaseResponse|RunTestCaseResponse}
+   * {@link protos.google.cloud.dialogflow.cx.v3.RunTestCaseResponse|RunTestCaseResponse}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
-   *   Required. Format of test case name to run: `projects/<Project
-   *   ID>/locations/ <Location ID>/agents/<AgentID>/testCases/<TestCase ID>`.
+   *   Required. Format of test case name to run:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
    * @param {string} [request.environment]
    *   Optional. Environment name. If not set, draft environment is assumed.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.run_test_case.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_RunTestCase_async
@@ -1146,7 +1202,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IRunTestCaseMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runTestCase(
@@ -1199,7 +1255,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IRunTestCaseMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1226,8 +1282,7 @@ export class TestCasesClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.run_test_case.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_RunTestCase_async
@@ -1263,30 +1318,28 @@ export class TestCasesClient {
    * The returned `Operation` type has the following method-specific fields:
    *
    * - `metadata`:
-   * {@link google.cloud.dialogflow.cx.v3.BatchRunTestCasesMetadata|BatchRunTestCasesMetadata}
+   * {@link protos.google.cloud.dialogflow.cx.v3.BatchRunTestCasesMetadata|BatchRunTestCasesMetadata}
    * - `response`:
-   * {@link google.cloud.dialogflow.cx.v3.BatchRunTestCasesResponse|BatchRunTestCasesResponse}
+   * {@link protos.google.cloud.dialogflow.cx.v3.BatchRunTestCasesResponse|BatchRunTestCasesResponse}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. Agent name. Format: `projects/<Project ID>/locations/<Location
-   *   ID>/agents/ <AgentID>`.
+   *   Required. Agent name. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {string} [request.environment]
    *   Optional. If not set, draft environment is assumed. Format:
-   *   `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {string[]} request.testCases
-   *   Required. Format: `projects/<Project ID>/locations/<Location
-   *   ID>/agents/<Agent ID>/testCases/<TestCase ID>`.
+   *   Required. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.batch_run_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_BatchRunTestCases_async
@@ -1301,7 +1354,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IBatchRunTestCasesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchRunTestCases(
@@ -1354,7 +1407,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IBatchRunTestCasesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1381,8 +1434,7 @@ export class TestCasesClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.batch_run_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_BatchRunTestCases_async
@@ -1420,15 +1472,15 @@ export class TestCasesClient {
    * The returned `Operation` type has the following method-specific fields:
    *
    * - `metadata`:
-   * {@link google.cloud.dialogflow.cx.v3.ImportTestCasesMetadata|ImportTestCasesMetadata}
+   * {@link protos.google.cloud.dialogflow.cx.v3.ImportTestCasesMetadata|ImportTestCasesMetadata}
    * - `response`:
-   * {@link google.cloud.dialogflow.cx.v3.ImportTestCasesResponse|ImportTestCasesResponse}
+   * {@link protos.google.cloud.dialogflow.cx.v3.ImportTestCasesResponse|ImportTestCasesResponse}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent to import test cases to.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {string} request.gcsUri
    *   The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI
    *   to import test cases from. The format of this URI must be
@@ -1447,8 +1499,7 @@ export class TestCasesClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.import_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_ImportTestCases_async
@@ -1463,7 +1514,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IImportTestCasesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   importTestCases(
@@ -1516,7 +1567,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IImportTestCasesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1543,8 +1594,7 @@ export class TestCasesClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.import_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_ImportTestCases_async
@@ -1581,15 +1631,15 @@ export class TestCasesClient {
    * The returned `Operation` type has the following method-specific fields:
    *
    * - `metadata`:
-   * {@link google.cloud.dialogflow.cx.v3.ExportTestCasesMetadata|ExportTestCasesMetadata}
+   * {@link protos.google.cloud.dialogflow.cx.v3.ExportTestCasesMetadata|ExportTestCasesMetadata}
    * - `response`:
-   * {@link google.cloud.dialogflow.cx.v3.ExportTestCasesResponse|ExportTestCasesResponse}
+   * {@link protos.google.cloud.dialogflow.cx.v3.ExportTestCasesResponse|ExportTestCasesResponse}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent where to export test cases from.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {string} request.gcsUri
    *   The [Google Cloud Storage](https://cloud.google.com/storage/docs/) URI to
    *   export the test cases to. The format of this URI must be
@@ -1621,8 +1671,7 @@ export class TestCasesClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.export_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_ExportTestCases_async
@@ -1637,7 +1686,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IExportTestCasesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   exportTestCases(
@@ -1690,7 +1739,7 @@ export class TestCasesClient {
         protos.google.cloud.dialogflow.cx.v3.IExportTestCasesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1717,8 +1766,7 @@ export class TestCasesClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.export_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_ExportTestCases_async
@@ -1753,7 +1801,7 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent to list all pages for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 20.
    *   Note that when TestCaseView = FULL, the maximum page size allowed is 20.
@@ -1765,14 +1813,13 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dialogflow.cx.v3.TestCase | TestCase}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dialogflow.cx.v3.TestCase|TestCase}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTestCasesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTestCases(
@@ -1782,7 +1829,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase[],
       protos.google.cloud.dialogflow.cx.v3.IListTestCasesRequest | null,
-      protos.google.cloud.dialogflow.cx.v3.IListTestCasesResponse
+      protos.google.cloud.dialogflow.cx.v3.IListTestCasesResponse,
     ]
   >;
   listTestCases(
@@ -1828,7 +1875,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCase[],
       protos.google.cloud.dialogflow.cx.v3.IListTestCasesRequest | null,
-      protos.google.cloud.dialogflow.cx.v3.IListTestCasesResponse
+      protos.google.cloud.dialogflow.cx.v3.IListTestCasesResponse,
     ]
   > | void {
     request = request || {};
@@ -1856,7 +1903,7 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent to list all pages for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 20.
    *   Note that when TestCaseView = FULL, the maximum page size allowed is 20.
@@ -1868,13 +1915,12 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dialogflow.cx.v3.TestCase | TestCase} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dialogflow.cx.v3.TestCase|TestCase} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTestCasesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTestCasesStream(
@@ -1907,7 +1953,7 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The agent to list all pages for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 20.
    *   Note that when TestCaseView = FULL, the maximum page size allowed is 20.
@@ -1919,12 +1965,11 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dialogflow.cx.v3.TestCase | TestCase}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dialogflow.cx.v3.TestCase|TestCase}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.list_test_cases.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_ListTestCases_async
@@ -1951,15 +1996,17 @@ export class TestCasesClient {
     ) as AsyncIterable<protos.google.cloud.dialogflow.cx.v3.ITestCase>;
   }
   /**
-   * Fetches a list of results for a given test case.
+   * Fetches the list of run results for the given test case. A maximum of 100
+   * results are kept for each test case.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The test case to list results for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   testCases/<TestCase ID>`. Specify a `-` as a wildcard for TestCase ID to
-   *   list results across multiple test cases.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
+   *   Specify a `-` as a wildcard for TestCase ID to
+   *    list results across multiple test cases.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1993,14 +2040,13 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dialogflow.cx.v3.TestCaseResult | TestCaseResult}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dialogflow.cx.v3.TestCaseResult|TestCaseResult}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTestCaseResultsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTestCaseResults(
@@ -2010,7 +2056,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCaseResult[],
       protos.google.cloud.dialogflow.cx.v3.IListTestCaseResultsRequest | null,
-      protos.google.cloud.dialogflow.cx.v3.IListTestCaseResultsResponse
+      protos.google.cloud.dialogflow.cx.v3.IListTestCaseResultsResponse,
     ]
   >;
   listTestCaseResults(
@@ -2056,7 +2102,7 @@ export class TestCasesClient {
     [
       protos.google.cloud.dialogflow.cx.v3.ITestCaseResult[],
       protos.google.cloud.dialogflow.cx.v3.IListTestCaseResultsRequest | null,
-      protos.google.cloud.dialogflow.cx.v3.IListTestCaseResultsResponse
+      protos.google.cloud.dialogflow.cx.v3.IListTestCaseResultsResponse,
     ]
   > | void {
     request = request || {};
@@ -2084,9 +2130,10 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The test case to list results for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   testCases/<TestCase ID>`. Specify a `-` as a wildcard for TestCase ID to
-   *   list results across multiple test cases.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
+   *   Specify a `-` as a wildcard for TestCase ID to
+   *    list results across multiple test cases.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -2120,13 +2167,12 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dialogflow.cx.v3.TestCaseResult | TestCaseResult} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dialogflow.cx.v3.TestCaseResult|TestCaseResult} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTestCaseResultsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTestCaseResultsStream(
@@ -2159,9 +2205,10 @@ export class TestCasesClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The test case to list results for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   testCases/<TestCase ID>`. Specify a `-` as a wildcard for TestCase ID to
-   *   list results across multiple test cases.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/testCases/<TestCaseID>`.
+   *   Specify a `-` as a wildcard for TestCase ID to
+   *    list results across multiple test cases.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -2195,12 +2242,11 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dialogflow.cx.v3.TestCaseResult | TestCaseResult}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dialogflow.cx.v3.TestCaseResult|TestCaseResult}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3/test_cases.list_test_case_results.js</caption>
    * region_tag:dialogflow_v3_generated_TestCases_ListTestCaseResults_async
@@ -2237,8 +2283,7 @@ export class TestCasesClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -2284,12 +2329,11 @@ export class TestCasesClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -2532,6 +2576,71 @@ export class TestCasesClient {
    */
   matchAgentFromAgentName(agentName: string) {
     return this.pathTemplates.agentPathTemplate.match(agentName).agent;
+  }
+
+  /**
+   * Return a fully-qualified agentGenerativeSettings resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @returns {string} Resource name string.
+   */
+  agentGenerativeSettingsPath(
+    project: string,
+    location: string,
+    agent: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+    });
+  }
+
+  /**
+   * Parse the project from AgentGenerativeSettings resource.
+   *
+   * @param {string} agentGenerativeSettingsName
+   *   A fully-qualified path representing AgentGenerativeSettings resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAgentGenerativeSettingsName(
+    agentGenerativeSettingsName: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.match(
+      agentGenerativeSettingsName
+    ).project;
+  }
+
+  /**
+   * Parse the location from AgentGenerativeSettings resource.
+   *
+   * @param {string} agentGenerativeSettingsName
+   *   A fully-qualified path representing AgentGenerativeSettings resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromAgentGenerativeSettingsName(
+    agentGenerativeSettingsName: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.match(
+      agentGenerativeSettingsName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from AgentGenerativeSettings resource.
+   *
+   * @param {string} agentGenerativeSettingsName
+   *   A fully-qualified path representing AgentGenerativeSettings resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromAgentGenerativeSettingsName(
+    agentGenerativeSettingsName: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.match(
+      agentGenerativeSettingsName
+    ).agent;
   }
 
   /**
@@ -3208,6 +3317,76 @@ export class TestCasesClient {
   }
 
   /**
+   * Return a fully-qualified generator resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} generator
+   * @returns {string} Resource name string.
+   */
+  generatorPath(
+    project: string,
+    location: string,
+    agent: string,
+    generator: string
+  ) {
+    return this.pathTemplates.generatorPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+      generator: generator,
+    });
+  }
+
+  /**
+   * Parse the project from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .location;
+  }
+
+  /**
+   * Parse the agent from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName).agent;
+  }
+
+  /**
+   * Parse the generator from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the generator.
+   */
+  matchGeneratorFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .generator;
+  }
+
+  /**
    * Return a fully-qualified intent resource name string.
    *
    * @param {string} project
@@ -3531,6 +3710,109 @@ export class TestCasesClient {
   }
 
   /**
+   * Return a fully-qualified projectLocationAgentFlowTransitionRouteGroup resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} flow
+   * @param {string} transition_route_group
+   * @returns {string} Resource name string.
+   */
+  projectLocationAgentFlowTransitionRouteGroupPath(
+    project: string,
+    location: string,
+    agent: string,
+    flow: string,
+    transitionRouteGroup: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.render(
+      {
+        project: project,
+        location: location,
+        agent: agent,
+        flow: flow,
+        transition_route_group: transitionRouteGroup,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).agent;
+  }
+
+  /**
+   * Parse the flow from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the flow.
+   */
+  matchFlowFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).flow;
+  }
+
+  /**
+   * Parse the transition_route_group from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the transition_route_group.
+   */
+  matchTransitionRouteGroupFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).transition_route_group;
+  }
+
+  /**
    * Return a fully-qualified projectLocationAgentSessionEntityType resource name string.
    *
    * @param {string} project
@@ -3631,6 +3913,91 @@ export class TestCasesClient {
     return this.pathTemplates.projectLocationAgentSessionEntityTypePathTemplate.match(
       projectLocationAgentSessionEntityTypeName
     ).entity_type;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationAgentTransitionRouteGroup resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} transition_route_group
+   * @returns {string} Resource name string.
+   */
+  projectLocationAgentTransitionRouteGroupPath(
+    project: string,
+    location: string,
+    agent: string,
+    transitionRouteGroup: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.render(
+      {
+        project: project,
+        location: location,
+        agent: agent,
+        transition_route_group: transitionRouteGroup,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).agent;
+  }
+
+  /**
+   * Parse the transition_route_group from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the transition_route_group.
+   */
+  matchTransitionRouteGroupFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).transition_route_group;
   }
 
   /**
@@ -3849,99 +4216,6 @@ export class TestCasesClient {
     return this.pathTemplates.testCaseResultPathTemplate.match(
       testCaseResultName
     ).result;
-  }
-
-  /**
-   * Return a fully-qualified transitionRouteGroup resource name string.
-   *
-   * @param {string} project
-   * @param {string} location
-   * @param {string} agent
-   * @param {string} flow
-   * @param {string} transition_route_group
-   * @returns {string} Resource name string.
-   */
-  transitionRouteGroupPath(
-    project: string,
-    location: string,
-    agent: string,
-    flow: string,
-    transitionRouteGroup: string
-  ) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.render({
-      project: project,
-      location: location,
-      agent: agent,
-      flow: flow,
-      transition_route_group: transitionRouteGroup,
-    });
-  }
-
-  /**
-   * Parse the project from TransitionRouteGroup resource.
-   *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the project.
-   */
-  matchProjectFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).project;
-  }
-
-  /**
-   * Parse the location from TransitionRouteGroup resource.
-   *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the location.
-   */
-  matchLocationFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).location;
-  }
-
-  /**
-   * Parse the agent from TransitionRouteGroup resource.
-   *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the agent.
-   */
-  matchAgentFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).agent;
-  }
-
-  /**
-   * Parse the flow from TransitionRouteGroup resource.
-   *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the flow.
-   */
-  matchFlowFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).flow;
-  }
-
-  /**
-   * Parse the transition_route_group from TransitionRouteGroup resource.
-   *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the transition_route_group.
-   */
-  matchTransitionRouteGroupFromTransitionRouteGroupName(
-    transitionRouteGroupName: string
-  ) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).transition_route_group;
   }
 
   /**

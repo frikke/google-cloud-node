@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ function main() {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  A Google Analytics GA4 property identifier whose events are tracked.
+   *  A Google Analytics property identifier whose events are tracked.
    *  Specified in the URL path and not the body. To learn more, see where to
    *  find your Property
    *  ID (https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -41,11 +41,11 @@ function main() {
   /**
    *  The dimensions requested and displayed.
    */
-  // const dimensions = 1234
+  // const dimensions = [1,2,3,4]
   /**
    *  The metrics requested and displayed.
    */
-  // const metrics = 1234
+  // const metrics = [1,2,3,4]
   /**
    *  Date ranges of data to read. If multiple date ranges are requested, each
    *  response row will contain a zero based date range index. If two date
@@ -53,9 +53,9 @@ function main() {
    *  response rows for both date ranges. In a cohort request, this `dateRanges`
    *  must be unspecified.
    */
-  // const dateRanges = 1234
+  // const dateRanges = [1,2,3,4]
   /**
-   *  Dimension filters allow you to ask for only specific dimension values in
+   *  Dimension filters let you ask for only specific dimension values in
    *  the report. To learn more, see Fundamentals of Dimension
    *  Filters (https://developers.google.com/analytics/devguides/reporting/data/v1/basics#dimension_filters)
    *  for examples. Metrics cannot be used in this filter.
@@ -78,7 +78,7 @@ function main() {
   // const offset = 1234
   /**
    *  The number of rows to return. If unspecified, 10,000 rows are returned. The
-   *  API returns a maximum of 100,000 rows per request, no matter how many you
+   *  API returns a maximum of 250,000 rows per request, no matter how many you
    *  ask for. `limit` must be positive.
    *  The API can also return fewer rows than the requested `limit`, if there
    *  aren't as many dimension values as the `limit`. For instance, there are
@@ -92,12 +92,16 @@ function main() {
   /**
    *  Aggregation of metrics. Aggregated metric values will be shown in rows
    *  where the dimension_values are set to "RESERVED_(MetricAggregation)".
+   *  Aggregates including both comparisons and multiple date ranges will
+   *  be aggregated based on the date ranges.
    */
-  // const metricAggregations = 1234
+  // const metricAggregations = [1,2,3,4]
   /**
    *  Specifies how rows are ordered in the response.
+   *  Requests including both comparisons and multiple date ranges will
+   *  have order bys applied on the comparisons.
    */
-  // const orderBys = 1234
+  // const orderBys = [1,2,3,4]
   /**
    *  A currency code in ISO4217 format, such as "AED", "USD", "JPY".
    *  If the field is empty, the report uses the property's default currency.
@@ -112,13 +116,24 @@ function main() {
    *  If false or unspecified, each row with all metrics equal to 0 will not be
    *  returned. If true, these rows will be returned if they are not separately
    *  removed by a filter.
+   *  Regardless of this `keep_empty_rows` setting, only data recorded by the
+   *  Google Analytics property can be displayed in a report.
+   *  For example if a property never logs a `purchase` event, then a query for
+   *  the `eventName` dimension and  `eventCount` metric will not have a row
+   *  eventName: "purchase" and eventCount: 0.
    */
   // const keepEmptyRows = true
   /**
-   *  Toggles whether to return the current state of this Analytics Property's
-   *  quota. Quota is returned in PropertyQuota (#PropertyQuota).
+   *  Toggles whether to return the current state of this Google Analytics
+   *  property's quota. Quota is returned in PropertyQuota (#PropertyQuota).
    */
   // const returnPropertyQuota = true
+  /**
+   *  Optional. The configuration of comparisons requested and displayed. The
+   *  request only requires a comparisons field in order to receive a comparison
+   *  column in the response.
+   */
+  // const comparisons = [1,2,3,4]
 
   // Imports the Data library
   const {BetaAnalyticsDataClient} = require('@google-analytics/data').v1beta;

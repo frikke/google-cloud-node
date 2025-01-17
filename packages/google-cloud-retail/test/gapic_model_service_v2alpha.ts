@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -166,16 +166,94 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v2alpha.ModelServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        modelserviceModule.v2alpha.ModelServiceClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new modelserviceModule.v2alpha.ModelServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'retail.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        modelserviceModule.v2alpha.ModelServiceClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new modelserviceModule.v2alpha.ModelServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          modelserviceModule.v2alpha.ModelServiceClient.servicePath;
+        assert.strictEqual(servicePath, 'retail.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          modelserviceModule.v2alpha.ModelServiceClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'retail.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new modelserviceModule.v2alpha.ModelServiceClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'retail.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new modelserviceModule.v2alpha.ModelServiceClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'retail.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new modelserviceModule.v2alpha.ModelServiceClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'retail.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new modelserviceModule.v2alpha.ModelServiceClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'retail.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new modelserviceModule.v2alpha.ModelServiceClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -1457,9 +1535,9 @@ describe('v2alpha.ModelServiceClient', () => {
       assert(
         (client.descriptors.page.listModels.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1508,9 +1586,9 @@ describe('v2alpha.ModelServiceClient', () => {
       assert(
         (client.descriptors.page.listModels.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1551,9 +1629,9 @@ describe('v2alpha.ModelServiceClient', () => {
       assert(
         (client.descriptors.page.listModels.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1593,9 +1671,9 @@ describe('v2alpha.ModelServiceClient', () => {
       assert(
         (client.descriptors.page.listModels.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -2104,6 +2182,44 @@ describe('v2alpha.ModelServiceClient', () => {
   });
 
   describe('Path templates', () => {
+    describe('alertConfig', () => {
+      const fakePath = '/rendered/path/alertConfig';
+      const expectedParameters = {
+        project: 'projectValue',
+      };
+      const client = new modelserviceModule.v2alpha.ModelServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.alertConfigPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.alertConfigPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('alertConfigPath', () => {
+        const result = client.alertConfigPath('projectValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.alertConfigPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromAlertConfigName', () => {
+        const result = client.matchProjectFromAlertConfigName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.alertConfigPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('attributesConfig', () => {
       const fakePath = '/rendered/path/attributesConfig';
       const expectedParameters = {
@@ -2165,6 +2281,82 @@ describe('v2alpha.ModelServiceClient', () => {
         assert.strictEqual(result, 'catalogValue');
         assert(
           (client.pathTemplates.attributesConfigPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('branch', () => {
+      const fakePath = '/rendered/path/branch';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        catalog: 'catalogValue',
+        branch: 'branchValue',
+      };
+      const client = new modelserviceModule.v2alpha.ModelServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.branchPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.branchPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('branchPath', () => {
+        const result = client.branchPath(
+          'projectValue',
+          'locationValue',
+          'catalogValue',
+          'branchValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.branchPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromBranchName', () => {
+        const result = client.matchProjectFromBranchName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.branchPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromBranchName', () => {
+        const result = client.matchLocationFromBranchName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.branchPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchCatalogFromBranchName', () => {
+        const result = client.matchCatalogFromBranchName(fakePath);
+        assert.strictEqual(result, 'catalogValue');
+        assert(
+          (client.pathTemplates.branchPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchBranchFromBranchName', () => {
+        const result = client.matchBranchFromBranchName(fakePath);
+        assert.strictEqual(result, 'branchValue');
+        assert(
+          (client.pathTemplates.branchPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );
@@ -2372,6 +2564,44 @@ describe('v2alpha.ModelServiceClient', () => {
         assert.strictEqual(result, 'controlValue');
         assert(
           (client.pathTemplates.controlPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('loggingConfig', () => {
+      const fakePath = '/rendered/path/loggingConfig';
+      const expectedParameters = {
+        project: 'projectValue',
+      };
+      const client = new modelserviceModule.v2alpha.ModelServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.loggingConfigPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.loggingConfigPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('loggingConfigPath', () => {
+        const result = client.loggingConfigPath('projectValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.loggingConfigPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromLoggingConfigName', () => {
+        const result = client.matchProjectFromLoggingConfigName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.loggingConfigPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );
@@ -2633,6 +2863,44 @@ describe('v2alpha.ModelServiceClient', () => {
         assert.strictEqual(result, 'productValue');
         assert(
           (client.pathTemplates.productPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('retailProject', () => {
+      const fakePath = '/rendered/path/retailProject';
+      const expectedParameters = {
+        project: 'projectValue',
+      };
+      const client = new modelserviceModule.v2alpha.ModelServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.retailProjectPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.retailProjectPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('retailProjectPath', () => {
+        const result = client.retailProjectPath('projectValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.retailProjectPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromRetailProjectName', () => {
+        const result = client.matchProjectFromRetailProjectName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.retailProjectPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );

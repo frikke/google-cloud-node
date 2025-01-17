@@ -2,7 +2,7 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Google Cloud Dataproc: Node.js Client](https://github.com/googleapis/google-cloud-node)
+# [Google Cloud Dataproc: Node.js Client](https://github.com/googleapis/google-cloud-node/tree/main/packages/google-cloud-dataproc)
 
 [![release level](https://img.shields.io/badge/release%20level-stable-brightgreen.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
 [![npm version](https://img.shields.io/npm/v/@google-cloud/dataproc.svg)](https://www.npmjs.org/package/@google-cloud/dataproc)
@@ -44,7 +44,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 1.  [Select or create a Cloud Platform project][projects].
 1.  [Enable billing for your project][billing].
 1.  [Enable the Google Cloud Dataproc API][enable_api].
-1.  [Set up authentication with a service account][auth] so you can access the
+1.  [Set up authentication][auth] so you can access the
     API from your local workstation.
 
 ### Installing the client library
@@ -57,114 +57,66 @@ npm install @google-cloud/dataproc
 ### Using the client library
 
 ```javascript
-// This quickstart sample walks a user through creating a Dataproc
-// cluster, submitting a PySpark job from Google Cloud Storage to the
-// cluster, reading the output of the job and deleting the cluster, all
-// using the Node.js client library.
+/**
+ * TODO(developer): Uncomment these variables before running the sample.
+ */
+/**
+ *  Required. The ID of the Google Cloud Platform project that the cluster
+ *  belongs to.
+ */
+// const projectId = 'abc123'
+/**
+ *  Required. The Dataproc region in which to handle the request.
+ */
+// const region = 'us-central1'
+/**
+ *  Optional. A filter constraining the clusters to list. Filters are
+ *  case-sensitive and have the following syntax:
+ *  field = value AND field = value   ...
+ *  where **field** is one of `status.state`, `clusterName`, or `labels.KEY`,
+ *  and `[KEY]` is a label key. **value** can be `*` to match all values.
+ *  `status.state` can be one of the following: `ACTIVE`, `INACTIVE`,
+ *  `CREATING`, `RUNNING`, `ERROR`, `DELETING`, or `UPDATING`. `ACTIVE`
+ *  contains the `CREATING`, `UPDATING`, and `RUNNING` states. `INACTIVE`
+ *  contains the `DELETING` and `ERROR` states.
+ *  `clusterName` is the name of the cluster provided at creation time.
+ *  Only the logical `AND` operator is supported; space-separated items are
+ *  treated as having an implicit `AND` operator.
+ *  Example filter:
+ *  status.state = ACTIVE AND clusterName = mycluster
+ *  AND labels.env = staging AND labels.starred = *
+ */
+// const filter = 'abc123'
+/**
+ *  Optional. The standard List page size.
+ */
+// const pageSize = 1234
+/**
+ *  Optional. The standard List page token.
+ */
+// const pageToken = 'abc123'
 
-'use strict';
+// Imports the Dataproc library
+const {ClusterControllerClient} = require('@google-cloud/dataproc').v1;
 
-function main(projectId, region, clusterName, jobFilePath) {
-  const dataproc = require('@google-cloud/dataproc');
-  const {Storage} = require('@google-cloud/storage');
+// Instantiates a client
+const dataprocClient = new ClusterControllerClient();
 
-  // Create a cluster client with the endpoint set to the desired cluster region
-  const clusterClient = new dataproc.v1.ClusterControllerClient({
-    apiEndpoint: `${region}-dataproc.googleapis.com`,
-    projectId: projectId,
-  });
+async function callListClusters() {
+  // Construct request
+  const request = {
+    projectId,
+    region,
+  };
 
-  // Create a job client with the endpoint set to the desired cluster region
-  const jobClient = new dataproc.v1.JobControllerClient({
-    apiEndpoint: `${region}-dataproc.googleapis.com`,
-    projectId: projectId,
-  });
-
-  async function quickstart() {
-    // Create the cluster config
-    const cluster = {
-      projectId: projectId,
-      region: region,
-      cluster: {
-        clusterName: clusterName,
-        config: {
-          masterConfig: {
-            numInstances: 1,
-            machineTypeUri: 'n1-standard-2',
-          },
-          workerConfig: {
-            numInstances: 2,
-            machineTypeUri: 'n1-standard-2',
-          },
-        },
-      },
-    };
-
-    // Create the cluster
-    const [operation] = await clusterClient.createCluster(cluster);
-    const [response] = await operation.promise();
-
-    // Output a success message
-    console.log(`Cluster created successfully: ${response.clusterName}`);
-
-    const job = {
-      projectId: projectId,
-      region: region,
-      job: {
-        placement: {
-          clusterName: clusterName,
-        },
-        pysparkJob: {
-          mainPythonFileUri: jobFilePath,
-        },
-      },
-    };
-
-    const [jobOperation] = await jobClient.submitJobAsOperation(job);
-    const [jobResponse] = await jobOperation.promise();
-
-    const matches =
-      jobResponse.driverOutputResourceUri.match('gs://(.*?)/(.*)');
-
-    const storage = new Storage();
-
-    const output = await storage
-      .bucket(matches[1])
-      .file(`${matches[2]}.000000000`)
-      .download();
-
-    // Output a success message.
-    console.log(`Job finished successfully: ${output}`);
-
-    // Delete the cluster once the job has terminated.
-    const deleteClusterReq = {
-      projectId: projectId,
-      region: region,
-      clusterName: clusterName,
-    };
-
-    const [deleteOperation] = await clusterClient.deleteCluster(
-      deleteClusterReq
-    );
-    await deleteOperation.promise();
-
-    // Output a success message
-    console.log(`Cluster ${clusterName} successfully deleted.`);
+  // Run request
+  const iterable = dataprocClient.listClustersAsync(request);
+  for await (const response of iterable) {
+    console.log(response);
   }
-
-  quickstart();
 }
 
-const args = process.argv.slice(2);
-
-if (args.length !== 4) {
-  console.log(
-    'Insufficient number of parameters provided. Please make sure a ' +
-      'PROJECT_ID, REGION, CLUSTER_NAME and JOB_FILE_PATH are provided, in this order.'
-  );
-}
-
-main(...args);
+callListClusters();
 
 ```
 
@@ -172,47 +124,55 @@ main(...args);
 
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-node/tree/main/samples) directory. Each sample's `README.md` has instructions for running its sample.
+Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-node/tree/main/packages/google-cloud-dataproc/samples) directory. Each sample's `README.md` has instructions for running its sample.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-| Autoscaling_policy_service.create_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.create_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.create_autoscaling_policy.js,samples/README.md) |
-| Autoscaling_policy_service.delete_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.delete_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.delete_autoscaling_policy.js,samples/README.md) |
-| Autoscaling_policy_service.get_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.get_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.get_autoscaling_policy.js,samples/README.md) |
-| Autoscaling_policy_service.list_autoscaling_policies | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.list_autoscaling_policies.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.list_autoscaling_policies.js,samples/README.md) |
-| Autoscaling_policy_service.update_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.update_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.update_autoscaling_policy.js,samples/README.md) |
-| Batch_controller.create_batch | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.create_batch.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.create_batch.js,samples/README.md) |
-| Batch_controller.delete_batch | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.delete_batch.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.delete_batch.js,samples/README.md) |
-| Batch_controller.get_batch | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.get_batch.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.get_batch.js,samples/README.md) |
-| Batch_controller.list_batches | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.list_batches.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.list_batches.js,samples/README.md) |
-| Cluster_controller.create_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.create_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.create_cluster.js,samples/README.md) |
-| Cluster_controller.delete_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.delete_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.delete_cluster.js,samples/README.md) |
-| Cluster_controller.diagnose_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.diagnose_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.diagnose_cluster.js,samples/README.md) |
-| Cluster_controller.get_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.get_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.get_cluster.js,samples/README.md) |
-| Cluster_controller.list_clusters | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.list_clusters.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.list_clusters.js,samples/README.md) |
-| Cluster_controller.start_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.start_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.start_cluster.js,samples/README.md) |
-| Cluster_controller.stop_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.stop_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.stop_cluster.js,samples/README.md) |
-| Cluster_controller.update_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.update_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.update_cluster.js,samples/README.md) |
-| Job_controller.cancel_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.cancel_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.cancel_job.js,samples/README.md) |
-| Job_controller.delete_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.delete_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.delete_job.js,samples/README.md) |
-| Job_controller.get_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.get_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.get_job.js,samples/README.md) |
-| Job_controller.list_jobs | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.list_jobs.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.list_jobs.js,samples/README.md) |
-| Job_controller.submit_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job.js,samples/README.md) |
-| Job_controller.submit_job_as_operation | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job_as_operation.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job_as_operation.js,samples/README.md) |
-| Job_controller.update_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.update_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.update_job.js,samples/README.md) |
-| Node_group_controller.create_node_group | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.create_node_group.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.create_node_group.js,samples/README.md) |
-| Node_group_controller.get_node_group | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.get_node_group.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.get_node_group.js,samples/README.md) |
-| Node_group_controller.resize_node_group | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.resize_node_group.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.resize_node_group.js,samples/README.md) |
-| Workflow_template_service.create_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.create_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.create_workflow_template.js,samples/README.md) |
-| Workflow_template_service.delete_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.delete_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.delete_workflow_template.js,samples/README.md) |
-| Workflow_template_service.get_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.get_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.get_workflow_template.js,samples/README.md) |
-| Workflow_template_service.instantiate_inline_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_inline_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_inline_workflow_template.js,samples/README.md) |
-| Workflow_template_service.instantiate_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_workflow_template.js,samples/README.md) |
-| Workflow_template_service.list_workflow_templates | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.list_workflow_templates.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.list_workflow_templates.js,samples/README.md) |
-| Workflow_template_service.update_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.update_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.update_workflow_template.js,samples/README.md) |
-| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/quickstart.js,samples/README.md) |
-| Quickstart.test | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/test/quickstart.test.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/test/quickstart.test.js,samples/README.md) |
-| Util | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/test/util.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/test/util.js,samples/README.md) |
+| Autoscaling_policy_service.create_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.create_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.create_autoscaling_policy.js,packages/google-cloud-dataproc/samples/README.md) |
+| Autoscaling_policy_service.delete_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.delete_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.delete_autoscaling_policy.js,packages/google-cloud-dataproc/samples/README.md) |
+| Autoscaling_policy_service.get_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.get_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.get_autoscaling_policy.js,packages/google-cloud-dataproc/samples/README.md) |
+| Autoscaling_policy_service.list_autoscaling_policies | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.list_autoscaling_policies.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.list_autoscaling_policies.js,packages/google-cloud-dataproc/samples/README.md) |
+| Autoscaling_policy_service.update_autoscaling_policy | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.update_autoscaling_policy.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/autoscaling_policy_service.update_autoscaling_policy.js,packages/google-cloud-dataproc/samples/README.md) |
+| Batch_controller.create_batch | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.create_batch.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.create_batch.js,packages/google-cloud-dataproc/samples/README.md) |
+| Batch_controller.delete_batch | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.delete_batch.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.delete_batch.js,packages/google-cloud-dataproc/samples/README.md) |
+| Batch_controller.get_batch | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.get_batch.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.get_batch.js,packages/google-cloud-dataproc/samples/README.md) |
+| Batch_controller.list_batches | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/batch_controller.list_batches.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/batch_controller.list_batches.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.create_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.create_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.create_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.delete_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.delete_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.delete_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.diagnose_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.diagnose_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.diagnose_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.get_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.get_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.get_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.list_clusters | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.list_clusters.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.list_clusters.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.start_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.start_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.start_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.stop_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.stop_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.stop_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Cluster_controller.update_cluster | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.update_cluster.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/cluster_controller.update_cluster.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.cancel_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.cancel_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.cancel_job.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.delete_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.delete_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.delete_job.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.get_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.get_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.get_job.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.list_jobs | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.list_jobs.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.list_jobs.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.submit_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.submit_job_as_operation | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job_as_operation.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.submit_job_as_operation.js,packages/google-cloud-dataproc/samples/README.md) |
+| Job_controller.update_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/job_controller.update_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/job_controller.update_job.js,packages/google-cloud-dataproc/samples/README.md) |
+| Node_group_controller.create_node_group | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.create_node_group.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.create_node_group.js,packages/google-cloud-dataproc/samples/README.md) |
+| Node_group_controller.get_node_group | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.get_node_group.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.get_node_group.js,packages/google-cloud-dataproc/samples/README.md) |
+| Node_group_controller.resize_node_group | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.resize_node_group.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/node_group_controller.resize_node_group.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_controller.create_session | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_controller.create_session.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_controller.create_session.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_controller.delete_session | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_controller.delete_session.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_controller.delete_session.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_controller.get_session | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_controller.get_session.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_controller.get_session.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_controller.list_sessions | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_controller.list_sessions.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_controller.list_sessions.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_controller.terminate_session | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_controller.terminate_session.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_controller.terminate_session.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_template_controller.create_session_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.create_session_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.create_session_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_template_controller.delete_session_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.delete_session_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.delete_session_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_template_controller.get_session_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.get_session_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.get_session_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_template_controller.list_session_templates | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.list_session_templates.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.list_session_templates.js,packages/google-cloud-dataproc/samples/README.md) |
+| Session_template_controller.update_session_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.update_session_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/session_template_controller.update_session_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.create_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.create_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.create_workflow_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.delete_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.delete_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.delete_workflow_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.get_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.get_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.get_workflow_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.instantiate_inline_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_inline_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_inline_workflow_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.instantiate_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.instantiate_workflow_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.list_workflow_templates | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.list_workflow_templates.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.list_workflow_templates.js,packages/google-cloud-dataproc/samples/README.md) |
+| Workflow_template_service.update_workflow_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.update_workflow_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/generated/v1/workflow_template_service.update_workflow_template.js,packages/google-cloud-dataproc/samples/README.md) |
+| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-dataproc/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-dataproc/samples/quickstart.js,packages/google-cloud-dataproc/samples/README.md) |
 
 
 
@@ -221,7 +181,7 @@ also contains samples.
 
 ## Supported Node.js Versions
 
-Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/).
+Our client libraries follow the [Node.js release schedule](https://github.com/nodejs/release#release-schedule).
 Libraries are compatible with all current _active_ and _maintenance_ versions of
 Node.js.
 If you are using an end-of-life version of Node.js, we recommend that you update
@@ -282,4 +242,4 @@ See [LICENSE](https://github.com/googleapis/google-cloud-node/blob/main/LICENSE)
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=dataproc.googleapis.com
-[auth]: https://cloud.google.com/docs/authentication/getting-started
+[auth]: https://cloud.google.com/docs/authentication/external/set-up-adc-local

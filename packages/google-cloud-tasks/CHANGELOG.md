@@ -4,6 +4,118 @@
 
 [1]: https://www.npmjs.com/package/nodejs-tasks?activeTab=versions
 
+## [5.5.2](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.5.1...tasks-v5.5.2) (2024-12-18)
+
+
+### Bug Fixes
+
+* Update proto import path ([#5878](https://github.com/googleapis/google-cloud-node/issues/5878)) ([8c8481a](https://github.com/googleapis/google-cloud-node/commit/8c8481a1a825d587ed0ca9957ea81ad94b14e772))
+
+## [5.5.1](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.5.0...tasks-v5.5.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* Remove extra protos file ([#5696](https://github.com/googleapis/google-cloud-node/issues/5696)) ([4676845](https://github.com/googleapis/google-cloud-node/commit/4676845917595486602363397352b393eedc587a))
+
+## [5.5.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.4.0...tasks-v5.5.0) (2024-07-22)
+
+
+### Features
+
+* Capture esm usage in Cloud Tasks ([#5541](https://github.com/googleapis/google-cloud-node/issues/5541)) ([685a710](https://github.com/googleapis/google-cloud-node/commit/685a710c5a091b3626c2e59219faf26515e92a30))
+
+## [5.4.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.3.0...tasks-v5.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.2.1...tasks-v5.3.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5191](https://github.com/googleapis/google-cloud-node/issues/5191)) ([57567db](https://github.com/googleapis/google-cloud-node/commit/57567db36033ca53ae2f54e6517b8cd12145bb82))
+
+## [5.2.1](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.2.0...tasks-v5.2.1) (2024-03-26)
+
+
+### Bug Fixes
+
+* [tasks] issue with ambiguous naming in protos ([#5173](https://github.com/googleapis/google-cloud-node/issues/5173)) ([28e1ffd](https://github.com/googleapis/google-cloud-node/commit/28e1ffd2cf64aafe72d4f993fa0b313722682c04))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.1.1...tasks-v5.2.0) (2024-03-23)
+
+
+### Features
+
+* Add initial files for google.chat.v1 ([#5091](https://github.com/googleapis/google-cloud-node/issues/5091)) ([0aab044](https://github.com/googleapis/google-cloud-node/commit/0aab0441677cb4cc037c2adc08b10f3556e9f459))
+
+## [5.1.1](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.1.0...tasks-v5.1.1) (2024-02-27)
+
+
+### Bug Fixes
+
+* [tasks] Add client library version to headers ([#5083](https://github.com/googleapis/google-cloud-node/issues/5083)) ([411e8eb](https://github.com/googleapis/google-cloud-node/commit/411e8eb9d577c92505a1b0e6845b9ece277280e7))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v5.0.0...tasks-v5.1.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5028](https://github.com/googleapis/google-cloud-node/issues/5028)) ([852f3eb](https://github.com/googleapis/google-cloud-node/commit/852f3ebf065ee24e910580b9a1fc365acb3a744a))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v4.1.0...tasks-v5.0.0) (2024-01-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* [tasks] publish in ESM and CJS, and remove bufferTask ([#4952](https://github.com/googleapis/google-cloud-node/issues/4952))
+
+### Features
+
+* [tasks] publish in ESM and CJS, and remove bufferTask ([#4952](https://github.com/googleapis/google-cloud-node/issues/4952)) ([2aa0e2e](https://github.com/googleapis/google-cloud-node/commit/2aa0e2ef432b5803fda0a5dc775f1ad78ee4a9df))
+
+## [4.1.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v4.0.1...tasks-v4.1.0) (2023-11-30)
+
+
+### Features
+
+* [tasks] publish cloud tasks in esm and cjs ([#4720](https://github.com/googleapis/google-cloud-node/issues/4720)) ([6773a05](https://github.com/googleapis/google-cloud-node/commit/6773a05ce96d64e4a1034e8b63ef6ec0d6688fd2))
+
+## [4.0.1](https://github.com/googleapis/google-cloud-node/compare/tasks-v4.0.0...tasks-v4.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4588](https://github.com/googleapis/google-cloud-node/issues/4588)) ([e5ad564](https://github.com/googleapis/google-cloud-node/commit/e5ad564f74dc7a36c0e8cd8de173428a99f1deae))
+
+## [4.0.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v3.2.0...tasks-v4.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [tasks] fix typings for IAM methods ([#4444](https://github.com/googleapis/google-cloud-node/issues/4444)) ([9264e87](https://github.com/googleapis/google-cloud-node/commit/9264e8750b6cdea691182f23ac8c2b0d65f2ea5e))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/tasks-v3.1.2...tasks-v3.2.0) (2023-07-24)
+
+
+### Features
+
+* [tasks] increase timeout of RPC methods to 20s for v2 ([#4425](https://github.com/googleapis/google-cloud-node/issues/4425)) ([dcb6f87](https://github.com/googleapis/google-cloud-node/commit/dcb6f87303bea503867b5ccc5af9c57d0c2f993e))
+
 ## [3.1.2](https://github.com/googleapis/google-cloud-node/compare/tasks-v3.1.1...tasks-v3.1.2) (2023-04-13)
 
 

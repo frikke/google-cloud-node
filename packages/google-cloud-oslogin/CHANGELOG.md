@@ -4,6 +4,77 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/os-login?activeTab=versions
 
+## [5.7.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.6.0...os-login-v5.7.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [5.6.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.5.0...os-login-v5.6.0) (2024-04-05)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5190](https://github.com/googleapis/google-cloud-node/issues/5190)) ([b569fbe](https://github.com/googleapis/google-cloud-node/commit/b569fbe1472d0fd71c1bfb58d0b1661814ac5727))
+
+## [5.5.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.4.0...os-login-v5.5.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5026](https://github.com/googleapis/google-cloud-node/issues/5026)) ([43acd89](https://github.com/googleapis/google-cloud-node/commit/43acd893e6c428f219d62f0c4264e4db78b99f99))
+
+## [5.4.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.3.0...os-login-v5.4.0) (2024-01-15)
+
+
+### Features
+
+* [oslogin] added field `ImportSshPublicKeyRequest.regions` ([#4932](https://github.com/googleapis/google-cloud-node/issues/4932)) ([d616394](https://github.com/googleapis/google-cloud-node/commit/d6163943c796278f130aa3c30b18a24f6a5ae2c2))
+
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.2.0...os-login-v5.3.0) (2023-10-24)
+
+
+### Features
+
+* [oslogin] location-based HTTP binding for SignSshPublicKey ([#4741](https://github.com/googleapis/google-cloud-node/issues/4741)) ([d119ad9](https://github.com/googleapis/google-cloud-node/commit/d119ad98bb991b88d1f56a517888446275a6d49a))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.1.0...os-login-v5.2.0) (2023-10-18)
+
+
+### Features
+
+* [oslogin] added SecurityKey.device_nickname ([#4723](https://github.com/googleapis/google-cloud-node/issues/4723)) ([d6149f2](https://github.com/googleapis/google-cloud-node/commit/d6149f203f15d9f76b89dbbd6c0a46c0fdbad160))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v5.0.0...os-login-v5.1.0) (2023-09-06)
+
+
+### Features
+
+* [oslogin] launch signSshPublicKey in beta ([#4552](https://github.com/googleapis/google-cloud-node/issues/4552)) ([48f07c1](https://github.com/googleapis/google-cloud-node/commit/48f07c18aa1cc93b67e4bc46078f21d908f7becc))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4587](https://github.com/googleapis/google-cloud-node/issues/4587)) ([e3b1e7e](https://github.com/googleapis/google-cloud-node/commit/e3b1e7e46d666abb4df28c3cd69e97c08b88445a))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/os-login-v4.1.2...os-login-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4462](https://github.com/googleapis/google-cloud-node/issues/4462)) ([6df8854](https://github.com/googleapis/google-cloud-node/commit/6df8854fdfbf62e6374f79d785f142b2f2e6cfae))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [4.1.2](https://github.com/googleapis/google-cloud-node/compare/os-login-v4.1.1...os-login-v4.1.2) (2023-04-13)
 
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,9 @@ function main() {
   const clusterControllerClient = new dataproc.ClusterControllerClient();
   const jobControllerClient = new dataproc.JobControllerClient();
   const nodeGroupControllerClient = new dataproc.NodeGroupControllerClient();
+  const sessionControllerClient = new dataproc.SessionControllerClient();
+  const sessionTemplateControllerClient =
+    new dataproc.SessionTemplateControllerClient();
   const workflowTemplateServiceClient =
     new dataproc.WorkflowTemplateServiceClient();
 }

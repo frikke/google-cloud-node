@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,13 +41,23 @@ function main() {
   // const pageToken = 'abc123'
   /**
    *  Options for how to filter the returned billing accounts.
-   *  Currently this only supports filtering for
+   *  This only supports filtering for
    *  subaccounts (https://cloud.google.com/billing/docs/concepts) under a
-   *  single provided reseller billing account.
-   *  (e.g. "master_billing_account=billingAccounts/012345-678901-ABCDEF").
+   *  single provided parent billing account.
+   *  (for example,
+   *  `master_billing_account=billingAccounts/012345-678901-ABCDEF`).
    *  Boolean algebra and other fields are not currently supported.
    */
   // const filter = 'abc123'
+  /**
+   *  Optional. The parent resource to list billing accounts from.
+   *  Format:
+   *    - `organizations/{organization_id}`, for example,
+   *      `organizations/12345678`
+   *    - `billingAccounts/{billing_account_id}`, for example,
+   *      `billingAccounts/012345-567890-ABCDEF`
+   */
+  // const parent = 'abc123'
 
   // Imports the Billing library
   const {CloudBillingClient} = require('@google-cloud/billing').v1;
@@ -61,7 +71,7 @@ function main() {
     };
 
     // Run request
-    const iterable = await billingClient.listBillingAccountsAsync(request);
+    const iterable = billingClient.listBillingAccountsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

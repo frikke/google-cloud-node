@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 import "google/rpc/status.proto";
 
-option cc_enable_arenas = true;
 option csharp_namespace = "Google.Cloud.DataCatalog.V1";
 option go_package = "cloud.google.com/go/datacatalog/apiv1/datacatalogpb;datacatalogpb";
 option java_multiple_files = true;
@@ -628,6 +627,43 @@ service DataCatalog {
       metadata_type: "ImportEntriesMetadata"
     };
   }
+
+  // Sets the configuration related to the migration to Dataplex for an
+  // organization or project.
+  rpc SetConfig(SetConfigRequest) returns (MigrationConfig) {
+    option (google.api.http) = {
+      post: "/v1/{name=organizations/*/locations/*}:setConfig"
+      body: "*"
+      additional_bindings {
+        post: "/v1/{name=projects/*/locations/*}:setConfig"
+        body: "*"
+      }
+    };
+  }
+
+  // Retrieves the configuration related to the migration from Data Catalog to
+  // Dataplex for a specific organization, including all the projects under it
+  // which have a separate configuration set.
+  rpc RetrieveConfig(RetrieveConfigRequest) returns (OrganizationConfig) {
+    option (google.api.http) = {
+      get: "/v1/{name=organizations/*/locations/*}:retrieveConfig"
+    };
+  }
+
+  // Retrieves the effective configuration related to the migration from Data
+  // Catalog to Dataplex for a specific organization or project. If there is no
+  // specific configuration set for the resource, the setting is checked
+  // hierarchicahlly through the ancestors of the resource, starting from the
+  // resource itself.
+  rpc RetrieveEffectiveConfig(RetrieveEffectiveConfigRequest)
+      returns (MigrationConfig) {
+    option (google.api.http) = {
+      get: "/v1/{name=organizations/*/locations/*}:retrieveEffectiveConfig"
+      additional_bindings {
+        get: "/v1/{name=projects/*/locations/*}:retrieveEffectiveConfig"
+      }
+    };
+  }
 }
 
 // Request message for
@@ -700,7 +736,7 @@ message SearchCatalogRequest {
   // * `description:z`
   string query = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // Number of results to return in a single search page.
+  // Upper bound on the number of results you can get in a single response.
   //
   // Can't be negative or 0, defaults to 10 in this case.
   // The maximum number is 1000. If exceeded, throws an "invalid argument"
@@ -725,8 +761,22 @@ message SearchCatalogRequest {
   // * `last_modified_timestamp [asc|desc]` with descending (`desc`) as default
   // * `default` that can only be descending
   //
+  // Search queries don't guarantee full recall. Results that match your query
+  // might not be returned, even in subsequent result pages. Additionally,
+  // returned (and not returned) results can vary if you repeat search queries.
+  // If you are experiencing recall issues and you don't have to fetch the
+  // results in any specific order, consider setting this parameter to
+  // `default`.
+  //
   // If this parameter is omitted, it defaults to the descending `relevance`.
   string order_by = 5;
+
+  // Optional. If set, use searchAll permission granted on organizations from
+  // `include_org_ids` and projects from `include_project_ids` instead of the
+  // fine grained per resource permissions when filtering the search results.
+  // The only allowed `order_by` criteria for admin_search mode is `default`.
+  // Using this flags guarantees a full recall of the search results.
+  bool admin_search = 17 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Response message for
@@ -1021,12 +1071,13 @@ message Entry {
     pattern: "projects/{project}/locations/{location}/entryGroups/{entry_group}/entries/{entry}"
   };
 
-  // Output only. The resource name of an entry in URL format.
+  // Output only. Identifier. The resource name of an entry in URL format.
   //
   // Note: The entry itself and its child resources might not be
   // stored in the location specified in its name.
   string name = 1 [
     (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.field_behavior) = IDENTIFIER,
     (google.api.resource_reference) = {
       type: "datacatalog.googleapis.com/EntryGroup"
     }
@@ -1063,10 +1114,8 @@ message Entry {
   // Required. Entry type.
   oneof entry_type {
     // The type of the entry.
-    // Only used for entries with types listed in the `EntryType` enum.
     //
-    // Currently, only `FILESET` enum value is allowed. All other entries
-    // created in Data Catalog must use the `user_specified_type`.
+    // For details, see [`EntryType`](#entrytype).
     EntryType type = 2;
 
     // Custom entry type that doesn't match any of the values allowed for input
@@ -1160,12 +1209,21 @@ message Entry {
     // only for entries with the `ROUTINE` type.
     RoutineSpec routine_spec = 28;
 
+    // Specification that applies to a dataset.
+    DatasetSpec dataset_spec = 32;
+
     // Specification that applies to a fileset resource. Valid only
     // for entries with the `FILESET` type.
     FilesetSpec fileset_spec = 33;
 
     // Specification that applies to a Service resource.
     ServiceSpec service_spec = 42;
+
+    // Model specification.
+    ModelSpec model_spec = 43;
+
+    // FeatureonlineStore spec for Vertex AI Feature Store.
+    FeatureOnlineStoreSpec feature_online_store_spec = 45;
   }
 
   // Display name of an entry.
@@ -1360,6 +1418,16 @@ message RoutineSpec {
   }
 }
 
+// Specification that applies to a dataset. Valid only for
+// entries with the `DATASET` type.
+message DatasetSpec {
+  // Fields specific to the source system.
+  oneof system_spec {
+    // Vertex AI Dataset specific fields
+    VertexDatasetSpec vertex_dataset_spec = 2;
+  }
+}
+
 // Specification that applies to
 // entries that are part `SQL_DATABASE` system
 // (user_specified_type)
@@ -1456,6 +1524,149 @@ message ServiceSpec {
   }
 }
 
+// Detail description of the source information of a Vertex model.
+message VertexModelSourceInfo {
+  // Source of the model.
+  enum ModelSourceType {
+    // Should not be used.
+    MODEL_SOURCE_TYPE_UNSPECIFIED = 0;
+
+    // The Model is uploaded by automl training pipeline.
+    AUTOML = 1;
+
+    // The Model is uploaded by user or custom training pipeline.
+    CUSTOM = 2;
+
+    // The Model is registered and sync'ed from BigQuery ML.
+    BQML = 3;
+
+    // The Model is saved or tuned from Model Garden.
+    MODEL_GARDEN = 4;
+
+    // The Model is saved or tuned from Genie.
+    GENIE = 5;
+
+    // The Model is uploaded by text embedding finetuning pipeline.
+    CUSTOM_TEXT_EMBEDDING = 6;
+
+    // The Model is saved or tuned from Marketplace.
+    MARKETPLACE = 7;
+  }
+
+  // Type of the model source.
+  ModelSourceType source_type = 1;
+
+  // If this Model is copy of another Model. If true then
+  // [source_type][google.cloud.datacatalog.v1.VertexModelSourceInfo.source_type]
+  // pertains to the original.
+  bool copy = 2;
+}
+
+// Specification for vertex model resources.
+message VertexModelSpec {
+  // The version ID of the model.
+  string version_id = 1;
+
+  // User provided version aliases so that a model version can be referenced via
+  // alias
+  repeated string version_aliases = 2;
+
+  // The description of this version.
+  string version_description = 3;
+
+  // Source of a Vertex model.
+  VertexModelSourceInfo vertex_model_source_info = 4;
+
+  // URI of the Docker image to be used as the custom container for serving
+  // predictions.
+  string container_image_uri = 5;
+}
+
+// Specification for vertex dataset resources.
+message VertexDatasetSpec {
+  // Type of data stored in the dataset.
+  enum DataType {
+    // Should not be used.
+    DATA_TYPE_UNSPECIFIED = 0;
+
+    // Structured data dataset.
+    TABLE = 1;
+
+    // Image dataset which supports ImageClassification, ImageObjectDetection
+    // and ImageSegmentation problems.
+    IMAGE = 2;
+
+    // Document dataset which supports TextClassification, TextExtraction and
+    // TextSentiment problems.
+    TEXT = 3;
+
+    // Video dataset which supports VideoClassification, VideoObjectTracking and
+    // VideoActionRecognition problems.
+    VIDEO = 4;
+
+    // Conversation dataset which supports conversation problems.
+    CONVERSATION = 5;
+
+    // TimeSeries dataset.
+    TIME_SERIES = 6;
+
+    // Document dataset which supports DocumentAnnotation problems.
+    DOCUMENT = 7;
+
+    // TextToSpeech dataset which supports TextToSpeech problems.
+    TEXT_TO_SPEECH = 8;
+
+    // Translation dataset which supports Translation problems.
+    TRANSLATION = 9;
+
+    // Store Vision dataset which is used for HITL integration.
+    STORE_VISION = 10;
+
+    // Enterprise Knowledge Graph dataset which is used for HITL labeling
+    // integration.
+    ENTERPRISE_KNOWLEDGE_GRAPH = 11;
+
+    // Text prompt dataset which supports Large Language Models.
+    TEXT_PROMPT = 12;
+  }
+
+  // The number of DataItems in this Dataset. Only apply for non-structured
+  // Dataset.
+  int64 data_item_count = 1;
+
+  // Type of the dataset.
+  DataType data_type = 2;
+}
+
+// Specification that applies to a model. Valid only for
+// entries with the `MODEL` type.
+message ModelSpec {
+  // System spec
+  oneof system_spec {
+    // Specification for vertex model resources.
+    VertexModelSpec vertex_model_spec = 1;
+  }
+}
+
+// Detail description of the source information of a Vertex Feature Online
+// Store.
+message FeatureOnlineStoreSpec {
+  // Type of underlaying storage type.
+  enum StorageType {
+    // Should not be used.
+    STORAGE_TYPE_UNSPECIFIED = 0;
+
+    // Underlsying storgae is Bigtable.
+    BIGTABLE = 1;
+
+    // Underlaying is optimized online server (Lightning).
+    OPTIMIZED = 2;
+  }
+
+  // Output only. Type of underelaying storage for the FeatureOnlineStore.
+  StorageType storage_type = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
 // Business Context of the entry.
 message BusinessContext {
   // Entry overview fields for rich text descriptions of entries.
@@ -1495,19 +1706,19 @@ message Contacts {
 
 // Entry group metadata.
 //
-// An `EntryGroup` resource represents a logical grouping of zero or more
-// Data Catalog [Entry][google.cloud.datacatalog.v1.Entry] resources.
+//  An `EntryGroup` resource represents a logical grouping of zero or more
+//  Data Catalog [Entry][google.cloud.datacatalog.v1.Entry] resources.
 message EntryGroup {
   option (google.api.resource) = {
     type: "datacatalog.googleapis.com/EntryGroup"
     pattern: "projects/{project}/locations/{location}/entryGroups/{entry_group}"
   };
 
-  // The resource name of the entry group in URL format.
+  // Identifier. The resource name of the entry group in URL format.
   //
   // Note: The entry group itself and its child resources might not be
   // stored in the location specified in its name.
-  string name = 1;
+  string name = 1 [(google.api.field_behavior) = IDENTIFIER];
 
   // A short name to identify the entry group, for example,
   // "analytics data - jan 2011". Default value is an empty string.
@@ -1521,6 +1732,13 @@ message EntryGroup {
   // Output only. Timestamps of the entry group. Default value is empty.
   SystemTimestamps data_catalog_timestamps = 4
       [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Optional. When set to [true], it means DataCatalog EntryGroup was
+  // transferred to Dataplex Catalog Service. It makes EntryGroup and its
+  // Entries to be read-only in DataCatalog. However, new Tags on EntryGroup and
+  // its Entries can be created. After setting the flag to [true] it cannot be
+  // unset.
+  bool transferred_to_dataplex = 9 [(google.api.field_behavior) = OPTIONAL];
 }
 
 // Request message for
@@ -2030,8 +2248,18 @@ message ModifyEntryContactsRequest {
   Contacts contacts = 2 [(google.api.field_behavior) = REQUIRED];
 }
 
-// The enum field that lists all the types of entry resources in Data
-// Catalog. For example, a BigQuery table entry has the `TABLE` type.
+// Metadata automatically ingested from Google Cloud resources like BigQuery
+// tables or Pub/Sub topics always uses enum values from `EntryType` as the type
+// of entry.
+//
+// Other sources of metadata like Hive or Oracle databases can identify the type
+// by either using one of the enum values from `EntryType` (for example,
+// `FILESET` for a Cloud Storage fileset) or specifying a custom value using
+// the [`Entry`](#resource:-entry) field `user_specified_type`. For more
+// information, see
+// [Surface files from Cloud Storage with fileset
+// entries](/data-catalog/docs/how-to/filesets) or [Create custom entries for
+// your data sources](/data-catalog/docs/how-to/custom-entries).
 enum EntryType {
   // Default unknown type.
   ENTRY_TYPE_UNSPECIFIED = 0;
@@ -2040,10 +2268,10 @@ enum EntryType {
   // logical views.
   TABLE = 2;
 
-  // Output only. The type of models.
+  // The type of models.
   //
-  // For more information, see [Supported models in BigQuery ML]
-  // (https://cloud.google.com/bigquery-ml/docs/introduction#supported_models_in).
+  // For more information, see [Supported models in BigQuery
+  // ML](/bigquery/docs/bqml-introduction#supported_models).
   MODEL = 5;
 
   // An entry type for streaming entries. For example, a Pub/Sub topic.
@@ -2059,11 +2287,11 @@ enum EntryType {
   // A database.
   DATABASE = 7;
 
-  // Output only. Connection to a data source. For example, a BigQuery
+  // Connection to a data source. For example, a BigQuery
   // connection.
   DATA_SOURCE_CONNECTION = 8;
 
-  // Output only. Routine, for example, a BigQuery routine.
+  // Routine, for example, a BigQuery routine.
   ROUTINE = 9;
 
   // A Dataplex lake.
@@ -2092,4 +2320,93 @@ enum EntryType {
   // For more information, see [Looker Look API]
   // (https://developers.looker.com/api/explorer/4.0/methods/Look).
   LOOK = 18;
+
+  // Feature Online Store resource in Vertex AI Feature Store.
+  FEATURE_ONLINE_STORE = 19;
+
+  // Feature View resource in Vertex AI Feature Store.
+  FEATURE_VIEW = 20;
+
+  // Feature Group resource in Vertex AI Feature Store.
+  FEATURE_GROUP = 21;
+}
+
+// Request message for
+// [SetConfig][google.cloud.datacatalog.v1.DataCatalog.SetConfig].
+message SetConfigRequest {
+  // Required. The organization or project whose config is being specified.
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The configuration field to set.
+  oneof configuration {
+    // Opt-in status for the migration of Tag Templates to Dataplex.
+    TagTemplateMigration tag_template_migration = 2;
+
+    // Opt-in status for the UI switch to Dataplex.
+    CatalogUIExperience catalog_ui_experience = 3;
+  }
+}
+
+// Request message for
+// [RetrieveConfig][google.cloud.datacatalog.v1.DataCatalog.RetrieveConfig].
+message RetrieveConfigRequest {
+  // Required. The organization whose config is being retrieved.
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Request message for
+// [RetrieveEffectiveConfig][google.cloud.datacatalog.v1.DataCatalog.RetrieveEffectiveConfig].
+message RetrieveEffectiveConfigRequest {
+  // Required. The resource whose effective config is being retrieved.
+  string name = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Configuration related to the opt-in status for the migration of TagTemplates
+// to Dataplex.
+enum TagTemplateMigration {
+  // Default value. Migration of Tag Templates from Data Catalog to Dataplex is
+  // not performed.
+  TAG_TEMPLATE_MIGRATION_UNSPECIFIED = 0;
+
+  // Migration of Tag Templates from Data Catalog to Dataplex is enabled.
+  TAG_TEMPLATE_MIGRATION_ENABLED = 1;
+
+  // Migration of Tag Templates from Data Catalog to Dataplex is disabled.
+  TAG_TEMPLATE_MIGRATION_DISABLED = 2;
+}
+
+// Configuration related to the opt-in status for the UI switch to Dataplex.
+enum CatalogUIExperience {
+  // Default value. The default UI is Dataplex.
+  CATALOG_UI_EXPERIENCE_UNSPECIFIED = 0;
+
+  // The UI is Dataplex.
+  CATALOG_UI_EXPERIENCE_ENABLED = 1;
+
+  // The UI is Data Catalog.
+  CATALOG_UI_EXPERIENCE_DISABLED = 2;
+}
+
+// The configuration related to the migration from Data Catalog to Dataplex that
+// has been applied to an organization and any projects under it. It is the
+// response message for
+// [RetrieveConfig][google.cloud.datacatalog.v1.DataCatalog.RetrieveConfig].
+message OrganizationConfig {
+  // Map of organizations and project resource names and their configuration.
+  // The format for the map keys is `organizations/{organizationId}` or
+  // `projects/{projectId}`.
+  map<string, MigrationConfig> config = 1;
+}
+
+// The configuration related to the migration to Dataplex applied to an
+// organization or project.
+// It is the response message for
+// [SetConfig][google.cloud.datacatalog.v1.DataCatalog.SetConfig] and
+// [RetrieveEffectiveConfig][google.cloud.datacatalog.v1.DataCatalog.RetrieveEffectiveConfig].
+message MigrationConfig {
+  // Opt-in status for the migration of Tag Templates to Dataplex.
+  TagTemplateMigration tag_template_migration = 1;
+
+  // Opt-in status for the UI switch to Dataplex.
+  CatalogUIExperience catalog_ui_experience = 2;
 }

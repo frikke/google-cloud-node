@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ function main(name) {
    *  AsymmetricSignRequest.digest google.cloud.kms.v1.AsymmetricSignRequest.digest 
    *  is supplied.
    */
-  // const data = 'Buffer.from('string')'
+  // const data = Buffer.from('string')
   /**
    *  Optional. An optional CRC32C checksum of the
    *  AsymmetricSignRequest.data google.cloud.kms.v1.AsymmetricSignRequest.data.

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,11 +47,11 @@ function main(features) {
    *  If unset, the input video(s) should be specified via the `input_uri`.
    *  If set, `input_uri` must be unset.
    */
-  // const inputContent = 'Buffer.from('string')'
+  // const inputContent = Buffer.from('string')
   /**
    *  Required. Requested video annotation features.
    */
-  // const features = 1234
+  // const features = [1,2,3,4]
   /**
    *  Additional video context and/or feature-specific parameters.
    */

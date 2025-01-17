@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,6 +47,14 @@ function main(participant) {
    */
   // const eventInput = {}
   /**
+   *  An input representing the selection of a suggestion.
+   */
+  // const suggestionInput = {}
+  /**
+   *  The intent to be triggered on V3 agent.
+   */
+  // const intentInput = {}
+  /**
    *  Speech synthesis configuration.
    *  The speech synthesis settings for a virtual agent that may be configured
    *  for the associated conversation profile are not used when calling
@@ -90,12 +98,12 @@ function main(participant) {
    *  perspective. It is used for identifying the same message under one
    *  participant.
    *  Given two messages under the same participant:
-   *   - If send time are different regardless of whether the content of the
-   *   messages are exactly the same, the conversation will regard them as
-   *   two distinct messages sent by the participant.
-   *   - If send time is the same regardless of whether the content of the
-   *   messages are exactly the same, the conversation will regard them as
-   *   same message, and ignore the message received later.
+   *  * If send time are different regardless of whether the content of the
+   *  messages are exactly the same, the conversation will regard them as
+   *  two distinct messages sent by the participant.
+   *  * If send time is the same regardless of whether the content of the
+   *  messages are exactly the same, the conversation will regard them as
+   *  same message, and ignore the message received later.
    *  If the value is not provided, a new request will always be regarded as a
    *  new message without any de-duplication.
    */

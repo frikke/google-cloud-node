@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,10 @@ function main(recognizer) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. Resource name of the recognizer to be used for ASR.
+   *  Required. The name of the Recognizer to use during recognition. The
+   *  expected format is
+   *  `projects/{project}/locations/{location}/recognizers/{recognizer}`. The
+   *  {recognizer} segment may be set to `_` to use an empty implicit Recognizer.
    */
   // const recognizer = 'abc123'
   /**
@@ -59,9 +62,9 @@ function main(recognizer) {
   // const configMask = {}
   /**
    *  Audio files with file metadata for ASR.
-   *  The maximum number of files allowed to be specified is 5.
+   *  The maximum number of files allowed to be specified is 15.
    */
-  // const files = 1234
+  // const files = [1,2,3,4]
   /**
    *  Configuration options for where to output the transcripts of each file.
    */

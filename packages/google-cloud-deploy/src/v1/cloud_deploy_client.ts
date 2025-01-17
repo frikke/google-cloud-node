@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/cloud_deploy_client_config.json`.
@@ -57,6 +58,8 @@ export class CloudDeployClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -100,8 +103,7 @@ export class CloudDeployClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -109,7 +111,7 @@ export class CloudDeployClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CloudDeployClient({fallback: 'rest'}, gax);
+   *     const client = new CloudDeployClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -118,8 +120,27 @@ export class CloudDeployClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof CloudDeployClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'clouddeploy.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -134,7 +155,7 @@ export class CloudDeployClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -159,10 +180,10 @@ export class CloudDeployClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -174,14 +195,14 @@ export class CloudDeployClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -194,6 +215,12 @@ export class CloudDeployClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      automationPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automations/{automation}'
+      ),
+      automationRunPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automationRuns/{automation_run}'
+      ),
       buildPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/builds/{build}'
       ),
@@ -203,8 +230,17 @@ export class CloudDeployClient {
       configPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/config'
       ),
+      customTargetTypePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/customTargetTypes/{custom_target_type}'
+      ),
       deliveryPipelinePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}'
+      ),
+      deployPolicyPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/deployPolicies/{deploy_policy}'
+      ),
+      jobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/jobs/{job}'
       ),
       jobRunPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/releases/{release}/rollouts/{rollout}/jobRuns/{job_run}'
@@ -249,10 +285,20 @@ export class CloudDeployClient {
         'nextPageToken',
         'targets'
       ),
+      listCustomTargetTypes: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'customTargetTypes'
+      ),
       listReleases: new this._gaxModule.PageDescriptor(
         'pageToken',
         'nextPageToken',
         'releases'
+      ),
+      listDeployPolicies: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'deployPolicies'
       ),
       listRollouts: new this._gaxModule.PageDescriptor(
         'pageToken',
@@ -264,6 +310,16 @@ export class CloudDeployClient {
         'nextPageToken',
         'jobRuns'
       ),
+      listAutomations: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'automations'
+      ),
+      listAutomationRuns: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'automationRuns'
+      ),
     };
 
     const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
@@ -274,7 +330,7 @@ export class CloudDeployClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -292,6 +348,9 @@ export class CloudDeployClient {
             {
               get: '/v1/{resource=projects/*/locations/*/targets/*}:getIamPolicy',
             },
+            {
+              get: '/v1/{resource=projects/*/locations/*/customTargetTypes/*}:getIamPolicy',
+            },
           ],
         },
         {
@@ -301,6 +360,10 @@ export class CloudDeployClient {
           additional_bindings: [
             {
               post: '/v1/{resource=projects/*/locations/*/targets/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/customTargetTypes/*}:setIamPolicy',
               body: '*',
             },
           ],
@@ -374,16 +437,70 @@ export class CloudDeployClient {
     const deleteTargetMetadata = protoFilesRoot.lookup(
       '.google.cloud.deploy.v1.OperationMetadata'
     ) as gax.protobuf.Type;
+    const createCustomTargetTypeResponse = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.CustomTargetType'
+    ) as gax.protobuf.Type;
+    const createCustomTargetTypeMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const updateCustomTargetTypeResponse = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.CustomTargetType'
+    ) as gax.protobuf.Type;
+    const updateCustomTargetTypeMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteCustomTargetTypeResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteCustomTargetTypeMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
     const createReleaseResponse = protoFilesRoot.lookup(
       '.google.cloud.deploy.v1.Release'
     ) as gax.protobuf.Type;
     const createReleaseMetadata = protoFilesRoot.lookup(
       '.google.cloud.deploy.v1.OperationMetadata'
     ) as gax.protobuf.Type;
+    const createDeployPolicyResponse = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.DeployPolicy'
+    ) as gax.protobuf.Type;
+    const createDeployPolicyMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const updateDeployPolicyResponse = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.DeployPolicy'
+    ) as gax.protobuf.Type;
+    const updateDeployPolicyMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteDeployPolicyResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteDeployPolicyMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
     const createRolloutResponse = protoFilesRoot.lookup(
       '.google.cloud.deploy.v1.Rollout'
     ) as gax.protobuf.Type;
     const createRolloutMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const createAutomationResponse = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.Automation'
+    ) as gax.protobuf.Type;
+    const createAutomationMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const updateAutomationResponse = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.Automation'
+    ) as gax.protobuf.Type;
+    const updateAutomationMetadata = protoFilesRoot.lookup(
+      '.google.cloud.deploy.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteAutomationResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteAutomationMetadata = protoFilesRoot.lookup(
       '.google.cloud.deploy.v1.OperationMetadata'
     ) as gax.protobuf.Type;
 
@@ -430,15 +547,72 @@ export class CloudDeployClient {
         deleteTargetResponse.decode.bind(deleteTargetResponse),
         deleteTargetMetadata.decode.bind(deleteTargetMetadata)
       ),
+      createCustomTargetType: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createCustomTargetTypeResponse.decode.bind(
+          createCustomTargetTypeResponse
+        ),
+        createCustomTargetTypeMetadata.decode.bind(
+          createCustomTargetTypeMetadata
+        )
+      ),
+      updateCustomTargetType: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updateCustomTargetTypeResponse.decode.bind(
+          updateCustomTargetTypeResponse
+        ),
+        updateCustomTargetTypeMetadata.decode.bind(
+          updateCustomTargetTypeMetadata
+        )
+      ),
+      deleteCustomTargetType: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteCustomTargetTypeResponse.decode.bind(
+          deleteCustomTargetTypeResponse
+        ),
+        deleteCustomTargetTypeMetadata.decode.bind(
+          deleteCustomTargetTypeMetadata
+        )
+      ),
       createRelease: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
         createReleaseResponse.decode.bind(createReleaseResponse),
         createReleaseMetadata.decode.bind(createReleaseMetadata)
       ),
+      createDeployPolicy: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createDeployPolicyResponse.decode.bind(createDeployPolicyResponse),
+        createDeployPolicyMetadata.decode.bind(createDeployPolicyMetadata)
+      ),
+      updateDeployPolicy: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updateDeployPolicyResponse.decode.bind(updateDeployPolicyResponse),
+        updateDeployPolicyMetadata.decode.bind(updateDeployPolicyMetadata)
+      ),
+      deleteDeployPolicy: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteDeployPolicyResponse.decode.bind(deleteDeployPolicyResponse),
+        deleteDeployPolicyMetadata.decode.bind(deleteDeployPolicyMetadata)
+      ),
       createRollout: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
         createRolloutResponse.decode.bind(createRolloutResponse),
         createRolloutMetadata.decode.bind(createRolloutMetadata)
+      ),
+      createAutomation: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createAutomationResponse.decode.bind(createAutomationResponse),
+        createAutomationMetadata.decode.bind(createAutomationMetadata)
+      ),
+      updateAutomation: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updateAutomationResponse.decode.bind(updateAutomationResponse),
+        updateAutomationMetadata.decode.bind(updateAutomationMetadata)
+      ),
+      deleteAutomation: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteAutomationResponse.decode.bind(deleteAutomationResponse),
+        deleteAutomationMetadata.decode.bind(deleteAutomationMetadata)
       ),
     };
 
@@ -498,14 +672,25 @@ export class CloudDeployClient {
       'updateDeliveryPipeline',
       'deleteDeliveryPipeline',
       'listTargets',
+      'rollbackTarget',
       'getTarget',
       'createTarget',
       'updateTarget',
       'deleteTarget',
+      'listCustomTargetTypes',
+      'getCustomTargetType',
+      'createCustomTargetType',
+      'updateCustomTargetType',
+      'deleteCustomTargetType',
       'listReleases',
       'getRelease',
       'createRelease',
       'abandonRelease',
+      'createDeployPolicy',
+      'updateDeployPolicy',
+      'deleteDeployPolicy',
+      'listDeployPolicies',
+      'getDeployPolicy',
       'approveRollout',
       'advanceRollout',
       'cancelRollout',
@@ -518,6 +703,14 @@ export class CloudDeployClient {
       'getJobRun',
       'terminateJobRun',
       'getConfig',
+      'createAutomation',
+      'updateAutomation',
+      'deleteAutomation',
+      'getAutomation',
+      'listAutomations',
+      'getAutomationRun',
+      'listAutomationRuns',
+      'cancelAutomationRun',
     ];
     for (const methodName of cloudDeployStubMethods) {
       const callPromise = this.cloudDeployStub.then(
@@ -553,19 +746,50 @@ export class CloudDeployClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'clouddeploy.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'clouddeploy.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -611,13 +835,12 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the `DeliveryPipeline`. Format must be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}.
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.DeliveryPipeline | DeliveryPipeline}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.DeliveryPipeline|DeliveryPipeline}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.get_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_GetDeliveryPipeline_async
@@ -629,7 +852,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IDeliveryPipeline,
       protos.google.cloud.deploy.v1.IGetDeliveryPipelineRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getDeliveryPipeline(
@@ -675,7 +898,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IDeliveryPipeline,
       protos.google.cloud.deploy.v1.IGetDeliveryPipelineRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -697,19 +920,123 @@ export class CloudDeployClient {
     return this.innerApiCalls.getDeliveryPipeline(request, options, callback);
   }
   /**
+   * Creates a `Rollout` to roll back the specified target.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The `DeliveryPipeline` for which the rollback `Rollout` must be
+   *   created. The format is
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param {string} request.targetId
+   *   Required. ID of the `Target` that is being rolled back.
+   * @param {string} request.rolloutId
+   *   Required. ID of the rollback `Rollout` to create.
+   * @param {string} [request.releaseId]
+   *   Optional. ID of the `Release` to roll back to. If this isn't specified, the
+   *   previous successful `Rollout` to the specified target will be used to
+   *   determine the `Release`.
+   * @param {string} [request.rolloutToRollBack]
+   *   Optional. If provided, this must be the latest `Rollout` that is on the
+   *   `Target`.
+   * @param {google.cloud.deploy.v1.RollbackTargetConfig} [request.rollbackConfig]
+   *   Optional. Configs for the rollback `Rollout`.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with a `RollbackTargetResponse`.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deploy_policy}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.RollbackTargetResponse|RollbackTargetResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.rollback_target.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_RollbackTarget_async
+   */
+  rollbackTarget(
+    request?: protos.google.cloud.deploy.v1.IRollbackTargetRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IRollbackTargetResponse,
+      protos.google.cloud.deploy.v1.IRollbackTargetRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  rollbackTarget(
+    request: protos.google.cloud.deploy.v1.IRollbackTargetRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IRollbackTargetResponse,
+      protos.google.cloud.deploy.v1.IRollbackTargetRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  rollbackTarget(
+    request: protos.google.cloud.deploy.v1.IRollbackTargetRequest,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IRollbackTargetResponse,
+      protos.google.cloud.deploy.v1.IRollbackTargetRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  rollbackTarget(
+    request?: protos.google.cloud.deploy.v1.IRollbackTargetRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.deploy.v1.IRollbackTargetResponse,
+          | protos.google.cloud.deploy.v1.IRollbackTargetRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.deploy.v1.IRollbackTargetResponse,
+      protos.google.cloud.deploy.v1.IRollbackTargetRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IRollbackTargetResponse,
+      protos.google.cloud.deploy.v1.IRollbackTargetRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.rollbackTarget(request, options, callback);
+  }
+  /**
    * Gets details of a single Target.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the `Target`. Format must be
-   *   projects/{project_id}/locations/{location_name}/targets/{target_name}.
+   *   `projects/{project_id}/locations/{location_name}/targets/{target_name}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.Target | Target}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.Target|Target}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.get_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_GetTarget_async
@@ -721,7 +1048,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ITarget,
       protos.google.cloud.deploy.v1.IGetTargetRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTarget(
@@ -759,7 +1086,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ITarget,
       protos.google.cloud.deploy.v1.IGetTargetRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -781,19 +1108,109 @@ export class CloudDeployClient {
     return this.innerApiCalls.getTarget(request, options, callback);
   }
   /**
+   * Gets details of a single CustomTargetType.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the `CustomTargetType`. Format must be
+   *   `projects/{project_id}/locations/{location_name}/customTargetTypes/{custom_target_type}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.CustomTargetType|CustomTargetType}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.get_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_GetCustomTargetType_async
+   */
+  getCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.ICustomTargetType,
+      protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getCustomTargetType(
+    request: protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.ICustomTargetType,
+      | protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getCustomTargetType(
+    request: protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.ICustomTargetType,
+      | protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.deploy.v1.ICustomTargetType,
+          | protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.deploy.v1.ICustomTargetType,
+      | protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.ICustomTargetType,
+      protos.google.cloud.deploy.v1.IGetCustomTargetTypeRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getCustomTargetType(request, options, callback);
+  }
+  /**
    * Gets details of a single Release.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the `Release`. Format must be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}.
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.Release | Release}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.Release|Release}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.get_release.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_GetRelease_async
@@ -805,7 +1222,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRelease,
       protos.google.cloud.deploy.v1.IGetReleaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getRelease(
@@ -843,7 +1260,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRelease,
       protos.google.cloud.deploy.v1.IGetReleaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -871,14 +1288,12 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the Release. Format is
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.AbandonReleaseResponse | AbandonReleaseResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.AbandonReleaseResponse|AbandonReleaseResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.abandon_release.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_AbandonRelease_async
@@ -890,7 +1305,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IAbandonReleaseResponse,
       protos.google.cloud.deploy.v1.IAbandonReleaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   abandonRelease(
@@ -930,7 +1345,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IAbandonReleaseResponse,
       protos.google.cloud.deploy.v1.IAbandonReleaseRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -952,22 +1367,108 @@ export class CloudDeployClient {
     return this.innerApiCalls.abandonRelease(request, options, callback);
   }
   /**
+   * Gets details of a single DeployPolicy.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the `DeployPolicy`. Format must be
+   *   `projects/{project_id}/locations/{location_name}/deployPolicies/{deploy_policy_name}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.DeployPolicy|DeployPolicy}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.get_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_GetDeployPolicy_async
+   */
+  getDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.IGetDeployPolicyRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IDeployPolicy,
+      protos.google.cloud.deploy.v1.IGetDeployPolicyRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getDeployPolicy(
+    request: protos.google.cloud.deploy.v1.IGetDeployPolicyRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IDeployPolicy,
+      protos.google.cloud.deploy.v1.IGetDeployPolicyRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getDeployPolicy(
+    request: protos.google.cloud.deploy.v1.IGetDeployPolicyRequest,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IDeployPolicy,
+      protos.google.cloud.deploy.v1.IGetDeployPolicyRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.IGetDeployPolicyRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.deploy.v1.IDeployPolicy,
+          | protos.google.cloud.deploy.v1.IGetDeployPolicyRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.deploy.v1.IDeployPolicy,
+      protos.google.cloud.deploy.v1.IGetDeployPolicyRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IDeployPolicy,
+      protos.google.cloud.deploy.v1.IGetDeployPolicyRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getDeployPolicy(request, options, callback);
+  }
+  /**
    * Approves a Rollout.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the Rollout. Format is
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}/rollouts/{rollout}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}`.
    * @param {boolean} request.approved
    *   Required. True = approve; false = reject
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.ApproveRolloutResponse | ApproveRolloutResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.ApproveRolloutResponse|ApproveRolloutResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.approve_rollout.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_ApproveRollout_async
@@ -979,7 +1480,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IApproveRolloutResponse,
       protos.google.cloud.deploy.v1.IApproveRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   approveRollout(
@@ -1019,7 +1520,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IApproveRolloutResponse,
       protos.google.cloud.deploy.v1.IApproveRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1047,16 +1548,17 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the Rollout. Format is
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}/rollouts/{rollout}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}`.
    * @param {string} request.phaseId
    *   Required. The phase ID to advance the `Rollout` to.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.AdvanceRolloutResponse | AdvanceRolloutResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.AdvanceRolloutResponse|AdvanceRolloutResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.advance_rollout.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_AdvanceRollout_async
@@ -1068,7 +1570,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IAdvanceRolloutResponse,
       protos.google.cloud.deploy.v1.IAdvanceRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   advanceRollout(
@@ -1108,7 +1610,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IAdvanceRolloutResponse,
       protos.google.cloud.deploy.v1.IAdvanceRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1136,14 +1638,15 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the Rollout. Format is
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}/rollouts/{rollout}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}`.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.CancelRolloutResponse | CancelRolloutResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.CancelRolloutResponse|CancelRolloutResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.cancel_rollout.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CancelRollout_async
@@ -1155,7 +1658,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ICancelRolloutResponse,
       protos.google.cloud.deploy.v1.ICancelRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   cancelRollout(
@@ -1195,7 +1698,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ICancelRolloutResponse,
       protos.google.cloud.deploy.v1.ICancelRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1223,13 +1726,12 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the `Rollout`. Format must be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}/rollouts/{rollout_name}.
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}/rollouts/{rollout_name}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.Rollout | Rollout}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.Rollout|Rollout}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.get_rollout.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_GetRollout_async
@@ -1241,7 +1743,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRollout,
       protos.google.cloud.deploy.v1.IGetRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getRollout(
@@ -1279,7 +1781,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRollout,
       protos.google.cloud.deploy.v1.IGetRolloutRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1307,18 +1809,19 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.rollout
    *   Required. Name of the Rollout. Format is
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}/rollouts/{rollout}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}`.
    * @param {string} request.phaseId
    *   Required. The phase ID the Job to ignore belongs to.
    * @param {string} request.jobId
    *   Required. The job ID for the Job to ignore.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.IgnoreJobResponse | IgnoreJobResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.IgnoreJobResponse|IgnoreJobResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.ignore_job.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_IgnoreJob_async
@@ -1330,7 +1833,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IIgnoreJobResponse,
       protos.google.cloud.deploy.v1.IIgnoreJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   ignoreJob(
@@ -1368,7 +1871,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IIgnoreJobResponse,
       protos.google.cloud.deploy.v1.IIgnoreJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1396,18 +1899,19 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.rollout
    *   Required. Name of the Rollout. Format is
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}/rollouts/{rollout}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}`.
    * @param {string} request.phaseId
    *   Required. The phase ID the Job to retry belongs to.
    * @param {string} request.jobId
    *   Required. The job ID for the Job to retry.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.RetryJobResponse | RetryJobResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.RetryJobResponse|RetryJobResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.retry_job.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_RetryJob_async
@@ -1419,7 +1923,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRetryJobResponse,
       protos.google.cloud.deploy.v1.IRetryJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   retryJob(
@@ -1457,7 +1961,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRetryJobResponse,
       protos.google.cloud.deploy.v1.IRetryJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1485,13 +1989,12 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the `JobRun`. Format must be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}/rollouts/{rollout_name}/jobRuns/{job_run_name}.
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}/rollouts/{rollout_name}/jobRuns/{job_run_name}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.JobRun | JobRun}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.JobRun|JobRun}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.get_job_run.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_GetJobRun_async
@@ -1503,7 +2006,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IJobRun,
       protos.google.cloud.deploy.v1.IGetJobRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getJobRun(
@@ -1541,7 +2044,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IJobRun,
       protos.google.cloud.deploy.v1.IGetJobRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1569,14 +2072,15 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Name of the `JobRun`. Format must be
-   *   projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *   releases/{release}/rollouts/{rollout}/jobRuns/{jobRun}.
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}/jobRuns/{jobRun}`.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.TerminateJobRunResponse | TerminateJobRunResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.TerminateJobRunResponse|TerminateJobRunResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.terminate_job_run.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_TerminateJobRun_async
@@ -1588,7 +2092,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ITerminateJobRunResponse,
       protos.google.cloud.deploy.v1.ITerminateJobRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   terminateJobRun(
@@ -1628,7 +2132,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ITerminateJobRunResponse,
       protos.google.cloud.deploy.v1.ITerminateJobRunRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1659,9 +2163,8 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.deploy.v1.Config | Config}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.Config|Config}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.get_config.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_GetConfig_async
@@ -1673,7 +2176,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IConfig,
       protos.google.cloud.deploy.v1.IGetConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getConfig(
@@ -1711,7 +2214,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IConfig,
       protos.google.cloud.deploy.v1.IGetConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1732,6 +2235,270 @@ export class CloudDeployClient {
     this.initialize();
     return this.innerApiCalls.getConfig(request, options, callback);
   }
+  /**
+   * Gets details of a single Automation.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the `Automation`. Format must be
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/automations/{automation_name}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.Automation|Automation}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.get_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_GetAutomation_async
+   */
+  getAutomation(
+    request?: protos.google.cloud.deploy.v1.IGetAutomationRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomation,
+      protos.google.cloud.deploy.v1.IGetAutomationRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getAutomation(
+    request: protos.google.cloud.deploy.v1.IGetAutomationRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IAutomation,
+      protos.google.cloud.deploy.v1.IGetAutomationRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAutomation(
+    request: protos.google.cloud.deploy.v1.IGetAutomationRequest,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IAutomation,
+      protos.google.cloud.deploy.v1.IGetAutomationRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAutomation(
+    request?: protos.google.cloud.deploy.v1.IGetAutomationRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.deploy.v1.IAutomation,
+          | protos.google.cloud.deploy.v1.IGetAutomationRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.deploy.v1.IAutomation,
+      protos.google.cloud.deploy.v1.IGetAutomationRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomation,
+      protos.google.cloud.deploy.v1.IGetAutomationRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getAutomation(request, options, callback);
+  }
+  /**
+   * Gets details of a single AutomationRun.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the `AutomationRun`. Format must be
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automationRuns/{automation_run}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.AutomationRun|AutomationRun}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.get_automation_run.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_GetAutomationRun_async
+   */
+  getAutomationRun(
+    request?: protos.google.cloud.deploy.v1.IGetAutomationRunRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomationRun,
+      protos.google.cloud.deploy.v1.IGetAutomationRunRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getAutomationRun(
+    request: protos.google.cloud.deploy.v1.IGetAutomationRunRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IAutomationRun,
+      protos.google.cloud.deploy.v1.IGetAutomationRunRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAutomationRun(
+    request: protos.google.cloud.deploy.v1.IGetAutomationRunRequest,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.IAutomationRun,
+      protos.google.cloud.deploy.v1.IGetAutomationRunRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAutomationRun(
+    request?: protos.google.cloud.deploy.v1.IGetAutomationRunRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.deploy.v1.IAutomationRun,
+          | protos.google.cloud.deploy.v1.IGetAutomationRunRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.deploy.v1.IAutomationRun,
+      protos.google.cloud.deploy.v1.IGetAutomationRunRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomationRun,
+      protos.google.cloud.deploy.v1.IGetAutomationRunRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getAutomationRun(request, options, callback);
+  }
+  /**
+   * Cancels an AutomationRun. The `state` of the `AutomationRun` after
+   * cancelling is `CANCELLED`. `CancelAutomationRun` can be called on
+   * AutomationRun in the state `IN_PROGRESS` and `PENDING`; AutomationRun
+   * in a different state returns an `FAILED_PRECONDITION` error.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the `AutomationRun`. Format is
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}/automationRuns/{automation_run}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.deploy.v1.CancelAutomationRunResponse|CancelAutomationRunResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.cancel_automation_run.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CancelAutomationRun_async
+   */
+  cancelAutomationRun(
+    request?: protos.google.cloud.deploy.v1.ICancelAutomationRunRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.ICancelAutomationRunResponse,
+      protos.google.cloud.deploy.v1.ICancelAutomationRunRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  cancelAutomationRun(
+    request: protos.google.cloud.deploy.v1.ICancelAutomationRunRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.ICancelAutomationRunResponse,
+      | protos.google.cloud.deploy.v1.ICancelAutomationRunRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  cancelAutomationRun(
+    request: protos.google.cloud.deploy.v1.ICancelAutomationRunRequest,
+    callback: Callback<
+      protos.google.cloud.deploy.v1.ICancelAutomationRunResponse,
+      | protos.google.cloud.deploy.v1.ICancelAutomationRunRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  cancelAutomationRun(
+    request?: protos.google.cloud.deploy.v1.ICancelAutomationRunRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.deploy.v1.ICancelAutomationRunResponse,
+          | protos.google.cloud.deploy.v1.ICancelAutomationRunRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.deploy.v1.ICancelAutomationRunResponse,
+      | protos.google.cloud.deploy.v1.ICancelAutomationRunRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.ICancelAutomationRunResponse,
+      protos.google.cloud.deploy.v1.ICancelAutomationRunRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.cancelAutomationRun(request, options, callback);
+  }
 
   /**
    * Creates a new DeliveryPipeline in a given project and location.
@@ -1739,17 +2506,17 @@ export class CloudDeployClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The parent collection in which the `DeliveryPipeline` should be
-   *   created. Format should be projects/{project_id}/locations/{location_name}.
+   *   Required. The parent collection in which the `DeliveryPipeline` must be
+   *   created. The format is `projects/{project_id}/locations/{location_name}`.
    * @param {string} request.deliveryPipelineId
    *   Required. ID of the `DeliveryPipeline`.
    * @param {google.cloud.deploy.v1.DeliveryPipeline} request.deliveryPipeline
    *   Required. The `DeliveryPipeline` to create.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -1768,8 +2535,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateDeliveryPipeline_async
@@ -1784,7 +2550,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createDeliveryPipeline(
@@ -1837,7 +2603,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1868,8 +2634,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateDeliveryPipeline_async
@@ -1903,18 +2668,18 @@ export class CloudDeployClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.protobuf.FieldMask} request.updateMask
-   *   Required. Field mask is used to specify the fields to be overwritten in the
-   *   `DeliveryPipeline` resource by the update.
-   *   The fields specified in the update_mask are relative to the resource, not
-   *   the full request. A field will be overwritten if it is in the mask. If the
-   *   user does not provide a mask then all fields will be overwritten.
+   *   Required. Field mask is used to specify the fields to be overwritten by the
+   *   update in the `DeliveryPipeline` resource. The fields specified in the
+   *   update_mask are relative to the resource, not the full request. A field
+   *   will be overwritten if it's in the mask. If the user doesn't provide a mask
+   *   then all fields are overwritten.
    * @param {google.cloud.deploy.v1.DeliveryPipeline} request.deliveryPipeline
    *   Required. The `DeliveryPipeline` to update.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -1936,8 +2701,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.update_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateDeliveryPipeline_async
@@ -1952,7 +2716,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateDeliveryPipeline(
@@ -2005,7 +2769,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2036,8 +2800,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.update_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateDeliveryPipeline_async
@@ -2071,13 +2834,13 @@ export class CloudDeployClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
-   *   Required. The name of the `DeliveryPipeline` to delete. Format should be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}.
+   *   Required. The name of the `DeliveryPipeline` to delete. The format is
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes after the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -2107,8 +2870,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.delete_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteDeliveryPipeline_async
@@ -2123,7 +2885,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteDeliveryPipeline(
@@ -2176,7 +2938,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2207,8 +2969,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.delete_delivery_pipeline.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteDeliveryPipeline_async
@@ -2242,18 +3003,18 @@ export class CloudDeployClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The parent collection in which the `Target` should be created.
-   *   Format should be
-   *   projects/{project_id}/locations/{location_name}.
+   *   Required. The parent collection in which the `Target` must be created.
+   *   The format is
+   *   `projects/{project_id}/locations/{location_name}`.
    * @param {string} request.targetId
    *   Required. ID of the `Target`.
    * @param {google.cloud.deploy.v1.Target} request.target
    *   Required. The `Target` to create.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -2272,8 +3033,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateTarget_async
@@ -2288,7 +3048,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createTarget(
@@ -2341,7 +3101,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2368,8 +3128,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateTarget_async
@@ -2403,18 +3162,18 @@ export class CloudDeployClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.protobuf.FieldMask} request.updateMask
-   *   Required. Field mask is used to specify the fields to be overwritten in the
-   *   Target resource by the update.
-   *   The fields specified in the update_mask are relative to the resource, not
-   *   the full request. A field will be overwritten if it is in the mask. If the
-   *   user does not provide a mask then all fields will be overwritten.
+   *   Required. Field mask is used to specify the fields to be overwritten by the
+   *   update in the `Target` resource. The fields specified in the update_mask
+   *   are relative to the resource, not the full request. A field will be
+   *   overwritten if it's in the mask. If the user doesn't provide a mask then
+   *   all fields are overwritten.
    * @param {google.cloud.deploy.v1.Target} request.target
    *   Required. The `Target` to update.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -2436,8 +3195,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.update_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateTarget_async
@@ -2452,7 +3210,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateTarget(
@@ -2505,7 +3263,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2532,8 +3290,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.update_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateTarget_async
@@ -2567,13 +3324,13 @@ export class CloudDeployClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
-   *   Required. The name of the `Target` to delete. Format should be
-   *   projects/{project_id}/locations/{location_name}/targets/{target_name}.
+   *   Required. The name of the `Target` to delete. The format is
+   *   `projects/{project_id}/locations/{location_name}/targets/{target_name}`.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes after the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -2599,8 +3356,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.delete_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteTarget_async
@@ -2615,7 +3371,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteTarget(
@@ -2668,7 +3424,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2695,8 +3451,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.delete_target.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteTarget_async
@@ -2725,23 +3480,22 @@ export class CloudDeployClient {
     >;
   }
   /**
-   * Creates a new Release in a given project and location.
+   * Creates a new CustomTargetType in a given project and location.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The parent collection in which the `Release` should be created.
-   *   Format should be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}.
-   * @param {string} request.releaseId
-   *   Required. ID of the `Release`.
-   * @param {google.cloud.deploy.v1.Release} request.release
-   *   Required. The `Release` to create.
+   *   Required. The parent collection in which the `CustomTargetType` must be
+   *   created. The format is `projects/{project_id}/locations/{location_name}`.
+   * @param {string} request.customTargetTypeId
+   *   Required. ID of the `CustomTargetType`.
+   * @param {google.cloud.deploy.v1.CustomTargetType} request.customTargetType
+   *   Required. The `CustomTargetType` to create.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -2760,8 +3514,504 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.create_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateCustomTargetType_async
+   */
+  createCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.ICreateCustomTargetTypeRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createCustomTargetType(
+    request: protos.google.cloud.deploy.v1.ICreateCustomTargetTypeRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createCustomTargetType(
+    request: protos.google.cloud.deploy.v1.ICreateCustomTargetTypeRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.ICreateCustomTargetTypeRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.deploy.v1.ICustomTargetType,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createCustomTargetType(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
+   * Check the status of the long running operation returned by `createCustomTargetType()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.create_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateCustomTargetType_async
+   */
+  async checkCreateCustomTargetTypeProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.deploy.v1.CustomTargetType,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createCustomTargetType,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.deploy.v1.CustomTargetType,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Updates a single CustomTargetType.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Required. Field mask is used to specify the fields to be overwritten by the
+   *   update in the `CustomTargetType` resource. The fields specified in the
+   *   update_mask are relative to the resource, not the full request. A field
+   *   will be overwritten if it's in the mask. If the user doesn't provide a mask
+   *   then all fields are overwritten.
+   * @param {google.cloud.deploy.v1.CustomTargetType} request.customTargetType
+   *   Required. The `CustomTargetType` to update.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.allowMissing]
+   *   Optional. If set to true, updating a `CustomTargetType` that does not exist
+   *   will result in the creation of a new `CustomTargetType`.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with an expected result, but no actual change is made.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.update_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateCustomTargetType_async
+   */
+  updateCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.IUpdateCustomTargetTypeRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updateCustomTargetType(
+    request: protos.google.cloud.deploy.v1.IUpdateCustomTargetTypeRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateCustomTargetType(
+    request: protos.google.cloud.deploy.v1.IUpdateCustomTargetTypeRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.IUpdateCustomTargetTypeRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.deploy.v1.ICustomTargetType,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.ICustomTargetType,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'custom_target_type.name': request.customTargetType!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updateCustomTargetType(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
+   * Check the status of the long running operation returned by `updateCustomTargetType()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.update_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateCustomTargetType_async
+   */
+  async checkUpdateCustomTargetTypeProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.deploy.v1.CustomTargetType,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updateCustomTargetType,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.deploy.v1.CustomTargetType,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes a single CustomTargetType.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the `CustomTargetType` to delete. Format must be
+   *   `projects/{project_id}/locations/{location_name}/customTargetTypes/{custom_target_type}`.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.allowMissing]
+   *   Optional. If set to true, then deleting an already deleted or non-existing
+   *   `CustomTargetType` will succeed.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated but no actual change is
+   *   made.
+   * @param {string} [request.etag]
+   *   Optional. This checksum is computed by the server based on the value of
+   *   other fields, and may be sent on update and delete requests to ensure the
+   *   client has an up-to-date value before proceeding.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.delete_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteCustomTargetType_async
+   */
+  deleteCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.IDeleteCustomTargetTypeRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteCustomTargetType(
+    request: protos.google.cloud.deploy.v1.IDeleteCustomTargetTypeRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteCustomTargetType(
+    request: protos.google.cloud.deploy.v1.IDeleteCustomTargetTypeRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteCustomTargetType(
+    request?: protos.google.cloud.deploy.v1.IDeleteCustomTargetTypeRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteCustomTargetType(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteCustomTargetType()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.delete_custom_target_type.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteCustomTargetType_async
+   */
+  async checkDeleteCustomTargetTypeProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteCustomTargetType,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Creates a new Release in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent collection in which the `Release` is created.
+   *   The format is
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param {string} request.releaseId
+   *   Required. ID of the `Release`.
+   * @param {google.cloud.deploy.v1.Release} request.release
+   *   Required. The `Release` to create.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with an expected result, but no actual change is made.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_release.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateRelease_async
@@ -2776,7 +4026,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createRelease(
@@ -2829,7 +4079,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2856,8 +4106,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_release.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateRelease_async
@@ -2886,23 +4135,22 @@ export class CloudDeployClient {
     >;
   }
   /**
-   * Creates a new Rollout in a given project and location.
+   * Creates a new DeployPolicy in a given project and location.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The parent collection in which the `Rollout` should be created.
-   *   Format should be
-   *   projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}.
-   * @param {string} request.rolloutId
-   *   Required. ID of the `Rollout`.
-   * @param {google.cloud.deploy.v1.Rollout} request.rollout
-   *   Required. The `Rollout` to create.
+   *   Required. The parent collection in which the `DeployPolicy` must be
+   *   created. The format is `projects/{project_id}/locations/{location_name}`.
+   * @param {string} request.deployPolicyId
+   *   Required. ID of the `DeployPolicy`.
+   * @param {google.cloud.deploy.v1.DeployPolicy} request.deployPolicy
+   *   Required. The `DeployPolicy` to create.
    * @param {string} [request.requestId]
    *   Optional. A request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
    *
    *   For example, consider a situation where you make an initial request and the
    *   request times out. If you make the request again with the same request ID,
@@ -2915,6 +4163,491 @@ export class CloudDeployClient {
    * @param {boolean} [request.validateOnly]
    *   Optional. If set to true, the request is validated and the user is provided
    *   with an expected result, but no actual change is made.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.create_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateDeployPolicy_async
+   */
+  createDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.ICreateDeployPolicyRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createDeployPolicy(
+    request: protos.google.cloud.deploy.v1.ICreateDeployPolicyRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createDeployPolicy(
+    request: protos.google.cloud.deploy.v1.ICreateDeployPolicyRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.ICreateDeployPolicyRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.deploy.v1.IDeployPolicy,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createDeployPolicy(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createDeployPolicy()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.create_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateDeployPolicy_async
+   */
+  async checkCreateDeployPolicyProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.deploy.v1.DeployPolicy,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createDeployPolicy,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.deploy.v1.DeployPolicy,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Updates the parameters of a single DeployPolicy.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Required. Field mask is used to specify the fields to be overwritten by the
+   *   update in the `DeployPolicy` resource. The fields specified in the
+   *   update_mask are relative to the resource, not the full request. A field
+   *   will be overwritten if it's in the mask. If the user doesn't provide a mask
+   *   then all fields are overwritten.
+   * @param {google.cloud.deploy.v1.DeployPolicy} request.deployPolicy
+   *   Required. The `DeployPolicy` to update.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.allowMissing]
+   *   Optional. If set to true, updating a `DeployPolicy` that does not exist
+   *   will result in the creation of a new `DeployPolicy`.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with an expected result, but no actual change is made.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.update_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateDeployPolicy_async
+   */
+  updateDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.IUpdateDeployPolicyRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updateDeployPolicy(
+    request: protos.google.cloud.deploy.v1.IUpdateDeployPolicyRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateDeployPolicy(
+    request: protos.google.cloud.deploy.v1.IUpdateDeployPolicyRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.IUpdateDeployPolicyRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.deploy.v1.IDeployPolicy,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IDeployPolicy,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'deploy_policy.name': request.deployPolicy!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updateDeployPolicy(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `updateDeployPolicy()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.update_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateDeployPolicy_async
+   */
+  async checkUpdateDeployPolicyProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.deploy.v1.DeployPolicy,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updateDeployPolicy,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.deploy.v1.DeployPolicy,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes a single DeployPolicy.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the `DeployPolicy` to delete. The format is
+   *   `projects/{project_id}/locations/{location_name}/deployPolicies/{deploy_policy_name}`.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.allowMissing]
+   *   Optional. If set to true, then deleting an already deleted or non-existing
+   *   `DeployPolicy` will succeed.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set, validate the request and preview the review, but do not
+   *   actually post it.
+   * @param {string} [request.etag]
+   *   Optional. This checksum is computed by the server based on the value of
+   *   other fields, and may be sent on update and delete requests to ensure the
+   *   client has an up-to-date value before proceeding.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.delete_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteDeployPolicy_async
+   */
+  deleteDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.IDeleteDeployPolicyRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteDeployPolicy(
+    request: protos.google.cloud.deploy.v1.IDeleteDeployPolicyRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteDeployPolicy(
+    request: protos.google.cloud.deploy.v1.IDeleteDeployPolicyRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteDeployPolicy(
+    request?: protos.google.cloud.deploy.v1.IDeleteDeployPolicyRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteDeployPolicy(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteDeployPolicy()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.delete_deploy_policy.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteDeployPolicy_async
+   */
+  async checkDeleteDeployPolicyProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteDeployPolicy,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Creates a new Rollout in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent collection in which the `Rollout` must be created.
+   *   The format is
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/releases/{release_name}`.
+   * @param {string} request.rolloutId
+   *   Required. ID of the `Rollout`.
+   * @param {google.cloud.deploy.v1.Rollout} request.rollout
+   *   Required. The `Rollout` to create.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with an expected result, but no actual change is made.
+   * @param {string[]} [request.overrideDeployPolicy]
+   *   Optional. Deploy policies to override. Format is
+   *   `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
    * @param {string} [request.startingPhaseId]
    *   Optional. The starting phase ID for the `Rollout`. If empty the `Rollout`
    *   will start at the first phase.
@@ -2924,8 +4657,7 @@ export class CloudDeployClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_rollout.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateRollout_async
@@ -2940,7 +4672,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createRollout(
@@ -2993,7 +4725,7 @@ export class CloudDeployClient {
         protos.google.cloud.deploy.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3020,8 +4752,7 @@ export class CloudDeployClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.create_rollout.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateRollout_async
@@ -3050,13 +4781,496 @@ export class CloudDeployClient {
     >;
   }
   /**
+   * Creates a new Automation in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent collection in which the `Automation` must be created.
+   *   The format is
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param {string} request.automationId
+   *   Required. ID of the `Automation`.
+   * @param {google.cloud.deploy.v1.Automation} request.automation
+   *   Required. The `Automation` to create.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with an expected result, but no actual change is made.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.create_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateAutomation_async
+   */
+  createAutomation(
+    request?: protos.google.cloud.deploy.v1.ICreateAutomationRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createAutomation(
+    request: protos.google.cloud.deploy.v1.ICreateAutomationRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createAutomation(
+    request: protos.google.cloud.deploy.v1.ICreateAutomationRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createAutomation(
+    request?: protos.google.cloud.deploy.v1.ICreateAutomationRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.deploy.v1.IAutomation,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createAutomation(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createAutomation()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.create_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_CreateAutomation_async
+   */
+  async checkCreateAutomationProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.deploy.v1.Automation,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createAutomation,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.deploy.v1.Automation,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Updates the parameters of a single Automation resource.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Required. Field mask is used to specify the fields to be overwritten by the
+   *   update in the `Automation` resource. The fields specified in the
+   *   update_mask are relative to the resource, not the full request. A field
+   *   will be overwritten if it's in the mask. If the user doesn't provide a mask
+   *   then all fields are overwritten.
+   * @param {google.cloud.deploy.v1.Automation} request.automation
+   *   Required. The `Automation` to update.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.allowMissing]
+   *   Optional. If set to true, updating a `Automation` that does not exist will
+   *   result in the creation of a new `Automation`.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set to true, the request is validated and the user is provided
+   *   with an expected result, but no actual change is made.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.update_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateAutomation_async
+   */
+  updateAutomation(
+    request?: protos.google.cloud.deploy.v1.IUpdateAutomationRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updateAutomation(
+    request: protos.google.cloud.deploy.v1.IUpdateAutomationRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateAutomation(
+    request: protos.google.cloud.deploy.v1.IUpdateAutomationRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateAutomation(
+    request?: protos.google.cloud.deploy.v1.IUpdateAutomationRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.deploy.v1.IAutomation,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.deploy.v1.IAutomation,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'automation.name': request.automation!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updateAutomation(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `updateAutomation()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.update_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_UpdateAutomation_async
+   */
+  async checkUpdateAutomationProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.deploy.v1.Automation,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updateAutomation,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.deploy.v1.Automation,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes a single Automation resource.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the `Automation` to delete. The format is
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}/automations/{automation_name}`.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server knows to ignore the
+   *   request if it has already been completed. The server guarantees that for
+   *   at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.allowMissing]
+   *   Optional. If set to true, then deleting an already deleted or non-existing
+   *   `Automation` will succeed.
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set, validate the request and verify whether the resource
+   *   exists, but do not actually post it.
+   * @param {string} [request.etag]
+   *   Optional. The weak etag of the request.
+   *   This checksum is computed by the server based on the value of other
+   *   fields, and may be sent on update and delete requests to ensure the
+   *   client has an up-to-date value before proceeding.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.delete_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteAutomation_async
+   */
+  deleteAutomation(
+    request?: protos.google.cloud.deploy.v1.IDeleteAutomationRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteAutomation(
+    request: protos.google.cloud.deploy.v1.IDeleteAutomationRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteAutomation(
+    request: protos.google.cloud.deploy.v1.IDeleteAutomationRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteAutomation(
+    request?: protos.google.cloud.deploy.v1.IDeleteAutomationRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.deploy.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.deploy.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteAutomation(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteAutomation()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.delete_automation.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_DeleteAutomation_async
+   */
+  async checkDeleteAutomationProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteAutomation,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.deploy.v1.OperationMetadata
+    >;
+  }
+  /**
    * Lists DeliveryPipelines in a given project and location.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent, which owns this collection of pipelines. Format must
-   *   be projects/{project_id}/locations/{location_name}.
+   *   be `projects/{project_id}/locations/{location_name}`.
    * @param {number} request.pageSize
    *   The maximum number of pipelines to return. The service may return
    *   fewer than this value. If unspecified, at most 50 pipelines will
@@ -3076,14 +5290,13 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.deploy.v1.DeliveryPipeline | DeliveryPipeline}.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.DeliveryPipeline|DeliveryPipeline}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listDeliveryPipelinesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDeliveryPipelines(
@@ -3093,7 +5306,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IDeliveryPipeline[],
       protos.google.cloud.deploy.v1.IListDeliveryPipelinesRequest | null,
-      protos.google.cloud.deploy.v1.IListDeliveryPipelinesResponse
+      protos.google.cloud.deploy.v1.IListDeliveryPipelinesResponse,
     ]
   >;
   listDeliveryPipelines(
@@ -3139,7 +5352,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IDeliveryPipeline[],
       protos.google.cloud.deploy.v1.IListDeliveryPipelinesRequest | null,
-      protos.google.cloud.deploy.v1.IListDeliveryPipelinesResponse
+      protos.google.cloud.deploy.v1.IListDeliveryPipelinesResponse,
     ]
   > | void {
     request = request || {};
@@ -3167,7 +5380,7 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent, which owns this collection of pipelines. Format must
-   *   be projects/{project_id}/locations/{location_name}.
+   *   be `projects/{project_id}/locations/{location_name}`.
    * @param {number} request.pageSize
    *   The maximum number of pipelines to return. The service may return
    *   fewer than this value. If unspecified, at most 50 pipelines will
@@ -3187,13 +5400,12 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.deploy.v1.DeliveryPipeline | DeliveryPipeline} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.DeliveryPipeline|DeliveryPipeline} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listDeliveryPipelinesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDeliveryPipelinesStream(
@@ -3226,7 +5438,7 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent, which owns this collection of pipelines. Format must
-   *   be projects/{project_id}/locations/{location_name}.
+   *   be `projects/{project_id}/locations/{location_name}`.
    * @param {number} request.pageSize
    *   The maximum number of pipelines to return. The service may return
    *   fewer than this value. If unspecified, at most 50 pipelines will
@@ -3246,12 +5458,11 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.deploy.v1.DeliveryPipeline | DeliveryPipeline}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.deploy.v1.DeliveryPipeline|DeliveryPipeline}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.list_delivery_pipelines.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_ListDeliveryPipelines_async
@@ -3284,7 +5495,7 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent, which owns this collection of targets. Format must be
-   *   projects/{project_id}/locations/{location_name}.
+   *   `projects/{project_id}/locations/{location_name}`.
    * @param {number} [request.pageSize]
    *   Optional. The maximum number of `Target` objects to return. The service may
    *   return fewer than this value. If unspecified, at most 50 `Target` objects
@@ -3305,14 +5516,13 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.deploy.v1.Target | Target}.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.Target|Target}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTargetsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTargets(
@@ -3322,7 +5532,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ITarget[],
       protos.google.cloud.deploy.v1.IListTargetsRequest | null,
-      protos.google.cloud.deploy.v1.IListTargetsResponse
+      protos.google.cloud.deploy.v1.IListTargetsResponse,
     ]
   >;
   listTargets(
@@ -3360,7 +5570,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.ITarget[],
       protos.google.cloud.deploy.v1.IListTargetsRequest | null,
-      protos.google.cloud.deploy.v1.IListTargetsResponse
+      protos.google.cloud.deploy.v1.IListTargetsResponse,
     ]
   > | void {
     request = request || {};
@@ -3388,7 +5598,7 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent, which owns this collection of targets. Format must be
-   *   projects/{project_id}/locations/{location_name}.
+   *   `projects/{project_id}/locations/{location_name}`.
    * @param {number} [request.pageSize]
    *   Optional. The maximum number of `Target` objects to return. The service may
    *   return fewer than this value. If unspecified, at most 50 `Target` objects
@@ -3409,13 +5619,12 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.deploy.v1.Target | Target} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.Target|Target} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTargetsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTargetsStream(
@@ -3448,7 +5657,7 @@ export class CloudDeployClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent, which owns this collection of targets. Format must be
-   *   projects/{project_id}/locations/{location_name}.
+   *   `projects/{project_id}/locations/{location_name}`.
    * @param {number} [request.pageSize]
    *   Optional. The maximum number of `Target` objects to return. The service may
    *   return fewer than this value. If unspecified, at most 50 `Target` objects
@@ -3469,12 +5678,11 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.deploy.v1.Target | Target}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.deploy.v1.Target|Target}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.list_targets.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_ListTargets_async
@@ -3499,6 +5707,234 @@ export class CloudDeployClient {
       request as {},
       callSettings
     ) as AsyncIterable<protos.google.cloud.deploy.v1.ITarget>;
+  }
+  /**
+   * Lists CustomTargetTypes in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent that owns this collection of custom target types.
+   *   Format must be `projects/{project_id}/locations/{location_name}`.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of `CustomTargetType` objects to return. The
+   *   service may return fewer than this value. If unspecified, at most 50
+   *   `CustomTargetType` objects will be returned. The maximum value is 1000;
+   *   values above 1000 will be set to 1000.
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListCustomTargetTypes`
+   *   call. Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} [request.filter]
+   *   Optional. Filter custom target types to be returned. See
+   *   https://google.aip.dev/160 for more details.
+   * @param {string} [request.orderBy]
+   *   Optional. Field to sort by. See https://google.aip.dev/132#ordering for
+   *   more details.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.CustomTargetType|CustomTargetType}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listCustomTargetTypesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listCustomTargetTypes(
+    request?: protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.ICustomTargetType[],
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest | null,
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesResponse,
+    ]
+  >;
+  listCustomTargetTypes(
+    request: protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+      | protos.google.cloud.deploy.v1.IListCustomTargetTypesResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.ICustomTargetType
+    >
+  ): void;
+  listCustomTargetTypes(
+    request: protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+      | protos.google.cloud.deploy.v1.IListCustomTargetTypesResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.ICustomTargetType
+    >
+  ): void;
+  listCustomTargetTypes(
+    request?: protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+          | protos.google.cloud.deploy.v1.IListCustomTargetTypesResponse
+          | null
+          | undefined,
+          protos.google.cloud.deploy.v1.ICustomTargetType
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+      | protos.google.cloud.deploy.v1.IListCustomTargetTypesResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.ICustomTargetType
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.ICustomTargetType[],
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest | null,
+      protos.google.cloud.deploy.v1.IListCustomTargetTypesResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listCustomTargetTypes(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent that owns this collection of custom target types.
+   *   Format must be `projects/{project_id}/locations/{location_name}`.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of `CustomTargetType` objects to return. The
+   *   service may return fewer than this value. If unspecified, at most 50
+   *   `CustomTargetType` objects will be returned. The maximum value is 1000;
+   *   values above 1000 will be set to 1000.
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListCustomTargetTypes`
+   *   call. Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} [request.filter]
+   *   Optional. Filter custom target types to be returned. See
+   *   https://google.aip.dev/160 for more details.
+   * @param {string} [request.orderBy]
+   *   Optional. Field to sort by. See https://google.aip.dev/132#ordering for
+   *   more details.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.CustomTargetType|CustomTargetType} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listCustomTargetTypesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listCustomTargetTypesStream(
+    request?: protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listCustomTargetTypes'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listCustomTargetTypes.createStream(
+      this.innerApiCalls.listCustomTargetTypes as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listCustomTargetTypes`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent that owns this collection of custom target types.
+   *   Format must be `projects/{project_id}/locations/{location_name}`.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of `CustomTargetType` objects to return. The
+   *   service may return fewer than this value. If unspecified, at most 50
+   *   `CustomTargetType` objects will be returned. The maximum value is 1000;
+   *   values above 1000 will be set to 1000.
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListCustomTargetTypes`
+   *   call. Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} [request.filter]
+   *   Optional. Filter custom target types to be returned. See
+   *   https://google.aip.dev/160 for more details.
+   * @param {string} [request.orderBy]
+   *   Optional. Field to sort by. See https://google.aip.dev/132#ordering for
+   *   more details.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.deploy.v1.CustomTargetType|CustomTargetType}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.list_custom_target_types.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_ListCustomTargetTypes_async
+   */
+  listCustomTargetTypesAsync(
+    request?: protos.google.cloud.deploy.v1.IListCustomTargetTypesRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.deploy.v1.ICustomTargetType> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listCustomTargetTypes'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listCustomTargetTypes.asyncIterate(
+      this.innerApiCalls['listCustomTargetTypes'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.deploy.v1.ICustomTargetType>;
   }
   /**
    * Lists Releases in a given project and location.
@@ -3528,14 +5964,13 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.deploy.v1.Release | Release}.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.Release|Release}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listReleasesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listReleases(
@@ -3545,7 +5980,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRelease[],
       protos.google.cloud.deploy.v1.IListReleasesRequest | null,
-      protos.google.cloud.deploy.v1.IListReleasesResponse
+      protos.google.cloud.deploy.v1.IListReleasesResponse,
     ]
   >;
   listReleases(
@@ -3585,7 +6020,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRelease[],
       protos.google.cloud.deploy.v1.IListReleasesRequest | null,
-      protos.google.cloud.deploy.v1.IListReleasesResponse
+      protos.google.cloud.deploy.v1.IListReleasesResponse,
     ]
   > | void {
     request = request || {};
@@ -3634,13 +6069,12 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.deploy.v1.Release | Release} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.Release|Release} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listReleasesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listReleasesStream(
@@ -3694,12 +6128,11 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.deploy.v1.Release | Release}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.deploy.v1.Release|Release}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.list_releases.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_ListReleases_async
@@ -3724,6 +6157,231 @@ export class CloudDeployClient {
       request as {},
       callSettings
     ) as AsyncIterable<protos.google.cloud.deploy.v1.IRelease>;
+  }
+  /**
+   * Lists DeployPolicies in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent, which owns this collection of deploy policies. Format
+   *   must be `projects/{project_id}/locations/{location_name}`.
+   * @param {number} request.pageSize
+   *   The maximum number of deploy policies to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 deploy policies will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListDeployPolicies` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter deploy policies to be returned. See https://google.aip.dev/160 for
+   *   more details. All fields can be used in the filter.
+   * @param {string} request.orderBy
+   *   Field to sort by. See https://google.aip.dev/132#ordering for more details.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.DeployPolicy|DeployPolicy}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listDeployPoliciesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listDeployPolicies(
+    request?: protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IDeployPolicy[],
+      protos.google.cloud.deploy.v1.IListDeployPoliciesRequest | null,
+      protos.google.cloud.deploy.v1.IListDeployPoliciesResponse,
+    ]
+  >;
+  listDeployPolicies(
+    request: protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+      | protos.google.cloud.deploy.v1.IListDeployPoliciesResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.IDeployPolicy
+    >
+  ): void;
+  listDeployPolicies(
+    request: protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+      | protos.google.cloud.deploy.v1.IListDeployPoliciesResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.IDeployPolicy
+    >
+  ): void;
+  listDeployPolicies(
+    request?: protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+          | protos.google.cloud.deploy.v1.IListDeployPoliciesResponse
+          | null
+          | undefined,
+          protos.google.cloud.deploy.v1.IDeployPolicy
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+      | protos.google.cloud.deploy.v1.IListDeployPoliciesResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.IDeployPolicy
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IDeployPolicy[],
+      protos.google.cloud.deploy.v1.IListDeployPoliciesRequest | null,
+      protos.google.cloud.deploy.v1.IListDeployPoliciesResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listDeployPolicies(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent, which owns this collection of deploy policies. Format
+   *   must be `projects/{project_id}/locations/{location_name}`.
+   * @param {number} request.pageSize
+   *   The maximum number of deploy policies to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 deploy policies will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListDeployPolicies` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter deploy policies to be returned. See https://google.aip.dev/160 for
+   *   more details. All fields can be used in the filter.
+   * @param {string} request.orderBy
+   *   Field to sort by. See https://google.aip.dev/132#ordering for more details.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.DeployPolicy|DeployPolicy} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listDeployPoliciesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listDeployPoliciesStream(
+    request?: protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listDeployPolicies'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listDeployPolicies.createStream(
+      this.innerApiCalls.listDeployPolicies as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listDeployPolicies`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent, which owns this collection of deploy policies. Format
+   *   must be `projects/{project_id}/locations/{location_name}`.
+   * @param {number} request.pageSize
+   *   The maximum number of deploy policies to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 deploy policies will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListDeployPolicies` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter deploy policies to be returned. See https://google.aip.dev/160 for
+   *   more details. All fields can be used in the filter.
+   * @param {string} request.orderBy
+   *   Field to sort by. See https://google.aip.dev/132#ordering for more details.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.deploy.v1.DeployPolicy|DeployPolicy}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.list_deploy_policies.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_ListDeployPolicies_async
+   */
+  listDeployPoliciesAsync(
+    request?: protos.google.cloud.deploy.v1.IListDeployPoliciesRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.deploy.v1.IDeployPolicy> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listDeployPolicies'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listDeployPolicies.asyncIterate(
+      this.innerApiCalls['listDeployPolicies'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.deploy.v1.IDeployPolicy>;
   }
   /**
    * Lists Rollouts in a given project and location.
@@ -3752,14 +6410,13 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.deploy.v1.Rollout | Rollout}.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.Rollout|Rollout}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listRolloutsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listRollouts(
@@ -3769,7 +6426,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRollout[],
       protos.google.cloud.deploy.v1.IListRolloutsRequest | null,
-      protos.google.cloud.deploy.v1.IListRolloutsResponse
+      protos.google.cloud.deploy.v1.IListRolloutsResponse,
     ]
   >;
   listRollouts(
@@ -3809,7 +6466,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IRollout[],
       protos.google.cloud.deploy.v1.IListRolloutsRequest | null,
-      protos.google.cloud.deploy.v1.IListRolloutsResponse
+      protos.google.cloud.deploy.v1.IListRolloutsResponse,
     ]
   > | void {
     request = request || {};
@@ -3857,13 +6514,12 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.deploy.v1.Rollout | Rollout} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.Rollout|Rollout} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listRolloutsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listRolloutsStream(
@@ -3916,12 +6572,11 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.deploy.v1.Rollout | Rollout}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.deploy.v1.Rollout|Rollout}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.list_rollouts.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_ListRollouts_async
@@ -3974,14 +6629,13 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.deploy.v1.JobRun | JobRun}.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.JobRun|JobRun}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listJobRunsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listJobRuns(
@@ -3991,7 +6645,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IJobRun[],
       protos.google.cloud.deploy.v1.IListJobRunsRequest | null,
-      protos.google.cloud.deploy.v1.IListJobRunsResponse
+      protos.google.cloud.deploy.v1.IListJobRunsResponse,
     ]
   >;
   listJobRuns(
@@ -4029,7 +6683,7 @@ export class CloudDeployClient {
     [
       protos.google.cloud.deploy.v1.IJobRun[],
       protos.google.cloud.deploy.v1.IListJobRunsRequest | null,
-      protos.google.cloud.deploy.v1.IListJobRunsResponse
+      protos.google.cloud.deploy.v1.IListJobRunsResponse,
     ]
   > | void {
     request = request || {};
@@ -4077,13 +6731,12 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.deploy.v1.JobRun | JobRun} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.JobRun|JobRun} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listJobRunsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listJobRunsStream(
@@ -4136,12 +6789,11 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.deploy.v1.JobRun | JobRun}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.deploy.v1.JobRun|JobRun}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_deploy.list_job_runs.js</caption>
    * region_tag:clouddeploy_v1_generated_CloudDeploy_ListJobRuns_async
@@ -4166,6 +6818,456 @@ export class CloudDeployClient {
       request as {},
       callSettings
     ) as AsyncIterable<protos.google.cloud.deploy.v1.IJobRun>;
+  }
+  /**
+   * Lists Automations in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent `Delivery Pipeline`, which owns this collection of
+   *   automations. Format must be
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param {number} request.pageSize
+   *   The maximum number of automations to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 automations will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListAutomations` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter automations to be returned. All fields can be used in the
+   *   filter.
+   * @param {string} request.orderBy
+   *   Field to sort by.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.Automation|Automation}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listAutomationsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAutomations(
+    request?: protos.google.cloud.deploy.v1.IListAutomationsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomation[],
+      protos.google.cloud.deploy.v1.IListAutomationsRequest | null,
+      protos.google.cloud.deploy.v1.IListAutomationsResponse,
+    ]
+  >;
+  listAutomations(
+    request: protos.google.cloud.deploy.v1.IListAutomationsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListAutomationsRequest,
+      protos.google.cloud.deploy.v1.IListAutomationsResponse | null | undefined,
+      protos.google.cloud.deploy.v1.IAutomation
+    >
+  ): void;
+  listAutomations(
+    request: protos.google.cloud.deploy.v1.IListAutomationsRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListAutomationsRequest,
+      protos.google.cloud.deploy.v1.IListAutomationsResponse | null | undefined,
+      protos.google.cloud.deploy.v1.IAutomation
+    >
+  ): void;
+  listAutomations(
+    request?: protos.google.cloud.deploy.v1.IListAutomationsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.deploy.v1.IListAutomationsRequest,
+          | protos.google.cloud.deploy.v1.IListAutomationsResponse
+          | null
+          | undefined,
+          protos.google.cloud.deploy.v1.IAutomation
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListAutomationsRequest,
+      protos.google.cloud.deploy.v1.IListAutomationsResponse | null | undefined,
+      protos.google.cloud.deploy.v1.IAutomation
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomation[],
+      protos.google.cloud.deploy.v1.IListAutomationsRequest | null,
+      protos.google.cloud.deploy.v1.IListAutomationsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listAutomations(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent `Delivery Pipeline`, which owns this collection of
+   *   automations. Format must be
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param {number} request.pageSize
+   *   The maximum number of automations to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 automations will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListAutomations` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter automations to be returned. All fields can be used in the
+   *   filter.
+   * @param {string} request.orderBy
+   *   Field to sort by.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.Automation|Automation} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listAutomationsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAutomationsStream(
+    request?: protos.google.cloud.deploy.v1.IListAutomationsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAutomations'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAutomations.createStream(
+      this.innerApiCalls.listAutomations as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listAutomations`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent `Delivery Pipeline`, which owns this collection of
+   *   automations. Format must be
+   *   `projects/{project_id}/locations/{location_name}/deliveryPipelines/{pipeline_name}`.
+   * @param {number} request.pageSize
+   *   The maximum number of automations to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 automations will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListAutomations` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter automations to be returned. All fields can be used in the
+   *   filter.
+   * @param {string} request.orderBy
+   *   Field to sort by.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.deploy.v1.Automation|Automation}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.list_automations.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_ListAutomations_async
+   */
+  listAutomationsAsync(
+    request?: protos.google.cloud.deploy.v1.IListAutomationsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.deploy.v1.IAutomation> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAutomations'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAutomations.asyncIterate(
+      this.innerApiCalls['listAutomations'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.deploy.v1.IAutomation>;
+  }
+  /**
+   * Lists AutomationRuns in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent `Delivery Pipeline`, which owns this collection of
+   *   automationRuns. Format must be
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}`.
+   * @param {number} request.pageSize
+   *   The maximum number of automationRuns to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 automationRuns will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListAutomationRuns` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter automationRuns to be returned. All fields can be used in the
+   *   filter.
+   * @param {string} request.orderBy
+   *   Field to sort by.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.deploy.v1.AutomationRun|AutomationRun}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listAutomationRunsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAutomationRuns(
+    request?: protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomationRun[],
+      protos.google.cloud.deploy.v1.IListAutomationRunsRequest | null,
+      protos.google.cloud.deploy.v1.IListAutomationRunsResponse,
+    ]
+  >;
+  listAutomationRuns(
+    request: protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+      | protos.google.cloud.deploy.v1.IListAutomationRunsResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.IAutomationRun
+    >
+  ): void;
+  listAutomationRuns(
+    request: protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+      | protos.google.cloud.deploy.v1.IListAutomationRunsResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.IAutomationRun
+    >
+  ): void;
+  listAutomationRuns(
+    request?: protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+          | protos.google.cloud.deploy.v1.IListAutomationRunsResponse
+          | null
+          | undefined,
+          protos.google.cloud.deploy.v1.IAutomationRun
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+      | protos.google.cloud.deploy.v1.IListAutomationRunsResponse
+      | null
+      | undefined,
+      protos.google.cloud.deploy.v1.IAutomationRun
+    >
+  ): Promise<
+    [
+      protos.google.cloud.deploy.v1.IAutomationRun[],
+      protos.google.cloud.deploy.v1.IListAutomationRunsRequest | null,
+      protos.google.cloud.deploy.v1.IListAutomationRunsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listAutomationRuns(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent `Delivery Pipeline`, which owns this collection of
+   *   automationRuns. Format must be
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}`.
+   * @param {number} request.pageSize
+   *   The maximum number of automationRuns to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 automationRuns will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListAutomationRuns` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter automationRuns to be returned. All fields can be used in the
+   *   filter.
+   * @param {string} request.orderBy
+   *   Field to sort by.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.deploy.v1.AutomationRun|AutomationRun} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listAutomationRunsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAutomationRunsStream(
+    request?: protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAutomationRuns'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAutomationRuns.createStream(
+      this.innerApiCalls.listAutomationRuns as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listAutomationRuns`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent `Delivery Pipeline`, which owns this collection of
+   *   automationRuns. Format must be
+   *   `projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline}`.
+   * @param {number} request.pageSize
+   *   The maximum number of automationRuns to return. The service may return
+   *   fewer than this value. If unspecified, at most 50 automationRuns will
+   *   be returned. The maximum value is 1000; values above 1000 will be set
+   *   to 1000.
+   * @param {string} request.pageToken
+   *   A page token, received from a previous `ListAutomationRuns` call.
+   *   Provide this to retrieve the subsequent page.
+   *
+   *   When paginating, all other provided parameters match
+   *   the call that provided the page token.
+   * @param {string} request.filter
+   *   Filter automationRuns to be returned. All fields can be used in the
+   *   filter.
+   * @param {string} request.orderBy
+   *   Field to sort by.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.deploy.v1.AutomationRun|AutomationRun}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/cloud_deploy.list_automation_runs.js</caption>
+   * region_tag:clouddeploy_v1_generated_CloudDeploy_ListAutomationRuns_async
+   */
+  listAutomationRunsAsync(
+    request?: protos.google.cloud.deploy.v1.IListAutomationRunsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.deploy.v1.IAutomationRun> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAutomationRuns'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAutomationRuns.asyncIterate(
+      this.innerApiCalls['listAutomationRuns'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.deploy.v1.IAutomationRun>;
   }
   /**
    * Gets the access control policy for a resource. Returns an empty policy
@@ -4206,7 +7308,7 @@ export class CloudDeployClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -4227,8 +7329,7 @@ export class CloudDeployClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -4254,7 +7355,7 @@ export class CloudDeployClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -4275,8 +7376,7 @@ export class CloudDeployClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -4303,7 +7403,7 @@ export class CloudDeployClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -4318,8 +7418,7 @@ export class CloudDeployClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -4365,12 +7464,11 @@ export class CloudDeployClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -4567,6 +7665,148 @@ export class CloudDeployClient {
   // --------------------
 
   /**
+   * Return a fully-qualified automation resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} delivery_pipeline
+   * @param {string} automation
+   * @returns {string} Resource name string.
+   */
+  automationPath(
+    project: string,
+    location: string,
+    deliveryPipeline: string,
+    automation: string
+  ) {
+    return this.pathTemplates.automationPathTemplate.render({
+      project: project,
+      location: location,
+      delivery_pipeline: deliveryPipeline,
+      automation: automation,
+    });
+  }
+
+  /**
+   * Parse the project from Automation resource.
+   *
+   * @param {string} automationName
+   *   A fully-qualified path representing Automation resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAutomationName(automationName: string) {
+    return this.pathTemplates.automationPathTemplate.match(automationName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Automation resource.
+   *
+   * @param {string} automationName
+   *   A fully-qualified path representing Automation resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromAutomationName(automationName: string) {
+    return this.pathTemplates.automationPathTemplate.match(automationName)
+      .location;
+  }
+
+  /**
+   * Parse the delivery_pipeline from Automation resource.
+   *
+   * @param {string} automationName
+   *   A fully-qualified path representing Automation resource.
+   * @returns {string} A string representing the delivery_pipeline.
+   */
+  matchDeliveryPipelineFromAutomationName(automationName: string) {
+    return this.pathTemplates.automationPathTemplate.match(automationName)
+      .delivery_pipeline;
+  }
+
+  /**
+   * Parse the automation from Automation resource.
+   *
+   * @param {string} automationName
+   *   A fully-qualified path representing Automation resource.
+   * @returns {string} A string representing the automation.
+   */
+  matchAutomationFromAutomationName(automationName: string) {
+    return this.pathTemplates.automationPathTemplate.match(automationName)
+      .automation;
+  }
+
+  /**
+   * Return a fully-qualified automationRun resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} delivery_pipeline
+   * @param {string} automation_run
+   * @returns {string} Resource name string.
+   */
+  automationRunPath(
+    project: string,
+    location: string,
+    deliveryPipeline: string,
+    automationRun: string
+  ) {
+    return this.pathTemplates.automationRunPathTemplate.render({
+      project: project,
+      location: location,
+      delivery_pipeline: deliveryPipeline,
+      automation_run: automationRun,
+    });
+  }
+
+  /**
+   * Parse the project from AutomationRun resource.
+   *
+   * @param {string} automationRunName
+   *   A fully-qualified path representing AutomationRun resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAutomationRunName(automationRunName: string) {
+    return this.pathTemplates.automationRunPathTemplate.match(automationRunName)
+      .project;
+  }
+
+  /**
+   * Parse the location from AutomationRun resource.
+   *
+   * @param {string} automationRunName
+   *   A fully-qualified path representing AutomationRun resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromAutomationRunName(automationRunName: string) {
+    return this.pathTemplates.automationRunPathTemplate.match(automationRunName)
+      .location;
+  }
+
+  /**
+   * Parse the delivery_pipeline from AutomationRun resource.
+   *
+   * @param {string} automationRunName
+   *   A fully-qualified path representing AutomationRun resource.
+   * @returns {string} A string representing the delivery_pipeline.
+   */
+  matchDeliveryPipelineFromAutomationRunName(automationRunName: string) {
+    return this.pathTemplates.automationRunPathTemplate.match(automationRunName)
+      .delivery_pipeline;
+  }
+
+  /**
+   * Parse the automation_run from AutomationRun resource.
+   *
+   * @param {string} automationRunName
+   *   A fully-qualified path representing AutomationRun resource.
+   * @returns {string} A string representing the automation_run.
+   */
+  matchAutomationRunFromAutomationRunName(automationRunName: string) {
+    return this.pathTemplates.automationRunPathTemplate.match(automationRunName)
+      .automation_run;
+  }
+
+  /**
    * Return a fully-qualified build resource name string.
    *
    * @param {string} project
@@ -4701,6 +7941,65 @@ export class CloudDeployClient {
   }
 
   /**
+   * Return a fully-qualified customTargetType resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} custom_target_type
+   * @returns {string} Resource name string.
+   */
+  customTargetTypePath(
+    project: string,
+    location: string,
+    customTargetType: string
+  ) {
+    return this.pathTemplates.customTargetTypePathTemplate.render({
+      project: project,
+      location: location,
+      custom_target_type: customTargetType,
+    });
+  }
+
+  /**
+   * Parse the project from CustomTargetType resource.
+   *
+   * @param {string} customTargetTypeName
+   *   A fully-qualified path representing CustomTargetType resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromCustomTargetTypeName(customTargetTypeName: string) {
+    return this.pathTemplates.customTargetTypePathTemplate.match(
+      customTargetTypeName
+    ).project;
+  }
+
+  /**
+   * Parse the location from CustomTargetType resource.
+   *
+   * @param {string} customTargetTypeName
+   *   A fully-qualified path representing CustomTargetType resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromCustomTargetTypeName(customTargetTypeName: string) {
+    return this.pathTemplates.customTargetTypePathTemplate.match(
+      customTargetTypeName
+    ).location;
+  }
+
+  /**
+   * Parse the custom_target_type from CustomTargetType resource.
+   *
+   * @param {string} customTargetTypeName
+   *   A fully-qualified path representing CustomTargetType resource.
+   * @returns {string} A string representing the custom_target_type.
+   */
+  matchCustomTargetTypeFromCustomTargetTypeName(customTargetTypeName: string) {
+    return this.pathTemplates.customTargetTypePathTemplate.match(
+      customTargetTypeName
+    ).custom_target_type;
+  }
+
+  /**
    * Return a fully-qualified deliveryPipeline resource name string.
    *
    * @param {string} project
@@ -4757,6 +8056,107 @@ export class CloudDeployClient {
     return this.pathTemplates.deliveryPipelinePathTemplate.match(
       deliveryPipelineName
     ).delivery_pipeline;
+  }
+
+  /**
+   * Return a fully-qualified deployPolicy resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} deploy_policy
+   * @returns {string} Resource name string.
+   */
+  deployPolicyPath(project: string, location: string, deployPolicy: string) {
+    return this.pathTemplates.deployPolicyPathTemplate.render({
+      project: project,
+      location: location,
+      deploy_policy: deployPolicy,
+    });
+  }
+
+  /**
+   * Parse the project from DeployPolicy resource.
+   *
+   * @param {string} deployPolicyName
+   *   A fully-qualified path representing DeployPolicy resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDeployPolicyName(deployPolicyName: string) {
+    return this.pathTemplates.deployPolicyPathTemplate.match(deployPolicyName)
+      .project;
+  }
+
+  /**
+   * Parse the location from DeployPolicy resource.
+   *
+   * @param {string} deployPolicyName
+   *   A fully-qualified path representing DeployPolicy resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDeployPolicyName(deployPolicyName: string) {
+    return this.pathTemplates.deployPolicyPathTemplate.match(deployPolicyName)
+      .location;
+  }
+
+  /**
+   * Parse the deploy_policy from DeployPolicy resource.
+   *
+   * @param {string} deployPolicyName
+   *   A fully-qualified path representing DeployPolicy resource.
+   * @returns {string} A string representing the deploy_policy.
+   */
+  matchDeployPolicyFromDeployPolicyName(deployPolicyName: string) {
+    return this.pathTemplates.deployPolicyPathTemplate.match(deployPolicyName)
+      .deploy_policy;
+  }
+
+  /**
+   * Return a fully-qualified job resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} job
+   * @returns {string} Resource name string.
+   */
+  jobPath(project: string, location: string, job: string) {
+    return this.pathTemplates.jobPathTemplate.render({
+      project: project,
+      location: location,
+      job: job,
+    });
+  }
+
+  /**
+   * Parse the project from Job resource.
+   *
+   * @param {string} jobName
+   *   A fully-qualified path representing Job resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromJobName(jobName: string) {
+    return this.pathTemplates.jobPathTemplate.match(jobName).project;
+  }
+
+  /**
+   * Parse the location from Job resource.
+   *
+   * @param {string} jobName
+   *   A fully-qualified path representing Job resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromJobName(jobName: string) {
+    return this.pathTemplates.jobPathTemplate.match(jobName).location;
+  }
+
+  /**
+   * Parse the job from Job resource.
+   *
+   * @param {string} jobName
+   *   A fully-qualified path representing Job resource.
+   * @returns {string} A string representing the job.
+   */
+  matchJobFromJobName(jobName: string) {
+    return this.pathTemplates.jobPathTemplate.match(jobName).job;
   }
 
   /**

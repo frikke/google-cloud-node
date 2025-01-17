@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/certificate_authority_service_client_config.json`.
@@ -58,6 +59,8 @@ export class CertificateAuthorityServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -101,8 +104,7 @@ export class CertificateAuthorityServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -110,7 +112,7 @@ export class CertificateAuthorityServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CertificateAuthorityServiceClient({fallback: 'rest'}, gax);
+   *     const client = new CertificateAuthorityServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -120,8 +122,27 @@ export class CertificateAuthorityServiceClient {
     // Ensure that options include all the required fields.
     const staticMembers = this
       .constructor as typeof CertificateAuthorityServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'privateca.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -136,7 +157,7 @@ export class CertificateAuthorityServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -161,10 +182,10 @@ export class CertificateAuthorityServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -176,14 +197,14 @@ export class CertificateAuthorityServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -255,7 +276,7 @@ export class CertificateAuthorityServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -648,19 +669,50 @@ export class CertificateAuthorityServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'privateca.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'privateca.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -700,25 +752,25 @@ export class CertificateAuthorityServiceClient {
   // -- Service calls --
   // -------------------
   /**
-   * Create a new {@link google.cloud.security.privateca.v1.Certificate|Certificate}
+   * Create a new {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}
    * in a given Project, Location from a particular
-   * {@link google.cloud.security.privateca.v1.CaPool|CaPool}.
+   * {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificate}, in the
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}, in the
    *   format `projects/* /locations/* /caPools/*`.
    * @param {string} [request.certificateId]
    *   Optional. It must be unique within a location and match the regular
    *   expression `[a-zA-Z0-9_-]{1,63}`. This field is required when using a
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
-   *   in the Enterprise {@link |CertificateAuthority.Tier}, but is optional and its
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   in the Enterprise {@link protos.|CertificateAuthority.Tier}, but is optional and its
    *   value is ignored otherwise.
    * @param {google.cloud.security.privateca.v1.Certificate} request.certificate
-   *   Required. A {@link google.cloud.security.privateca.v1.Certificate|Certificate}
+   *   Required. A {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}
    *   with initial field values.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -736,39 +788,38 @@ export class CertificateAuthorityServiceClient {
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
    *   Optional. If this is true, no
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificate} resource will
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate} resource will
    *   be persisted regardless of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool}'s
-   *   {@link google.cloud.security.privateca.v1.CaPool.tier|tier}, and the returned
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificate} will not
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}'s
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool.tier|tier}, and the returned
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate} will not
    *   contain the
-   *   {@link google.cloud.security.privateca.v1.Certificate.pem_certificate|pem_certificate}
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate.pem_certificate|pem_certificate}
    *   field.
    * @param {string} [request.issuingCertificateAuthorityId]
    *   Optional. The resource ID of the
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   that should issue the certificate.  This optional field will ignore the
    *   load-balancing scheme of the Pool and directly issue the certificate from
    *   the CA with the specified ID, contained in the same
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} referenced by `parent`.
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} referenced by `parent`.
    *   Per-CA quota rules apply. If left empty, a
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
-   *   will be chosen from the {@link google.cloud.security.privateca.v1.CaPool|CaPool}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   will be chosen from the {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}
    *   by the service. For example, to issue a
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificate} from a
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate} from a
    *   Certificate Authority with resource name
    *   "projects/my-project/locations/us-central1/caPools/my-pool/certificateAuthorities/my-ca",
    *   you can set the
-   *   {@link google.cloud.security.privateca.v1.CreateCertificateRequest.parent|parent}
+   *   {@link protos.google.cloud.security.privateca.v1.CreateCertificateRequest.parent|parent}
    *   to "projects/my-project/locations/us-central1/caPools/my-pool" and the
-   *   {@link google.cloud.security.privateca.v1.CreateCertificateRequest.issuing_certificate_authority_id|issuing_certificate_authority_id}
+   *   {@link protos.google.cloud.security.privateca.v1.CreateCertificateRequest.issuing_certificate_authority_id|issuing_certificate_authority_id}
    *   to "my-ca".
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.Certificate | Certificate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_certificate.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCertificate_async
@@ -783,7 +834,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.ICreateCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificate(
@@ -832,7 +883,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.ICreateCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -854,20 +905,19 @@ export class CertificateAuthorityServiceClient {
     return this.innerApiCalls.createCertificate(request, options, callback);
   }
   /**
-   * Returns a {@link google.cloud.security.privateca.v1.Certificate|Certificate}.
+   * Returns a {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
-   *   Required. The {@link google.cloud.security.privateca.v1.Certificate.name|name}
-   *   of the {@link google.cloud.security.privateca.v1.Certificate|Certificate} to
+   *   Required. The {@link protos.google.cloud.security.privateca.v1.Certificate.name|name}
+   *   of the {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate} to
    *   get.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.Certificate | Certificate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.get_certificate.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_GetCertificate_async
@@ -882,7 +932,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificate(
@@ -931,7 +981,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -953,17 +1003,17 @@ export class CertificateAuthorityServiceClient {
     return this.innerApiCalls.getCertificate(request, options, callback);
   }
   /**
-   * Revoke a {@link google.cloud.security.privateca.v1.Certificate|Certificate}.
+   * Revoke a {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificate} in the format
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate} in the format
    *   `projects/* /locations/* /caPools/* /certificates/*`.
    * @param {google.cloud.security.privateca.v1.RevocationReason} request.reason
    *   Required. The
-   *   {@link google.cloud.security.privateca.v1.RevocationReason|RevocationReason} for
+   *   {@link protos.google.cloud.security.privateca.v1.RevocationReason|RevocationReason} for
    *   revoking this certificate.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -982,9 +1032,8 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.Certificate | Certificate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.revoke_certificate.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_RevokeCertificate_async
@@ -999,7 +1048,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IRevokeCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   revokeCertificate(
@@ -1048,7 +1097,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IRevokeCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1070,14 +1119,14 @@ export class CertificateAuthorityServiceClient {
     return this.innerApiCalls.revokeCertificate(request, options, callback);
   }
   /**
-   * Update a {@link google.cloud.security.privateca.v1.Certificate|Certificate}.
+   * Update a {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
    * Currently, the only field you can update is the
-   * {@link google.cloud.security.privateca.v1.Certificate.labels|labels} field.
+   * {@link protos.google.cloud.security.privateca.v1.Certificate.labels|labels} field.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.cloud.security.privateca.v1.Certificate} request.certificate
-   *   Required. {@link google.cloud.security.privateca.v1.Certificate|Certificate}
+   *   Required. {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}
    *   with updated values.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. A list of fields to be updated in this request.
@@ -1098,9 +1147,8 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.Certificate | Certificate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificate_async
@@ -1115,7 +1163,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IUpdateCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificate(
@@ -1164,7 +1212,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IUpdateCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1187,29 +1235,28 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Fetch a certificate signing request (CSR) from a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    * that is in state
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority.State.AWAITING_USER_ACTIVATION|AWAITING_USER_ACTIVATION}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority.State.AWAITING_USER_ACTIVATION|AWAITING_USER_ACTIVATION}
    * and is of type
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority.Type.SUBORDINATE|SUBORDINATE}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority.Type.SUBORDINATE|SUBORDINATE}.
    * The CSR must then be signed by the desired parent Certificate Authority,
    * which could be another
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    * resource, or could be an on-prem certificate authority. See also
-   * {@link google.cloud.security.privateca.v1.CertificateAuthorityService.ActivateCertificateAuthority|ActivateCertificateAuthority}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthorityService.ActivateCertificateAuthority|ActivateCertificateAuthority}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.FetchCertificateAuthorityCsrResponse | FetchCertificateAuthorityCsrResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.FetchCertificateAuthorityCsrResponse|FetchCertificateAuthorityCsrResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.fetch_certificate_authority_csr.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_FetchCertificateAuthorityCsr_async
@@ -1224,7 +1271,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IFetchCertificateAuthorityCsrRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   fetchCertificateAuthorityCsr(
@@ -1273,7 +1320,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IFetchCertificateAuthorityCsrRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1300,21 +1347,20 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Returns a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority.name|name} of the
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority.name|name} of the
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   to get.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.CertificateAuthority | CertificateAuthority}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.get_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_GetCertificateAuthority_async
@@ -1329,7 +1375,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateAuthorityRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificateAuthority(
@@ -1378,7 +1424,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateAuthorityRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1404,19 +1450,18 @@ export class CertificateAuthorityServiceClient {
     );
   }
   /**
-   * Returns a {@link google.cloud.security.privateca.v1.CaPool|CaPool}.
+   * Returns a {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
-   *   Required. The {@link google.cloud.security.privateca.v1.CaPool.name|name} of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} to get.
+   *   Required. The {@link protos.google.cloud.security.privateca.v1.CaPool.name|name} of the
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} to get.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.CaPool | CaPool}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.get_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_GetCaPool_async
@@ -1428,7 +1473,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICaPool,
       protos.google.cloud.security.privateca.v1.IGetCaPoolRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCaPool(
@@ -1474,7 +1519,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICaPool,
       protos.google.cloud.security.privateca.v1.IGetCaPoolRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1497,16 +1542,15 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * FetchCaCerts returns the current trust anchor for the
-   * {@link google.cloud.security.privateca.v1.CaPool|CaPool}. This will include CA
-   * certificate chains for all ACTIVE
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
-   * resources in the {@link google.cloud.security.privateca.v1.CaPool|CaPool}.
+   * {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}. This will include CA
+   * certificate chains for all certificate authorities in the ENABLED,
+   * DISABLED, or STAGED states.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.caPool
    *   Required. The resource name for the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} in the format
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} in the format
    *   `projects/* /locations/* /caPools/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -1525,9 +1569,8 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.FetchCaCertsResponse | FetchCaCertsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.FetchCaCertsResponse|FetchCaCertsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.fetch_ca_certs.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_FetchCaCerts_async
@@ -1542,7 +1585,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IFetchCaCertsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   fetchCaCerts(
@@ -1591,7 +1634,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IFetchCaCertsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1614,22 +1657,21 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Returns a
-   * {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList.name|name}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList.name|name}
    *   of the
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}
    *   to get.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.CertificateRevocationList | CertificateRevocationList}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.get_certificate_revocation_list.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_GetCertificateRevocationList_async
@@ -1644,7 +1686,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateRevocationListRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificateRevocationList(
@@ -1693,7 +1735,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateRevocationListRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1720,21 +1762,20 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Returns a
-   * {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate.name|name} of the
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate.name|name} of the
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
    *   to get.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.security.privateca.v1.CertificateTemplate | CertificateTemplate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.get_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_GetCertificateTemplate_async
@@ -1749,7 +1790,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificateTemplate(
@@ -1798,7 +1839,7 @@ export class CertificateAuthorityServiceClient {
         | protos.google.cloud.security.privateca.v1.IGetCertificateTemplateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1826,25 +1867,25 @@ export class CertificateAuthorityServiceClient {
 
   /**
    * Activate a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    * that is in state
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority.State.AWAITING_USER_ACTIVATION|AWAITING_USER_ACTIVATION}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority.State.AWAITING_USER_ACTIVATION|AWAITING_USER_ACTIVATION}
    * and is of type
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority.Type.SUBORDINATE|SUBORDINATE}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority.Type.SUBORDINATE|SUBORDINATE}.
    * After the parent Certificate Authority signs a certificate signing request
    * from
-   * {@link google.cloud.security.privateca.v1.CertificateAuthorityService.FetchCertificateAuthorityCsr|FetchCertificateAuthorityCsr},
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthorityService.FetchCertificateAuthorityCsr|FetchCertificateAuthorityCsr},
    * this method can complete the activation process.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {string} request.pemCaCertificate
    *   Required. The signed CA certificate issued from
-   *   {@link google.cloud.security.privateca.v1.FetchCertificateAuthorityCsrResponse.pem_csr|FetchCertificateAuthorityCsrResponse.pem_csr}.
+   *   {@link protos.google.cloud.security.privateca.v1.FetchCertificateAuthorityCsrResponse.pem_csr|FetchCertificateAuthorityCsrResponse.pem_csr}.
    * @param {google.cloud.security.privateca.v1.SubordinateConfig} request.subordinateConfig
    *   Required. Must include information about the issuer of
    *   'pem_ca_certificate', and any further issuers until the self-signed CA.
@@ -1868,8 +1909,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.activate_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ActivateCertificateAuthority_async
@@ -1884,7 +1924,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   activateCertificateAuthority(
@@ -1937,7 +1977,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1968,8 +2008,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.activate_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ActivateCertificateAuthority_async
@@ -1999,22 +2038,22 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Create a new
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    * in a given Project and Location.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
    *   in the format `projects/* /locations/* /caPools/*`.
    * @param {string} request.certificateAuthorityId
    *   Required. It must be unique within a location and match the regular
    *   expression `[a-zA-Z0-9_-]{1,63}`
    * @param {google.cloud.security.privateca.v1.CertificateAuthority} request.certificateAuthority
    *   Required. A
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   with initial field values.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -2036,8 +2075,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCertificateAuthority_async
@@ -2052,7 +2090,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificateAuthority(
@@ -2105,7 +2143,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2136,8 +2174,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCertificateAuthority_async
@@ -2167,13 +2204,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Disable a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -2192,7 +2229,7 @@ export class CertificateAuthorityServiceClient {
    * @param {boolean} [request.ignoreDependentResources]
    *   Optional. This field allows this CA to be disabled even if it's being
    *   depended on by another resource. However, doing so may result in unintended
-   *   and unrecoverable effects on any dependent resource(s) since the CA will
+   *   and unrecoverable effects on any dependent resources since the CA will
    *   no longer be able to issue certificates.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
@@ -2200,8 +2237,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.disable_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DisableCertificateAuthority_async
@@ -2216,7 +2252,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   disableCertificateAuthority(
@@ -2269,7 +2305,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2300,8 +2336,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.disable_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DisableCertificateAuthority_async
@@ -2331,13 +2366,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Enable a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -2359,8 +2394,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.enable_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_EnableCertificateAuthority_async
@@ -2375,7 +2409,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   enableCertificateAuthority(
@@ -2428,7 +2462,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2459,8 +2493,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.enable_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_EnableCertificateAuthority_async
@@ -2490,14 +2523,14 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Undelete a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    * that has been deleted.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -2519,8 +2552,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.undelete_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UndeleteCertificateAuthority_async
@@ -2535,7 +2567,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   undeleteCertificateAuthority(
@@ -2588,7 +2620,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2619,8 +2651,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.undelete_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UndeleteCertificateAuthority_async
@@ -2650,13 +2681,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Delete a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -2680,9 +2711,9 @@ export class CertificateAuthorityServiceClient {
    *   soon as possible without a 30-day grace period where undeletion would have
    *   been allowed. If you proceed, there will be no way to recover this CA.
    * @param {boolean} [request.ignoreDependentResources]
-   *   Optional. This field allows this ca to be deleted even if it's being
+   *   Optional. This field allows this CA to be deleted even if it's being
    *   depended on by another resource. However, doing so may result in unintended
-   *   and unrecoverable effects on any dependent resource(s) since the CA will
+   *   and unrecoverable effects on any dependent resources since the CA will
    *   no longer be able to issue certificates.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
@@ -2690,8 +2721,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.delete_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DeleteCertificateAuthority_async
@@ -2706,7 +2736,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCertificateAuthority(
@@ -2759,7 +2789,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2790,8 +2820,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.delete_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DeleteCertificateAuthority_async
@@ -2821,13 +2850,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Update a
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.cloud.security.privateca.v1.CertificateAuthority} request.certificateAuthority
    *   Required.
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}
    *   with updated values.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. A list of fields to be updated in this request.
@@ -2851,8 +2880,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificateAuthority_async
@@ -2867,7 +2895,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificateAuthority(
@@ -2920,7 +2948,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2951,8 +2979,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate_authority.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificateAuthority_async
@@ -2981,19 +3008,19 @@ export class CertificateAuthorityServiceClient {
     >;
   }
   /**
-   * Create a {@link google.cloud.security.privateca.v1.CaPool|CaPool}.
+   * Create a {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool}, in the format
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}, in the format
    *   `projects/* /locations/*`.
    * @param {string} request.caPoolId
    *   Required. It must be unique within a location and match the regular
    *   expression `[a-zA-Z0-9_-]{1,63}`
    * @param {google.cloud.security.privateca.v1.CaPool} request.caPool
-   *   Required. A {@link google.cloud.security.privateca.v1.CaPool|CaPool} with
+   *   Required. A {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} with
    *   initial field values.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -3015,8 +3042,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCaPool_async
@@ -3031,7 +3057,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCaPool(
@@ -3084,7 +3110,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3111,8 +3137,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCaPool_async
@@ -3141,12 +3166,12 @@ export class CertificateAuthorityServiceClient {
     >;
   }
   /**
-   * Update a {@link google.cloud.security.privateca.v1.CaPool|CaPool}.
+   * Update a {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.cloud.security.privateca.v1.CaPool} request.caPool
-   *   Required. {@link google.cloud.security.privateca.v1.CaPool|CaPool} with updated
+   *   Required. {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} with updated
    *   values.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. A list of fields to be updated in this request.
@@ -3170,8 +3195,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCaPool_async
@@ -3186,7 +3210,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCaPool(
@@ -3239,7 +3263,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3266,8 +3290,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCaPool_async
@@ -3296,13 +3319,13 @@ export class CertificateAuthorityServiceClient {
     >;
   }
   /**
-   * Delete a {@link google.cloud.security.privateca.v1.CaPool|CaPool}.
+   * Delete a {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} in the format
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} in the format
    *   `projects/* /locations/* /caPools/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -3321,7 +3344,7 @@ export class CertificateAuthorityServiceClient {
    * @param {boolean} [request.ignoreDependentResources]
    *   Optional. This field allows this pool to be deleted even if it's being
    *   depended on by another resource. However, doing so may result in unintended
-   *   and unrecoverable effects on any dependent resource(s) since the pool will
+   *   and unrecoverable effects on any dependent resources since the pool will
    *   no longer be able to issue certificates.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
@@ -3329,8 +3352,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.delete_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DeleteCaPool_async
@@ -3345,7 +3367,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCaPool(
@@ -3398,7 +3420,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3425,8 +3447,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.delete_ca_pool.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DeleteCaPool_async
@@ -3456,13 +3477,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Update a
-   * {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.cloud.security.privateca.v1.CertificateRevocationList} request.certificateRevocationList
    *   Required.
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}
    *   with updated values.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. A list of fields to be updated in this request.
@@ -3486,8 +3507,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate_revocation_list.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificateRevocationList_async
@@ -3502,7 +3522,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificateRevocationList(
@@ -3555,7 +3575,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3587,8 +3607,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate_revocation_list.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificateRevocationList_async
@@ -3618,21 +3637,21 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Create a new
-   * {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
+   * {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
    * in a given Project and Location.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate},
    *   in the format `projects/* /locations/*`.
    * @param {string} request.certificateTemplateId
    *   Required. It must be unique within a location and match the regular
    *   expression `[a-zA-Z0-9_-]{1,63}`
    * @param {google.cloud.security.privateca.v1.CertificateTemplate} request.certificateTemplate
    *   Required. A
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
    *   with initial field values.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -3654,8 +3673,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCertificateTemplate_async
@@ -3670,7 +3688,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificateTemplate(
@@ -3723,7 +3741,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3754,8 +3772,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.create_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_CreateCertificateTemplate_async
@@ -3785,13 +3802,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * DeleteCertificateTemplate deletes a
-   * {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The resource name for this
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
    *   in the format `projects/* /locations/* /certificateTemplates/*`.
    * @param {string} [request.requestId]
    *   Optional. An ID to identify requests. Specify a unique request ID so that
@@ -3813,8 +3830,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.delete_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DeleteCertificateTemplate_async
@@ -3829,7 +3845,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCertificateTemplate(
@@ -3882,7 +3898,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3913,8 +3929,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.delete_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_DeleteCertificateTemplate_async
@@ -3944,13 +3959,13 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Update a
-   * {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.cloud.security.privateca.v1.CertificateTemplate} request.certificateTemplate
    *   Required.
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}
    *   with updated values.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. A list of fields to be updated in this request.
@@ -3974,8 +3989,7 @@ export class CertificateAuthorityServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificateTemplate_async
@@ -3990,7 +4004,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificateTemplate(
@@ -4043,7 +4057,7 @@ export class CertificateAuthorityServiceClient {
         protos.google.cloud.security.privateca.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4074,8 +4088,7 @@ export class CertificateAuthorityServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.update_certificate_template.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_UpdateCertificateTemplate_async
@@ -4104,26 +4117,26 @@ export class CertificateAuthorityServiceClient {
     >;
   }
   /**
-   * Lists {@link google.cloud.security.privateca.v1.Certificate|Certificates}.
+   * Lists {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates}, in the
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates}, in the
    *   format `projects/* /locations/* /caPools/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates} to include
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates} to include
    *   in the response. Further
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates} can
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates} can
    *   subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response. For
    *   details on supported filters and syntax, see [Certificates Filtering
@@ -4135,14 +4148,13 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.security.privateca.v1.Certificate | Certificate}.
+   *   The first element of the array is Array of {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificates(
@@ -4152,7 +4164,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificate[],
       protos.google.cloud.security.privateca.v1.IListCertificatesRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificatesResponse
+      protos.google.cloud.security.privateca.v1.IListCertificatesResponse,
     ]
   >;
   listCertificates(
@@ -4198,7 +4210,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificate[],
       protos.google.cloud.security.privateca.v1.IListCertificatesRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificatesResponse
+      protos.google.cloud.security.privateca.v1.IListCertificatesResponse,
     ]
   > | void {
     request = request || {};
@@ -4226,20 +4238,20 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates}, in the
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates}, in the
    *   format `projects/* /locations/* /caPools/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates} to include
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates} to include
    *   in the response. Further
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates} can
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates} can
    *   subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response. For
    *   details on supported filters and syntax, see [Certificates Filtering
@@ -4251,13 +4263,12 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.security.privateca.v1.Certificate | Certificate} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificatesStream(
@@ -4290,20 +4301,20 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates}, in the
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates}, in the
    *   format `projects/* /locations/* /caPools/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates} to include
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates} to include
    *   in the response. Further
-   *   {@link google.cloud.security.privateca.v1.Certificate|Certificates} can
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificates} can
    *   subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificatesResponse.next_page_token|ListCertificatesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response. For
    *   details on supported filters and syntax, see [Certificates Filtering
@@ -4315,12 +4326,11 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.security.privateca.v1.Certificate | Certificate}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.security.privateca.v1.Certificate|Certificate}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.list_certificates.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ListCertificates_async
@@ -4348,27 +4358,27 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Lists
-   * {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
    *   in the format `projects/* /locations/* /caPools/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4376,14 +4386,13 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.security.privateca.v1.CertificateAuthority | CertificateAuthority}.
+   *   The first element of the array is Array of {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificateAuthoritiesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateAuthorities(
@@ -4393,7 +4402,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificateAuthority[],
       protos.google.cloud.security.privateca.v1.IListCertificateAuthoritiesRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificateAuthoritiesResponse
+      protos.google.cloud.security.privateca.v1.IListCertificateAuthoritiesResponse,
     ]
   >;
   listCertificateAuthorities(
@@ -4439,7 +4448,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificateAuthority[],
       protos.google.cloud.security.privateca.v1.IListCertificateAuthoritiesRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificateAuthoritiesResponse
+      protos.google.cloud.security.privateca.v1.IListCertificateAuthoritiesResponse,
     ]
   > | void {
     request = request || {};
@@ -4471,21 +4480,21 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
    *   in the format `projects/* /locations/* /caPools/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4493,13 +4502,12 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.security.privateca.v1.CertificateAuthority | CertificateAuthority} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificateAuthoritiesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateAuthoritiesStream(
@@ -4532,21 +4540,21 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} associated with the
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities},
    *   in the format `projects/* /locations/* /caPools/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthorities}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateAuthoritiesResponse.next_page_token|ListCertificateAuthoritiesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4554,12 +4562,11 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.security.privateca.v1.CertificateAuthority | CertificateAuthority}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateAuthority|CertificateAuthority}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.list_certificate_authorities.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ListCertificateAuthorities_async
@@ -4586,25 +4593,25 @@ export class CertificateAuthorityServiceClient {
     ) as AsyncIterable<protos.google.cloud.security.privateca.v1.ICertificateAuthority>;
   }
   /**
-   * Lists {@link google.cloud.security.privateca.v1.CaPool|CaPools}.
+   * Lists {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPools}, in the format
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools}, in the format
    *   `projects/* /locations/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPools} to include in the
-   *   response. Further {@link google.cloud.security.privateca.v1.CaPool|CaPools} can
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools} to include in the
+   *   response. Further {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools} can
    *   subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4612,14 +4619,13 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.security.privateca.v1.CaPool | CaPool}.
+   *   The first element of the array is Array of {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCaPoolsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCaPools(
@@ -4629,7 +4635,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICaPool[],
       protos.google.cloud.security.privateca.v1.IListCaPoolsRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCaPoolsResponse
+      protos.google.cloud.security.privateca.v1.IListCaPoolsResponse,
     ]
   >;
   listCaPools(
@@ -4675,7 +4681,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICaPool[],
       protos.google.cloud.security.privateca.v1.IListCaPoolsRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCaPoolsResponse
+      protos.google.cloud.security.privateca.v1.IListCaPoolsResponse,
     ]
   > | void {
     request = request || {};
@@ -4703,19 +4709,19 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPools}, in the format
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools}, in the format
    *   `projects/* /locations/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPools} to include in the
-   *   response. Further {@link google.cloud.security.privateca.v1.CaPool|CaPools} can
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools} to include in the
+   *   response. Further {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools} can
    *   subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4723,13 +4729,12 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.security.privateca.v1.CaPool | CaPool} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCaPoolsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCaPoolsStream(
@@ -4762,19 +4767,19 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPools}, in the format
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools}, in the format
    *   `projects/* /locations/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CaPool|CaPools} to include in the
-   *   response. Further {@link google.cloud.security.privateca.v1.CaPool|CaPools} can
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools} to include in the
+   *   response. Further {@link protos.google.cloud.security.privateca.v1.CaPool|CaPools} can
    *   subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCaPoolsResponse.next_page_token|ListCaPoolsResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4782,12 +4787,11 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.security.privateca.v1.CaPool | CaPool}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.security.privateca.v1.CaPool|CaPool}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.list_ca_pools.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ListCaPools_async
@@ -4815,26 +4819,26 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Lists
-   * {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists},
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4842,14 +4846,13 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.security.privateca.v1.CertificateRevocationList | CertificateRevocationList}.
+   *   The first element of the array is Array of {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificateRevocationListsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateRevocationLists(
@@ -4859,7 +4862,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificateRevocationList[],
       protos.google.cloud.security.privateca.v1.IListCertificateRevocationListsRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificateRevocationListsResponse
+      protos.google.cloud.security.privateca.v1.IListCertificateRevocationListsResponse,
     ]
   >;
   listCertificateRevocationLists(
@@ -4905,7 +4908,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificateRevocationList[],
       protos.google.cloud.security.privateca.v1.IListCertificateRevocationListsRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificateRevocationListsResponse
+      protos.google.cloud.security.privateca.v1.IListCertificateRevocationListsResponse,
     ]
   > | void {
     request = request || {};
@@ -4937,20 +4940,20 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists},
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -4958,13 +4961,12 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.security.privateca.v1.CertificateRevocationList | CertificateRevocationList} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificateRevocationListsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateRevocationListsStream(
@@ -4998,20 +5000,20 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists},
    *   in the format `projects/* /locations/* /caPools/* /certificateAuthorities/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationLists}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateRevocationListsResponse.next_page_token|ListCertificateRevocationListsResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -5019,12 +5021,11 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.security.privateca.v1.CertificateRevocationList | CertificateRevocationList}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateRevocationList|CertificateRevocationList}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.list_certificate_revocation_lists.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ListCertificateRevocationLists_async
@@ -5053,26 +5054,26 @@ export class CertificateAuthorityServiceClient {
   }
   /**
    * Lists
-   * {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}.
+   * {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates},
    *   in the format `projects/* /locations/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -5080,14 +5081,13 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.security.privateca.v1.CertificateTemplate | CertificateTemplate}.
+   *   The first element of the array is Array of {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificateTemplatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateTemplates(
@@ -5097,7 +5097,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificateTemplate[],
       protos.google.cloud.security.privateca.v1.IListCertificateTemplatesRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificateTemplatesResponse
+      protos.google.cloud.security.privateca.v1.IListCertificateTemplatesResponse,
     ]
   >;
   listCertificateTemplates(
@@ -5143,7 +5143,7 @@ export class CertificateAuthorityServiceClient {
     [
       protos.google.cloud.security.privateca.v1.ICertificateTemplate[],
       protos.google.cloud.security.privateca.v1.IListCertificateTemplatesRequest | null,
-      protos.google.cloud.security.privateca.v1.IListCertificateTemplatesResponse
+      protos.google.cloud.security.privateca.v1.IListCertificateTemplatesResponse,
     ]
   > | void {
     request = request || {};
@@ -5175,20 +5175,20 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates},
    *   in the format `projects/* /locations/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -5196,13 +5196,12 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.security.privateca.v1.CertificateTemplate | CertificateTemplate} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificateTemplatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateTemplatesStream(
@@ -5235,20 +5234,20 @@ export class CertificateAuthorityServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The resource name of the location associated with the
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates},
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates},
    *   in the format `projects/* /locations/*`.
    * @param {number} [request.pageSize]
    *   Optional. Limit on the number of
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
    *   to include in the response. Further
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplates}
    *   can subsequently be obtained by including the
-   *   {@link google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}
    *   in a subsequent request. If unspecified, the server will pick an
    *   appropriate default.
    * @param {string} [request.pageToken]
    *   Optional. Pagination token, returned earlier via
-   *   {@link google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}.
+   *   {@link protos.google.cloud.security.privateca.v1.ListCertificateTemplatesResponse.next_page_token|ListCertificateTemplatesResponse.next_page_token}.
    * @param {string} [request.filter]
    *   Optional. Only include resources that match the filter in the response.
    * @param {string} [request.orderBy]
@@ -5256,12 +5255,11 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.security.privateca.v1.CertificateTemplate | CertificateTemplate}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.security.privateca.v1.CertificateTemplate|CertificateTemplate}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_authority_service.list_certificate_templates.js</caption>
    * region_tag:privateca_v1_generated_CertificateAuthorityService_ListCertificateTemplates_async
@@ -5326,7 +5324,7 @@ export class CertificateAuthorityServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -5347,8 +5345,7 @@ export class CertificateAuthorityServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -5374,7 +5371,7 @@ export class CertificateAuthorityServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -5395,8 +5392,7 @@ export class CertificateAuthorityServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -5423,7 +5419,7 @@ export class CertificateAuthorityServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -5438,8 +5434,7 @@ export class CertificateAuthorityServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -5485,12 +5480,11 @@ export class CertificateAuthorityServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```

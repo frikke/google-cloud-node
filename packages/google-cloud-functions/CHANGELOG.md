@@ -1,5 +1,72 @@
 # Changelog
 
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/functions-v3.5.0...functions-v3.6.0) (2024-08-19)
+
+
+### Features
+
+* [functions] optional field for specifying a service account to use for the build. This helps navigate the change of historical default on new projects. For more details, see https://cloud.google.com/build/docs/cloud-build-service-account-updates ([#5612](https://github.com/googleapis/google-cloud-node/issues/5612)) ([ddb9d88](https://github.com/googleapis/google-cloud-node/commit/ddb9d8850040732832e46b3e3b6d4abc33f42099))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/functions-v3.4.0...functions-v3.5.0) (2024-08-09)
+
+
+### Features
+
+* [functions] optional field for specifying a service account to use for the build. This helps navigate the change of historical default on new projects. For more details, see https://cloud.google.com/build/docs/cloud-build-service-account-updates ([#5607](https://github.com/googleapis/google-cloud-node/issues/5607)) ([1e600c2](https://github.com/googleapis/google-cloud-node/commit/1e600c2a0a73c5756e9b3df361f7aa1428f3259e))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/functions-v3.3.0...functions-v3.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5353](https://github.com/googleapis/google-cloud-node/issues/5353)) ([1a2388d](https://github.com/googleapis/google-cloud-node/commit/1a2388d7096176b4155a0c4f01e15ffb8c4d5096))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/functions-v3.2.0...functions-v3.3.0) (2024-04-16)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5188](https://github.com/googleapis/google-cloud-node/issues/5188)) ([c5ccdf9](https://github.com/googleapis/google-cloud-node/commit/c5ccdf93641e7bb6d0e5c636168fad0feafab6e3))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/functions-v3.1.0...functions-v3.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5025](https://github.com/googleapis/google-cloud-node/issues/5025)) ([7244cab](https://github.com/googleapis/google-cloud-node/commit/7244cab107973bef57c5ea84ae77c51718126822))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/functions-v3.0.1...functions-v3.1.0) (2024-02-07)
+
+
+### Features
+
+* [functions] updated description for `docker_registry` to reflect transition to Artifact Registry ([#4981](https://github.com/googleapis/google-cloud-node/issues/4981)) ([a65c238](https://github.com/googleapis/google-cloud-node/commit/a65c23883e449f929cbc8c7422e0c325b7f598fe))
+
+## [3.0.1](https://github.com/googleapis/google-cloud-node/compare/functions-v3.0.0...functions-v3.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4586](https://github.com/googleapis/google-cloud-node/issues/4586)) ([4b18686](https://github.com/googleapis/google-cloud-node/commit/4b186867323b8b15469bf5e1cb890bf703b531b3))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/functions-v2.5.0...functions-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4461](https://github.com/googleapis/google-cloud-node/issues/4461)) ([61bcc0a](https://github.com/googleapis/google-cloud-node/commit/61bcc0a89c70cf1037299eecd72aef9c98c2e666))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [2.5.0](https://github.com/googleapis/google-cloud-node/compare/functions-v2.4.1...functions-v2.5.0) (2023-06-06)
 
 

@@ -157,6 +157,11 @@
                 "lookupOffer"
               ]
             },
+            "QueryEligibleBillingAccounts": {
+              "methods": [
+                "queryEligibleBillingAccounts"
+              ]
+            },
             "RegisterSubscriber": {
               "methods": [
                 "registerSubscriber"
@@ -269,6 +274,20 @@
                 "listChannelPartnerRepricingConfigs",
                 "listChannelPartnerRepricingConfigsStream",
                 "listChannelPartnerRepricingConfigsAsync"
+              ]
+            },
+            "ListSkuGroups": {
+              "methods": [
+                "listSkuGroups",
+                "listSkuGroupsStream",
+                "listSkuGroupsAsync"
+              ]
+            },
+            "ListSkuGroupBillableSkus": {
+              "methods": [
+                "listSkuGroupBillableSkus",
+                "listSkuGroupBillableSkusStream",
+                "listSkuGroupBillableSkusAsync"
               ]
             },
             "ListProducts": {
@@ -420,6 +439,11 @@
                 "lookupOffer"
               ]
             },
+            "QueryEligibleBillingAccounts": {
+              "methods": [
+                "queryEligibleBillingAccounts"
+              ]
+            },
             "RegisterSubscriber": {
               "methods": [
                 "registerSubscriber"
@@ -532,6 +556,20 @@
                 "listChannelPartnerRepricingConfigs",
                 "listChannelPartnerRepricingConfigsStream",
                 "listChannelPartnerRepricingConfigsAsync"
+              ]
+            },
+            "ListSkuGroups": {
+              "methods": [
+                "listSkuGroups",
+                "listSkuGroupsStream",
+                "listSkuGroupsAsync"
+              ]
+            },
+            "ListSkuGroupBillableSkus": {
+              "methods": [
+                "listSkuGroupBillableSkus",
+                "listSkuGroupBillableSkusStream",
+                "listSkuGroupBillableSkusAsync"
               ]
             },
             "ListProducts": {

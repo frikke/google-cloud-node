@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/vm_migration_client_config.json`.
@@ -56,6 +57,8 @@ export class VmMigrationClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -99,8 +102,7 @@ export class VmMigrationClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -108,7 +110,7 @@ export class VmMigrationClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new VmMigrationClient({fallback: 'rest'}, gax);
+   *     const client = new VmMigrationClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -117,8 +119,27 @@ export class VmMigrationClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof VmMigrationClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'vmmigration.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -133,7 +154,7 @@ export class VmMigrationClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -158,10 +179,10 @@ export class VmMigrationClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -173,14 +194,14 @@ export class VmMigrationClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -287,7 +308,7 @@ export class VmMigrationClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -768,19 +789,50 @@ export class VmMigrationClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'vmmigration.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'vmmigration.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -829,9 +881,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.Source | Source}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.Source|Source}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetSource_async
@@ -843,7 +894,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ISource,
       protos.google.cloud.vmmigration.v1.IGetSourceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getSource(
@@ -883,7 +934,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ISource,
       protos.google.cloud.vmmigration.v1.IGetSourceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -921,9 +972,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.FetchInventoryResponse | FetchInventoryResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.FetchInventoryResponse|FetchInventoryResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.fetch_inventory.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_FetchInventory_async
@@ -935,7 +985,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IFetchInventoryResponse,
       protos.google.cloud.vmmigration.v1.IFetchInventoryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   fetchInventory(
@@ -981,7 +1031,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IFetchInventoryResponse,
       protos.google.cloud.vmmigration.v1.IFetchInventoryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1015,9 +1065,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.UtilizationReport | UtilizationReport}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.UtilizationReport|UtilizationReport}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_utilization_report.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetUtilizationReport_async
@@ -1032,7 +1081,7 @@ export class VmMigrationClient {
         | protos.google.cloud.vmmigration.v1.IGetUtilizationReportRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getUtilizationReport(
@@ -1081,7 +1130,7 @@ export class VmMigrationClient {
         | protos.google.cloud.vmmigration.v1.IGetUtilizationReportRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1112,9 +1161,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.DatacenterConnector | DatacenterConnector}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.DatacenterConnector|DatacenterConnector}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_datacenter_connector.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetDatacenterConnector_async
@@ -1129,7 +1177,7 @@ export class VmMigrationClient {
         | protos.google.cloud.vmmigration.v1.IGetDatacenterConnectorRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getDatacenterConnector(
@@ -1178,7 +1226,7 @@ export class VmMigrationClient {
         | protos.google.cloud.vmmigration.v1.IGetDatacenterConnectorRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1215,9 +1263,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.MigratingVm | MigratingVm}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.MigratingVm|MigratingVm}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetMigratingVm_async
@@ -1229,7 +1276,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IMigratingVm,
       protos.google.cloud.vmmigration.v1.IGetMigratingVmRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getMigratingVm(
@@ -1275,7 +1322,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IMigratingVm,
       protos.google.cloud.vmmigration.v1.IGetMigratingVmRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1306,9 +1353,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.CloneJob | CloneJob}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.CloneJob|CloneJob}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_clone_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetCloneJob_async
@@ -1320,7 +1366,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICloneJob,
       protos.google.cloud.vmmigration.v1.IGetCloneJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCloneJob(
@@ -1360,7 +1406,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICloneJob,
       protos.google.cloud.vmmigration.v1.IGetCloneJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1391,9 +1437,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.CutoverJob | CutoverJob}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.CutoverJob|CutoverJob}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_cutover_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetCutoverJob_async
@@ -1405,7 +1450,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICutoverJob,
       protos.google.cloud.vmmigration.v1.IGetCutoverJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCutoverJob(
@@ -1451,7 +1496,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICutoverJob,
       protos.google.cloud.vmmigration.v1.IGetCutoverJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1482,9 +1527,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.Group | Group}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.Group|Group}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetGroup_async
@@ -1496,7 +1540,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IGroup,
       protos.google.cloud.vmmigration.v1.IGetGroupRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getGroup(
@@ -1536,7 +1580,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IGroup,
       protos.google.cloud.vmmigration.v1.IGetGroupRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1570,9 +1614,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.TargetProject | TargetProject}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.TargetProject|TargetProject}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetTargetProject_async
@@ -1584,7 +1627,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ITargetProject,
       protos.google.cloud.vmmigration.v1.IGetTargetProjectRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTargetProject(
@@ -1630,7 +1673,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ITargetProject,
       protos.google.cloud.vmmigration.v1.IGetTargetProjectRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1661,9 +1704,8 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.vmmigration.v1.ReplicationCycle | ReplicationCycle}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.vmmigration.v1.ReplicationCycle|ReplicationCycle}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.get_replication_cycle.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_GetReplicationCycle_async
@@ -1678,7 +1720,7 @@ export class VmMigrationClient {
         | protos.google.cloud.vmmigration.v1.IGetReplicationCycleRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getReplicationCycle(
@@ -1727,7 +1769,7 @@ export class VmMigrationClient {
         | protos.google.cloud.vmmigration.v1.IGetReplicationCycleRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1780,8 +1822,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateSource_async
@@ -1796,7 +1837,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createSource(
@@ -1849,7 +1890,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1876,8 +1917,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateSource_async
@@ -1938,8 +1978,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateSource_async
@@ -1954,7 +1993,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateSource(
@@ -2007,7 +2046,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2034,8 +2073,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateSource_async
@@ -2090,8 +2128,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteSource_async
@@ -2106,7 +2143,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteSource(
@@ -2159,7 +2196,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2186,8 +2223,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_source.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteSource_async
@@ -2229,7 +2265,7 @@ export class VmMigrationClient {
    *   component of the reports's resource name.
    *
    *   This value maximum length is 63 characters, and valid characters
-   *   are /{@link 0-9|a-z}-/. It must start with an english letter and must not
+   *   are /{@link protos.0-9|a-z}-/. It must start with an english letter and must not
    *   end with a hyphen.
    * @param {string} request.requestId
    *   A request ID to identify requests. Specify a unique request ID
@@ -2251,8 +2287,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_utilization_report.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateUtilizationReport_async
@@ -2267,7 +2302,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createUtilizationReport(
@@ -2320,7 +2355,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2351,8 +2386,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_utilization_report.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateUtilizationReport_async
@@ -2407,8 +2441,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_utilization_report.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteUtilizationReport_async
@@ -2423,7 +2456,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteUtilizationReport(
@@ -2476,7 +2509,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2507,8 +2540,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_utilization_report.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteUtilizationReport_async
@@ -2570,8 +2602,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_datacenter_connector.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateDatacenterConnector_async
@@ -2586,7 +2617,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createDatacenterConnector(
@@ -2639,7 +2670,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2670,8 +2701,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_datacenter_connector.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateDatacenterConnector_async
@@ -2726,8 +2756,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_datacenter_connector.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteDatacenterConnector_async
@@ -2742,7 +2771,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteDatacenterConnector(
@@ -2795,7 +2824,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2826,8 +2855,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_datacenter_connector.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteDatacenterConnector_async
@@ -2883,8 +2911,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.upgrade_appliance.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpgradeAppliance_async
@@ -2899,7 +2926,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   upgradeAppliance(
@@ -2952,7 +2979,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2979,8 +3006,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.upgrade_appliance.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpgradeAppliance_async
@@ -3039,8 +3065,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateMigratingVm_async
@@ -3055,7 +3080,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createMigratingVm(
@@ -3108,7 +3133,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3135,8 +3160,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateMigratingVm_async
@@ -3197,8 +3221,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateMigratingVm_async
@@ -3213,7 +3236,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateMigratingVm(
@@ -3266,7 +3289,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3293,8 +3316,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateMigratingVm_async
@@ -3335,8 +3357,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteMigratingVm_async
@@ -3351,7 +3372,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteMigratingVm(
@@ -3404,7 +3425,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3431,8 +3452,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_migrating_vm.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteMigratingVm_async
@@ -3474,8 +3494,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.start_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_StartMigration_async
@@ -3490,7 +3509,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   startMigration(
@@ -3543,7 +3562,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3570,8 +3589,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.start_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_StartMigration_async
@@ -3615,8 +3633,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.resume_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ResumeMigration_async
@@ -3631,7 +3648,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   resumeMigration(
@@ -3684,7 +3701,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3711,8 +3728,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.resume_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ResumeMigration_async
@@ -3755,8 +3771,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.pause_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_PauseMigration_async
@@ -3771,7 +3786,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   pauseMigration(
@@ -3824,7 +3839,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3851,8 +3866,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.pause_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_PauseMigration_async
@@ -3894,8 +3908,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.finalize_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_FinalizeMigration_async
@@ -3910,7 +3923,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   finalizeMigration(
@@ -3963,7 +3976,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3990,8 +4003,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.finalize_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_FinalizeMigration_async
@@ -4050,8 +4062,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_clone_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateCloneJob_async
@@ -4066,7 +4077,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCloneJob(
@@ -4119,7 +4130,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4146,8 +4157,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_clone_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateCloneJob_async
@@ -4188,8 +4198,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.cancel_clone_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CancelCloneJob_async
@@ -4204,7 +4213,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   cancelCloneJob(
@@ -4257,7 +4266,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4284,8 +4293,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.cancel_clone_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CancelCloneJob_async
@@ -4346,8 +4354,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_cutover_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateCutoverJob_async
@@ -4362,7 +4369,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCutoverJob(
@@ -4415,7 +4422,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4442,8 +4449,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_cutover_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateCutoverJob_async
@@ -4484,8 +4490,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.cancel_cutover_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CancelCutoverJob_async
@@ -4500,7 +4505,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   cancelCutoverJob(
@@ -4553,7 +4558,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4580,8 +4585,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.cancel_cutover_job.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CancelCutoverJob_async
@@ -4640,8 +4644,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateGroup_async
@@ -4656,7 +4659,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createGroup(
@@ -4709,7 +4712,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4736,8 +4739,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateGroup_async
@@ -4798,8 +4800,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateGroup_async
@@ -4814,7 +4815,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateGroup(
@@ -4867,7 +4868,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4894,8 +4895,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateGroup_async
@@ -4950,8 +4950,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteGroup_async
@@ -4966,7 +4965,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteGroup(
@@ -5019,7 +5018,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -5046,8 +5045,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_group.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteGroup_async
@@ -5090,8 +5088,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.add_group_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_AddGroupMigration_async
@@ -5106,7 +5103,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   addGroupMigration(
@@ -5159,7 +5156,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -5186,8 +5183,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.add_group_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_AddGroupMigration_async
@@ -5230,8 +5226,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.remove_group_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_RemoveGroupMigration_async
@@ -5246,7 +5241,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   removeGroupMigration(
@@ -5299,7 +5294,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -5326,8 +5321,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.remove_group_migration.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_RemoveGroupMigration_async
@@ -5389,8 +5383,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateTargetProject_async
@@ -5405,7 +5398,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createTargetProject(
@@ -5458,7 +5451,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -5485,8 +5478,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.create_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_CreateTargetProject_async
@@ -5550,8 +5542,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateTargetProject_async
@@ -5566,7 +5557,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateTargetProject(
@@ -5619,7 +5610,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -5646,8 +5637,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.update_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_UpdateTargetProject_async
@@ -5705,8 +5695,7 @@ export class VmMigrationClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteTargetProject_async
@@ -5721,7 +5710,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteTargetProject(
@@ -5774,7 +5763,7 @@ export class VmMigrationClient {
         protos.google.cloud.vmmigration.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -5801,8 +5790,7 @@ export class VmMigrationClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.delete_target_project.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_DeleteTargetProject_async
@@ -5855,14 +5843,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.Source | Source}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.Source|Source}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listSourcesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSources(
@@ -5872,7 +5859,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ISource[],
       protos.google.cloud.vmmigration.v1.IListSourcesRequest | null,
-      protos.google.cloud.vmmigration.v1.IListSourcesResponse
+      protos.google.cloud.vmmigration.v1.IListSourcesResponse,
     ]
   >;
   listSources(
@@ -5918,7 +5905,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ISource[],
       protos.google.cloud.vmmigration.v1.IListSourcesRequest | null,
-      protos.google.cloud.vmmigration.v1.IListSourcesResponse
+      protos.google.cloud.vmmigration.v1.IListSourcesResponse,
     ]
   > | void {
     request = request || {};
@@ -5964,13 +5951,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.Source | Source} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.Source|Source} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listSourcesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSourcesStream(
@@ -6021,12 +6007,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.Source | Source}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.Source|Source}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_sources.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListSources_async
@@ -6080,14 +6065,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.UtilizationReport | UtilizationReport}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.UtilizationReport|UtilizationReport}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listUtilizationReportsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listUtilizationReports(
@@ -6097,7 +6081,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IUtilizationReport[],
       protos.google.cloud.vmmigration.v1.IListUtilizationReportsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListUtilizationReportsResponse
+      protos.google.cloud.vmmigration.v1.IListUtilizationReportsResponse,
     ]
   >;
   listUtilizationReports(
@@ -6143,7 +6127,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IUtilizationReport[],
       protos.google.cloud.vmmigration.v1.IListUtilizationReportsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListUtilizationReportsResponse
+      protos.google.cloud.vmmigration.v1.IListUtilizationReportsResponse,
     ]
   > | void {
     request = request || {};
@@ -6196,13 +6180,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.UtilizationReport | UtilizationReport} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.UtilizationReport|UtilizationReport} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listUtilizationReportsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listUtilizationReportsStream(
@@ -6256,12 +6239,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.UtilizationReport | UtilizationReport}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.UtilizationReport|UtilizationReport}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_utilization_reports.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListUtilizationReports_async
@@ -6313,14 +6295,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.DatacenterConnector | DatacenterConnector}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.DatacenterConnector|DatacenterConnector}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listDatacenterConnectorsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDatacenterConnectors(
@@ -6330,7 +6311,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IDatacenterConnector[],
       protos.google.cloud.vmmigration.v1.IListDatacenterConnectorsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListDatacenterConnectorsResponse
+      protos.google.cloud.vmmigration.v1.IListDatacenterConnectorsResponse,
     ]
   >;
   listDatacenterConnectors(
@@ -6376,7 +6357,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IDatacenterConnector[],
       protos.google.cloud.vmmigration.v1.IListDatacenterConnectorsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListDatacenterConnectorsResponse
+      protos.google.cloud.vmmigration.v1.IListDatacenterConnectorsResponse,
     ]
   > | void {
     request = request || {};
@@ -6427,13 +6408,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.DatacenterConnector | DatacenterConnector} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.DatacenterConnector|DatacenterConnector} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listDatacenterConnectorsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDatacenterConnectorsStream(
@@ -6485,12 +6465,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.DatacenterConnector | DatacenterConnector}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.DatacenterConnector|DatacenterConnector}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_datacenter_connectors.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListDatacenterConnectors_async
@@ -6543,14 +6522,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.MigratingVm | MigratingVm}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.MigratingVm|MigratingVm}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listMigratingVmsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMigratingVms(
@@ -6560,7 +6538,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IMigratingVm[],
       protos.google.cloud.vmmigration.v1.IListMigratingVmsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListMigratingVmsResponse
+      protos.google.cloud.vmmigration.v1.IListMigratingVmsResponse,
     ]
   >;
   listMigratingVms(
@@ -6606,7 +6584,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IMigratingVm[],
       protos.google.cloud.vmmigration.v1.IListMigratingVmsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListMigratingVmsResponse
+      protos.google.cloud.vmmigration.v1.IListMigratingVmsResponse,
     ]
   > | void {
     request = request || {};
@@ -6654,13 +6632,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.MigratingVm | MigratingVm} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.MigratingVm|MigratingVm} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listMigratingVmsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMigratingVmsStream(
@@ -6713,12 +6690,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.MigratingVm | MigratingVm}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.MigratingVm|MigratingVm}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_migrating_vms.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListMigratingVms_async
@@ -6769,14 +6745,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.CloneJob | CloneJob}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.CloneJob|CloneJob}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCloneJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCloneJobs(
@@ -6786,7 +6761,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICloneJob[],
       protos.google.cloud.vmmigration.v1.IListCloneJobsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListCloneJobsResponse
+      protos.google.cloud.vmmigration.v1.IListCloneJobsResponse,
     ]
   >;
   listCloneJobs(
@@ -6832,7 +6807,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICloneJob[],
       protos.google.cloud.vmmigration.v1.IListCloneJobsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListCloneJobsResponse
+      protos.google.cloud.vmmigration.v1.IListCloneJobsResponse,
     ]
   > | void {
     request = request || {};
@@ -6878,13 +6853,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.CloneJob | CloneJob} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.CloneJob|CloneJob} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCloneJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCloneJobsStream(
@@ -6935,12 +6909,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.CloneJob | CloneJob}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.CloneJob|CloneJob}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_clone_jobs.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListCloneJobs_async
@@ -6991,14 +6964,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.CutoverJob | CutoverJob}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.CutoverJob|CutoverJob}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCutoverJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCutoverJobs(
@@ -7008,7 +6980,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICutoverJob[],
       protos.google.cloud.vmmigration.v1.IListCutoverJobsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListCutoverJobsResponse
+      protos.google.cloud.vmmigration.v1.IListCutoverJobsResponse,
     ]
   >;
   listCutoverJobs(
@@ -7054,7 +7026,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ICutoverJob[],
       protos.google.cloud.vmmigration.v1.IListCutoverJobsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListCutoverJobsResponse
+      protos.google.cloud.vmmigration.v1.IListCutoverJobsResponse,
     ]
   > | void {
     request = request || {};
@@ -7100,13 +7072,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.CutoverJob | CutoverJob} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.CutoverJob|CutoverJob} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCutoverJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCutoverJobsStream(
@@ -7157,12 +7128,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.CutoverJob | CutoverJob}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.CutoverJob|CutoverJob}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_cutover_jobs.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListCutoverJobs_async
@@ -7213,14 +7183,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.Group | Group}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.Group|Group}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listGroupsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listGroups(
@@ -7230,7 +7199,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IGroup[],
       protos.google.cloud.vmmigration.v1.IListGroupsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListGroupsResponse
+      protos.google.cloud.vmmigration.v1.IListGroupsResponse,
     ]
   >;
   listGroups(
@@ -7270,7 +7239,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IGroup[],
       protos.google.cloud.vmmigration.v1.IListGroupsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListGroupsResponse
+      protos.google.cloud.vmmigration.v1.IListGroupsResponse,
     ]
   > | void {
     request = request || {};
@@ -7316,13 +7285,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.Group | Group} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.Group|Group} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listGroupsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listGroupsStream(
@@ -7373,12 +7341,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.Group | Group}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.Group|Group}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_groups.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListGroups_async
@@ -7432,14 +7399,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.TargetProject | TargetProject}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.TargetProject|TargetProject}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTargetProjectsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTargetProjects(
@@ -7449,7 +7415,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ITargetProject[],
       protos.google.cloud.vmmigration.v1.IListTargetProjectsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListTargetProjectsResponse
+      protos.google.cloud.vmmigration.v1.IListTargetProjectsResponse,
     ]
   >;
   listTargetProjects(
@@ -7495,7 +7461,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.ITargetProject[],
       protos.google.cloud.vmmigration.v1.IListTargetProjectsRequest | null,
-      protos.google.cloud.vmmigration.v1.IListTargetProjectsResponse
+      protos.google.cloud.vmmigration.v1.IListTargetProjectsResponse,
     ]
   > | void {
     request = request || {};
@@ -7541,13 +7507,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.TargetProject | TargetProject} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.TargetProject|TargetProject} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTargetProjectsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTargetProjectsStream(
@@ -7598,12 +7563,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.TargetProject | TargetProject}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.TargetProject|TargetProject}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_target_projects.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListTargetProjects_async
@@ -7654,14 +7618,13 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.vmmigration.v1.ReplicationCycle | ReplicationCycle}.
+   *   The first element of the array is Array of {@link protos.google.cloud.vmmigration.v1.ReplicationCycle|ReplicationCycle}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listReplicationCyclesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listReplicationCycles(
@@ -7671,7 +7634,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IReplicationCycle[],
       protos.google.cloud.vmmigration.v1.IListReplicationCyclesRequest | null,
-      protos.google.cloud.vmmigration.v1.IListReplicationCyclesResponse
+      protos.google.cloud.vmmigration.v1.IListReplicationCyclesResponse,
     ]
   >;
   listReplicationCycles(
@@ -7717,7 +7680,7 @@ export class VmMigrationClient {
     [
       protos.google.cloud.vmmigration.v1.IReplicationCycle[],
       protos.google.cloud.vmmigration.v1.IListReplicationCyclesRequest | null,
-      protos.google.cloud.vmmigration.v1.IListReplicationCyclesResponse
+      protos.google.cloud.vmmigration.v1.IListReplicationCyclesResponse,
     ]
   > | void {
     request = request || {};
@@ -7763,13 +7726,12 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.vmmigration.v1.ReplicationCycle | ReplicationCycle} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.vmmigration.v1.ReplicationCycle|ReplicationCycle} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listReplicationCyclesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listReplicationCyclesStream(
@@ -7820,12 +7782,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.vmmigration.v1.ReplicationCycle | ReplicationCycle}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.vmmigration.v1.ReplicationCycle|ReplicationCycle}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/vm_migration.list_replication_cycles.js</caption>
    * region_tag:vmmigration_v1_generated_VmMigration_ListReplicationCycles_async
@@ -7890,7 +7851,7 @@ export class VmMigrationClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -7911,8 +7872,7 @@ export class VmMigrationClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -7938,7 +7898,7 @@ export class VmMigrationClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -7959,8 +7919,7 @@ export class VmMigrationClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -7987,7 +7946,7 @@ export class VmMigrationClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -8002,8 +7961,7 @@ export class VmMigrationClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -8049,12 +8007,11 @@ export class VmMigrationClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```

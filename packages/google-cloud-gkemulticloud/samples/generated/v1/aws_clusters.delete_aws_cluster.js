@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,6 +49,13 @@ function main(name) {
    *  Useful for idempotent deletion.
    */
   // const allowMissing = true
+  /**
+   *  Optional. If set to true, the deletion of
+   *  AwsCluster google.cloud.gkemulticloud.v1.AwsCluster  resource will
+   *  succeed even if errors occur during deleting in cluster resources. Using
+   *  this parameter may result in orphaned resources in the cluster.
+   */
+  // const ignoreErrors = true
   /**
    *  The current etag of the
    *  AwsCluster google.cloud.gkemulticloud.v1.AwsCluster.

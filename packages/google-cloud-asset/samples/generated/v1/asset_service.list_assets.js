@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ function main(parent) {
    *  Inventory (https://cloud.google.com/asset-inventory/docs/overview)
    *  for all supported asset types.
    */
-  // const assetTypes = 'abc123'
+  // const assetTypes = ['abc','def']
   /**
    *  Asset content type. If not specified, no content but the asset name will
    *  be returned.
@@ -94,7 +94,7 @@ function main(parent) {
    *  Inventory (https://cloud.google.com/asset-inventory/docs/overview)
    *  for all supported asset types and relationship types.
    */
-  // const relationshipTypes = 'abc123'
+  // const relationshipTypes = ['abc','def']
 
   // Imports the Asset library
   const {AssetServiceClient} = require('@google-cloud/asset').v1;
@@ -109,7 +109,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await assetClient.listAssetsAsync(request);
+    const iterable = assetClient.listAssetsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -88,6 +88,18 @@ export namespace google {
 
                     /** AttachedCluster monitoringConfig */
                     monitoringConfig?: (google.cloud.gkemulticloud.v1.IMonitoringConfig|null);
+
+                    /** AttachedCluster proxyConfig */
+                    proxyConfig?: (google.cloud.gkemulticloud.v1.IAttachedProxyConfig|null);
+
+                    /** AttachedCluster binaryAuthorization */
+                    binaryAuthorization?: (google.cloud.gkemulticloud.v1.IBinaryAuthorization|null);
+
+                    /** AttachedCluster securityPostureConfig */
+                    securityPostureConfig?: (google.cloud.gkemulticloud.v1.ISecurityPostureConfig|null);
+
+                    /** AttachedCluster tags */
+                    tags?: ({ [k: string]: string }|null);
                 }
 
                 /** Represents an AttachedCluster. */
@@ -158,6 +170,18 @@ export namespace google {
 
                     /** AttachedCluster monitoringConfig. */
                     public monitoringConfig?: (google.cloud.gkemulticloud.v1.IMonitoringConfig|null);
+
+                    /** AttachedCluster proxyConfig. */
+                    public proxyConfig?: (google.cloud.gkemulticloud.v1.IAttachedProxyConfig|null);
+
+                    /** AttachedCluster binaryAuthorization. */
+                    public binaryAuthorization?: (google.cloud.gkemulticloud.v1.IBinaryAuthorization|null);
+
+                    /** AttachedCluster securityPostureConfig. */
+                    public securityPostureConfig?: (google.cloud.gkemulticloud.v1.ISecurityPostureConfig|null);
+
+                    /** AttachedCluster tags. */
+                    public tags: { [k: string]: string };
 
                     /**
                      * Creates a new AttachedCluster instance using the specified properties.
@@ -256,6 +280,9 @@ export namespace google {
 
                     /** AttachedClustersAuthorization adminUsers */
                     adminUsers?: (google.cloud.gkemulticloud.v1.IAttachedClusterUser[]|null);
+
+                    /** AttachedClustersAuthorization adminGroups */
+                    adminGroups?: (google.cloud.gkemulticloud.v1.IAttachedClusterGroup[]|null);
                 }
 
                 /** Represents an AttachedClustersAuthorization. */
@@ -269,6 +296,9 @@ export namespace google {
 
                     /** AttachedClustersAuthorization adminUsers. */
                     public adminUsers: google.cloud.gkemulticloud.v1.IAttachedClusterUser[];
+
+                    /** AttachedClustersAuthorization adminGroups. */
+                    public adminGroups: google.cloud.gkemulticloud.v1.IAttachedClusterGroup[];
 
                     /**
                      * Creates a new AttachedClustersAuthorization instance using the specified properties.
@@ -439,6 +469,103 @@ export namespace google {
 
                     /**
                      * Gets the default type url for AttachedClusterUser
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an AttachedClusterGroup. */
+                interface IAttachedClusterGroup {
+
+                    /** AttachedClusterGroup group */
+                    group?: (string|null);
+                }
+
+                /** Represents an AttachedClusterGroup. */
+                class AttachedClusterGroup implements IAttachedClusterGroup {
+
+                    /**
+                     * Constructs a new AttachedClusterGroup.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAttachedClusterGroup);
+
+                    /** AttachedClusterGroup group. */
+                    public group: string;
+
+                    /**
+                     * Creates a new AttachedClusterGroup instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AttachedClusterGroup instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAttachedClusterGroup): google.cloud.gkemulticloud.v1.AttachedClusterGroup;
+
+                    /**
+                     * Encodes the specified AttachedClusterGroup message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AttachedClusterGroup.verify|verify} messages.
+                     * @param message AttachedClusterGroup message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAttachedClusterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AttachedClusterGroup message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AttachedClusterGroup.verify|verify} messages.
+                     * @param message AttachedClusterGroup message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAttachedClusterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AttachedClusterGroup message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AttachedClusterGroup
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AttachedClusterGroup;
+
+                    /**
+                     * Decodes an AttachedClusterGroup message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AttachedClusterGroup
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AttachedClusterGroup;
+
+                    /**
+                     * Verifies an AttachedClusterGroup message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AttachedClusterGroup message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AttachedClusterGroup
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AttachedClusterGroup;
+
+                    /**
+                     * Creates a plain object from an AttachedClusterGroup message. Also converts values to other types if specified.
+                     * @param message AttachedClusterGroup
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AttachedClusterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AttachedClusterGroup to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AttachedClusterGroup
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -839,6 +966,351 @@ export namespace google {
 
                     /**
                      * Gets the default type url for AttachedClusterError
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an AttachedProxyConfig. */
+                interface IAttachedProxyConfig {
+
+                    /** AttachedProxyConfig kubernetesSecret */
+                    kubernetesSecret?: (google.cloud.gkemulticloud.v1.IKubernetesSecret|null);
+                }
+
+                /** Represents an AttachedProxyConfig. */
+                class AttachedProxyConfig implements IAttachedProxyConfig {
+
+                    /**
+                     * Constructs a new AttachedProxyConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAttachedProxyConfig);
+
+                    /** AttachedProxyConfig kubernetesSecret. */
+                    public kubernetesSecret?: (google.cloud.gkemulticloud.v1.IKubernetesSecret|null);
+
+                    /**
+                     * Creates a new AttachedProxyConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AttachedProxyConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAttachedProxyConfig): google.cloud.gkemulticloud.v1.AttachedProxyConfig;
+
+                    /**
+                     * Encodes the specified AttachedProxyConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AttachedProxyConfig.verify|verify} messages.
+                     * @param message AttachedProxyConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAttachedProxyConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AttachedProxyConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AttachedProxyConfig.verify|verify} messages.
+                     * @param message AttachedProxyConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAttachedProxyConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AttachedProxyConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AttachedProxyConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AttachedProxyConfig;
+
+                    /**
+                     * Decodes an AttachedProxyConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AttachedProxyConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AttachedProxyConfig;
+
+                    /**
+                     * Verifies an AttachedProxyConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AttachedProxyConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AttachedProxyConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AttachedProxyConfig;
+
+                    /**
+                     * Creates a plain object from an AttachedProxyConfig message. Also converts values to other types if specified.
+                     * @param message AttachedProxyConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AttachedProxyConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AttachedProxyConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AttachedProxyConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a KubernetesSecret. */
+                interface IKubernetesSecret {
+
+                    /** KubernetesSecret name */
+                    name?: (string|null);
+
+                    /** KubernetesSecret namespace */
+                    namespace?: (string|null);
+                }
+
+                /** Represents a KubernetesSecret. */
+                class KubernetesSecret implements IKubernetesSecret {
+
+                    /**
+                     * Constructs a new KubernetesSecret.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IKubernetesSecret);
+
+                    /** KubernetesSecret name. */
+                    public name: string;
+
+                    /** KubernetesSecret namespace. */
+                    public namespace: string;
+
+                    /**
+                     * Creates a new KubernetesSecret instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns KubernetesSecret instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IKubernetesSecret): google.cloud.gkemulticloud.v1.KubernetesSecret;
+
+                    /**
+                     * Encodes the specified KubernetesSecret message. Does not implicitly {@link google.cloud.gkemulticloud.v1.KubernetesSecret.verify|verify} messages.
+                     * @param message KubernetesSecret message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IKubernetesSecret, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified KubernetesSecret message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.KubernetesSecret.verify|verify} messages.
+                     * @param message KubernetesSecret message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IKubernetesSecret, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a KubernetesSecret message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns KubernetesSecret
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.KubernetesSecret;
+
+                    /**
+                     * Decodes a KubernetesSecret message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns KubernetesSecret
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.KubernetesSecret;
+
+                    /**
+                     * Verifies a KubernetesSecret message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a KubernetesSecret message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns KubernetesSecret
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.KubernetesSecret;
+
+                    /**
+                     * Creates a plain object from a KubernetesSecret message. Also converts values to other types if specified.
+                     * @param message KubernetesSecret
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.KubernetesSecret, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this KubernetesSecret to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for KubernetesSecret
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a Jwk. */
+                interface IJwk {
+
+                    /** Jwk kty */
+                    kty?: (string|null);
+
+                    /** Jwk alg */
+                    alg?: (string|null);
+
+                    /** Jwk use */
+                    use?: (string|null);
+
+                    /** Jwk kid */
+                    kid?: (string|null);
+
+                    /** Jwk n */
+                    n?: (string|null);
+
+                    /** Jwk e */
+                    e?: (string|null);
+
+                    /** Jwk x */
+                    x?: (string|null);
+
+                    /** Jwk y */
+                    y?: (string|null);
+
+                    /** Jwk crv */
+                    crv?: (string|null);
+                }
+
+                /** Represents a Jwk. */
+                class Jwk implements IJwk {
+
+                    /**
+                     * Constructs a new Jwk.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IJwk);
+
+                    /** Jwk kty. */
+                    public kty: string;
+
+                    /** Jwk alg. */
+                    public alg: string;
+
+                    /** Jwk use. */
+                    public use: string;
+
+                    /** Jwk kid. */
+                    public kid: string;
+
+                    /** Jwk n. */
+                    public n: string;
+
+                    /** Jwk e. */
+                    public e: string;
+
+                    /** Jwk x. */
+                    public x: string;
+
+                    /** Jwk y. */
+                    public y: string;
+
+                    /** Jwk crv. */
+                    public crv: string;
+
+                    /**
+                     * Creates a new Jwk instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns Jwk instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IJwk): google.cloud.gkemulticloud.v1.Jwk;
+
+                    /**
+                     * Encodes the specified Jwk message. Does not implicitly {@link google.cloud.gkemulticloud.v1.Jwk.verify|verify} messages.
+                     * @param message Jwk message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IJwk, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified Jwk message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.Jwk.verify|verify} messages.
+                     * @param message Jwk message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IJwk, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a Jwk message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns Jwk
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.Jwk;
+
+                    /**
+                     * Decodes a Jwk message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Jwk
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.Jwk;
+
+                    /**
+                     * Verifies a Jwk message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a Jwk message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns Jwk
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.Jwk;
+
+                    /**
+                     * Creates a plain object from a Jwk message. Also converts values to other types if specified.
+                     * @param message Jwk
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.Jwk, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this Jwk to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Jwk
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -1304,6 +1776,139 @@ export namespace google {
                     }
                 }
 
+                /** Properties of a NodeKubeletConfig. */
+                interface INodeKubeletConfig {
+
+                    /** NodeKubeletConfig insecureKubeletReadonlyPortEnabled */
+                    insecureKubeletReadonlyPortEnabled?: (boolean|null);
+
+                    /** NodeKubeletConfig cpuManagerPolicy */
+                    cpuManagerPolicy?: (string|null);
+
+                    /** NodeKubeletConfig cpuCfsQuota */
+                    cpuCfsQuota?: (boolean|null);
+
+                    /** NodeKubeletConfig cpuCfsQuotaPeriod */
+                    cpuCfsQuotaPeriod?: (string|null);
+
+                    /** NodeKubeletConfig podPidsLimit */
+                    podPidsLimit?: (number|Long|string|null);
+                }
+
+                /** Represents a NodeKubeletConfig. */
+                class NodeKubeletConfig implements INodeKubeletConfig {
+
+                    /**
+                     * Constructs a new NodeKubeletConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.INodeKubeletConfig);
+
+                    /** NodeKubeletConfig insecureKubeletReadonlyPortEnabled. */
+                    public insecureKubeletReadonlyPortEnabled: boolean;
+
+                    /** NodeKubeletConfig cpuManagerPolicy. */
+                    public cpuManagerPolicy?: (string|null);
+
+                    /** NodeKubeletConfig cpuCfsQuota. */
+                    public cpuCfsQuota?: (boolean|null);
+
+                    /** NodeKubeletConfig cpuCfsQuotaPeriod. */
+                    public cpuCfsQuotaPeriod?: (string|null);
+
+                    /** NodeKubeletConfig podPidsLimit. */
+                    public podPidsLimit?: (number|Long|string|null);
+
+                    /** NodeKubeletConfig _cpuManagerPolicy. */
+                    public _cpuManagerPolicy?: "cpuManagerPolicy";
+
+                    /** NodeKubeletConfig _cpuCfsQuota. */
+                    public _cpuCfsQuota?: "cpuCfsQuota";
+
+                    /** NodeKubeletConfig _cpuCfsQuotaPeriod. */
+                    public _cpuCfsQuotaPeriod?: "cpuCfsQuotaPeriod";
+
+                    /** NodeKubeletConfig _podPidsLimit. */
+                    public _podPidsLimit?: "podPidsLimit";
+
+                    /**
+                     * Creates a new NodeKubeletConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns NodeKubeletConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.INodeKubeletConfig): google.cloud.gkemulticloud.v1.NodeKubeletConfig;
+
+                    /**
+                     * Encodes the specified NodeKubeletConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.NodeKubeletConfig.verify|verify} messages.
+                     * @param message NodeKubeletConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.INodeKubeletConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified NodeKubeletConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.NodeKubeletConfig.verify|verify} messages.
+                     * @param message NodeKubeletConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.INodeKubeletConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a NodeKubeletConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns NodeKubeletConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.NodeKubeletConfig;
+
+                    /**
+                     * Decodes a NodeKubeletConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns NodeKubeletConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.NodeKubeletConfig;
+
+                    /**
+                     * Verifies a NodeKubeletConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a NodeKubeletConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns NodeKubeletConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.NodeKubeletConfig;
+
+                    /**
+                     * Creates a plain object from a NodeKubeletConfig message. Also converts values to other types if specified.
+                     * @param message NodeKubeletConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.NodeKubeletConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this NodeKubeletConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for NodeKubeletConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of a Fleet. */
                 interface IFleet {
 
@@ -1616,6 +2221,9 @@ export namespace google {
 
                     /** MonitoringConfig managedPrometheusConfig */
                     managedPrometheusConfig?: (google.cloud.gkemulticloud.v1.IManagedPrometheusConfig|null);
+
+                    /** MonitoringConfig cloudMonitoringConfig */
+                    cloudMonitoringConfig?: (google.cloud.gkemulticloud.v1.ICloudMonitoringConfig|null);
                 }
 
                 /** Represents a MonitoringConfig. */
@@ -1629,6 +2237,9 @@ export namespace google {
 
                     /** MonitoringConfig managedPrometheusConfig. */
                     public managedPrometheusConfig?: (google.cloud.gkemulticloud.v1.IManagedPrometheusConfig|null);
+
+                    /** MonitoringConfig cloudMonitoringConfig. */
+                    public cloudMonitoringConfig?: (google.cloud.gkemulticloud.v1.ICloudMonitoringConfig|null);
 
                     /**
                      * Creates a new MonitoringConfig instance using the specified properties.
@@ -1805,6 +2416,320 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a CloudMonitoringConfig. */
+                interface ICloudMonitoringConfig {
+
+                    /** CloudMonitoringConfig enabled */
+                    enabled?: (boolean|null);
+                }
+
+                /** Represents a CloudMonitoringConfig. */
+                class CloudMonitoringConfig implements ICloudMonitoringConfig {
+
+                    /**
+                     * Constructs a new CloudMonitoringConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.ICloudMonitoringConfig);
+
+                    /** CloudMonitoringConfig enabled. */
+                    public enabled?: (boolean|null);
+
+                    /** CloudMonitoringConfig _enabled. */
+                    public _enabled?: "enabled";
+
+                    /**
+                     * Creates a new CloudMonitoringConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CloudMonitoringConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.ICloudMonitoringConfig): google.cloud.gkemulticloud.v1.CloudMonitoringConfig;
+
+                    /**
+                     * Encodes the specified CloudMonitoringConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.CloudMonitoringConfig.verify|verify} messages.
+                     * @param message CloudMonitoringConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.ICloudMonitoringConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CloudMonitoringConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.CloudMonitoringConfig.verify|verify} messages.
+                     * @param message CloudMonitoringConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.ICloudMonitoringConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CloudMonitoringConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CloudMonitoringConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.CloudMonitoringConfig;
+
+                    /**
+                     * Decodes a CloudMonitoringConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CloudMonitoringConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.CloudMonitoringConfig;
+
+                    /**
+                     * Verifies a CloudMonitoringConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CloudMonitoringConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CloudMonitoringConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.CloudMonitoringConfig;
+
+                    /**
+                     * Creates a plain object from a CloudMonitoringConfig message. Also converts values to other types if specified.
+                     * @param message CloudMonitoringConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.CloudMonitoringConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CloudMonitoringConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CloudMonitoringConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a BinaryAuthorization. */
+                interface IBinaryAuthorization {
+
+                    /** BinaryAuthorization evaluationMode */
+                    evaluationMode?: (google.cloud.gkemulticloud.v1.BinaryAuthorization.EvaluationMode|keyof typeof google.cloud.gkemulticloud.v1.BinaryAuthorization.EvaluationMode|null);
+                }
+
+                /** Represents a BinaryAuthorization. */
+                class BinaryAuthorization implements IBinaryAuthorization {
+
+                    /**
+                     * Constructs a new BinaryAuthorization.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IBinaryAuthorization);
+
+                    /** BinaryAuthorization evaluationMode. */
+                    public evaluationMode: (google.cloud.gkemulticloud.v1.BinaryAuthorization.EvaluationMode|keyof typeof google.cloud.gkemulticloud.v1.BinaryAuthorization.EvaluationMode);
+
+                    /**
+                     * Creates a new BinaryAuthorization instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns BinaryAuthorization instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IBinaryAuthorization): google.cloud.gkemulticloud.v1.BinaryAuthorization;
+
+                    /**
+                     * Encodes the specified BinaryAuthorization message. Does not implicitly {@link google.cloud.gkemulticloud.v1.BinaryAuthorization.verify|verify} messages.
+                     * @param message BinaryAuthorization message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IBinaryAuthorization, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified BinaryAuthorization message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.BinaryAuthorization.verify|verify} messages.
+                     * @param message BinaryAuthorization message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IBinaryAuthorization, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a BinaryAuthorization message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns BinaryAuthorization
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.BinaryAuthorization;
+
+                    /**
+                     * Decodes a BinaryAuthorization message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns BinaryAuthorization
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.BinaryAuthorization;
+
+                    /**
+                     * Verifies a BinaryAuthorization message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a BinaryAuthorization message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns BinaryAuthorization
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.BinaryAuthorization;
+
+                    /**
+                     * Creates a plain object from a BinaryAuthorization message. Also converts values to other types if specified.
+                     * @param message BinaryAuthorization
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.BinaryAuthorization, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this BinaryAuthorization to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for BinaryAuthorization
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace BinaryAuthorization {
+
+                    /** EvaluationMode enum. */
+                    enum EvaluationMode {
+                        EVALUATION_MODE_UNSPECIFIED = 0,
+                        DISABLED = 1,
+                        PROJECT_SINGLETON_POLICY_ENFORCE = 2
+                    }
+                }
+
+                /** Properties of a SecurityPostureConfig. */
+                interface ISecurityPostureConfig {
+
+                    /** SecurityPostureConfig vulnerabilityMode */
+                    vulnerabilityMode?: (google.cloud.gkemulticloud.v1.SecurityPostureConfig.VulnerabilityMode|keyof typeof google.cloud.gkemulticloud.v1.SecurityPostureConfig.VulnerabilityMode|null);
+                }
+
+                /** Represents a SecurityPostureConfig. */
+                class SecurityPostureConfig implements ISecurityPostureConfig {
+
+                    /**
+                     * Constructs a new SecurityPostureConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.ISecurityPostureConfig);
+
+                    /** SecurityPostureConfig vulnerabilityMode. */
+                    public vulnerabilityMode: (google.cloud.gkemulticloud.v1.SecurityPostureConfig.VulnerabilityMode|keyof typeof google.cloud.gkemulticloud.v1.SecurityPostureConfig.VulnerabilityMode);
+
+                    /**
+                     * Creates a new SecurityPostureConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns SecurityPostureConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.ISecurityPostureConfig): google.cloud.gkemulticloud.v1.SecurityPostureConfig;
+
+                    /**
+                     * Encodes the specified SecurityPostureConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.SecurityPostureConfig.verify|verify} messages.
+                     * @param message SecurityPostureConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.ISecurityPostureConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified SecurityPostureConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.SecurityPostureConfig.verify|verify} messages.
+                     * @param message SecurityPostureConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.ISecurityPostureConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a SecurityPostureConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns SecurityPostureConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.SecurityPostureConfig;
+
+                    /**
+                     * Decodes a SecurityPostureConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns SecurityPostureConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.SecurityPostureConfig;
+
+                    /**
+                     * Verifies a SecurityPostureConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a SecurityPostureConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns SecurityPostureConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.SecurityPostureConfig;
+
+                    /**
+                     * Creates a plain object from a SecurityPostureConfig message. Also converts values to other types if specified.
+                     * @param message SecurityPostureConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.SecurityPostureConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this SecurityPostureConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for SecurityPostureConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace SecurityPostureConfig {
+
+                    /** VulnerabilityMode enum. */
+                    enum VulnerabilityMode {
+                        VULNERABILITY_MODE_UNSPECIFIED = 0,
+                        VULNERABILITY_DISABLED = 1,
+                        VULNERABILITY_ENTERPRISE = 2
+                    }
+                }
+
                 /** Represents an AttachedClusters */
                 class AttachedClusters extends $protobuf.rpc.Service {
 
@@ -1936,6 +2861,20 @@ export namespace google {
                      * @returns Promise
                      */
                     public generateAttachedClusterInstallManifest(request: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterInstallManifestRequest): Promise<google.cloud.gkemulticloud.v1.GenerateAttachedClusterInstallManifestResponse>;
+
+                    /**
+                     * Calls GenerateAttachedClusterAgentToken.
+                     * @param request GenerateAttachedClusterAgentTokenRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and GenerateAttachedClusterAgentTokenResponse
+                     */
+                    public generateAttachedClusterAgentToken(request: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenRequest, callback: google.cloud.gkemulticloud.v1.AttachedClusters.GenerateAttachedClusterAgentTokenCallback): void;
+
+                    /**
+                     * Calls GenerateAttachedClusterAgentToken.
+                     * @param request GenerateAttachedClusterAgentTokenRequest message or plain object
+                     * @returns Promise
+                     */
+                    public generateAttachedClusterAgentToken(request: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenRequest): Promise<google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse>;
                 }
 
                 namespace AttachedClusters {
@@ -1995,6 +2934,13 @@ export namespace google {
                      * @param [response] GenerateAttachedClusterInstallManifestResponse
                      */
                     type GenerateAttachedClusterInstallManifestCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.GenerateAttachedClusterInstallManifestResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AttachedClusters|generateAttachedClusterAgentToken}.
+                     * @param error Error, if any
+                     * @param [response] GenerateAttachedClusterAgentTokenResponse
+                     */
+                    type GenerateAttachedClusterAgentTokenCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse) => void;
                 }
 
                 /** Properties of a GenerateAttachedClusterInstallManifestRequest. */
@@ -2008,6 +2954,9 @@ export namespace google {
 
                     /** GenerateAttachedClusterInstallManifestRequest platformVersion */
                     platformVersion?: (string|null);
+
+                    /** GenerateAttachedClusterInstallManifestRequest proxyConfig */
+                    proxyConfig?: (google.cloud.gkemulticloud.v1.IAttachedProxyConfig|null);
                 }
 
                 /** Represents a GenerateAttachedClusterInstallManifestRequest. */
@@ -2027,6 +2976,9 @@ export namespace google {
 
                     /** GenerateAttachedClusterInstallManifestRequest platformVersion. */
                     public platformVersion: string;
+
+                    /** GenerateAttachedClusterInstallManifestRequest proxyConfig. */
+                    public proxyConfig?: (google.cloud.gkemulticloud.v1.IAttachedProxyConfig|null);
 
                     /**
                      * Creates a new GenerateAttachedClusterInstallManifestRequest instance using the specified properties.
@@ -2335,6 +3287,9 @@ export namespace google {
 
                     /** ImportAttachedClusterRequest distribution */
                     distribution?: (string|null);
+
+                    /** ImportAttachedClusterRequest proxyConfig */
+                    proxyConfig?: (google.cloud.gkemulticloud.v1.IAttachedProxyConfig|null);
                 }
 
                 /** Represents an ImportAttachedClusterRequest. */
@@ -2360,6 +3315,9 @@ export namespace google {
 
                     /** ImportAttachedClusterRequest distribution. */
                     public distribution: string;
+
+                    /** ImportAttachedClusterRequest proxyConfig. */
+                    public proxyConfig?: (google.cloud.gkemulticloud.v1.IAttachedProxyConfig|null);
 
                     /**
                      * Creates a new ImportAttachedClusterRequest instance using the specified properties.
@@ -3075,6 +4033,260 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a GenerateAttachedClusterAgentTokenRequest. */
+                interface IGenerateAttachedClusterAgentTokenRequest {
+
+                    /** GenerateAttachedClusterAgentTokenRequest attachedCluster */
+                    attachedCluster?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest subjectToken */
+                    subjectToken?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest subjectTokenType */
+                    subjectTokenType?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest version */
+                    version?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest grantType */
+                    grantType?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest audience */
+                    audience?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest scope */
+                    scope?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest requestedTokenType */
+                    requestedTokenType?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenRequest options */
+                    options?: (string|null);
+                }
+
+                /** Represents a GenerateAttachedClusterAgentTokenRequest. */
+                class GenerateAttachedClusterAgentTokenRequest implements IGenerateAttachedClusterAgentTokenRequest {
+
+                    /**
+                     * Constructs a new GenerateAttachedClusterAgentTokenRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenRequest);
+
+                    /** GenerateAttachedClusterAgentTokenRequest attachedCluster. */
+                    public attachedCluster: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest subjectToken. */
+                    public subjectToken: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest subjectTokenType. */
+                    public subjectTokenType: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest version. */
+                    public version: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest grantType. */
+                    public grantType: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest audience. */
+                    public audience: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest scope. */
+                    public scope: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest requestedTokenType. */
+                    public requestedTokenType: string;
+
+                    /** GenerateAttachedClusterAgentTokenRequest options. */
+                    public options: string;
+
+                    /**
+                     * Creates a new GenerateAttachedClusterAgentTokenRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GenerateAttachedClusterAgentTokenRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenRequest): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest;
+
+                    /**
+                     * Encodes the specified GenerateAttachedClusterAgentTokenRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest.verify|verify} messages.
+                     * @param message GenerateAttachedClusterAgentTokenRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GenerateAttachedClusterAgentTokenRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest.verify|verify} messages.
+                     * @param message GenerateAttachedClusterAgentTokenRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GenerateAttachedClusterAgentTokenRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GenerateAttachedClusterAgentTokenRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest;
+
+                    /**
+                     * Decodes a GenerateAttachedClusterAgentTokenRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GenerateAttachedClusterAgentTokenRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest;
+
+                    /**
+                     * Verifies a GenerateAttachedClusterAgentTokenRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GenerateAttachedClusterAgentTokenRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GenerateAttachedClusterAgentTokenRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest;
+
+                    /**
+                     * Creates a plain object from a GenerateAttachedClusterAgentTokenRequest message. Also converts values to other types if specified.
+                     * @param message GenerateAttachedClusterAgentTokenRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GenerateAttachedClusterAgentTokenRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GenerateAttachedClusterAgentTokenRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GenerateAttachedClusterAgentTokenResponse. */
+                interface IGenerateAttachedClusterAgentTokenResponse {
+
+                    /** GenerateAttachedClusterAgentTokenResponse accessToken */
+                    accessToken?: (string|null);
+
+                    /** GenerateAttachedClusterAgentTokenResponse expiresIn */
+                    expiresIn?: (number|null);
+
+                    /** GenerateAttachedClusterAgentTokenResponse tokenType */
+                    tokenType?: (string|null);
+                }
+
+                /** Represents a GenerateAttachedClusterAgentTokenResponse. */
+                class GenerateAttachedClusterAgentTokenResponse implements IGenerateAttachedClusterAgentTokenResponse {
+
+                    /**
+                     * Constructs a new GenerateAttachedClusterAgentTokenResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenResponse);
+
+                    /** GenerateAttachedClusterAgentTokenResponse accessToken. */
+                    public accessToken: string;
+
+                    /** GenerateAttachedClusterAgentTokenResponse expiresIn. */
+                    public expiresIn: number;
+
+                    /** GenerateAttachedClusterAgentTokenResponse tokenType. */
+                    public tokenType: string;
+
+                    /**
+                     * Creates a new GenerateAttachedClusterAgentTokenResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GenerateAttachedClusterAgentTokenResponse instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenResponse): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse;
+
+                    /**
+                     * Encodes the specified GenerateAttachedClusterAgentTokenResponse message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse.verify|verify} messages.
+                     * @param message GenerateAttachedClusterAgentTokenResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GenerateAttachedClusterAgentTokenResponse message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse.verify|verify} messages.
+                     * @param message GenerateAttachedClusterAgentTokenResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GenerateAttachedClusterAgentTokenResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GenerateAttachedClusterAgentTokenResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse;
+
+                    /**
+                     * Decodes a GenerateAttachedClusterAgentTokenResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GenerateAttachedClusterAgentTokenResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse;
+
+                    /**
+                     * Verifies a GenerateAttachedClusterAgentTokenResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GenerateAttachedClusterAgentTokenResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GenerateAttachedClusterAgentTokenResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse;
+
+                    /**
+                     * Creates a plain object from a GenerateAttachedClusterAgentTokenResponse message. Also converts values to other types if specified.
+                     * @param message GenerateAttachedClusterAgentTokenResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GenerateAttachedClusterAgentTokenResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GenerateAttachedClusterAgentTokenResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AwsCluster. */
                 interface IAwsCluster {
 
@@ -3137,6 +4349,9 @@ export namespace google {
 
                     /** AwsCluster monitoringConfig */
                     monitoringConfig?: (google.cloud.gkemulticloud.v1.IMonitoringConfig|null);
+
+                    /** AwsCluster binaryAuthorization */
+                    binaryAuthorization?: (google.cloud.gkemulticloud.v1.IBinaryAuthorization|null);
                 }
 
                 /** Represents an AwsCluster. */
@@ -3207,6 +4422,9 @@ export namespace google {
 
                     /** AwsCluster monitoringConfig. */
                     public monitoringConfig?: (google.cloud.gkemulticloud.v1.IMonitoringConfig|null);
+
+                    /** AwsCluster binaryAuthorization. */
+                    public binaryAuthorization?: (google.cloud.gkemulticloud.v1.IBinaryAuthorization|null);
 
                     /**
                      * Creates a new AwsCluster instance using the specified properties.
@@ -3583,6 +4801,9 @@ export namespace google {
 
                     /** AwsAuthorization adminUsers */
                     adminUsers?: (google.cloud.gkemulticloud.v1.IAwsClusterUser[]|null);
+
+                    /** AwsAuthorization adminGroups */
+                    adminGroups?: (google.cloud.gkemulticloud.v1.IAwsClusterGroup[]|null);
                 }
 
                 /** Represents an AwsAuthorization. */
@@ -3596,6 +4817,9 @@ export namespace google {
 
                     /** AwsAuthorization adminUsers. */
                     public adminUsers: google.cloud.gkemulticloud.v1.IAwsClusterUser[];
+
+                    /** AwsAuthorization adminGroups. */
+                    public adminGroups: google.cloud.gkemulticloud.v1.IAwsClusterGroup[];
 
                     /**
                      * Creates a new AwsAuthorization instance using the specified properties.
@@ -3772,6 +4996,103 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of an AwsClusterGroup. */
+                interface IAwsClusterGroup {
+
+                    /** AwsClusterGroup group */
+                    group?: (string|null);
+                }
+
+                /** Represents an AwsClusterGroup. */
+                class AwsClusterGroup implements IAwsClusterGroup {
+
+                    /**
+                     * Constructs a new AwsClusterGroup.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAwsClusterGroup);
+
+                    /** AwsClusterGroup group. */
+                    public group: string;
+
+                    /**
+                     * Creates a new AwsClusterGroup instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AwsClusterGroup instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAwsClusterGroup): google.cloud.gkemulticloud.v1.AwsClusterGroup;
+
+                    /**
+                     * Encodes the specified AwsClusterGroup message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsClusterGroup.verify|verify} messages.
+                     * @param message AwsClusterGroup message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAwsClusterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AwsClusterGroup message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsClusterGroup.verify|verify} messages.
+                     * @param message AwsClusterGroup message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAwsClusterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AwsClusterGroup message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AwsClusterGroup
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AwsClusterGroup;
+
+                    /**
+                     * Decodes an AwsClusterGroup message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AwsClusterGroup
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AwsClusterGroup;
+
+                    /**
+                     * Verifies an AwsClusterGroup message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AwsClusterGroup message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AwsClusterGroup
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AwsClusterGroup;
+
+                    /**
+                     * Creates a plain object from an AwsClusterGroup message. Also converts values to other types if specified.
+                     * @param message AwsClusterGroup
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AwsClusterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AwsClusterGroup to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AwsClusterGroup
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AwsDatabaseEncryption. */
                 interface IAwsDatabaseEncryption {
 
@@ -3881,6 +5202,9 @@ export namespace google {
                     /** AwsVolumeTemplate iops */
                     iops?: (number|null);
 
+                    /** AwsVolumeTemplate throughput */
+                    throughput?: (number|null);
+
                     /** AwsVolumeTemplate kmsKeyArn */
                     kmsKeyArn?: (string|null);
                 }
@@ -3902,6 +5226,9 @@ export namespace google {
 
                     /** AwsVolumeTemplate iops. */
                     public iops: number;
+
+                    /** AwsVolumeTemplate throughput. */
+                    public throughput: number;
 
                     /** AwsVolumeTemplate kmsKeyArn. */
                     public kmsKeyArn: string;
@@ -4005,6 +5332,9 @@ export namespace google {
 
                     /** AwsClusterNetworking serviceAddressCidrBlocks */
                     serviceAddressCidrBlocks?: (string[]|null);
+
+                    /** AwsClusterNetworking perNodePoolSgRulesDisabled */
+                    perNodePoolSgRulesDisabled?: (boolean|null);
                 }
 
                 /** Represents an AwsClusterNetworking. */
@@ -4024,6 +5354,9 @@ export namespace google {
 
                     /** AwsClusterNetworking serviceAddressCidrBlocks. */
                     public serviceAddressCidrBlocks: string[];
+
+                    /** AwsClusterNetworking perNodePoolSgRulesDisabled. */
+                    public perNodePoolSgRulesDisabled: boolean;
 
                     /**
                      * Creates a new AwsClusterNetworking instance using the specified properties.
@@ -4147,6 +5480,15 @@ export namespace google {
 
                     /** AwsNodePool errors */
                     errors?: (google.cloud.gkemulticloud.v1.IAwsNodePoolError[]|null);
+
+                    /** AwsNodePool management */
+                    management?: (google.cloud.gkemulticloud.v1.IAwsNodeManagement|null);
+
+                    /** AwsNodePool kubeletConfig */
+                    kubeletConfig?: (google.cloud.gkemulticloud.v1.INodeKubeletConfig|null);
+
+                    /** AwsNodePool updateSettings */
+                    updateSettings?: (google.cloud.gkemulticloud.v1.IUpdateSettings|null);
                 }
 
                 /** Represents an AwsNodePool. */
@@ -4199,6 +5541,15 @@ export namespace google {
 
                     /** AwsNodePool errors. */
                     public errors: google.cloud.gkemulticloud.v1.IAwsNodePoolError[];
+
+                    /** AwsNodePool management. */
+                    public management?: (google.cloud.gkemulticloud.v1.IAwsNodeManagement|null);
+
+                    /** AwsNodePool kubeletConfig. */
+                    public kubeletConfig?: (google.cloud.gkemulticloud.v1.INodeKubeletConfig|null);
+
+                    /** AwsNodePool updateSettings. */
+                    public updateSettings?: (google.cloud.gkemulticloud.v1.IUpdateSettings|null);
 
                     /**
                      * Creates a new AwsNodePool instance using the specified properties.
@@ -4292,6 +5643,303 @@ export namespace google {
                     }
                 }
 
+                /** Properties of an UpdateSettings. */
+                interface IUpdateSettings {
+
+                    /** UpdateSettings surgeSettings */
+                    surgeSettings?: (google.cloud.gkemulticloud.v1.ISurgeSettings|null);
+                }
+
+                /** Represents an UpdateSettings. */
+                class UpdateSettings implements IUpdateSettings {
+
+                    /**
+                     * Constructs a new UpdateSettings.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IUpdateSettings);
+
+                    /** UpdateSettings surgeSettings. */
+                    public surgeSettings?: (google.cloud.gkemulticloud.v1.ISurgeSettings|null);
+
+                    /**
+                     * Creates a new UpdateSettings instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateSettings instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IUpdateSettings): google.cloud.gkemulticloud.v1.UpdateSettings;
+
+                    /**
+                     * Encodes the specified UpdateSettings message. Does not implicitly {@link google.cloud.gkemulticloud.v1.UpdateSettings.verify|verify} messages.
+                     * @param message UpdateSettings message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IUpdateSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateSettings message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.UpdateSettings.verify|verify} messages.
+                     * @param message UpdateSettings message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IUpdateSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateSettings message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateSettings
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.UpdateSettings;
+
+                    /**
+                     * Decodes an UpdateSettings message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateSettings
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.UpdateSettings;
+
+                    /**
+                     * Verifies an UpdateSettings message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateSettings message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateSettings
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.UpdateSettings;
+
+                    /**
+                     * Creates a plain object from an UpdateSettings message. Also converts values to other types if specified.
+                     * @param message UpdateSettings
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.UpdateSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateSettings to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateSettings
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a SurgeSettings. */
+                interface ISurgeSettings {
+
+                    /** SurgeSettings maxSurge */
+                    maxSurge?: (number|null);
+
+                    /** SurgeSettings maxUnavailable */
+                    maxUnavailable?: (number|null);
+                }
+
+                /** Represents a SurgeSettings. */
+                class SurgeSettings implements ISurgeSettings {
+
+                    /**
+                     * Constructs a new SurgeSettings.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.ISurgeSettings);
+
+                    /** SurgeSettings maxSurge. */
+                    public maxSurge: number;
+
+                    /** SurgeSettings maxUnavailable. */
+                    public maxUnavailable: number;
+
+                    /**
+                     * Creates a new SurgeSettings instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns SurgeSettings instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.ISurgeSettings): google.cloud.gkemulticloud.v1.SurgeSettings;
+
+                    /**
+                     * Encodes the specified SurgeSettings message. Does not implicitly {@link google.cloud.gkemulticloud.v1.SurgeSettings.verify|verify} messages.
+                     * @param message SurgeSettings message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.ISurgeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified SurgeSettings message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.SurgeSettings.verify|verify} messages.
+                     * @param message SurgeSettings message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.ISurgeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a SurgeSettings message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns SurgeSettings
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.SurgeSettings;
+
+                    /**
+                     * Decodes a SurgeSettings message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns SurgeSettings
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.SurgeSettings;
+
+                    /**
+                     * Verifies a SurgeSettings message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a SurgeSettings message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns SurgeSettings
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.SurgeSettings;
+
+                    /**
+                     * Creates a plain object from a SurgeSettings message. Also converts values to other types if specified.
+                     * @param message SurgeSettings
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.SurgeSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this SurgeSettings to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for SurgeSettings
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an AwsNodeManagement. */
+                interface IAwsNodeManagement {
+
+                    /** AwsNodeManagement autoRepair */
+                    autoRepair?: (boolean|null);
+                }
+
+                /** Represents an AwsNodeManagement. */
+                class AwsNodeManagement implements IAwsNodeManagement {
+
+                    /**
+                     * Constructs a new AwsNodeManagement.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAwsNodeManagement);
+
+                    /** AwsNodeManagement autoRepair. */
+                    public autoRepair: boolean;
+
+                    /**
+                     * Creates a new AwsNodeManagement instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AwsNodeManagement instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAwsNodeManagement): google.cloud.gkemulticloud.v1.AwsNodeManagement;
+
+                    /**
+                     * Encodes the specified AwsNodeManagement message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsNodeManagement.verify|verify} messages.
+                     * @param message AwsNodeManagement message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAwsNodeManagement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AwsNodeManagement message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsNodeManagement.verify|verify} messages.
+                     * @param message AwsNodeManagement message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAwsNodeManagement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AwsNodeManagement message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AwsNodeManagement
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AwsNodeManagement;
+
+                    /**
+                     * Decodes an AwsNodeManagement message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AwsNodeManagement
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AwsNodeManagement;
+
+                    /**
+                     * Verifies an AwsNodeManagement message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AwsNodeManagement message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AwsNodeManagement
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AwsNodeManagement;
+
+                    /**
+                     * Creates a plain object from an AwsNodeManagement message. Also converts values to other types if specified.
+                     * @param message AwsNodeManagement
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AwsNodeManagement, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AwsNodeManagement to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AwsNodeManagement
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AwsNodeConfig. */
                 interface IAwsNodeConfig {
 
@@ -4333,6 +5981,9 @@ export namespace google {
 
                     /** AwsNodeConfig autoscalingMetricsCollection */
                     autoscalingMetricsCollection?: (google.cloud.gkemulticloud.v1.IAwsAutoscalingGroupMetricsCollection|null);
+
+                    /** AwsNodeConfig spotConfig */
+                    spotConfig?: (google.cloud.gkemulticloud.v1.ISpotConfig|null);
                 }
 
                 /** Represents an AwsNodeConfig. */
@@ -4382,6 +6033,9 @@ export namespace google {
 
                     /** AwsNodeConfig autoscalingMetricsCollection. */
                     public autoscalingMetricsCollection?: (google.cloud.gkemulticloud.v1.IAwsAutoscalingGroupMetricsCollection|null);
+
+                    /** AwsNodeConfig spotConfig. */
+                    public spotConfig?: (google.cloud.gkemulticloud.v1.ISpotConfig|null);
 
                     /**
                      * Creates a new AwsNodeConfig instance using the specified properties.
@@ -4564,6 +6218,236 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of an AwsOpenIdConfig. */
+                interface IAwsOpenIdConfig {
+
+                    /** AwsOpenIdConfig issuer */
+                    issuer?: (string|null);
+
+                    /** AwsOpenIdConfig jwksUri */
+                    jwksUri?: (string|null);
+
+                    /** AwsOpenIdConfig responseTypesSupported */
+                    responseTypesSupported?: (string[]|null);
+
+                    /** AwsOpenIdConfig subjectTypesSupported */
+                    subjectTypesSupported?: (string[]|null);
+
+                    /** AwsOpenIdConfig idTokenSigningAlgValuesSupported */
+                    idTokenSigningAlgValuesSupported?: (string[]|null);
+
+                    /** AwsOpenIdConfig claimsSupported */
+                    claimsSupported?: (string[]|null);
+
+                    /** AwsOpenIdConfig grantTypes */
+                    grantTypes?: (string[]|null);
+                }
+
+                /** Represents an AwsOpenIdConfig. */
+                class AwsOpenIdConfig implements IAwsOpenIdConfig {
+
+                    /**
+                     * Constructs a new AwsOpenIdConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAwsOpenIdConfig);
+
+                    /** AwsOpenIdConfig issuer. */
+                    public issuer: string;
+
+                    /** AwsOpenIdConfig jwksUri. */
+                    public jwksUri: string;
+
+                    /** AwsOpenIdConfig responseTypesSupported. */
+                    public responseTypesSupported: string[];
+
+                    /** AwsOpenIdConfig subjectTypesSupported. */
+                    public subjectTypesSupported: string[];
+
+                    /** AwsOpenIdConfig idTokenSigningAlgValuesSupported. */
+                    public idTokenSigningAlgValuesSupported: string[];
+
+                    /** AwsOpenIdConfig claimsSupported. */
+                    public claimsSupported: string[];
+
+                    /** AwsOpenIdConfig grantTypes. */
+                    public grantTypes: string[];
+
+                    /**
+                     * Creates a new AwsOpenIdConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AwsOpenIdConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAwsOpenIdConfig): google.cloud.gkemulticloud.v1.AwsOpenIdConfig;
+
+                    /**
+                     * Encodes the specified AwsOpenIdConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsOpenIdConfig.verify|verify} messages.
+                     * @param message AwsOpenIdConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAwsOpenIdConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AwsOpenIdConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsOpenIdConfig.verify|verify} messages.
+                     * @param message AwsOpenIdConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAwsOpenIdConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AwsOpenIdConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AwsOpenIdConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AwsOpenIdConfig;
+
+                    /**
+                     * Decodes an AwsOpenIdConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AwsOpenIdConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AwsOpenIdConfig;
+
+                    /**
+                     * Verifies an AwsOpenIdConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AwsOpenIdConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AwsOpenIdConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AwsOpenIdConfig;
+
+                    /**
+                     * Creates a plain object from an AwsOpenIdConfig message. Also converts values to other types if specified.
+                     * @param message AwsOpenIdConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AwsOpenIdConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AwsOpenIdConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AwsOpenIdConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an AwsJsonWebKeys. */
+                interface IAwsJsonWebKeys {
+
+                    /** AwsJsonWebKeys keys */
+                    keys?: (google.cloud.gkemulticloud.v1.IJwk[]|null);
+                }
+
+                /** Represents an AwsJsonWebKeys. */
+                class AwsJsonWebKeys implements IAwsJsonWebKeys {
+
+                    /**
+                     * Constructs a new AwsJsonWebKeys.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAwsJsonWebKeys);
+
+                    /** AwsJsonWebKeys keys. */
+                    public keys: google.cloud.gkemulticloud.v1.IJwk[];
+
+                    /**
+                     * Creates a new AwsJsonWebKeys instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AwsJsonWebKeys instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAwsJsonWebKeys): google.cloud.gkemulticloud.v1.AwsJsonWebKeys;
+
+                    /**
+                     * Encodes the specified AwsJsonWebKeys message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsJsonWebKeys.verify|verify} messages.
+                     * @param message AwsJsonWebKeys message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAwsJsonWebKeys, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AwsJsonWebKeys message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AwsJsonWebKeys.verify|verify} messages.
+                     * @param message AwsJsonWebKeys message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAwsJsonWebKeys, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AwsJsonWebKeys message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AwsJsonWebKeys
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AwsJsonWebKeys;
+
+                    /**
+                     * Decodes an AwsJsonWebKeys message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AwsJsonWebKeys
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AwsJsonWebKeys;
+
+                    /**
+                     * Verifies an AwsJsonWebKeys message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AwsJsonWebKeys message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AwsJsonWebKeys
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AwsJsonWebKeys;
+
+                    /**
+                     * Creates a plain object from an AwsJsonWebKeys message. Also converts values to other types if specified.
+                     * @param message AwsJsonWebKeys
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AwsJsonWebKeys, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AwsJsonWebKeys to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AwsJsonWebKeys
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AwsServerConfig. */
                 interface IAwsServerConfig {
 
@@ -4678,6 +6562,18 @@ export namespace google {
 
                     /** AwsK8sVersionInfo version */
                     version?: (string|null);
+
+                    /** AwsK8sVersionInfo enabled */
+                    enabled?: (boolean|null);
+
+                    /** AwsK8sVersionInfo endOfLife */
+                    endOfLife?: (boolean|null);
+
+                    /** AwsK8sVersionInfo endOfLifeDate */
+                    endOfLifeDate?: (google.type.IDate|null);
+
+                    /** AwsK8sVersionInfo releaseDate */
+                    releaseDate?: (google.type.IDate|null);
                 }
 
                 /** Represents an AwsK8sVersionInfo. */
@@ -4691,6 +6587,18 @@ export namespace google {
 
                     /** AwsK8sVersionInfo version. */
                     public version: string;
+
+                    /** AwsK8sVersionInfo enabled. */
+                    public enabled: boolean;
+
+                    /** AwsK8sVersionInfo endOfLife. */
+                    public endOfLife: boolean;
+
+                    /** AwsK8sVersionInfo endOfLifeDate. */
+                    public endOfLifeDate?: (google.type.IDate|null);
+
+                    /** AwsK8sVersionInfo releaseDate. */
+                    public releaseDate?: (google.type.IDate|null);
 
                     /**
                      * Creates a new AwsK8sVersionInfo instance using the specified properties.
@@ -5278,6 +7186,103 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a SpotConfig. */
+                interface ISpotConfig {
+
+                    /** SpotConfig instanceTypes */
+                    instanceTypes?: (string[]|null);
+                }
+
+                /** Represents a SpotConfig. */
+                class SpotConfig implements ISpotConfig {
+
+                    /**
+                     * Constructs a new SpotConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.ISpotConfig);
+
+                    /** SpotConfig instanceTypes. */
+                    public instanceTypes: string[];
+
+                    /**
+                     * Creates a new SpotConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns SpotConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.ISpotConfig): google.cloud.gkemulticloud.v1.SpotConfig;
+
+                    /**
+                     * Encodes the specified SpotConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.SpotConfig.verify|verify} messages.
+                     * @param message SpotConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.ISpotConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified SpotConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.SpotConfig.verify|verify} messages.
+                     * @param message SpotConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.ISpotConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a SpotConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns SpotConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.SpotConfig;
+
+                    /**
+                     * Decodes a SpotConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns SpotConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.SpotConfig;
+
+                    /**
+                     * Verifies a SpotConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a SpotConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns SpotConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.SpotConfig;
+
+                    /**
+                     * Creates a plain object from a SpotConfig message. Also converts values to other types if specified.
+                     * @param message SpotConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.SpotConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this SpotConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for SpotConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AwsClusterError. */
                 interface IAwsClusterError {
 
@@ -5563,6 +7568,20 @@ export namespace google {
                     public deleteAwsCluster(request: google.cloud.gkemulticloud.v1.IDeleteAwsClusterRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls GenerateAwsClusterAgentToken.
+                     * @param request GenerateAwsClusterAgentTokenRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and GenerateAwsClusterAgentTokenResponse
+                     */
+                    public generateAwsClusterAgentToken(request: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenRequest, callback: google.cloud.gkemulticloud.v1.AwsClusters.GenerateAwsClusterAgentTokenCallback): void;
+
+                    /**
+                     * Calls GenerateAwsClusterAgentToken.
+                     * @param request GenerateAwsClusterAgentTokenRequest message or plain object
+                     * @returns Promise
+                     */
+                    public generateAwsClusterAgentToken(request: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenRequest): Promise<google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse>;
+
+                    /**
                      * Calls GenerateAwsAccessToken.
                      * @param request GenerateAwsAccessTokenRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and GenerateAwsAccessTokenResponse
@@ -5605,6 +7624,20 @@ export namespace google {
                     public updateAwsNodePool(request: google.cloud.gkemulticloud.v1.IUpdateAwsNodePoolRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls RollbackAwsNodePoolUpdate.
+                     * @param request RollbackAwsNodePoolUpdateRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public rollbackAwsNodePoolUpdate(request: google.cloud.gkemulticloud.v1.IRollbackAwsNodePoolUpdateRequest, callback: google.cloud.gkemulticloud.v1.AwsClusters.RollbackAwsNodePoolUpdateCallback): void;
+
+                    /**
+                     * Calls RollbackAwsNodePoolUpdate.
+                     * @param request RollbackAwsNodePoolUpdateRequest message or plain object
+                     * @returns Promise
+                     */
+                    public rollbackAwsNodePoolUpdate(request: google.cloud.gkemulticloud.v1.IRollbackAwsNodePoolUpdateRequest): Promise<google.longrunning.Operation>;
+
+                    /**
                      * Calls GetAwsNodePool.
                      * @param request GetAwsNodePoolRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and AwsNodePool
@@ -5645,6 +7678,34 @@ export namespace google {
                      * @returns Promise
                      */
                     public deleteAwsNodePool(request: google.cloud.gkemulticloud.v1.IDeleteAwsNodePoolRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls GetAwsOpenIdConfig.
+                     * @param request GetAwsOpenIdConfigRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and AwsOpenIdConfig
+                     */
+                    public getAwsOpenIdConfig(request: google.cloud.gkemulticloud.v1.IGetAwsOpenIdConfigRequest, callback: google.cloud.gkemulticloud.v1.AwsClusters.GetAwsOpenIdConfigCallback): void;
+
+                    /**
+                     * Calls GetAwsOpenIdConfig.
+                     * @param request GetAwsOpenIdConfigRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getAwsOpenIdConfig(request: google.cloud.gkemulticloud.v1.IGetAwsOpenIdConfigRequest): Promise<google.cloud.gkemulticloud.v1.AwsOpenIdConfig>;
+
+                    /**
+                     * Calls GetAwsJsonWebKeys.
+                     * @param request GetAwsJsonWebKeysRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and AwsJsonWebKeys
+                     */
+                    public getAwsJsonWebKeys(request: google.cloud.gkemulticloud.v1.IGetAwsJsonWebKeysRequest, callback: google.cloud.gkemulticloud.v1.AwsClusters.GetAwsJsonWebKeysCallback): void;
+
+                    /**
+                     * Calls GetAwsJsonWebKeys.
+                     * @param request GetAwsJsonWebKeysRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getAwsJsonWebKeys(request: google.cloud.gkemulticloud.v1.IGetAwsJsonWebKeysRequest): Promise<google.cloud.gkemulticloud.v1.AwsJsonWebKeys>;
 
                     /**
                      * Calls GetAwsServerConfig.
@@ -5699,6 +7760,13 @@ export namespace google {
                     type DeleteAwsClusterCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|generateAwsClusterAgentToken}.
+                     * @param error Error, if any
+                     * @param [response] GenerateAwsClusterAgentTokenResponse
+                     */
+                    type GenerateAwsClusterAgentTokenCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse) => void;
+
+                    /**
                      * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|generateAwsAccessToken}.
                      * @param error Error, if any
                      * @param [response] GenerateAwsAccessTokenResponse
@@ -5720,6 +7788,13 @@ export namespace google {
                     type UpdateAwsNodePoolCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|rollbackAwsNodePoolUpdate}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type RollbackAwsNodePoolUpdateCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
                      * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|getAwsNodePool}.
                      * @param error Error, if any
                      * @param [response] AwsNodePool
@@ -5739,6 +7814,20 @@ export namespace google {
                      * @param [response] Operation
                      */
                     type DeleteAwsNodePoolCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|getAwsOpenIdConfig}.
+                     * @param error Error, if any
+                     * @param [response] AwsOpenIdConfig
+                     */
+                    type GetAwsOpenIdConfigCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.AwsOpenIdConfig) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|getAwsJsonWebKeys}.
+                     * @param error Error, if any
+                     * @param [response] AwsJsonWebKeys
+                     */
+                    type GetAwsJsonWebKeysCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.AwsJsonWebKeys) => void;
 
                     /**
                      * Callback as used by {@link google.cloud.gkemulticloud.v1.AwsClusters|getAwsServerConfig}.
@@ -6293,6 +8382,9 @@ export namespace google {
                     /** DeleteAwsClusterRequest allowMissing */
                     allowMissing?: (boolean|null);
 
+                    /** DeleteAwsClusterRequest ignoreErrors */
+                    ignoreErrors?: (boolean|null);
+
                     /** DeleteAwsClusterRequest etag */
                     etag?: (string|null);
                 }
@@ -6314,6 +8406,9 @@ export namespace google {
 
                     /** DeleteAwsClusterRequest allowMissing. */
                     public allowMissing: boolean;
+
+                    /** DeleteAwsClusterRequest ignoreErrors. */
+                    public ignoreErrors: boolean;
 
                     /** DeleteAwsClusterRequest etag. */
                     public etag: string;
@@ -6614,6 +8709,109 @@ export namespace google {
 
                     /**
                      * Gets the default type url for UpdateAwsNodePoolRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a RollbackAwsNodePoolUpdateRequest. */
+                interface IRollbackAwsNodePoolUpdateRequest {
+
+                    /** RollbackAwsNodePoolUpdateRequest name */
+                    name?: (string|null);
+
+                    /** RollbackAwsNodePoolUpdateRequest respectPdb */
+                    respectPdb?: (boolean|null);
+                }
+
+                /** Represents a RollbackAwsNodePoolUpdateRequest. */
+                class RollbackAwsNodePoolUpdateRequest implements IRollbackAwsNodePoolUpdateRequest {
+
+                    /**
+                     * Constructs a new RollbackAwsNodePoolUpdateRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IRollbackAwsNodePoolUpdateRequest);
+
+                    /** RollbackAwsNodePoolUpdateRequest name. */
+                    public name: string;
+
+                    /** RollbackAwsNodePoolUpdateRequest respectPdb. */
+                    public respectPdb: boolean;
+
+                    /**
+                     * Creates a new RollbackAwsNodePoolUpdateRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns RollbackAwsNodePoolUpdateRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IRollbackAwsNodePoolUpdateRequest): google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest;
+
+                    /**
+                     * Encodes the specified RollbackAwsNodePoolUpdateRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest.verify|verify} messages.
+                     * @param message RollbackAwsNodePoolUpdateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IRollbackAwsNodePoolUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified RollbackAwsNodePoolUpdateRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest.verify|verify} messages.
+                     * @param message RollbackAwsNodePoolUpdateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IRollbackAwsNodePoolUpdateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a RollbackAwsNodePoolUpdateRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns RollbackAwsNodePoolUpdateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest;
+
+                    /**
+                     * Decodes a RollbackAwsNodePoolUpdateRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns RollbackAwsNodePoolUpdateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest;
+
+                    /**
+                     * Verifies a RollbackAwsNodePoolUpdateRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a RollbackAwsNodePoolUpdateRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns RollbackAwsNodePoolUpdateRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest;
+
+                    /**
+                     * Creates a plain object from a RollbackAwsNodePoolUpdateRequest message. Also converts values to other types if specified.
+                     * @param message RollbackAwsNodePoolUpdateRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.RollbackAwsNodePoolUpdateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this RollbackAwsNodePoolUpdateRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for RollbackAwsNodePoolUpdateRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -6941,6 +9139,9 @@ export namespace google {
                     /** DeleteAwsNodePoolRequest allowMissing */
                     allowMissing?: (boolean|null);
 
+                    /** DeleteAwsNodePoolRequest ignoreErrors */
+                    ignoreErrors?: (boolean|null);
+
                     /** DeleteAwsNodePoolRequest etag */
                     etag?: (string|null);
                 }
@@ -6962,6 +9163,9 @@ export namespace google {
 
                     /** DeleteAwsNodePoolRequest allowMissing. */
                     public allowMissing: boolean;
+
+                    /** DeleteAwsNodePoolRequest ignoreErrors. */
+                    public ignoreErrors: boolean;
 
                     /** DeleteAwsNodePoolRequest etag. */
                     public etag: string;
@@ -7038,6 +9242,200 @@ export namespace google {
 
                     /**
                      * Gets the default type url for DeleteAwsNodePoolRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetAwsOpenIdConfigRequest. */
+                interface IGetAwsOpenIdConfigRequest {
+
+                    /** GetAwsOpenIdConfigRequest awsCluster */
+                    awsCluster?: (string|null);
+                }
+
+                /** Represents a GetAwsOpenIdConfigRequest. */
+                class GetAwsOpenIdConfigRequest implements IGetAwsOpenIdConfigRequest {
+
+                    /**
+                     * Constructs a new GetAwsOpenIdConfigRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGetAwsOpenIdConfigRequest);
+
+                    /** GetAwsOpenIdConfigRequest awsCluster. */
+                    public awsCluster: string;
+
+                    /**
+                     * Creates a new GetAwsOpenIdConfigRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetAwsOpenIdConfigRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGetAwsOpenIdConfigRequest): google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest;
+
+                    /**
+                     * Encodes the specified GetAwsOpenIdConfigRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest.verify|verify} messages.
+                     * @param message GetAwsOpenIdConfigRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGetAwsOpenIdConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetAwsOpenIdConfigRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest.verify|verify} messages.
+                     * @param message GetAwsOpenIdConfigRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGetAwsOpenIdConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetAwsOpenIdConfigRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetAwsOpenIdConfigRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest;
+
+                    /**
+                     * Decodes a GetAwsOpenIdConfigRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetAwsOpenIdConfigRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest;
+
+                    /**
+                     * Verifies a GetAwsOpenIdConfigRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetAwsOpenIdConfigRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetAwsOpenIdConfigRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest;
+
+                    /**
+                     * Creates a plain object from a GetAwsOpenIdConfigRequest message. Also converts values to other types if specified.
+                     * @param message GetAwsOpenIdConfigRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GetAwsOpenIdConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetAwsOpenIdConfigRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetAwsOpenIdConfigRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetAwsJsonWebKeysRequest. */
+                interface IGetAwsJsonWebKeysRequest {
+
+                    /** GetAwsJsonWebKeysRequest awsCluster */
+                    awsCluster?: (string|null);
+                }
+
+                /** Represents a GetAwsJsonWebKeysRequest. */
+                class GetAwsJsonWebKeysRequest implements IGetAwsJsonWebKeysRequest {
+
+                    /**
+                     * Constructs a new GetAwsJsonWebKeysRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGetAwsJsonWebKeysRequest);
+
+                    /** GetAwsJsonWebKeysRequest awsCluster. */
+                    public awsCluster: string;
+
+                    /**
+                     * Creates a new GetAwsJsonWebKeysRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetAwsJsonWebKeysRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGetAwsJsonWebKeysRequest): google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest;
+
+                    /**
+                     * Encodes the specified GetAwsJsonWebKeysRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest.verify|verify} messages.
+                     * @param message GetAwsJsonWebKeysRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGetAwsJsonWebKeysRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetAwsJsonWebKeysRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest.verify|verify} messages.
+                     * @param message GetAwsJsonWebKeysRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGetAwsJsonWebKeysRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetAwsJsonWebKeysRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetAwsJsonWebKeysRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest;
+
+                    /**
+                     * Decodes a GetAwsJsonWebKeysRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetAwsJsonWebKeysRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest;
+
+                    /**
+                     * Verifies a GetAwsJsonWebKeysRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetAwsJsonWebKeysRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetAwsJsonWebKeysRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest;
+
+                    /**
+                     * Creates a plain object from a GetAwsJsonWebKeysRequest message. Also converts values to other types if specified.
+                     * @param message GetAwsJsonWebKeysRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GetAwsJsonWebKeysRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetAwsJsonWebKeysRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetAwsJsonWebKeysRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -7335,6 +9733,266 @@ export namespace google {
 
                     /**
                      * Gets the default type url for GenerateAwsAccessTokenResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GenerateAwsClusterAgentTokenRequest. */
+                interface IGenerateAwsClusterAgentTokenRequest {
+
+                    /** GenerateAwsClusterAgentTokenRequest awsCluster */
+                    awsCluster?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest subjectToken */
+                    subjectToken?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest subjectTokenType */
+                    subjectTokenType?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest version */
+                    version?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest nodePoolId */
+                    nodePoolId?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest grantType */
+                    grantType?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest audience */
+                    audience?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest scope */
+                    scope?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest requestedTokenType */
+                    requestedTokenType?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenRequest options */
+                    options?: (string|null);
+                }
+
+                /** Represents a GenerateAwsClusterAgentTokenRequest. */
+                class GenerateAwsClusterAgentTokenRequest implements IGenerateAwsClusterAgentTokenRequest {
+
+                    /**
+                     * Constructs a new GenerateAwsClusterAgentTokenRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenRequest);
+
+                    /** GenerateAwsClusterAgentTokenRequest awsCluster. */
+                    public awsCluster: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest subjectToken. */
+                    public subjectToken: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest subjectTokenType. */
+                    public subjectTokenType: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest version. */
+                    public version: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest nodePoolId. */
+                    public nodePoolId: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest grantType. */
+                    public grantType: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest audience. */
+                    public audience: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest scope. */
+                    public scope: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest requestedTokenType. */
+                    public requestedTokenType: string;
+
+                    /** GenerateAwsClusterAgentTokenRequest options. */
+                    public options: string;
+
+                    /**
+                     * Creates a new GenerateAwsClusterAgentTokenRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GenerateAwsClusterAgentTokenRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenRequest): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest;
+
+                    /**
+                     * Encodes the specified GenerateAwsClusterAgentTokenRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest.verify|verify} messages.
+                     * @param message GenerateAwsClusterAgentTokenRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GenerateAwsClusterAgentTokenRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest.verify|verify} messages.
+                     * @param message GenerateAwsClusterAgentTokenRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GenerateAwsClusterAgentTokenRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GenerateAwsClusterAgentTokenRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest;
+
+                    /**
+                     * Decodes a GenerateAwsClusterAgentTokenRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GenerateAwsClusterAgentTokenRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest;
+
+                    /**
+                     * Verifies a GenerateAwsClusterAgentTokenRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GenerateAwsClusterAgentTokenRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GenerateAwsClusterAgentTokenRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest;
+
+                    /**
+                     * Creates a plain object from a GenerateAwsClusterAgentTokenRequest message. Also converts values to other types if specified.
+                     * @param message GenerateAwsClusterAgentTokenRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GenerateAwsClusterAgentTokenRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GenerateAwsClusterAgentTokenRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GenerateAwsClusterAgentTokenResponse. */
+                interface IGenerateAwsClusterAgentTokenResponse {
+
+                    /** GenerateAwsClusterAgentTokenResponse accessToken */
+                    accessToken?: (string|null);
+
+                    /** GenerateAwsClusterAgentTokenResponse expiresIn */
+                    expiresIn?: (number|null);
+
+                    /** GenerateAwsClusterAgentTokenResponse tokenType */
+                    tokenType?: (string|null);
+                }
+
+                /** Represents a GenerateAwsClusterAgentTokenResponse. */
+                class GenerateAwsClusterAgentTokenResponse implements IGenerateAwsClusterAgentTokenResponse {
+
+                    /**
+                     * Constructs a new GenerateAwsClusterAgentTokenResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenResponse);
+
+                    /** GenerateAwsClusterAgentTokenResponse accessToken. */
+                    public accessToken: string;
+
+                    /** GenerateAwsClusterAgentTokenResponse expiresIn. */
+                    public expiresIn: number;
+
+                    /** GenerateAwsClusterAgentTokenResponse tokenType. */
+                    public tokenType: string;
+
+                    /**
+                     * Creates a new GenerateAwsClusterAgentTokenResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GenerateAwsClusterAgentTokenResponse instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenResponse): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse;
+
+                    /**
+                     * Encodes the specified GenerateAwsClusterAgentTokenResponse message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse.verify|verify} messages.
+                     * @param message GenerateAwsClusterAgentTokenResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GenerateAwsClusterAgentTokenResponse message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse.verify|verify} messages.
+                     * @param message GenerateAwsClusterAgentTokenResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGenerateAwsClusterAgentTokenResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GenerateAwsClusterAgentTokenResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GenerateAwsClusterAgentTokenResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse;
+
+                    /**
+                     * Decodes a GenerateAwsClusterAgentTokenResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GenerateAwsClusterAgentTokenResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse;
+
+                    /**
+                     * Verifies a GenerateAwsClusterAgentTokenResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GenerateAwsClusterAgentTokenResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GenerateAwsClusterAgentTokenResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse;
+
+                    /**
+                     * Creates a plain object from a GenerateAwsClusterAgentTokenResponse message. Also converts values to other types if specified.
+                     * @param message GenerateAwsClusterAgentTokenResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GenerateAwsClusterAgentTokenResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GenerateAwsClusterAgentTokenResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GenerateAwsClusterAgentTokenResponse
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -8521,6 +11179,9 @@ export namespace google {
 
                     /** AzureAuthorization adminUsers */
                     adminUsers?: (google.cloud.gkemulticloud.v1.IAzureClusterUser[]|null);
+
+                    /** AzureAuthorization adminGroups */
+                    adminGroups?: (google.cloud.gkemulticloud.v1.IAzureClusterGroup[]|null);
                 }
 
                 /** Represents an AzureAuthorization. */
@@ -8534,6 +11195,9 @@ export namespace google {
 
                     /** AzureAuthorization adminUsers. */
                     public adminUsers: google.cloud.gkemulticloud.v1.IAzureClusterUser[];
+
+                    /** AzureAuthorization adminGroups. */
+                    public adminGroups: google.cloud.gkemulticloud.v1.IAzureClusterGroup[];
 
                     /**
                      * Creates a new AzureAuthorization instance using the specified properties.
@@ -8813,6 +11477,103 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of an AzureClusterGroup. */
+                interface IAzureClusterGroup {
+
+                    /** AzureClusterGroup group */
+                    group?: (string|null);
+                }
+
+                /** Represents an AzureClusterGroup. */
+                class AzureClusterGroup implements IAzureClusterGroup {
+
+                    /**
+                     * Constructs a new AzureClusterGroup.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAzureClusterGroup);
+
+                    /** AzureClusterGroup group. */
+                    public group: string;
+
+                    /**
+                     * Creates a new AzureClusterGroup instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AzureClusterGroup instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAzureClusterGroup): google.cloud.gkemulticloud.v1.AzureClusterGroup;
+
+                    /**
+                     * Encodes the specified AzureClusterGroup message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureClusterGroup.verify|verify} messages.
+                     * @param message AzureClusterGroup message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAzureClusterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AzureClusterGroup message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureClusterGroup.verify|verify} messages.
+                     * @param message AzureClusterGroup message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAzureClusterGroup, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AzureClusterGroup message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AzureClusterGroup
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AzureClusterGroup;
+
+                    /**
+                     * Decodes an AzureClusterGroup message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AzureClusterGroup
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AzureClusterGroup;
+
+                    /**
+                     * Verifies an AzureClusterGroup message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AzureClusterGroup message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AzureClusterGroup
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AzureClusterGroup;
+
+                    /**
+                     * Creates a plain object from an AzureClusterGroup message. Also converts values to other types if specified.
+                     * @param message AzureClusterGroup
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AzureClusterGroup, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AzureClusterGroup to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AzureClusterGroup
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AzureNodePool. */
                 interface IAzureNodePool {
 
@@ -8860,6 +11621,9 @@ export namespace google {
 
                     /** AzureNodePool errors */
                     errors?: (google.cloud.gkemulticloud.v1.IAzureNodePoolError[]|null);
+
+                    /** AzureNodePool management */
+                    management?: (google.cloud.gkemulticloud.v1.IAzureNodeManagement|null);
                 }
 
                 /** Represents an AzureNodePool. */
@@ -8915,6 +11679,9 @@ export namespace google {
 
                     /** AzureNodePool errors. */
                     public errors: google.cloud.gkemulticloud.v1.IAzureNodePoolError[];
+
+                    /** AzureNodePool management. */
+                    public management?: (google.cloud.gkemulticloud.v1.IAzureNodeManagement|null);
 
                     /**
                      * Creates a new AzureNodePool instance using the specified properties.
@@ -9006,6 +11773,103 @@ export namespace google {
                         ERROR = 5,
                         DEGRADED = 6
                     }
+                }
+
+                /** Properties of an AzureNodeManagement. */
+                interface IAzureNodeManagement {
+
+                    /** AzureNodeManagement autoRepair */
+                    autoRepair?: (boolean|null);
+                }
+
+                /** Represents an AzureNodeManagement. */
+                class AzureNodeManagement implements IAzureNodeManagement {
+
+                    /**
+                     * Constructs a new AzureNodeManagement.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAzureNodeManagement);
+
+                    /** AzureNodeManagement autoRepair. */
+                    public autoRepair: boolean;
+
+                    /**
+                     * Creates a new AzureNodeManagement instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AzureNodeManagement instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAzureNodeManagement): google.cloud.gkemulticloud.v1.AzureNodeManagement;
+
+                    /**
+                     * Encodes the specified AzureNodeManagement message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureNodeManagement.verify|verify} messages.
+                     * @param message AzureNodeManagement message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAzureNodeManagement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AzureNodeManagement message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureNodeManagement.verify|verify} messages.
+                     * @param message AzureNodeManagement message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAzureNodeManagement, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AzureNodeManagement message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AzureNodeManagement
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AzureNodeManagement;
+
+                    /**
+                     * Decodes an AzureNodeManagement message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AzureNodeManagement
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AzureNodeManagement;
+
+                    /**
+                     * Verifies an AzureNodeManagement message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AzureNodeManagement message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AzureNodeManagement
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AzureNodeManagement;
+
+                    /**
+                     * Creates a plain object from an AzureNodeManagement message. Also converts values to other types if specified.
+                     * @param message AzureNodeManagement
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AzureNodeManagement, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AzureNodeManagement to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AzureNodeManagement
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
                 /** Properties of an AzureNodeConfig. */
@@ -9256,6 +12120,236 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of an AzureOpenIdConfig. */
+                interface IAzureOpenIdConfig {
+
+                    /** AzureOpenIdConfig issuer */
+                    issuer?: (string|null);
+
+                    /** AzureOpenIdConfig jwksUri */
+                    jwksUri?: (string|null);
+
+                    /** AzureOpenIdConfig responseTypesSupported */
+                    responseTypesSupported?: (string[]|null);
+
+                    /** AzureOpenIdConfig subjectTypesSupported */
+                    subjectTypesSupported?: (string[]|null);
+
+                    /** AzureOpenIdConfig idTokenSigningAlgValuesSupported */
+                    idTokenSigningAlgValuesSupported?: (string[]|null);
+
+                    /** AzureOpenIdConfig claimsSupported */
+                    claimsSupported?: (string[]|null);
+
+                    /** AzureOpenIdConfig grantTypes */
+                    grantTypes?: (string[]|null);
+                }
+
+                /** Represents an AzureOpenIdConfig. */
+                class AzureOpenIdConfig implements IAzureOpenIdConfig {
+
+                    /**
+                     * Constructs a new AzureOpenIdConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAzureOpenIdConfig);
+
+                    /** AzureOpenIdConfig issuer. */
+                    public issuer: string;
+
+                    /** AzureOpenIdConfig jwksUri. */
+                    public jwksUri: string;
+
+                    /** AzureOpenIdConfig responseTypesSupported. */
+                    public responseTypesSupported: string[];
+
+                    /** AzureOpenIdConfig subjectTypesSupported. */
+                    public subjectTypesSupported: string[];
+
+                    /** AzureOpenIdConfig idTokenSigningAlgValuesSupported. */
+                    public idTokenSigningAlgValuesSupported: string[];
+
+                    /** AzureOpenIdConfig claimsSupported. */
+                    public claimsSupported: string[];
+
+                    /** AzureOpenIdConfig grantTypes. */
+                    public grantTypes: string[];
+
+                    /**
+                     * Creates a new AzureOpenIdConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AzureOpenIdConfig instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAzureOpenIdConfig): google.cloud.gkemulticloud.v1.AzureOpenIdConfig;
+
+                    /**
+                     * Encodes the specified AzureOpenIdConfig message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureOpenIdConfig.verify|verify} messages.
+                     * @param message AzureOpenIdConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAzureOpenIdConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AzureOpenIdConfig message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureOpenIdConfig.verify|verify} messages.
+                     * @param message AzureOpenIdConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAzureOpenIdConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AzureOpenIdConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AzureOpenIdConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AzureOpenIdConfig;
+
+                    /**
+                     * Decodes an AzureOpenIdConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AzureOpenIdConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AzureOpenIdConfig;
+
+                    /**
+                     * Verifies an AzureOpenIdConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AzureOpenIdConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AzureOpenIdConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AzureOpenIdConfig;
+
+                    /**
+                     * Creates a plain object from an AzureOpenIdConfig message. Also converts values to other types if specified.
+                     * @param message AzureOpenIdConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AzureOpenIdConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AzureOpenIdConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AzureOpenIdConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an AzureJsonWebKeys. */
+                interface IAzureJsonWebKeys {
+
+                    /** AzureJsonWebKeys keys */
+                    keys?: (google.cloud.gkemulticloud.v1.IJwk[]|null);
+                }
+
+                /** Represents an AzureJsonWebKeys. */
+                class AzureJsonWebKeys implements IAzureJsonWebKeys {
+
+                    /**
+                     * Constructs a new AzureJsonWebKeys.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IAzureJsonWebKeys);
+
+                    /** AzureJsonWebKeys keys. */
+                    public keys: google.cloud.gkemulticloud.v1.IJwk[];
+
+                    /**
+                     * Creates a new AzureJsonWebKeys instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AzureJsonWebKeys instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IAzureJsonWebKeys): google.cloud.gkemulticloud.v1.AzureJsonWebKeys;
+
+                    /**
+                     * Encodes the specified AzureJsonWebKeys message. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureJsonWebKeys.verify|verify} messages.
+                     * @param message AzureJsonWebKeys message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IAzureJsonWebKeys, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AzureJsonWebKeys message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.AzureJsonWebKeys.verify|verify} messages.
+                     * @param message AzureJsonWebKeys message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IAzureJsonWebKeys, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AzureJsonWebKeys message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AzureJsonWebKeys
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.AzureJsonWebKeys;
+
+                    /**
+                     * Decodes an AzureJsonWebKeys message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AzureJsonWebKeys
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.AzureJsonWebKeys;
+
+                    /**
+                     * Verifies an AzureJsonWebKeys message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AzureJsonWebKeys message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AzureJsonWebKeys
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.AzureJsonWebKeys;
+
+                    /**
+                     * Creates a plain object from an AzureJsonWebKeys message. Also converts values to other types if specified.
+                     * @param message AzureJsonWebKeys
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.AzureJsonWebKeys, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AzureJsonWebKeys to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AzureJsonWebKeys
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an AzureServerConfig. */
                 interface IAzureServerConfig {
 
@@ -9370,6 +12464,18 @@ export namespace google {
 
                     /** AzureK8sVersionInfo version */
                     version?: (string|null);
+
+                    /** AzureK8sVersionInfo enabled */
+                    enabled?: (boolean|null);
+
+                    /** AzureK8sVersionInfo endOfLife */
+                    endOfLife?: (boolean|null);
+
+                    /** AzureK8sVersionInfo endOfLifeDate */
+                    endOfLifeDate?: (google.type.IDate|null);
+
+                    /** AzureK8sVersionInfo releaseDate */
+                    releaseDate?: (google.type.IDate|null);
                 }
 
                 /** Represents an AzureK8sVersionInfo. */
@@ -9383,6 +12489,18 @@ export namespace google {
 
                     /** AzureK8sVersionInfo version. */
                     public version: string;
+
+                    /** AzureK8sVersionInfo enabled. */
+                    public enabled: boolean;
+
+                    /** AzureK8sVersionInfo endOfLife. */
+                    public endOfLife: boolean;
+
+                    /** AzureK8sVersionInfo endOfLifeDate. */
+                    public endOfLifeDate?: (google.type.IDate|null);
+
+                    /** AzureK8sVersionInfo releaseDate. */
+                    public releaseDate?: (google.type.IDate|null);
 
                     /**
                      * Creates a new AzureK8sVersionInfo instance using the specified properties.
@@ -10003,6 +13121,20 @@ export namespace google {
                     public deleteAzureCluster(request: google.cloud.gkemulticloud.v1.IDeleteAzureClusterRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls GenerateAzureClusterAgentToken.
+                     * @param request GenerateAzureClusterAgentTokenRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and GenerateAzureClusterAgentTokenResponse
+                     */
+                    public generateAzureClusterAgentToken(request: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenRequest, callback: google.cloud.gkemulticloud.v1.AzureClusters.GenerateAzureClusterAgentTokenCallback): void;
+
+                    /**
+                     * Calls GenerateAzureClusterAgentToken.
+                     * @param request GenerateAzureClusterAgentTokenRequest message or plain object
+                     * @returns Promise
+                     */
+                    public generateAzureClusterAgentToken(request: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenRequest): Promise<google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse>;
+
+                    /**
                      * Calls GenerateAzureAccessToken.
                      * @param request GenerateAzureAccessTokenRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and GenerateAzureAccessTokenResponse
@@ -10087,6 +13219,34 @@ export namespace google {
                     public deleteAzureNodePool(request: google.cloud.gkemulticloud.v1.IDeleteAzureNodePoolRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls GetAzureOpenIdConfig.
+                     * @param request GetAzureOpenIdConfigRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and AzureOpenIdConfig
+                     */
+                    public getAzureOpenIdConfig(request: google.cloud.gkemulticloud.v1.IGetAzureOpenIdConfigRequest, callback: google.cloud.gkemulticloud.v1.AzureClusters.GetAzureOpenIdConfigCallback): void;
+
+                    /**
+                     * Calls GetAzureOpenIdConfig.
+                     * @param request GetAzureOpenIdConfigRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getAzureOpenIdConfig(request: google.cloud.gkemulticloud.v1.IGetAzureOpenIdConfigRequest): Promise<google.cloud.gkemulticloud.v1.AzureOpenIdConfig>;
+
+                    /**
+                     * Calls GetAzureJsonWebKeys.
+                     * @param request GetAzureJsonWebKeysRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and AzureJsonWebKeys
+                     */
+                    public getAzureJsonWebKeys(request: google.cloud.gkemulticloud.v1.IGetAzureJsonWebKeysRequest, callback: google.cloud.gkemulticloud.v1.AzureClusters.GetAzureJsonWebKeysCallback): void;
+
+                    /**
+                     * Calls GetAzureJsonWebKeys.
+                     * @param request GetAzureJsonWebKeysRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getAzureJsonWebKeys(request: google.cloud.gkemulticloud.v1.IGetAzureJsonWebKeysRequest): Promise<google.cloud.gkemulticloud.v1.AzureJsonWebKeys>;
+
+                    /**
                      * Calls GetAzureServerConfig.
                      * @param request GetAzureServerConfigRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and AzureServerConfig
@@ -10167,6 +13327,13 @@ export namespace google {
                     type DeleteAzureClusterCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AzureClusters|generateAzureClusterAgentToken}.
+                     * @param error Error, if any
+                     * @param [response] GenerateAzureClusterAgentTokenResponse
+                     */
+                    type GenerateAzureClusterAgentTokenCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse) => void;
+
+                    /**
                      * Callback as used by {@link google.cloud.gkemulticloud.v1.AzureClusters|generateAzureAccessToken}.
                      * @param error Error, if any
                      * @param [response] GenerateAzureAccessTokenResponse
@@ -10207,6 +13374,20 @@ export namespace google {
                      * @param [response] Operation
                      */
                     type DeleteAzureNodePoolCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AzureClusters|getAzureOpenIdConfig}.
+                     * @param error Error, if any
+                     * @param [response] AzureOpenIdConfig
+                     */
+                    type GetAzureOpenIdConfigCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.AzureOpenIdConfig) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.gkemulticloud.v1.AzureClusters|getAzureJsonWebKeys}.
+                     * @param error Error, if any
+                     * @param [response] AzureJsonWebKeys
+                     */
+                    type GetAzureJsonWebKeysCallback = (error: (Error|null), response?: google.cloud.gkemulticloud.v1.AzureJsonWebKeys) => void;
 
                     /**
                      * Callback as used by {@link google.cloud.gkemulticloud.v1.AzureClusters|getAzureServerConfig}.
@@ -10763,6 +13944,9 @@ export namespace google {
 
                     /** DeleteAzureClusterRequest etag */
                     etag?: (string|null);
+
+                    /** DeleteAzureClusterRequest ignoreErrors */
+                    ignoreErrors?: (boolean|null);
                 }
 
                 /** Represents a DeleteAzureClusterRequest. */
@@ -10785,6 +13969,9 @@ export namespace google {
 
                     /** DeleteAzureClusterRequest etag. */
                     public etag: string;
+
+                    /** DeleteAzureClusterRequest ignoreErrors. */
+                    public ignoreErrors: boolean;
 
                     /**
                      * Creates a new DeleteAzureClusterRequest instance using the specified properties.
@@ -11411,6 +14598,9 @@ export namespace google {
 
                     /** DeleteAzureNodePoolRequest etag */
                     etag?: (string|null);
+
+                    /** DeleteAzureNodePoolRequest ignoreErrors */
+                    ignoreErrors?: (boolean|null);
                 }
 
                 /** Represents a DeleteAzureNodePoolRequest. */
@@ -11433,6 +14623,9 @@ export namespace google {
 
                     /** DeleteAzureNodePoolRequest etag. */
                     public etag: string;
+
+                    /** DeleteAzureNodePoolRequest ignoreErrors. */
+                    public ignoreErrors: boolean;
 
                     /**
                      * Creates a new DeleteAzureNodePoolRequest instance using the specified properties.
@@ -11506,6 +14699,200 @@ export namespace google {
 
                     /**
                      * Gets the default type url for DeleteAzureNodePoolRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetAzureOpenIdConfigRequest. */
+                interface IGetAzureOpenIdConfigRequest {
+
+                    /** GetAzureOpenIdConfigRequest azureCluster */
+                    azureCluster?: (string|null);
+                }
+
+                /** Represents a GetAzureOpenIdConfigRequest. */
+                class GetAzureOpenIdConfigRequest implements IGetAzureOpenIdConfigRequest {
+
+                    /**
+                     * Constructs a new GetAzureOpenIdConfigRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGetAzureOpenIdConfigRequest);
+
+                    /** GetAzureOpenIdConfigRequest azureCluster. */
+                    public azureCluster: string;
+
+                    /**
+                     * Creates a new GetAzureOpenIdConfigRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetAzureOpenIdConfigRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGetAzureOpenIdConfigRequest): google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest;
+
+                    /**
+                     * Encodes the specified GetAzureOpenIdConfigRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest.verify|verify} messages.
+                     * @param message GetAzureOpenIdConfigRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGetAzureOpenIdConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetAzureOpenIdConfigRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest.verify|verify} messages.
+                     * @param message GetAzureOpenIdConfigRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGetAzureOpenIdConfigRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetAzureOpenIdConfigRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetAzureOpenIdConfigRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest;
+
+                    /**
+                     * Decodes a GetAzureOpenIdConfigRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetAzureOpenIdConfigRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest;
+
+                    /**
+                     * Verifies a GetAzureOpenIdConfigRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetAzureOpenIdConfigRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetAzureOpenIdConfigRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest;
+
+                    /**
+                     * Creates a plain object from a GetAzureOpenIdConfigRequest message. Also converts values to other types if specified.
+                     * @param message GetAzureOpenIdConfigRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GetAzureOpenIdConfigRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetAzureOpenIdConfigRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetAzureOpenIdConfigRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetAzureJsonWebKeysRequest. */
+                interface IGetAzureJsonWebKeysRequest {
+
+                    /** GetAzureJsonWebKeysRequest azureCluster */
+                    azureCluster?: (string|null);
+                }
+
+                /** Represents a GetAzureJsonWebKeysRequest. */
+                class GetAzureJsonWebKeysRequest implements IGetAzureJsonWebKeysRequest {
+
+                    /**
+                     * Constructs a new GetAzureJsonWebKeysRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGetAzureJsonWebKeysRequest);
+
+                    /** GetAzureJsonWebKeysRequest azureCluster. */
+                    public azureCluster: string;
+
+                    /**
+                     * Creates a new GetAzureJsonWebKeysRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetAzureJsonWebKeysRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGetAzureJsonWebKeysRequest): google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest;
+
+                    /**
+                     * Encodes the specified GetAzureJsonWebKeysRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest.verify|verify} messages.
+                     * @param message GetAzureJsonWebKeysRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGetAzureJsonWebKeysRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetAzureJsonWebKeysRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest.verify|verify} messages.
+                     * @param message GetAzureJsonWebKeysRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGetAzureJsonWebKeysRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetAzureJsonWebKeysRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetAzureJsonWebKeysRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest;
+
+                    /**
+                     * Decodes a GetAzureJsonWebKeysRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetAzureJsonWebKeysRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest;
+
+                    /**
+                     * Verifies a GetAzureJsonWebKeysRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetAzureJsonWebKeysRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetAzureJsonWebKeysRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest;
+
+                    /**
+                     * Creates a plain object from a GetAzureJsonWebKeysRequest message. Also converts values to other types if specified.
+                     * @param message GetAzureJsonWebKeysRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GetAzureJsonWebKeysRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetAzureJsonWebKeysRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetAzureJsonWebKeysRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -12341,6 +15728,266 @@ export namespace google {
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
+
+                /** Properties of a GenerateAzureClusterAgentTokenRequest. */
+                interface IGenerateAzureClusterAgentTokenRequest {
+
+                    /** GenerateAzureClusterAgentTokenRequest azureCluster */
+                    azureCluster?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest subjectToken */
+                    subjectToken?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest subjectTokenType */
+                    subjectTokenType?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest version */
+                    version?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest nodePoolId */
+                    nodePoolId?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest grantType */
+                    grantType?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest audience */
+                    audience?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest scope */
+                    scope?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest requestedTokenType */
+                    requestedTokenType?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenRequest options */
+                    options?: (string|null);
+                }
+
+                /** Represents a GenerateAzureClusterAgentTokenRequest. */
+                class GenerateAzureClusterAgentTokenRequest implements IGenerateAzureClusterAgentTokenRequest {
+
+                    /**
+                     * Constructs a new GenerateAzureClusterAgentTokenRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenRequest);
+
+                    /** GenerateAzureClusterAgentTokenRequest azureCluster. */
+                    public azureCluster: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest subjectToken. */
+                    public subjectToken: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest subjectTokenType. */
+                    public subjectTokenType: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest version. */
+                    public version: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest nodePoolId. */
+                    public nodePoolId: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest grantType. */
+                    public grantType: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest audience. */
+                    public audience: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest scope. */
+                    public scope: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest requestedTokenType. */
+                    public requestedTokenType: string;
+
+                    /** GenerateAzureClusterAgentTokenRequest options. */
+                    public options: string;
+
+                    /**
+                     * Creates a new GenerateAzureClusterAgentTokenRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GenerateAzureClusterAgentTokenRequest instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenRequest): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest;
+
+                    /**
+                     * Encodes the specified GenerateAzureClusterAgentTokenRequest message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest.verify|verify} messages.
+                     * @param message GenerateAzureClusterAgentTokenRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GenerateAzureClusterAgentTokenRequest message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest.verify|verify} messages.
+                     * @param message GenerateAzureClusterAgentTokenRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GenerateAzureClusterAgentTokenRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GenerateAzureClusterAgentTokenRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest;
+
+                    /**
+                     * Decodes a GenerateAzureClusterAgentTokenRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GenerateAzureClusterAgentTokenRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest;
+
+                    /**
+                     * Verifies a GenerateAzureClusterAgentTokenRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GenerateAzureClusterAgentTokenRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GenerateAzureClusterAgentTokenRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest;
+
+                    /**
+                     * Creates a plain object from a GenerateAzureClusterAgentTokenRequest message. Also converts values to other types if specified.
+                     * @param message GenerateAzureClusterAgentTokenRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GenerateAzureClusterAgentTokenRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GenerateAzureClusterAgentTokenRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GenerateAzureClusterAgentTokenResponse. */
+                interface IGenerateAzureClusterAgentTokenResponse {
+
+                    /** GenerateAzureClusterAgentTokenResponse accessToken */
+                    accessToken?: (string|null);
+
+                    /** GenerateAzureClusterAgentTokenResponse expiresIn */
+                    expiresIn?: (number|null);
+
+                    /** GenerateAzureClusterAgentTokenResponse tokenType */
+                    tokenType?: (string|null);
+                }
+
+                /** Represents a GenerateAzureClusterAgentTokenResponse. */
+                class GenerateAzureClusterAgentTokenResponse implements IGenerateAzureClusterAgentTokenResponse {
+
+                    /**
+                     * Constructs a new GenerateAzureClusterAgentTokenResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenResponse);
+
+                    /** GenerateAzureClusterAgentTokenResponse accessToken. */
+                    public accessToken: string;
+
+                    /** GenerateAzureClusterAgentTokenResponse expiresIn. */
+                    public expiresIn: number;
+
+                    /** GenerateAzureClusterAgentTokenResponse tokenType. */
+                    public tokenType: string;
+
+                    /**
+                     * Creates a new GenerateAzureClusterAgentTokenResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GenerateAzureClusterAgentTokenResponse instance
+                     */
+                    public static create(properties?: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenResponse): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse;
+
+                    /**
+                     * Encodes the specified GenerateAzureClusterAgentTokenResponse message. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse.verify|verify} messages.
+                     * @param message GenerateAzureClusterAgentTokenResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GenerateAzureClusterAgentTokenResponse message, length delimited. Does not implicitly {@link google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse.verify|verify} messages.
+                     * @param message GenerateAzureClusterAgentTokenResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.gkemulticloud.v1.IGenerateAzureClusterAgentTokenResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GenerateAzureClusterAgentTokenResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GenerateAzureClusterAgentTokenResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse;
+
+                    /**
+                     * Decodes a GenerateAzureClusterAgentTokenResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GenerateAzureClusterAgentTokenResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse;
+
+                    /**
+                     * Verifies a GenerateAzureClusterAgentTokenResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GenerateAzureClusterAgentTokenResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GenerateAzureClusterAgentTokenResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse;
+
+                    /**
+                     * Creates a plain object from a GenerateAzureClusterAgentTokenResponse message. Also converts values to other types if specified.
+                     * @param message GenerateAzureClusterAgentTokenResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.gkemulticloud.v1.GenerateAzureClusterAgentTokenResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GenerateAzureClusterAgentTokenResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GenerateAzureClusterAgentTokenResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
             }
         }
     }
@@ -12357,7 +16004,8 @@ export namespace google {
             INPUT_ONLY = 4,
             IMMUTABLE = 5,
             UNORDERED_LIST = 6,
-            NON_EMPTY_DEFAULT = 7
+            NON_EMPTY_DEFAULT = 7,
+            IDENTIFIER = 8
         }
 
         /** Properties of a ResourceDescriptor. */
@@ -12971,6 +16619,1493 @@ export namespace google {
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
+
+        /** Properties of a CommonLanguageSettings. */
+        interface ICommonLanguageSettings {
+
+            /** CommonLanguageSettings referenceDocsUri */
+            referenceDocsUri?: (string|null);
+
+            /** CommonLanguageSettings destinations */
+            destinations?: (google.api.ClientLibraryDestination[]|null);
+        }
+
+        /** Represents a CommonLanguageSettings. */
+        class CommonLanguageSettings implements ICommonLanguageSettings {
+
+            /**
+             * Constructs a new CommonLanguageSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICommonLanguageSettings);
+
+            /** CommonLanguageSettings referenceDocsUri. */
+            public referenceDocsUri: string;
+
+            /** CommonLanguageSettings destinations. */
+            public destinations: google.api.ClientLibraryDestination[];
+
+            /**
+             * Creates a new CommonLanguageSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CommonLanguageSettings instance
+             */
+            public static create(properties?: google.api.ICommonLanguageSettings): google.api.CommonLanguageSettings;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CommonLanguageSettings;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CommonLanguageSettings;
+
+            /**
+             * Verifies a CommonLanguageSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CommonLanguageSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CommonLanguageSettings;
+
+            /**
+             * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+             * @param message CommonLanguageSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CommonLanguageSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CommonLanguageSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CommonLanguageSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ClientLibrarySettings. */
+        interface IClientLibrarySettings {
+
+            /** ClientLibrarySettings version */
+            version?: (string|null);
+
+            /** ClientLibrarySettings launchStage */
+            launchStage?: (google.api.LaunchStage|keyof typeof google.api.LaunchStage|null);
+
+            /** ClientLibrarySettings restNumericEnums */
+            restNumericEnums?: (boolean|null);
+
+            /** ClientLibrarySettings javaSettings */
+            javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings */
+            cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings */
+            phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings */
+            pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings */
+            nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings */
+            dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings */
+            rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings */
+            goSettings?: (google.api.IGoSettings|null);
+        }
+
+        /** Represents a ClientLibrarySettings. */
+        class ClientLibrarySettings implements IClientLibrarySettings {
+
+            /**
+             * Constructs a new ClientLibrarySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IClientLibrarySettings);
+
+            /** ClientLibrarySettings version. */
+            public version: string;
+
+            /** ClientLibrarySettings launchStage. */
+            public launchStage: (google.api.LaunchStage|keyof typeof google.api.LaunchStage);
+
+            /** ClientLibrarySettings restNumericEnums. */
+            public restNumericEnums: boolean;
+
+            /** ClientLibrarySettings javaSettings. */
+            public javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings. */
+            public cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings. */
+            public phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings. */
+            public pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings. */
+            public nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings. */
+            public dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings. */
+            public rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings. */
+            public goSettings?: (google.api.IGoSettings|null);
+
+            /**
+             * Creates a new ClientLibrarySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ClientLibrarySettings instance
+             */
+            public static create(properties?: google.api.IClientLibrarySettings): google.api.ClientLibrarySettings;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.ClientLibrarySettings;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.ClientLibrarySettings;
+
+            /**
+             * Verifies a ClientLibrarySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ClientLibrarySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.ClientLibrarySettings;
+
+            /**
+             * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+             * @param message ClientLibrarySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.ClientLibrarySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ClientLibrarySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ClientLibrarySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a Publishing. */
+        interface IPublishing {
+
+            /** Publishing methodSettings */
+            methodSettings?: (google.api.IMethodSettings[]|null);
+
+            /** Publishing newIssueUri */
+            newIssueUri?: (string|null);
+
+            /** Publishing documentationUri */
+            documentationUri?: (string|null);
+
+            /** Publishing apiShortName */
+            apiShortName?: (string|null);
+
+            /** Publishing githubLabel */
+            githubLabel?: (string|null);
+
+            /** Publishing codeownerGithubTeams */
+            codeownerGithubTeams?: (string[]|null);
+
+            /** Publishing docTagPrefix */
+            docTagPrefix?: (string|null);
+
+            /** Publishing organization */
+            organization?: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization|null);
+
+            /** Publishing librarySettings */
+            librarySettings?: (google.api.IClientLibrarySettings[]|null);
+
+            /** Publishing protoReferenceDocumentationUri */
+            protoReferenceDocumentationUri?: (string|null);
+        }
+
+        /** Represents a Publishing. */
+        class Publishing implements IPublishing {
+
+            /**
+             * Constructs a new Publishing.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPublishing);
+
+            /** Publishing methodSettings. */
+            public methodSettings: google.api.IMethodSettings[];
+
+            /** Publishing newIssueUri. */
+            public newIssueUri: string;
+
+            /** Publishing documentationUri. */
+            public documentationUri: string;
+
+            /** Publishing apiShortName. */
+            public apiShortName: string;
+
+            /** Publishing githubLabel. */
+            public githubLabel: string;
+
+            /** Publishing codeownerGithubTeams. */
+            public codeownerGithubTeams: string[];
+
+            /** Publishing docTagPrefix. */
+            public docTagPrefix: string;
+
+            /** Publishing organization. */
+            public organization: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization);
+
+            /** Publishing librarySettings. */
+            public librarySettings: google.api.IClientLibrarySettings[];
+
+            /** Publishing protoReferenceDocumentationUri. */
+            public protoReferenceDocumentationUri: string;
+
+            /**
+             * Creates a new Publishing instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Publishing instance
+             */
+            public static create(properties?: google.api.IPublishing): google.api.Publishing;
+
+            /**
+             * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.Publishing;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.Publishing;
+
+            /**
+             * Verifies a Publishing message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Publishing
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.Publishing;
+
+            /**
+             * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+             * @param message Publishing
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.Publishing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Publishing to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Publishing
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a JavaSettings. */
+        interface IJavaSettings {
+
+            /** JavaSettings libraryPackage */
+            libraryPackage?: (string|null);
+
+            /** JavaSettings serviceClassNames */
+            serviceClassNames?: ({ [k: string]: string }|null);
+
+            /** JavaSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a JavaSettings. */
+        class JavaSettings implements IJavaSettings {
+
+            /**
+             * Constructs a new JavaSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IJavaSettings);
+
+            /** JavaSettings libraryPackage. */
+            public libraryPackage: string;
+
+            /** JavaSettings serviceClassNames. */
+            public serviceClassNames: { [k: string]: string };
+
+            /** JavaSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new JavaSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns JavaSettings instance
+             */
+            public static create(properties?: google.api.IJavaSettings): google.api.JavaSettings;
+
+            /**
+             * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.JavaSettings;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.JavaSettings;
+
+            /**
+             * Verifies a JavaSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns JavaSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.JavaSettings;
+
+            /**
+             * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+             * @param message JavaSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.JavaSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this JavaSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for JavaSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a CppSettings. */
+        interface ICppSettings {
+
+            /** CppSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a CppSettings. */
+        class CppSettings implements ICppSettings {
+
+            /**
+             * Constructs a new CppSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICppSettings);
+
+            /** CppSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new CppSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CppSettings instance
+             */
+            public static create(properties?: google.api.ICppSettings): google.api.CppSettings;
+
+            /**
+             * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CppSettings;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CppSettings;
+
+            /**
+             * Verifies a CppSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CppSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CppSettings;
+
+            /**
+             * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+             * @param message CppSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CppSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CppSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CppSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PhpSettings. */
+        interface IPhpSettings {
+
+            /** PhpSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PhpSettings. */
+        class PhpSettings implements IPhpSettings {
+
+            /**
+             * Constructs a new PhpSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPhpSettings);
+
+            /** PhpSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PhpSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PhpSettings instance
+             */
+            public static create(properties?: google.api.IPhpSettings): google.api.PhpSettings;
+
+            /**
+             * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PhpSettings;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PhpSettings;
+
+            /**
+             * Verifies a PhpSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PhpSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PhpSettings;
+
+            /**
+             * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+             * @param message PhpSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PhpSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PhpSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PhpSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PythonSettings. */
+        interface IPythonSettings {
+
+            /** PythonSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PythonSettings. */
+        class PythonSettings implements IPythonSettings {
+
+            /**
+             * Constructs a new PythonSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPythonSettings);
+
+            /** PythonSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PythonSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PythonSettings instance
+             */
+            public static create(properties?: google.api.IPythonSettings): google.api.PythonSettings;
+
+            /**
+             * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PythonSettings;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PythonSettings;
+
+            /**
+             * Verifies a PythonSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PythonSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PythonSettings;
+
+            /**
+             * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+             * @param message PythonSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PythonSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PythonSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PythonSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a NodeSettings. */
+        interface INodeSettings {
+
+            /** NodeSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a NodeSettings. */
+        class NodeSettings implements INodeSettings {
+
+            /**
+             * Constructs a new NodeSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.INodeSettings);
+
+            /** NodeSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new NodeSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns NodeSettings instance
+             */
+            public static create(properties?: google.api.INodeSettings): google.api.NodeSettings;
+
+            /**
+             * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.NodeSettings;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.NodeSettings;
+
+            /**
+             * Verifies a NodeSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns NodeSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.NodeSettings;
+
+            /**
+             * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+             * @param message NodeSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.NodeSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this NodeSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for NodeSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DotnetSettings. */
+        interface IDotnetSettings {
+
+            /** DotnetSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices */
+            renamedServices?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings renamedResources */
+            renamedResources?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings ignoredResources */
+            ignoredResources?: (string[]|null);
+
+            /** DotnetSettings forcedNamespaceAliases */
+            forcedNamespaceAliases?: (string[]|null);
+
+            /** DotnetSettings handwrittenSignatures */
+            handwrittenSignatures?: (string[]|null);
+        }
+
+        /** Represents a DotnetSettings. */
+        class DotnetSettings implements IDotnetSettings {
+
+            /**
+             * Constructs a new DotnetSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IDotnetSettings);
+
+            /** DotnetSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices. */
+            public renamedServices: { [k: string]: string };
+
+            /** DotnetSettings renamedResources. */
+            public renamedResources: { [k: string]: string };
+
+            /** DotnetSettings ignoredResources. */
+            public ignoredResources: string[];
+
+            /** DotnetSettings forcedNamespaceAliases. */
+            public forcedNamespaceAliases: string[];
+
+            /** DotnetSettings handwrittenSignatures. */
+            public handwrittenSignatures: string[];
+
+            /**
+             * Creates a new DotnetSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DotnetSettings instance
+             */
+            public static create(properties?: google.api.IDotnetSettings): google.api.DotnetSettings;
+
+            /**
+             * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.DotnetSettings;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.DotnetSettings;
+
+            /**
+             * Verifies a DotnetSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DotnetSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.DotnetSettings;
+
+            /**
+             * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+             * @param message DotnetSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.DotnetSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DotnetSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DotnetSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RubySettings. */
+        interface IRubySettings {
+
+            /** RubySettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a RubySettings. */
+        class RubySettings implements IRubySettings {
+
+            /**
+             * Constructs a new RubySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRubySettings);
+
+            /** RubySettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new RubySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RubySettings instance
+             */
+            public static create(properties?: google.api.IRubySettings): google.api.RubySettings;
+
+            /**
+             * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RubySettings;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RubySettings;
+
+            /**
+             * Verifies a RubySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RubySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RubySettings;
+
+            /**
+             * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+             * @param message RubySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RubySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RubySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RubySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GoSettings. */
+        interface IGoSettings {
+
+            /** GoSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a GoSettings. */
+        class GoSettings implements IGoSettings {
+
+            /**
+             * Constructs a new GoSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IGoSettings);
+
+            /** GoSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new GoSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GoSettings instance
+             */
+            public static create(properties?: google.api.IGoSettings): google.api.GoSettings;
+
+            /**
+             * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.GoSettings;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.GoSettings;
+
+            /**
+             * Verifies a GoSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GoSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.GoSettings;
+
+            /**
+             * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+             * @param message GoSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.GoSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GoSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GoSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MethodSettings. */
+        interface IMethodSettings {
+
+            /** MethodSettings selector */
+            selector?: (string|null);
+
+            /** MethodSettings longRunning */
+            longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields */
+            autoPopulatedFields?: (string[]|null);
+        }
+
+        /** Represents a MethodSettings. */
+        class MethodSettings implements IMethodSettings {
+
+            /**
+             * Constructs a new MethodSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IMethodSettings);
+
+            /** MethodSettings selector. */
+            public selector: string;
+
+            /** MethodSettings longRunning. */
+            public longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields. */
+            public autoPopulatedFields: string[];
+
+            /**
+             * Creates a new MethodSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MethodSettings instance
+             */
+            public static create(properties?: google.api.IMethodSettings): google.api.MethodSettings;
+
+            /**
+             * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings;
+
+            /**
+             * Verifies a MethodSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MethodSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.MethodSettings;
+
+            /**
+             * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+             * @param message MethodSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.MethodSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MethodSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace MethodSettings {
+
+            /** Properties of a LongRunning. */
+            interface ILongRunning {
+
+                /** LongRunning initialPollDelay */
+                initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier */
+                pollDelayMultiplier?: (number|null);
+
+                /** LongRunning maxPollDelay */
+                maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout */
+                totalPollTimeout?: (google.protobuf.IDuration|null);
+            }
+
+            /** Represents a LongRunning. */
+            class LongRunning implements ILongRunning {
+
+                /**
+                 * Constructs a new LongRunning.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.api.MethodSettings.ILongRunning);
+
+                /** LongRunning initialPollDelay. */
+                public initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier. */
+                public pollDelayMultiplier: number;
+
+                /** LongRunning maxPollDelay. */
+                public maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout. */
+                public totalPollTimeout?: (google.protobuf.IDuration|null);
+
+                /**
+                 * Creates a new LongRunning instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LongRunning instance
+                 */
+                public static create(properties?: google.api.MethodSettings.ILongRunning): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Verifies a LongRunning message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LongRunning
+                 */
+                public static fromObject(object: { [k: string]: any }): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                 * @param message LongRunning
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.api.MethodSettings.LongRunning, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LongRunning to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LongRunning
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** ClientLibraryOrganization enum. */
+        enum ClientLibraryOrganization {
+            CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED = 0,
+            CLOUD = 1,
+            ADS = 2,
+            PHOTOS = 3,
+            STREET_VIEW = 4,
+            SHOPPING = 5,
+            GEO = 6,
+            GENERATIVE_AI = 7
+        }
+
+        /** ClientLibraryDestination enum. */
+        enum ClientLibraryDestination {
+            CLIENT_LIBRARY_DESTINATION_UNSPECIFIED = 0,
+            GITHUB = 10,
+            PACKAGE_MANAGER = 20
+        }
+
+        /** LaunchStage enum. */
+        enum LaunchStage {
+            LAUNCH_STAGE_UNSPECIFIED = 0,
+            UNIMPLEMENTED = 6,
+            PRELAUNCH = 7,
+            EARLY_ACCESS = 1,
+            ALPHA = 2,
+            BETA = 3,
+            GA = 4,
+            DEPRECATED = 5
+        }
     }
 
     /** Namespace protobuf. */
@@ -13073,6 +18208,21 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Edition enum. */
+        enum Edition {
+            EDITION_UNKNOWN = 0,
+            EDITION_PROTO2 = 998,
+            EDITION_PROTO3 = 999,
+            EDITION_2023 = 1000,
+            EDITION_2024 = 1001,
+            EDITION_1_TEST_ONLY = 1,
+            EDITION_2_TEST_ONLY = 2,
+            EDITION_99997_TEST_ONLY = 99997,
+            EDITION_99998_TEST_ONLY = 99998,
+            EDITION_99999_TEST_ONLY = 99999,
+            EDITION_MAX = 2147483647
+        }
+
         /** Properties of a FileDescriptorProto. */
         interface IFileDescriptorProto {
 
@@ -13113,7 +18263,7 @@ export namespace google {
             syntax?: (string|null);
 
             /** FileDescriptorProto edition */
-            edition?: (string|null);
+            edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
         }
 
         /** Represents a FileDescriptorProto. */
@@ -13162,7 +18312,7 @@ export namespace google {
             public syntax: string;
 
             /** FileDescriptorProto edition. */
-            public edition: string;
+            public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
 
             /**
              * Creates a new FileDescriptorProto instance using the specified properties.
@@ -13613,6 +18763,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
+
+            /** ExtensionRangeOptions declaration */
+            declaration?: (google.protobuf.ExtensionRangeOptions.IDeclaration[]|null);
+
+            /** ExtensionRangeOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification */
+            verification?: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState|null);
         }
 
         /** Represents an ExtensionRangeOptions. */
@@ -13626,6 +18785,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
+
+            /** ExtensionRangeOptions declaration. */
+            public declaration: google.protobuf.ExtensionRangeOptions.IDeclaration[];
+
+            /** ExtensionRangeOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification. */
+            public verification: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState);
 
             /**
              * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -13703,6 +18871,136 @@ export namespace google {
              * @returns The default type url
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace ExtensionRangeOptions {
+
+            /** Properties of a Declaration. */
+            interface IDeclaration {
+
+                /** Declaration number */
+                number?: (number|null);
+
+                /** Declaration fullName */
+                fullName?: (string|null);
+
+                /** Declaration type */
+                type?: (string|null);
+
+                /** Declaration reserved */
+                reserved?: (boolean|null);
+
+                /** Declaration repeated */
+                repeated?: (boolean|null);
+            }
+
+            /** Represents a Declaration. */
+            class Declaration implements IDeclaration {
+
+                /**
+                 * Constructs a new Declaration.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration);
+
+                /** Declaration number. */
+                public number: number;
+
+                /** Declaration fullName. */
+                public fullName: string;
+
+                /** Declaration type. */
+                public type: string;
+
+                /** Declaration reserved. */
+                public reserved: boolean;
+
+                /** Declaration repeated. */
+                public repeated: boolean;
+
+                /**
+                 * Creates a new Declaration instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns Declaration instance
+                 */
+                public static create(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Verifies a Declaration message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns Declaration
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                 * @param message Declaration
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.ExtensionRangeOptions.Declaration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this Declaration to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Declaration
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** VerificationState enum. */
+            enum VerificationState {
+                DECLARATION = 0,
+                UNVERIFIED = 1
+            }
         }
 
         /** Properties of a FieldDescriptorProto. */
@@ -13889,8 +19187,8 @@ export namespace google {
             /** Label enum. */
             enum Label {
                 LABEL_OPTIONAL = 1,
-                LABEL_REQUIRED = 2,
-                LABEL_REPEATED = 3
+                LABEL_REPEATED = 3,
+                LABEL_REQUIRED = 2
             }
         }
 
@@ -14602,9 +19900,6 @@ export namespace google {
             /** FileOptions pyGenericServices */
             pyGenericServices?: (boolean|null);
 
-            /** FileOptions phpGenericServices */
-            phpGenericServices?: (boolean|null);
-
             /** FileOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -14631,6 +19926,9 @@ export namespace google {
 
             /** FileOptions rubyPackage */
             rubyPackage?: (string|null);
+
+            /** FileOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -14678,9 +19976,6 @@ export namespace google {
             /** FileOptions pyGenericServices. */
             public pyGenericServices: boolean;
 
-            /** FileOptions phpGenericServices. */
-            public phpGenericServices: boolean;
-
             /** FileOptions deprecated. */
             public deprecated: boolean;
 
@@ -14707,6 +20002,9 @@ export namespace google {
 
             /** FileOptions rubyPackage. */
             public rubyPackage: string;
+
+            /** FileOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -14814,6 +20112,12 @@ export namespace google {
             /** MessageOptions mapEntry */
             mapEntry?: (boolean|null);
 
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** MessageOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MessageOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -14841,6 +20145,12 @@ export namespace google {
 
             /** MessageOptions mapEntry. */
             public mapEntry: boolean;
+
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** MessageOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MessageOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -14947,6 +20257,21 @@ export namespace google {
             /** FieldOptions weak */
             weak?: (boolean|null);
 
+            /** FieldOptions debugRedact */
+            debugRedact?: (boolean|null);
+
+            /** FieldOptions retention */
+            retention?: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention|null);
+
+            /** FieldOptions targets */
+            targets?: (google.protobuf.FieldOptions.OptionTargetType[]|null);
+
+            /** FieldOptions editionDefaults */
+            editionDefaults?: (google.protobuf.FieldOptions.IEditionDefault[]|null);
+
+            /** FieldOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** FieldOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -14986,6 +20311,21 @@ export namespace google {
 
             /** FieldOptions weak. */
             public weak: boolean;
+
+            /** FieldOptions debugRedact. */
+            public debugRedact: boolean;
+
+            /** FieldOptions retention. */
+            public retention: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention);
+
+            /** FieldOptions targets. */
+            public targets: google.protobuf.FieldOptions.OptionTargetType[];
+
+            /** FieldOptions editionDefaults. */
+            public editionDefaults: google.protobuf.FieldOptions.IEditionDefault[];
+
+            /** FieldOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FieldOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -15083,10 +20423,137 @@ export namespace google {
                 JS_STRING = 1,
                 JS_NUMBER = 2
             }
+
+            /** OptionRetention enum. */
+            enum OptionRetention {
+                RETENTION_UNKNOWN = 0,
+                RETENTION_RUNTIME = 1,
+                RETENTION_SOURCE = 2
+            }
+
+            /** OptionTargetType enum. */
+            enum OptionTargetType {
+                TARGET_TYPE_UNKNOWN = 0,
+                TARGET_TYPE_FILE = 1,
+                TARGET_TYPE_EXTENSION_RANGE = 2,
+                TARGET_TYPE_MESSAGE = 3,
+                TARGET_TYPE_FIELD = 4,
+                TARGET_TYPE_ONEOF = 5,
+                TARGET_TYPE_ENUM = 6,
+                TARGET_TYPE_ENUM_ENTRY = 7,
+                TARGET_TYPE_SERVICE = 8,
+                TARGET_TYPE_METHOD = 9
+            }
+
+            /** Properties of an EditionDefault. */
+            interface IEditionDefault {
+
+                /** EditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** EditionDefault value */
+                value?: (string|null);
+            }
+
+            /** Represents an EditionDefault. */
+            class EditionDefault implements IEditionDefault {
+
+                /**
+                 * Constructs a new EditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FieldOptions.IEditionDefault);
+
+                /** EditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** EditionDefault value. */
+                public value: string;
+
+                /**
+                 * Creates a new EditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns EditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FieldOptions.IEditionDefault): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Verifies an EditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns EditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                 * @param message EditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FieldOptions.EditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this EditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EditionDefault
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
         }
 
         /** Properties of an OneofOptions. */
         interface IOneofOptions {
+
+            /** OneofOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -15100,6 +20567,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IOneofOptions);
+
+            /** OneofOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -15191,6 +20661,12 @@ export namespace google {
             /** EnumOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** EnumOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** EnumOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -15209,6 +20685,12 @@ export namespace google {
 
             /** EnumOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** EnumOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** EnumOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -15297,6 +20779,12 @@ export namespace google {
             /** EnumValueOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumValueOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact */
+            debugRedact?: (boolean|null);
+
             /** EnumValueOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -15312,6 +20800,12 @@ export namespace google {
 
             /** EnumValueOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumValueOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact. */
+            public debugRedact: boolean;
 
             /** EnumValueOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -15397,6 +20891,9 @@ export namespace google {
         /** Properties of a ServiceOptions. */
         interface IServiceOptions {
 
+            /** ServiceOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** ServiceOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -15418,6 +20915,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IServiceOptions);
+
+            /** ServiceOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** ServiceOptions deprecated. */
             public deprecated: boolean;
@@ -15512,6 +21012,9 @@ export namespace google {
             /** MethodOptions idempotencyLevel */
             idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel|null);
 
+            /** MethodOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MethodOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -15539,6 +21042,9 @@ export namespace google {
 
             /** MethodOptions idempotencyLevel. */
             public idempotencyLevel: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel);
+
+            /** MethodOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MethodOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -15863,6 +21369,394 @@ export namespace google {
 
                 /**
                  * Gets the default type url for NamePart
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** Properties of a FeatureSet. */
+        interface IFeatureSet {
+
+            /** FeatureSet fieldPresence */
+            fieldPresence?: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence|null);
+
+            /** FeatureSet enumType */
+            enumType?: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType|null);
+
+            /** FeatureSet repeatedFieldEncoding */
+            repeatedFieldEncoding?: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding|null);
+
+            /** FeatureSet utf8Validation */
+            utf8Validation?: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation|null);
+
+            /** FeatureSet messageEncoding */
+            messageEncoding?: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding|null);
+
+            /** FeatureSet jsonFormat */
+            jsonFormat?: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat|null);
+        }
+
+        /** Represents a FeatureSet. */
+        class FeatureSet implements IFeatureSet {
+
+            /**
+             * Constructs a new FeatureSet.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSet);
+
+            /** FeatureSet fieldPresence. */
+            public fieldPresence: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence);
+
+            /** FeatureSet enumType. */
+            public enumType: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType);
+
+            /** FeatureSet repeatedFieldEncoding. */
+            public repeatedFieldEncoding: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding);
+
+            /** FeatureSet utf8Validation. */
+            public utf8Validation: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation);
+
+            /** FeatureSet messageEncoding. */
+            public messageEncoding: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding);
+
+            /** FeatureSet jsonFormat. */
+            public jsonFormat: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat);
+
+            /**
+             * Creates a new FeatureSet instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSet instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSet): google.protobuf.FeatureSet;
+
+            /**
+             * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSet;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSet;
+
+            /**
+             * Verifies a FeatureSet message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSet
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSet;
+
+            /**
+             * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+             * @param message FeatureSet
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSet to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSet
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSet {
+
+            /** FieldPresence enum. */
+            enum FieldPresence {
+                FIELD_PRESENCE_UNKNOWN = 0,
+                EXPLICIT = 1,
+                IMPLICIT = 2,
+                LEGACY_REQUIRED = 3
+            }
+
+            /** EnumType enum. */
+            enum EnumType {
+                ENUM_TYPE_UNKNOWN = 0,
+                OPEN = 1,
+                CLOSED = 2
+            }
+
+            /** RepeatedFieldEncoding enum. */
+            enum RepeatedFieldEncoding {
+                REPEATED_FIELD_ENCODING_UNKNOWN = 0,
+                PACKED = 1,
+                EXPANDED = 2
+            }
+
+            /** Utf8Validation enum. */
+            enum Utf8Validation {
+                UTF8_VALIDATION_UNKNOWN = 0,
+                VERIFY = 2,
+                NONE = 3
+            }
+
+            /** MessageEncoding enum. */
+            enum MessageEncoding {
+                MESSAGE_ENCODING_UNKNOWN = 0,
+                LENGTH_PREFIXED = 1,
+                DELIMITED = 2
+            }
+
+            /** JsonFormat enum. */
+            enum JsonFormat {
+                JSON_FORMAT_UNKNOWN = 0,
+                ALLOW = 1,
+                LEGACY_BEST_EFFORT = 2
+            }
+        }
+
+        /** Properties of a FeatureSetDefaults. */
+        interface IFeatureSetDefaults {
+
+            /** FeatureSetDefaults defaults */
+            defaults?: (google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[]|null);
+
+            /** FeatureSetDefaults minimumEdition */
+            minimumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+            /** FeatureSetDefaults maximumEdition */
+            maximumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+        }
+
+        /** Represents a FeatureSetDefaults. */
+        class FeatureSetDefaults implements IFeatureSetDefaults {
+
+            /**
+             * Constructs a new FeatureSetDefaults.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSetDefaults);
+
+            /** FeatureSetDefaults defaults. */
+            public defaults: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[];
+
+            /** FeatureSetDefaults minimumEdition. */
+            public minimumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /** FeatureSetDefaults maximumEdition. */
+            public maximumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /**
+             * Creates a new FeatureSetDefaults instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSetDefaults instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSetDefaults): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Verifies a FeatureSetDefaults message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSetDefaults
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+             * @param message FeatureSetDefaults
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSetDefaults, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSetDefaults to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSetDefaults
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSetDefaults {
+
+            /** Properties of a FeatureSetEditionDefault. */
+            interface IFeatureSetEditionDefault {
+
+                /** FeatureSetEditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** FeatureSetEditionDefault features */
+                features?: (google.protobuf.IFeatureSet|null);
+            }
+
+            /** Represents a FeatureSetEditionDefault. */
+            class FeatureSetEditionDefault implements IFeatureSetEditionDefault {
+
+                /**
+                 * Constructs a new FeatureSetEditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault);
+
+                /** FeatureSetEditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** FeatureSetEditionDefault features. */
+                public features?: (google.protobuf.IFeatureSet|null);
+
+                /**
+                 * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns FeatureSetEditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Verifies a FeatureSetEditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns FeatureSetEditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                 * @param message FeatureSetEditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this FeatureSetEditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for FeatureSetEditionDefault
                  * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                  * @returns The default type url
                  */
@@ -16425,109 +22319,6 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
-        /** Properties of an Any. */
-        interface IAny {
-
-            /** Any type_url */
-            type_url?: (string|null);
-
-            /** Any value */
-            value?: (Uint8Array|string|null);
-        }
-
-        /** Represents an Any. */
-        class Any implements IAny {
-
-            /**
-             * Constructs a new Any.
-             * @param [properties] Properties to set
-             */
-            constructor(properties?: google.protobuf.IAny);
-
-            /** Any type_url. */
-            public type_url: string;
-
-            /** Any value. */
-            public value: (Uint8Array|string);
-
-            /**
-             * Creates a new Any instance using the specified properties.
-             * @param [properties] Properties to set
-             * @returns Any instance
-             */
-            public static create(properties?: google.protobuf.IAny): google.protobuf.Any;
-
-            /**
-             * Encodes the specified Any message. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
-             * @param message Any message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encode(message: google.protobuf.IAny, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified Any message, length delimited. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
-             * @param message Any message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encodeDelimited(message: google.protobuf.IAny, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes an Any message from the specified reader or buffer.
-             * @param reader Reader or buffer to decode from
-             * @param [length] Message length if known beforehand
-             * @returns Any
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Any;
-
-            /**
-             * Decodes an Any message from the specified reader or buffer, length delimited.
-             * @param reader Reader or buffer to decode from
-             * @returns Any
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Any;
-
-            /**
-             * Verifies an Any message.
-             * @param message Plain object to verify
-             * @returns `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): (string|null);
-
-            /**
-             * Creates an Any message from a plain object. Also converts values to their respective internal types.
-             * @param object Plain object
-             * @returns Any
-             */
-            public static fromObject(object: { [k: string]: any }): google.protobuf.Any;
-
-            /**
-             * Creates a plain object from an Any message. Also converts values to other types if specified.
-             * @param message Any
-             * @param [options] Conversion options
-             * @returns Plain object
-             */
-            public static toObject(message: google.protobuf.Any, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this Any to JSON.
-             * @returns JSON object
-             */
-            public toJSON(): { [k: string]: any };
-
-            /**
-             * Gets the default type url for Any
-             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns The default type url
-             */
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
         /** Properties of a Duration. */
         interface IDuration {
 
@@ -16625,6 +22416,109 @@ export namespace google {
 
             /**
              * Gets the default type url for Duration
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an Any. */
+        interface IAny {
+
+            /** Any type_url */
+            type_url?: (string|null);
+
+            /** Any value */
+            value?: (Uint8Array|string|null);
+        }
+
+        /** Represents an Any. */
+        class Any implements IAny {
+
+            /**
+             * Constructs a new Any.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IAny);
+
+            /** Any type_url. */
+            public type_url: string;
+
+            /** Any value. */
+            public value: (Uint8Array|string);
+
+            /**
+             * Creates a new Any instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Any instance
+             */
+            public static create(properties?: google.protobuf.IAny): google.protobuf.Any;
+
+            /**
+             * Encodes the specified Any message. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
+             * @param message Any message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IAny, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Any message, length delimited. Does not implicitly {@link google.protobuf.Any.verify|verify} messages.
+             * @param message Any message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IAny, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Any message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Any
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Any;
+
+            /**
+             * Decodes an Any message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Any
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Any;
+
+            /**
+             * Verifies an Any message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Any message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Any
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.Any;
+
+            /**
+             * Creates a plain object from an Any message. Also converts values to other types if specified.
+             * @param message Any
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.Any, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Any to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Any
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */
@@ -17898,6 +23792,119 @@ export namespace google {
 
             /**
              * Gets the default type url for Status
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+    }
+
+    /** Namespace type. */
+    namespace type {
+
+        /** Properties of a Date. */
+        interface IDate {
+
+            /** Date year */
+            year?: (number|null);
+
+            /** Date month */
+            month?: (number|null);
+
+            /** Date day */
+            day?: (number|null);
+        }
+
+        /** Represents a Date. */
+        class Date implements IDate {
+
+            /**
+             * Constructs a new Date.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.type.IDate);
+
+            /** Date year. */
+            public year: number;
+
+            /** Date month. */
+            public month: number;
+
+            /** Date day. */
+            public day: number;
+
+            /**
+             * Creates a new Date instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Date instance
+             */
+            public static create(properties?: google.type.IDate): google.type.Date;
+
+            /**
+             * Encodes the specified Date message. Does not implicitly {@link google.type.Date.verify|verify} messages.
+             * @param message Date message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.type.IDate, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Date message, length delimited. Does not implicitly {@link google.type.Date.verify|verify} messages.
+             * @param message Date message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.type.IDate, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Date message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Date
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.type.Date;
+
+            /**
+             * Decodes a Date message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Date
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.type.Date;
+
+            /**
+             * Verifies a Date message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Date message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Date
+             */
+            public static fromObject(object: { [k: string]: any }): google.type.Date;
+
+            /**
+             * Creates a plain object from a Date message. Also converts values to other types if specified.
+             * @param message Date
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.type.Date, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Date to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Date
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */

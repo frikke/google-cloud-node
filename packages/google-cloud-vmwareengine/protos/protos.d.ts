@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -201,6 +201,118 @@ export namespace google {
                     public deleteCluster(request: google.cloud.vmwareengine.v1.IDeleteClusterRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls ListNodes.
+                     * @param request ListNodesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListNodesResponse
+                     */
+                    public listNodes(request: google.cloud.vmwareengine.v1.IListNodesRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListNodesCallback): void;
+
+                    /**
+                     * Calls ListNodes.
+                     * @param request ListNodesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listNodes(request: google.cloud.vmwareengine.v1.IListNodesRequest): Promise<google.cloud.vmwareengine.v1.ListNodesResponse>;
+
+                    /**
+                     * Calls GetNode.
+                     * @param request GetNodeRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Node
+                     */
+                    public getNode(request: google.cloud.vmwareengine.v1.IGetNodeRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetNodeCallback): void;
+
+                    /**
+                     * Calls GetNode.
+                     * @param request GetNodeRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getNode(request: google.cloud.vmwareengine.v1.IGetNodeRequest): Promise<google.cloud.vmwareengine.v1.Node>;
+
+                    /**
+                     * Calls ListExternalAddresses.
+                     * @param request ListExternalAddressesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListExternalAddressesResponse
+                     */
+                    public listExternalAddresses(request: google.cloud.vmwareengine.v1.IListExternalAddressesRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListExternalAddressesCallback): void;
+
+                    /**
+                     * Calls ListExternalAddresses.
+                     * @param request ListExternalAddressesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listExternalAddresses(request: google.cloud.vmwareengine.v1.IListExternalAddressesRequest): Promise<google.cloud.vmwareengine.v1.ListExternalAddressesResponse>;
+
+                    /**
+                     * Calls FetchNetworkPolicyExternalAddresses.
+                     * @param request FetchNetworkPolicyExternalAddressesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and FetchNetworkPolicyExternalAddressesResponse
+                     */
+                    public fetchNetworkPolicyExternalAddresses(request: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.FetchNetworkPolicyExternalAddressesCallback): void;
+
+                    /**
+                     * Calls FetchNetworkPolicyExternalAddresses.
+                     * @param request FetchNetworkPolicyExternalAddressesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public fetchNetworkPolicyExternalAddresses(request: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesRequest): Promise<google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse>;
+
+                    /**
+                     * Calls GetExternalAddress.
+                     * @param request GetExternalAddressRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ExternalAddress
+                     */
+                    public getExternalAddress(request: google.cloud.vmwareengine.v1.IGetExternalAddressRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetExternalAddressCallback): void;
+
+                    /**
+                     * Calls GetExternalAddress.
+                     * @param request GetExternalAddressRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getExternalAddress(request: google.cloud.vmwareengine.v1.IGetExternalAddressRequest): Promise<google.cloud.vmwareengine.v1.ExternalAddress>;
+
+                    /**
+                     * Calls CreateExternalAddress.
+                     * @param request CreateExternalAddressRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createExternalAddress(request: google.cloud.vmwareengine.v1.ICreateExternalAddressRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.CreateExternalAddressCallback): void;
+
+                    /**
+                     * Calls CreateExternalAddress.
+                     * @param request CreateExternalAddressRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createExternalAddress(request: google.cloud.vmwareengine.v1.ICreateExternalAddressRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls UpdateExternalAddress.
+                     * @param request UpdateExternalAddressRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public updateExternalAddress(request: google.cloud.vmwareengine.v1.IUpdateExternalAddressRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.UpdateExternalAddressCallback): void;
+
+                    /**
+                     * Calls UpdateExternalAddress.
+                     * @param request UpdateExternalAddressRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateExternalAddress(request: google.cloud.vmwareengine.v1.IUpdateExternalAddressRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteExternalAddress.
+                     * @param request DeleteExternalAddressRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteExternalAddress(request: google.cloud.vmwareengine.v1.IDeleteExternalAddressRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.DeleteExternalAddressCallback): void;
+
+                    /**
+                     * Calls DeleteExternalAddress.
+                     * @param request DeleteExternalAddressRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteExternalAddress(request: google.cloud.vmwareengine.v1.IDeleteExternalAddressRequest): Promise<google.longrunning.Operation>;
+
+                    /**
                      * Calls ListSubnets.
                      * @param request ListSubnetsRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and ListSubnetsResponse
@@ -241,6 +353,146 @@ export namespace google {
                      * @returns Promise
                      */
                     public updateSubnet(request: google.cloud.vmwareengine.v1.IUpdateSubnetRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls ListExternalAccessRules.
+                     * @param request ListExternalAccessRulesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListExternalAccessRulesResponse
+                     */
+                    public listExternalAccessRules(request: google.cloud.vmwareengine.v1.IListExternalAccessRulesRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListExternalAccessRulesCallback): void;
+
+                    /**
+                     * Calls ListExternalAccessRules.
+                     * @param request ListExternalAccessRulesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listExternalAccessRules(request: google.cloud.vmwareengine.v1.IListExternalAccessRulesRequest): Promise<google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse>;
+
+                    /**
+                     * Calls GetExternalAccessRule.
+                     * @param request GetExternalAccessRuleRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ExternalAccessRule
+                     */
+                    public getExternalAccessRule(request: google.cloud.vmwareengine.v1.IGetExternalAccessRuleRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetExternalAccessRuleCallback): void;
+
+                    /**
+                     * Calls GetExternalAccessRule.
+                     * @param request GetExternalAccessRuleRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getExternalAccessRule(request: google.cloud.vmwareengine.v1.IGetExternalAccessRuleRequest): Promise<google.cloud.vmwareengine.v1.ExternalAccessRule>;
+
+                    /**
+                     * Calls CreateExternalAccessRule.
+                     * @param request CreateExternalAccessRuleRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createExternalAccessRule(request: google.cloud.vmwareengine.v1.ICreateExternalAccessRuleRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.CreateExternalAccessRuleCallback): void;
+
+                    /**
+                     * Calls CreateExternalAccessRule.
+                     * @param request CreateExternalAccessRuleRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createExternalAccessRule(request: google.cloud.vmwareengine.v1.ICreateExternalAccessRuleRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls UpdateExternalAccessRule.
+                     * @param request UpdateExternalAccessRuleRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public updateExternalAccessRule(request: google.cloud.vmwareengine.v1.IUpdateExternalAccessRuleRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.UpdateExternalAccessRuleCallback): void;
+
+                    /**
+                     * Calls UpdateExternalAccessRule.
+                     * @param request UpdateExternalAccessRuleRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateExternalAccessRule(request: google.cloud.vmwareengine.v1.IUpdateExternalAccessRuleRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteExternalAccessRule.
+                     * @param request DeleteExternalAccessRuleRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteExternalAccessRule(request: google.cloud.vmwareengine.v1.IDeleteExternalAccessRuleRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.DeleteExternalAccessRuleCallback): void;
+
+                    /**
+                     * Calls DeleteExternalAccessRule.
+                     * @param request DeleteExternalAccessRuleRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteExternalAccessRule(request: google.cloud.vmwareengine.v1.IDeleteExternalAccessRuleRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls ListLoggingServers.
+                     * @param request ListLoggingServersRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListLoggingServersResponse
+                     */
+                    public listLoggingServers(request: google.cloud.vmwareengine.v1.IListLoggingServersRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListLoggingServersCallback): void;
+
+                    /**
+                     * Calls ListLoggingServers.
+                     * @param request ListLoggingServersRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listLoggingServers(request: google.cloud.vmwareengine.v1.IListLoggingServersRequest): Promise<google.cloud.vmwareengine.v1.ListLoggingServersResponse>;
+
+                    /**
+                     * Calls GetLoggingServer.
+                     * @param request GetLoggingServerRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and LoggingServer
+                     */
+                    public getLoggingServer(request: google.cloud.vmwareengine.v1.IGetLoggingServerRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetLoggingServerCallback): void;
+
+                    /**
+                     * Calls GetLoggingServer.
+                     * @param request GetLoggingServerRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getLoggingServer(request: google.cloud.vmwareengine.v1.IGetLoggingServerRequest): Promise<google.cloud.vmwareengine.v1.LoggingServer>;
+
+                    /**
+                     * Calls CreateLoggingServer.
+                     * @param request CreateLoggingServerRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createLoggingServer(request: google.cloud.vmwareengine.v1.ICreateLoggingServerRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.CreateLoggingServerCallback): void;
+
+                    /**
+                     * Calls CreateLoggingServer.
+                     * @param request CreateLoggingServerRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createLoggingServer(request: google.cloud.vmwareengine.v1.ICreateLoggingServerRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls UpdateLoggingServer.
+                     * @param request UpdateLoggingServerRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public updateLoggingServer(request: google.cloud.vmwareengine.v1.IUpdateLoggingServerRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.UpdateLoggingServerCallback): void;
+
+                    /**
+                     * Calls UpdateLoggingServer.
+                     * @param request UpdateLoggingServerRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateLoggingServer(request: google.cloud.vmwareengine.v1.IUpdateLoggingServerRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteLoggingServer.
+                     * @param request DeleteLoggingServerRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteLoggingServer(request: google.cloud.vmwareengine.v1.IDeleteLoggingServerRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.DeleteLoggingServerCallback): void;
+
+                    /**
+                     * Calls DeleteLoggingServer.
+                     * @param request DeleteLoggingServerRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteLoggingServer(request: google.cloud.vmwareengine.v1.IDeleteLoggingServerRequest): Promise<google.longrunning.Operation>;
 
                     /**
                      * Calls ListNodeTypes.
@@ -325,6 +577,118 @@ export namespace google {
                      * @returns Promise
                      */
                     public resetVcenterCredentials(request: google.cloud.vmwareengine.v1.IResetVcenterCredentialsRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls GetDnsForwarding.
+                     * @param request GetDnsForwardingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and DnsForwarding
+                     */
+                    public getDnsForwarding(request: google.cloud.vmwareengine.v1.IGetDnsForwardingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetDnsForwardingCallback): void;
+
+                    /**
+                     * Calls GetDnsForwarding.
+                     * @param request GetDnsForwardingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getDnsForwarding(request: google.cloud.vmwareengine.v1.IGetDnsForwardingRequest): Promise<google.cloud.vmwareengine.v1.DnsForwarding>;
+
+                    /**
+                     * Calls UpdateDnsForwarding.
+                     * @param request UpdateDnsForwardingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public updateDnsForwarding(request: google.cloud.vmwareengine.v1.IUpdateDnsForwardingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.UpdateDnsForwardingCallback): void;
+
+                    /**
+                     * Calls UpdateDnsForwarding.
+                     * @param request UpdateDnsForwardingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateDnsForwarding(request: google.cloud.vmwareengine.v1.IUpdateDnsForwardingRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls GetNetworkPeering.
+                     * @param request GetNetworkPeeringRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and NetworkPeering
+                     */
+                    public getNetworkPeering(request: google.cloud.vmwareengine.v1.IGetNetworkPeeringRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetNetworkPeeringCallback): void;
+
+                    /**
+                     * Calls GetNetworkPeering.
+                     * @param request GetNetworkPeeringRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getNetworkPeering(request: google.cloud.vmwareengine.v1.IGetNetworkPeeringRequest): Promise<google.cloud.vmwareengine.v1.NetworkPeering>;
+
+                    /**
+                     * Calls ListNetworkPeerings.
+                     * @param request ListNetworkPeeringsRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListNetworkPeeringsResponse
+                     */
+                    public listNetworkPeerings(request: google.cloud.vmwareengine.v1.IListNetworkPeeringsRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListNetworkPeeringsCallback): void;
+
+                    /**
+                     * Calls ListNetworkPeerings.
+                     * @param request ListNetworkPeeringsRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listNetworkPeerings(request: google.cloud.vmwareengine.v1.IListNetworkPeeringsRequest): Promise<google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse>;
+
+                    /**
+                     * Calls CreateNetworkPeering.
+                     * @param request CreateNetworkPeeringRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createNetworkPeering(request: google.cloud.vmwareengine.v1.ICreateNetworkPeeringRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.CreateNetworkPeeringCallback): void;
+
+                    /**
+                     * Calls CreateNetworkPeering.
+                     * @param request CreateNetworkPeeringRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createNetworkPeering(request: google.cloud.vmwareengine.v1.ICreateNetworkPeeringRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteNetworkPeering.
+                     * @param request DeleteNetworkPeeringRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteNetworkPeering(request: google.cloud.vmwareengine.v1.IDeleteNetworkPeeringRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.DeleteNetworkPeeringCallback): void;
+
+                    /**
+                     * Calls DeleteNetworkPeering.
+                     * @param request DeleteNetworkPeeringRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteNetworkPeering(request: google.cloud.vmwareengine.v1.IDeleteNetworkPeeringRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls UpdateNetworkPeering.
+                     * @param request UpdateNetworkPeeringRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public updateNetworkPeering(request: google.cloud.vmwareengine.v1.IUpdateNetworkPeeringRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.UpdateNetworkPeeringCallback): void;
+
+                    /**
+                     * Calls UpdateNetworkPeering.
+                     * @param request UpdateNetworkPeeringRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateNetworkPeering(request: google.cloud.vmwareengine.v1.IUpdateNetworkPeeringRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls ListPeeringRoutes.
+                     * @param request ListPeeringRoutesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListPeeringRoutesResponse
+                     */
+                    public listPeeringRoutes(request: google.cloud.vmwareengine.v1.IListPeeringRoutesRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListPeeringRoutesCallback): void;
+
+                    /**
+                     * Calls ListPeeringRoutes.
+                     * @param request ListPeeringRoutesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listPeeringRoutes(request: google.cloud.vmwareengine.v1.IListPeeringRoutesRequest): Promise<google.cloud.vmwareengine.v1.ListPeeringRoutesResponse>;
 
                     /**
                      * Calls CreateHcxActivationKey.
@@ -437,6 +801,90 @@ export namespace google {
                      * @returns Promise
                      */
                     public deleteNetworkPolicy(request: google.cloud.vmwareengine.v1.IDeleteNetworkPolicyRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls ListManagementDnsZoneBindings.
+                     * @param request ListManagementDnsZoneBindingsRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListManagementDnsZoneBindingsResponse
+                     */
+                    public listManagementDnsZoneBindings(request: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.ListManagementDnsZoneBindingsCallback): void;
+
+                    /**
+                     * Calls ListManagementDnsZoneBindings.
+                     * @param request ListManagementDnsZoneBindingsRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listManagementDnsZoneBindings(request: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsRequest): Promise<google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse>;
+
+                    /**
+                     * Calls GetManagementDnsZoneBinding.
+                     * @param request GetManagementDnsZoneBindingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ManagementDnsZoneBinding
+                     */
+                    public getManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IGetManagementDnsZoneBindingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetManagementDnsZoneBindingCallback): void;
+
+                    /**
+                     * Calls GetManagementDnsZoneBinding.
+                     * @param request GetManagementDnsZoneBindingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IGetManagementDnsZoneBindingRequest): Promise<google.cloud.vmwareengine.v1.ManagementDnsZoneBinding>;
+
+                    /**
+                     * Calls CreateManagementDnsZoneBinding.
+                     * @param request CreateManagementDnsZoneBindingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.ICreateManagementDnsZoneBindingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.CreateManagementDnsZoneBindingCallback): void;
+
+                    /**
+                     * Calls CreateManagementDnsZoneBinding.
+                     * @param request CreateManagementDnsZoneBindingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.ICreateManagementDnsZoneBindingRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls UpdateManagementDnsZoneBinding.
+                     * @param request UpdateManagementDnsZoneBindingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public updateManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IUpdateManagementDnsZoneBindingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.UpdateManagementDnsZoneBindingCallback): void;
+
+                    /**
+                     * Calls UpdateManagementDnsZoneBinding.
+                     * @param request UpdateManagementDnsZoneBindingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IUpdateManagementDnsZoneBindingRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteManagementDnsZoneBinding.
+                     * @param request DeleteManagementDnsZoneBindingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IDeleteManagementDnsZoneBindingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.DeleteManagementDnsZoneBindingCallback): void;
+
+                    /**
+                     * Calls DeleteManagementDnsZoneBinding.
+                     * @param request DeleteManagementDnsZoneBindingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IDeleteManagementDnsZoneBindingRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls RepairManagementDnsZoneBinding.
+                     * @param request RepairManagementDnsZoneBindingRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public repairManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IRepairManagementDnsZoneBindingRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.RepairManagementDnsZoneBindingCallback): void;
+
+                    /**
+                     * Calls RepairManagementDnsZoneBinding.
+                     * @param request RepairManagementDnsZoneBindingRequest message or plain object
+                     * @returns Promise
+                     */
+                    public repairManagementDnsZoneBinding(request: google.cloud.vmwareengine.v1.IRepairManagementDnsZoneBindingRequest): Promise<google.longrunning.Operation>;
 
                     /**
                      * Calls CreateVmwareEngineNetwork.
@@ -591,6 +1039,48 @@ export namespace google {
                      * @returns Promise
                      */
                     public listPrivateConnectionPeeringRoutes(request: google.cloud.vmwareengine.v1.IListPrivateConnectionPeeringRoutesRequest): Promise<google.cloud.vmwareengine.v1.ListPrivateConnectionPeeringRoutesResponse>;
+
+                    /**
+                     * Calls GrantDnsBindPermission.
+                     * @param request GrantDnsBindPermissionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public grantDnsBindPermission(request: google.cloud.vmwareengine.v1.IGrantDnsBindPermissionRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GrantDnsBindPermissionCallback): void;
+
+                    /**
+                     * Calls GrantDnsBindPermission.
+                     * @param request GrantDnsBindPermissionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public grantDnsBindPermission(request: google.cloud.vmwareengine.v1.IGrantDnsBindPermissionRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls GetDnsBindPermission.
+                     * @param request GetDnsBindPermissionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and DnsBindPermission
+                     */
+                    public getDnsBindPermission(request: google.cloud.vmwareengine.v1.IGetDnsBindPermissionRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.GetDnsBindPermissionCallback): void;
+
+                    /**
+                     * Calls GetDnsBindPermission.
+                     * @param request GetDnsBindPermissionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getDnsBindPermission(request: google.cloud.vmwareengine.v1.IGetDnsBindPermissionRequest): Promise<google.cloud.vmwareengine.v1.DnsBindPermission>;
+
+                    /**
+                     * Calls RevokeDnsBindPermission.
+                     * @param request RevokeDnsBindPermissionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public revokeDnsBindPermission(request: google.cloud.vmwareengine.v1.IRevokeDnsBindPermissionRequest, callback: google.cloud.vmwareengine.v1.VmwareEngine.RevokeDnsBindPermissionCallback): void;
+
+                    /**
+                     * Calls RevokeDnsBindPermission.
+                     * @param request RevokeDnsBindPermissionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public revokeDnsBindPermission(request: google.cloud.vmwareengine.v1.IRevokeDnsBindPermissionRequest): Promise<google.longrunning.Operation>;
                 }
 
                 namespace VmwareEngine {
@@ -673,6 +1163,62 @@ export namespace google {
                     type DeleteClusterCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listNodes}.
+                     * @param error Error, if any
+                     * @param [response] ListNodesResponse
+                     */
+                    type ListNodesCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListNodesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getNode}.
+                     * @param error Error, if any
+                     * @param [response] Node
+                     */
+                    type GetNodeCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.Node) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listExternalAddresses}.
+                     * @param error Error, if any
+                     * @param [response] ListExternalAddressesResponse
+                     */
+                    type ListExternalAddressesCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListExternalAddressesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|fetchNetworkPolicyExternalAddresses}.
+                     * @param error Error, if any
+                     * @param [response] FetchNetworkPolicyExternalAddressesResponse
+                     */
+                    type FetchNetworkPolicyExternalAddressesCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getExternalAddress}.
+                     * @param error Error, if any
+                     * @param [response] ExternalAddress
+                     */
+                    type GetExternalAddressCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ExternalAddress) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createExternalAddress}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateExternalAddressCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|updateExternalAddress}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type UpdateExternalAddressCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|deleteExternalAddress}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteExternalAddressCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
                      * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listSubnets}.
                      * @param error Error, if any
                      * @param [response] ListSubnetsResponse
@@ -692,6 +1238,76 @@ export namespace google {
                      * @param [response] Operation
                      */
                     type UpdateSubnetCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listExternalAccessRules}.
+                     * @param error Error, if any
+                     * @param [response] ListExternalAccessRulesResponse
+                     */
+                    type ListExternalAccessRulesCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getExternalAccessRule}.
+                     * @param error Error, if any
+                     * @param [response] ExternalAccessRule
+                     */
+                    type GetExternalAccessRuleCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ExternalAccessRule) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createExternalAccessRule}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateExternalAccessRuleCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|updateExternalAccessRule}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type UpdateExternalAccessRuleCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|deleteExternalAccessRule}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteExternalAccessRuleCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listLoggingServers}.
+                     * @param error Error, if any
+                     * @param [response] ListLoggingServersResponse
+                     */
+                    type ListLoggingServersCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListLoggingServersResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getLoggingServer}.
+                     * @param error Error, if any
+                     * @param [response] LoggingServer
+                     */
+                    type GetLoggingServerCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.LoggingServer) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createLoggingServer}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateLoggingServerCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|updateLoggingServer}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type UpdateLoggingServerCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|deleteLoggingServer}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteLoggingServerCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
                      * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listNodeTypes}.
@@ -734,6 +1350,62 @@ export namespace google {
                      * @param [response] Operation
                      */
                     type ResetVcenterCredentialsCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getDnsForwarding}.
+                     * @param error Error, if any
+                     * @param [response] DnsForwarding
+                     */
+                    type GetDnsForwardingCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.DnsForwarding) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|updateDnsForwarding}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type UpdateDnsForwardingCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getNetworkPeering}.
+                     * @param error Error, if any
+                     * @param [response] NetworkPeering
+                     */
+                    type GetNetworkPeeringCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.NetworkPeering) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listNetworkPeerings}.
+                     * @param error Error, if any
+                     * @param [response] ListNetworkPeeringsResponse
+                     */
+                    type ListNetworkPeeringsCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createNetworkPeering}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateNetworkPeeringCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|deleteNetworkPeering}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteNetworkPeeringCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|updateNetworkPeering}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type UpdateNetworkPeeringCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listPeeringRoutes}.
+                     * @param error Error, if any
+                     * @param [response] ListPeeringRoutesResponse
+                     */
+                    type ListPeeringRoutesCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListPeeringRoutesResponse) => void;
 
                     /**
                      * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createHcxActivationKey}.
@@ -790,6 +1462,48 @@ export namespace google {
                      * @param [response] Operation
                      */
                     type DeleteNetworkPolicyCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|listManagementDnsZoneBindings}.
+                     * @param error Error, if any
+                     * @param [response] ListManagementDnsZoneBindingsResponse
+                     */
+                    type ListManagementDnsZoneBindingsCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getManagementDnsZoneBinding}.
+                     * @param error Error, if any
+                     * @param [response] ManagementDnsZoneBinding
+                     */
+                    type GetManagementDnsZoneBindingCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ManagementDnsZoneBinding) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createManagementDnsZoneBinding}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateManagementDnsZoneBindingCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|updateManagementDnsZoneBinding}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type UpdateManagementDnsZoneBindingCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|deleteManagementDnsZoneBinding}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteManagementDnsZoneBindingCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|repairManagementDnsZoneBinding}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type RepairManagementDnsZoneBindingCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
                      * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|createVmwareEngineNetwork}.
@@ -867,6 +1581,27 @@ export namespace google {
                      * @param [response] ListPrivateConnectionPeeringRoutesResponse
                      */
                     type ListPrivateConnectionPeeringRoutesCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.ListPrivateConnectionPeeringRoutesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|grantDnsBindPermission}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type GrantDnsBindPermissionCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|getDnsBindPermission}.
+                     * @param error Error, if any
+                     * @param [response] DnsBindPermission
+                     */
+                    type GetDnsBindPermissionCallback = (error: (Error|null), response?: google.cloud.vmwareengine.v1.DnsBindPermission) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.vmwareengine.v1.VmwareEngine|revokeDnsBindPermission}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type RevokeDnsBindPermissionCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
                 }
 
                 /** Properties of a ListPrivateCloudsRequest. */
@@ -2313,6 +3048,1181 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a ListNodesRequest. */
+                interface IListNodesRequest {
+
+                    /** ListNodesRequest parent */
+                    parent?: (string|null);
+
+                    /** ListNodesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListNodesRequest pageToken */
+                    pageToken?: (string|null);
+                }
+
+                /** Represents a ListNodesRequest. */
+                class ListNodesRequest implements IListNodesRequest {
+
+                    /**
+                     * Constructs a new ListNodesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListNodesRequest);
+
+                    /** ListNodesRequest parent. */
+                    public parent: string;
+
+                    /** ListNodesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListNodesRequest pageToken. */
+                    public pageToken: string;
+
+                    /**
+                     * Creates a new ListNodesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListNodesRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListNodesRequest): google.cloud.vmwareengine.v1.ListNodesRequest;
+
+                    /**
+                     * Encodes the specified ListNodesRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNodesRequest.verify|verify} messages.
+                     * @param message ListNodesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListNodesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListNodesRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNodesRequest.verify|verify} messages.
+                     * @param message ListNodesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListNodesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListNodesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListNodesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListNodesRequest;
+
+                    /**
+                     * Decodes a ListNodesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListNodesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListNodesRequest;
+
+                    /**
+                     * Verifies a ListNodesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListNodesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListNodesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListNodesRequest;
+
+                    /**
+                     * Creates a plain object from a ListNodesRequest message. Also converts values to other types if specified.
+                     * @param message ListNodesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListNodesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListNodesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListNodesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListNodesResponse. */
+                interface IListNodesResponse {
+
+                    /** ListNodesResponse nodes */
+                    nodes?: (google.cloud.vmwareengine.v1.INode[]|null);
+
+                    /** ListNodesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+                }
+
+                /** Represents a ListNodesResponse. */
+                class ListNodesResponse implements IListNodesResponse {
+
+                    /**
+                     * Constructs a new ListNodesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListNodesResponse);
+
+                    /** ListNodesResponse nodes. */
+                    public nodes: google.cloud.vmwareengine.v1.INode[];
+
+                    /** ListNodesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /**
+                     * Creates a new ListNodesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListNodesResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListNodesResponse): google.cloud.vmwareengine.v1.ListNodesResponse;
+
+                    /**
+                     * Encodes the specified ListNodesResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNodesResponse.verify|verify} messages.
+                     * @param message ListNodesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListNodesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListNodesResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNodesResponse.verify|verify} messages.
+                     * @param message ListNodesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListNodesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListNodesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListNodesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListNodesResponse;
+
+                    /**
+                     * Decodes a ListNodesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListNodesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListNodesResponse;
+
+                    /**
+                     * Verifies a ListNodesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListNodesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListNodesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListNodesResponse;
+
+                    /**
+                     * Creates a plain object from a ListNodesResponse message. Also converts values to other types if specified.
+                     * @param message ListNodesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListNodesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListNodesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListNodesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetNodeRequest. */
+                interface IGetNodeRequest {
+
+                    /** GetNodeRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetNodeRequest. */
+                class GetNodeRequest implements IGetNodeRequest {
+
+                    /**
+                     * Constructs a new GetNodeRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetNodeRequest);
+
+                    /** GetNodeRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetNodeRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetNodeRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetNodeRequest): google.cloud.vmwareengine.v1.GetNodeRequest;
+
+                    /**
+                     * Encodes the specified GetNodeRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetNodeRequest.verify|verify} messages.
+                     * @param message GetNodeRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetNodeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetNodeRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetNodeRequest.verify|verify} messages.
+                     * @param message GetNodeRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetNodeRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetNodeRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetNodeRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetNodeRequest;
+
+                    /**
+                     * Decodes a GetNodeRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetNodeRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetNodeRequest;
+
+                    /**
+                     * Verifies a GetNodeRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetNodeRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetNodeRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetNodeRequest;
+
+                    /**
+                     * Creates a plain object from a GetNodeRequest message. Also converts values to other types if specified.
+                     * @param message GetNodeRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetNodeRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetNodeRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetNodeRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListExternalAddressesRequest. */
+                interface IListExternalAddressesRequest {
+
+                    /** ListExternalAddressesRequest parent */
+                    parent?: (string|null);
+
+                    /** ListExternalAddressesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListExternalAddressesRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListExternalAddressesRequest filter */
+                    filter?: (string|null);
+
+                    /** ListExternalAddressesRequest orderBy */
+                    orderBy?: (string|null);
+                }
+
+                /** Represents a ListExternalAddressesRequest. */
+                class ListExternalAddressesRequest implements IListExternalAddressesRequest {
+
+                    /**
+                     * Constructs a new ListExternalAddressesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListExternalAddressesRequest);
+
+                    /** ListExternalAddressesRequest parent. */
+                    public parent: string;
+
+                    /** ListExternalAddressesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListExternalAddressesRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListExternalAddressesRequest filter. */
+                    public filter: string;
+
+                    /** ListExternalAddressesRequest orderBy. */
+                    public orderBy: string;
+
+                    /**
+                     * Creates a new ListExternalAddressesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListExternalAddressesRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListExternalAddressesRequest): google.cloud.vmwareengine.v1.ListExternalAddressesRequest;
+
+                    /**
+                     * Encodes the specified ListExternalAddressesRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAddressesRequest.verify|verify} messages.
+                     * @param message ListExternalAddressesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListExternalAddressesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListExternalAddressesRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAddressesRequest.verify|verify} messages.
+                     * @param message ListExternalAddressesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListExternalAddressesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListExternalAddressesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListExternalAddressesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListExternalAddressesRequest;
+
+                    /**
+                     * Decodes a ListExternalAddressesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListExternalAddressesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListExternalAddressesRequest;
+
+                    /**
+                     * Verifies a ListExternalAddressesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListExternalAddressesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListExternalAddressesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListExternalAddressesRequest;
+
+                    /**
+                     * Creates a plain object from a ListExternalAddressesRequest message. Also converts values to other types if specified.
+                     * @param message ListExternalAddressesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListExternalAddressesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListExternalAddressesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListExternalAddressesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListExternalAddressesResponse. */
+                interface IListExternalAddressesResponse {
+
+                    /** ListExternalAddressesResponse externalAddresses */
+                    externalAddresses?: (google.cloud.vmwareengine.v1.IExternalAddress[]|null);
+
+                    /** ListExternalAddressesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+
+                    /** ListExternalAddressesResponse unreachable */
+                    unreachable?: (string[]|null);
+                }
+
+                /** Represents a ListExternalAddressesResponse. */
+                class ListExternalAddressesResponse implements IListExternalAddressesResponse {
+
+                    /**
+                     * Constructs a new ListExternalAddressesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListExternalAddressesResponse);
+
+                    /** ListExternalAddressesResponse externalAddresses. */
+                    public externalAddresses: google.cloud.vmwareengine.v1.IExternalAddress[];
+
+                    /** ListExternalAddressesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /** ListExternalAddressesResponse unreachable. */
+                    public unreachable: string[];
+
+                    /**
+                     * Creates a new ListExternalAddressesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListExternalAddressesResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListExternalAddressesResponse): google.cloud.vmwareengine.v1.ListExternalAddressesResponse;
+
+                    /**
+                     * Encodes the specified ListExternalAddressesResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAddressesResponse.verify|verify} messages.
+                     * @param message ListExternalAddressesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListExternalAddressesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListExternalAddressesResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAddressesResponse.verify|verify} messages.
+                     * @param message ListExternalAddressesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListExternalAddressesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListExternalAddressesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListExternalAddressesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListExternalAddressesResponse;
+
+                    /**
+                     * Decodes a ListExternalAddressesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListExternalAddressesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListExternalAddressesResponse;
+
+                    /**
+                     * Verifies a ListExternalAddressesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListExternalAddressesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListExternalAddressesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListExternalAddressesResponse;
+
+                    /**
+                     * Creates a plain object from a ListExternalAddressesResponse message. Also converts values to other types if specified.
+                     * @param message ListExternalAddressesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListExternalAddressesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListExternalAddressesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListExternalAddressesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a FetchNetworkPolicyExternalAddressesRequest. */
+                interface IFetchNetworkPolicyExternalAddressesRequest {
+
+                    /** FetchNetworkPolicyExternalAddressesRequest networkPolicy */
+                    networkPolicy?: (string|null);
+
+                    /** FetchNetworkPolicyExternalAddressesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** FetchNetworkPolicyExternalAddressesRequest pageToken */
+                    pageToken?: (string|null);
+                }
+
+                /** Represents a FetchNetworkPolicyExternalAddressesRequest. */
+                class FetchNetworkPolicyExternalAddressesRequest implements IFetchNetworkPolicyExternalAddressesRequest {
+
+                    /**
+                     * Constructs a new FetchNetworkPolicyExternalAddressesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesRequest);
+
+                    /** FetchNetworkPolicyExternalAddressesRequest networkPolicy. */
+                    public networkPolicy: string;
+
+                    /** FetchNetworkPolicyExternalAddressesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** FetchNetworkPolicyExternalAddressesRequest pageToken. */
+                    public pageToken: string;
+
+                    /**
+                     * Creates a new FetchNetworkPolicyExternalAddressesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns FetchNetworkPolicyExternalAddressesRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesRequest): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest;
+
+                    /**
+                     * Encodes the specified FetchNetworkPolicyExternalAddressesRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest.verify|verify} messages.
+                     * @param message FetchNetworkPolicyExternalAddressesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified FetchNetworkPolicyExternalAddressesRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest.verify|verify} messages.
+                     * @param message FetchNetworkPolicyExternalAddressesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a FetchNetworkPolicyExternalAddressesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns FetchNetworkPolicyExternalAddressesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest;
+
+                    /**
+                     * Decodes a FetchNetworkPolicyExternalAddressesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns FetchNetworkPolicyExternalAddressesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest;
+
+                    /**
+                     * Verifies a FetchNetworkPolicyExternalAddressesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a FetchNetworkPolicyExternalAddressesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns FetchNetworkPolicyExternalAddressesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest;
+
+                    /**
+                     * Creates a plain object from a FetchNetworkPolicyExternalAddressesRequest message. Also converts values to other types if specified.
+                     * @param message FetchNetworkPolicyExternalAddressesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this FetchNetworkPolicyExternalAddressesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for FetchNetworkPolicyExternalAddressesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a FetchNetworkPolicyExternalAddressesResponse. */
+                interface IFetchNetworkPolicyExternalAddressesResponse {
+
+                    /** FetchNetworkPolicyExternalAddressesResponse externalAddresses */
+                    externalAddresses?: (google.cloud.vmwareengine.v1.IExternalAddress[]|null);
+
+                    /** FetchNetworkPolicyExternalAddressesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+                }
+
+                /** Represents a FetchNetworkPolicyExternalAddressesResponse. */
+                class FetchNetworkPolicyExternalAddressesResponse implements IFetchNetworkPolicyExternalAddressesResponse {
+
+                    /**
+                     * Constructs a new FetchNetworkPolicyExternalAddressesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesResponse);
+
+                    /** FetchNetworkPolicyExternalAddressesResponse externalAddresses. */
+                    public externalAddresses: google.cloud.vmwareengine.v1.IExternalAddress[];
+
+                    /** FetchNetworkPolicyExternalAddressesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /**
+                     * Creates a new FetchNetworkPolicyExternalAddressesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns FetchNetworkPolicyExternalAddressesResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesResponse): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse;
+
+                    /**
+                     * Encodes the specified FetchNetworkPolicyExternalAddressesResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse.verify|verify} messages.
+                     * @param message FetchNetworkPolicyExternalAddressesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified FetchNetworkPolicyExternalAddressesResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse.verify|verify} messages.
+                     * @param message FetchNetworkPolicyExternalAddressesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IFetchNetworkPolicyExternalAddressesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a FetchNetworkPolicyExternalAddressesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns FetchNetworkPolicyExternalAddressesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse;
+
+                    /**
+                     * Decodes a FetchNetworkPolicyExternalAddressesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns FetchNetworkPolicyExternalAddressesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse;
+
+                    /**
+                     * Verifies a FetchNetworkPolicyExternalAddressesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a FetchNetworkPolicyExternalAddressesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns FetchNetworkPolicyExternalAddressesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse;
+
+                    /**
+                     * Creates a plain object from a FetchNetworkPolicyExternalAddressesResponse message. Also converts values to other types if specified.
+                     * @param message FetchNetworkPolicyExternalAddressesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.FetchNetworkPolicyExternalAddressesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this FetchNetworkPolicyExternalAddressesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for FetchNetworkPolicyExternalAddressesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetExternalAddressRequest. */
+                interface IGetExternalAddressRequest {
+
+                    /** GetExternalAddressRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetExternalAddressRequest. */
+                class GetExternalAddressRequest implements IGetExternalAddressRequest {
+
+                    /**
+                     * Constructs a new GetExternalAddressRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetExternalAddressRequest);
+
+                    /** GetExternalAddressRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetExternalAddressRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetExternalAddressRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetExternalAddressRequest): google.cloud.vmwareengine.v1.GetExternalAddressRequest;
+
+                    /**
+                     * Encodes the specified GetExternalAddressRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetExternalAddressRequest.verify|verify} messages.
+                     * @param message GetExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetExternalAddressRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetExternalAddressRequest.verify|verify} messages.
+                     * @param message GetExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetExternalAddressRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetExternalAddressRequest;
+
+                    /**
+                     * Decodes a GetExternalAddressRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetExternalAddressRequest;
+
+                    /**
+                     * Verifies a GetExternalAddressRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetExternalAddressRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetExternalAddressRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetExternalAddressRequest;
+
+                    /**
+                     * Creates a plain object from a GetExternalAddressRequest message. Also converts values to other types if specified.
+                     * @param message GetExternalAddressRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetExternalAddressRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetExternalAddressRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetExternalAddressRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CreateExternalAddressRequest. */
+                interface ICreateExternalAddressRequest {
+
+                    /** CreateExternalAddressRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateExternalAddressRequest externalAddress */
+                    externalAddress?: (google.cloud.vmwareengine.v1.IExternalAddress|null);
+
+                    /** CreateExternalAddressRequest externalAddressId */
+                    externalAddressId?: (string|null);
+
+                    /** CreateExternalAddressRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateExternalAddressRequest. */
+                class CreateExternalAddressRequest implements ICreateExternalAddressRequest {
+
+                    /**
+                     * Constructs a new CreateExternalAddressRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ICreateExternalAddressRequest);
+
+                    /** CreateExternalAddressRequest parent. */
+                    public parent: string;
+
+                    /** CreateExternalAddressRequest externalAddress. */
+                    public externalAddress?: (google.cloud.vmwareengine.v1.IExternalAddress|null);
+
+                    /** CreateExternalAddressRequest externalAddressId. */
+                    public externalAddressId: string;
+
+                    /** CreateExternalAddressRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CreateExternalAddressRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateExternalAddressRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ICreateExternalAddressRequest): google.cloud.vmwareengine.v1.CreateExternalAddressRequest;
+
+                    /**
+                     * Encodes the specified CreateExternalAddressRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateExternalAddressRequest.verify|verify} messages.
+                     * @param message CreateExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ICreateExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateExternalAddressRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateExternalAddressRequest.verify|verify} messages.
+                     * @param message CreateExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ICreateExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateExternalAddressRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.CreateExternalAddressRequest;
+
+                    /**
+                     * Decodes a CreateExternalAddressRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.CreateExternalAddressRequest;
+
+                    /**
+                     * Verifies a CreateExternalAddressRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateExternalAddressRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateExternalAddressRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.CreateExternalAddressRequest;
+
+                    /**
+                     * Creates a plain object from a CreateExternalAddressRequest message. Also converts values to other types if specified.
+                     * @param message CreateExternalAddressRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.CreateExternalAddressRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateExternalAddressRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateExternalAddressRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateExternalAddressRequest. */
+                interface IUpdateExternalAddressRequest {
+
+                    /** UpdateExternalAddressRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateExternalAddressRequest externalAddress */
+                    externalAddress?: (google.cloud.vmwareengine.v1.IExternalAddress|null);
+
+                    /** UpdateExternalAddressRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateExternalAddressRequest. */
+                class UpdateExternalAddressRequest implements IUpdateExternalAddressRequest {
+
+                    /**
+                     * Constructs a new UpdateExternalAddressRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IUpdateExternalAddressRequest);
+
+                    /** UpdateExternalAddressRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateExternalAddressRequest externalAddress. */
+                    public externalAddress?: (google.cloud.vmwareengine.v1.IExternalAddress|null);
+
+                    /** UpdateExternalAddressRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateExternalAddressRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateExternalAddressRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IUpdateExternalAddressRequest): google.cloud.vmwareengine.v1.UpdateExternalAddressRequest;
+
+                    /**
+                     * Encodes the specified UpdateExternalAddressRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateExternalAddressRequest.verify|verify} messages.
+                     * @param message UpdateExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IUpdateExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateExternalAddressRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateExternalAddressRequest.verify|verify} messages.
+                     * @param message UpdateExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IUpdateExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateExternalAddressRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.UpdateExternalAddressRequest;
+
+                    /**
+                     * Decodes an UpdateExternalAddressRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.UpdateExternalAddressRequest;
+
+                    /**
+                     * Verifies an UpdateExternalAddressRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateExternalAddressRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateExternalAddressRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.UpdateExternalAddressRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateExternalAddressRequest message. Also converts values to other types if specified.
+                     * @param message UpdateExternalAddressRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.UpdateExternalAddressRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateExternalAddressRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateExternalAddressRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteExternalAddressRequest. */
+                interface IDeleteExternalAddressRequest {
+
+                    /** DeleteExternalAddressRequest name */
+                    name?: (string|null);
+
+                    /** DeleteExternalAddressRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteExternalAddressRequest. */
+                class DeleteExternalAddressRequest implements IDeleteExternalAddressRequest {
+
+                    /**
+                     * Constructs a new DeleteExternalAddressRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDeleteExternalAddressRequest);
+
+                    /** DeleteExternalAddressRequest name. */
+                    public name: string;
+
+                    /** DeleteExternalAddressRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteExternalAddressRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteExternalAddressRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDeleteExternalAddressRequest): google.cloud.vmwareengine.v1.DeleteExternalAddressRequest;
+
+                    /**
+                     * Encodes the specified DeleteExternalAddressRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteExternalAddressRequest.verify|verify} messages.
+                     * @param message DeleteExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDeleteExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteExternalAddressRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteExternalAddressRequest.verify|verify} messages.
+                     * @param message DeleteExternalAddressRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDeleteExternalAddressRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteExternalAddressRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DeleteExternalAddressRequest;
+
+                    /**
+                     * Decodes a DeleteExternalAddressRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteExternalAddressRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DeleteExternalAddressRequest;
+
+                    /**
+                     * Verifies a DeleteExternalAddressRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteExternalAddressRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteExternalAddressRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DeleteExternalAddressRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteExternalAddressRequest message. Also converts values to other types if specified.
+                     * @param message DeleteExternalAddressRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DeleteExternalAddressRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteExternalAddressRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteExternalAddressRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of a ListSubnetsRequest. */
                 interface IListSubnetsRequest {
 
@@ -2725,6 +4635,1314 @@ export namespace google {
 
                     /**
                      * Gets the default type url for UpdateSubnetRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListExternalAccessRulesRequest. */
+                interface IListExternalAccessRulesRequest {
+
+                    /** ListExternalAccessRulesRequest parent */
+                    parent?: (string|null);
+
+                    /** ListExternalAccessRulesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListExternalAccessRulesRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListExternalAccessRulesRequest filter */
+                    filter?: (string|null);
+
+                    /** ListExternalAccessRulesRequest orderBy */
+                    orderBy?: (string|null);
+                }
+
+                /** Represents a ListExternalAccessRulesRequest. */
+                class ListExternalAccessRulesRequest implements IListExternalAccessRulesRequest {
+
+                    /**
+                     * Constructs a new ListExternalAccessRulesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListExternalAccessRulesRequest);
+
+                    /** ListExternalAccessRulesRequest parent. */
+                    public parent: string;
+
+                    /** ListExternalAccessRulesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListExternalAccessRulesRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListExternalAccessRulesRequest filter. */
+                    public filter: string;
+
+                    /** ListExternalAccessRulesRequest orderBy. */
+                    public orderBy: string;
+
+                    /**
+                     * Creates a new ListExternalAccessRulesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListExternalAccessRulesRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListExternalAccessRulesRequest): google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest;
+
+                    /**
+                     * Encodes the specified ListExternalAccessRulesRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest.verify|verify} messages.
+                     * @param message ListExternalAccessRulesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListExternalAccessRulesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListExternalAccessRulesRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest.verify|verify} messages.
+                     * @param message ListExternalAccessRulesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListExternalAccessRulesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListExternalAccessRulesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListExternalAccessRulesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest;
+
+                    /**
+                     * Decodes a ListExternalAccessRulesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListExternalAccessRulesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest;
+
+                    /**
+                     * Verifies a ListExternalAccessRulesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListExternalAccessRulesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListExternalAccessRulesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest;
+
+                    /**
+                     * Creates a plain object from a ListExternalAccessRulesRequest message. Also converts values to other types if specified.
+                     * @param message ListExternalAccessRulesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListExternalAccessRulesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListExternalAccessRulesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListExternalAccessRulesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListExternalAccessRulesResponse. */
+                interface IListExternalAccessRulesResponse {
+
+                    /** ListExternalAccessRulesResponse externalAccessRules */
+                    externalAccessRules?: (google.cloud.vmwareengine.v1.IExternalAccessRule[]|null);
+
+                    /** ListExternalAccessRulesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+
+                    /** ListExternalAccessRulesResponse unreachable */
+                    unreachable?: (string[]|null);
+                }
+
+                /** Represents a ListExternalAccessRulesResponse. */
+                class ListExternalAccessRulesResponse implements IListExternalAccessRulesResponse {
+
+                    /**
+                     * Constructs a new ListExternalAccessRulesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListExternalAccessRulesResponse);
+
+                    /** ListExternalAccessRulesResponse externalAccessRules. */
+                    public externalAccessRules: google.cloud.vmwareengine.v1.IExternalAccessRule[];
+
+                    /** ListExternalAccessRulesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /** ListExternalAccessRulesResponse unreachable. */
+                    public unreachable: string[];
+
+                    /**
+                     * Creates a new ListExternalAccessRulesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListExternalAccessRulesResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListExternalAccessRulesResponse): google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse;
+
+                    /**
+                     * Encodes the specified ListExternalAccessRulesResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse.verify|verify} messages.
+                     * @param message ListExternalAccessRulesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListExternalAccessRulesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListExternalAccessRulesResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse.verify|verify} messages.
+                     * @param message ListExternalAccessRulesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListExternalAccessRulesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListExternalAccessRulesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListExternalAccessRulesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse;
+
+                    /**
+                     * Decodes a ListExternalAccessRulesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListExternalAccessRulesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse;
+
+                    /**
+                     * Verifies a ListExternalAccessRulesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListExternalAccessRulesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListExternalAccessRulesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse;
+
+                    /**
+                     * Creates a plain object from a ListExternalAccessRulesResponse message. Also converts values to other types if specified.
+                     * @param message ListExternalAccessRulesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListExternalAccessRulesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListExternalAccessRulesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListExternalAccessRulesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetExternalAccessRuleRequest. */
+                interface IGetExternalAccessRuleRequest {
+
+                    /** GetExternalAccessRuleRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetExternalAccessRuleRequest. */
+                class GetExternalAccessRuleRequest implements IGetExternalAccessRuleRequest {
+
+                    /**
+                     * Constructs a new GetExternalAccessRuleRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetExternalAccessRuleRequest);
+
+                    /** GetExternalAccessRuleRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetExternalAccessRuleRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetExternalAccessRuleRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetExternalAccessRuleRequest): google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest;
+
+                    /**
+                     * Encodes the specified GetExternalAccessRuleRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message GetExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetExternalAccessRuleRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message GetExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetExternalAccessRuleRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest;
+
+                    /**
+                     * Decodes a GetExternalAccessRuleRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest;
+
+                    /**
+                     * Verifies a GetExternalAccessRuleRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetExternalAccessRuleRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetExternalAccessRuleRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest;
+
+                    /**
+                     * Creates a plain object from a GetExternalAccessRuleRequest message. Also converts values to other types if specified.
+                     * @param message GetExternalAccessRuleRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetExternalAccessRuleRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetExternalAccessRuleRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetExternalAccessRuleRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CreateExternalAccessRuleRequest. */
+                interface ICreateExternalAccessRuleRequest {
+
+                    /** CreateExternalAccessRuleRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateExternalAccessRuleRequest externalAccessRule */
+                    externalAccessRule?: (google.cloud.vmwareengine.v1.IExternalAccessRule|null);
+
+                    /** CreateExternalAccessRuleRequest externalAccessRuleId */
+                    externalAccessRuleId?: (string|null);
+
+                    /** CreateExternalAccessRuleRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateExternalAccessRuleRequest. */
+                class CreateExternalAccessRuleRequest implements ICreateExternalAccessRuleRequest {
+
+                    /**
+                     * Constructs a new CreateExternalAccessRuleRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ICreateExternalAccessRuleRequest);
+
+                    /** CreateExternalAccessRuleRequest parent. */
+                    public parent: string;
+
+                    /** CreateExternalAccessRuleRequest externalAccessRule. */
+                    public externalAccessRule?: (google.cloud.vmwareengine.v1.IExternalAccessRule|null);
+
+                    /** CreateExternalAccessRuleRequest externalAccessRuleId. */
+                    public externalAccessRuleId: string;
+
+                    /** CreateExternalAccessRuleRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CreateExternalAccessRuleRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateExternalAccessRuleRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ICreateExternalAccessRuleRequest): google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest;
+
+                    /**
+                     * Encodes the specified CreateExternalAccessRuleRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message CreateExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ICreateExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateExternalAccessRuleRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message CreateExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ICreateExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateExternalAccessRuleRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest;
+
+                    /**
+                     * Decodes a CreateExternalAccessRuleRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest;
+
+                    /**
+                     * Verifies a CreateExternalAccessRuleRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateExternalAccessRuleRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateExternalAccessRuleRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest;
+
+                    /**
+                     * Creates a plain object from a CreateExternalAccessRuleRequest message. Also converts values to other types if specified.
+                     * @param message CreateExternalAccessRuleRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.CreateExternalAccessRuleRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateExternalAccessRuleRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateExternalAccessRuleRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateExternalAccessRuleRequest. */
+                interface IUpdateExternalAccessRuleRequest {
+
+                    /** UpdateExternalAccessRuleRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateExternalAccessRuleRequest externalAccessRule */
+                    externalAccessRule?: (google.cloud.vmwareengine.v1.IExternalAccessRule|null);
+
+                    /** UpdateExternalAccessRuleRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateExternalAccessRuleRequest. */
+                class UpdateExternalAccessRuleRequest implements IUpdateExternalAccessRuleRequest {
+
+                    /**
+                     * Constructs a new UpdateExternalAccessRuleRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IUpdateExternalAccessRuleRequest);
+
+                    /** UpdateExternalAccessRuleRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateExternalAccessRuleRequest externalAccessRule. */
+                    public externalAccessRule?: (google.cloud.vmwareengine.v1.IExternalAccessRule|null);
+
+                    /** UpdateExternalAccessRuleRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateExternalAccessRuleRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateExternalAccessRuleRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IUpdateExternalAccessRuleRequest): google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest;
+
+                    /**
+                     * Encodes the specified UpdateExternalAccessRuleRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message UpdateExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IUpdateExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateExternalAccessRuleRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message UpdateExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IUpdateExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateExternalAccessRuleRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest;
+
+                    /**
+                     * Decodes an UpdateExternalAccessRuleRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest;
+
+                    /**
+                     * Verifies an UpdateExternalAccessRuleRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateExternalAccessRuleRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateExternalAccessRuleRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateExternalAccessRuleRequest message. Also converts values to other types if specified.
+                     * @param message UpdateExternalAccessRuleRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.UpdateExternalAccessRuleRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateExternalAccessRuleRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateExternalAccessRuleRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteExternalAccessRuleRequest. */
+                interface IDeleteExternalAccessRuleRequest {
+
+                    /** DeleteExternalAccessRuleRequest name */
+                    name?: (string|null);
+
+                    /** DeleteExternalAccessRuleRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteExternalAccessRuleRequest. */
+                class DeleteExternalAccessRuleRequest implements IDeleteExternalAccessRuleRequest {
+
+                    /**
+                     * Constructs a new DeleteExternalAccessRuleRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDeleteExternalAccessRuleRequest);
+
+                    /** DeleteExternalAccessRuleRequest name. */
+                    public name: string;
+
+                    /** DeleteExternalAccessRuleRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteExternalAccessRuleRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteExternalAccessRuleRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDeleteExternalAccessRuleRequest): google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest;
+
+                    /**
+                     * Encodes the specified DeleteExternalAccessRuleRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message DeleteExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDeleteExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteExternalAccessRuleRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest.verify|verify} messages.
+                     * @param message DeleteExternalAccessRuleRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDeleteExternalAccessRuleRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteExternalAccessRuleRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest;
+
+                    /**
+                     * Decodes a DeleteExternalAccessRuleRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteExternalAccessRuleRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest;
+
+                    /**
+                     * Verifies a DeleteExternalAccessRuleRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteExternalAccessRuleRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteExternalAccessRuleRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteExternalAccessRuleRequest message. Also converts values to other types if specified.
+                     * @param message DeleteExternalAccessRuleRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DeleteExternalAccessRuleRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteExternalAccessRuleRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteExternalAccessRuleRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListLoggingServersRequest. */
+                interface IListLoggingServersRequest {
+
+                    /** ListLoggingServersRequest parent */
+                    parent?: (string|null);
+
+                    /** ListLoggingServersRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListLoggingServersRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListLoggingServersRequest filter */
+                    filter?: (string|null);
+
+                    /** ListLoggingServersRequest orderBy */
+                    orderBy?: (string|null);
+                }
+
+                /** Represents a ListLoggingServersRequest. */
+                class ListLoggingServersRequest implements IListLoggingServersRequest {
+
+                    /**
+                     * Constructs a new ListLoggingServersRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListLoggingServersRequest);
+
+                    /** ListLoggingServersRequest parent. */
+                    public parent: string;
+
+                    /** ListLoggingServersRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListLoggingServersRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListLoggingServersRequest filter. */
+                    public filter: string;
+
+                    /** ListLoggingServersRequest orderBy. */
+                    public orderBy: string;
+
+                    /**
+                     * Creates a new ListLoggingServersRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListLoggingServersRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListLoggingServersRequest): google.cloud.vmwareengine.v1.ListLoggingServersRequest;
+
+                    /**
+                     * Encodes the specified ListLoggingServersRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListLoggingServersRequest.verify|verify} messages.
+                     * @param message ListLoggingServersRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListLoggingServersRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListLoggingServersRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListLoggingServersRequest.verify|verify} messages.
+                     * @param message ListLoggingServersRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListLoggingServersRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListLoggingServersRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListLoggingServersRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListLoggingServersRequest;
+
+                    /**
+                     * Decodes a ListLoggingServersRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListLoggingServersRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListLoggingServersRequest;
+
+                    /**
+                     * Verifies a ListLoggingServersRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListLoggingServersRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListLoggingServersRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListLoggingServersRequest;
+
+                    /**
+                     * Creates a plain object from a ListLoggingServersRequest message. Also converts values to other types if specified.
+                     * @param message ListLoggingServersRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListLoggingServersRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListLoggingServersRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListLoggingServersRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListLoggingServersResponse. */
+                interface IListLoggingServersResponse {
+
+                    /** ListLoggingServersResponse loggingServers */
+                    loggingServers?: (google.cloud.vmwareengine.v1.ILoggingServer[]|null);
+
+                    /** ListLoggingServersResponse nextPageToken */
+                    nextPageToken?: (string|null);
+
+                    /** ListLoggingServersResponse unreachable */
+                    unreachable?: (string[]|null);
+                }
+
+                /** Represents a ListLoggingServersResponse. */
+                class ListLoggingServersResponse implements IListLoggingServersResponse {
+
+                    /**
+                     * Constructs a new ListLoggingServersResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListLoggingServersResponse);
+
+                    /** ListLoggingServersResponse loggingServers. */
+                    public loggingServers: google.cloud.vmwareengine.v1.ILoggingServer[];
+
+                    /** ListLoggingServersResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /** ListLoggingServersResponse unreachable. */
+                    public unreachable: string[];
+
+                    /**
+                     * Creates a new ListLoggingServersResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListLoggingServersResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListLoggingServersResponse): google.cloud.vmwareengine.v1.ListLoggingServersResponse;
+
+                    /**
+                     * Encodes the specified ListLoggingServersResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListLoggingServersResponse.verify|verify} messages.
+                     * @param message ListLoggingServersResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListLoggingServersResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListLoggingServersResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListLoggingServersResponse.verify|verify} messages.
+                     * @param message ListLoggingServersResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListLoggingServersResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListLoggingServersResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListLoggingServersResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListLoggingServersResponse;
+
+                    /**
+                     * Decodes a ListLoggingServersResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListLoggingServersResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListLoggingServersResponse;
+
+                    /**
+                     * Verifies a ListLoggingServersResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListLoggingServersResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListLoggingServersResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListLoggingServersResponse;
+
+                    /**
+                     * Creates a plain object from a ListLoggingServersResponse message. Also converts values to other types if specified.
+                     * @param message ListLoggingServersResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListLoggingServersResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListLoggingServersResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListLoggingServersResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetLoggingServerRequest. */
+                interface IGetLoggingServerRequest {
+
+                    /** GetLoggingServerRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetLoggingServerRequest. */
+                class GetLoggingServerRequest implements IGetLoggingServerRequest {
+
+                    /**
+                     * Constructs a new GetLoggingServerRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetLoggingServerRequest);
+
+                    /** GetLoggingServerRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetLoggingServerRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetLoggingServerRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetLoggingServerRequest): google.cloud.vmwareengine.v1.GetLoggingServerRequest;
+
+                    /**
+                     * Encodes the specified GetLoggingServerRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetLoggingServerRequest.verify|verify} messages.
+                     * @param message GetLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetLoggingServerRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetLoggingServerRequest.verify|verify} messages.
+                     * @param message GetLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetLoggingServerRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetLoggingServerRequest;
+
+                    /**
+                     * Decodes a GetLoggingServerRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetLoggingServerRequest;
+
+                    /**
+                     * Verifies a GetLoggingServerRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetLoggingServerRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetLoggingServerRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetLoggingServerRequest;
+
+                    /**
+                     * Creates a plain object from a GetLoggingServerRequest message. Also converts values to other types if specified.
+                     * @param message GetLoggingServerRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetLoggingServerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetLoggingServerRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetLoggingServerRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CreateLoggingServerRequest. */
+                interface ICreateLoggingServerRequest {
+
+                    /** CreateLoggingServerRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateLoggingServerRequest loggingServer */
+                    loggingServer?: (google.cloud.vmwareengine.v1.ILoggingServer|null);
+
+                    /** CreateLoggingServerRequest loggingServerId */
+                    loggingServerId?: (string|null);
+
+                    /** CreateLoggingServerRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateLoggingServerRequest. */
+                class CreateLoggingServerRequest implements ICreateLoggingServerRequest {
+
+                    /**
+                     * Constructs a new CreateLoggingServerRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ICreateLoggingServerRequest);
+
+                    /** CreateLoggingServerRequest parent. */
+                    public parent: string;
+
+                    /** CreateLoggingServerRequest loggingServer. */
+                    public loggingServer?: (google.cloud.vmwareengine.v1.ILoggingServer|null);
+
+                    /** CreateLoggingServerRequest loggingServerId. */
+                    public loggingServerId: string;
+
+                    /** CreateLoggingServerRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CreateLoggingServerRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateLoggingServerRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ICreateLoggingServerRequest): google.cloud.vmwareengine.v1.CreateLoggingServerRequest;
+
+                    /**
+                     * Encodes the specified CreateLoggingServerRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateLoggingServerRequest.verify|verify} messages.
+                     * @param message CreateLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ICreateLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateLoggingServerRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateLoggingServerRequest.verify|verify} messages.
+                     * @param message CreateLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ICreateLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateLoggingServerRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.CreateLoggingServerRequest;
+
+                    /**
+                     * Decodes a CreateLoggingServerRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.CreateLoggingServerRequest;
+
+                    /**
+                     * Verifies a CreateLoggingServerRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateLoggingServerRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateLoggingServerRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.CreateLoggingServerRequest;
+
+                    /**
+                     * Creates a plain object from a CreateLoggingServerRequest message. Also converts values to other types if specified.
+                     * @param message CreateLoggingServerRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.CreateLoggingServerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateLoggingServerRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateLoggingServerRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateLoggingServerRequest. */
+                interface IUpdateLoggingServerRequest {
+
+                    /** UpdateLoggingServerRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateLoggingServerRequest loggingServer */
+                    loggingServer?: (google.cloud.vmwareengine.v1.ILoggingServer|null);
+
+                    /** UpdateLoggingServerRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateLoggingServerRequest. */
+                class UpdateLoggingServerRequest implements IUpdateLoggingServerRequest {
+
+                    /**
+                     * Constructs a new UpdateLoggingServerRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IUpdateLoggingServerRequest);
+
+                    /** UpdateLoggingServerRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateLoggingServerRequest loggingServer. */
+                    public loggingServer?: (google.cloud.vmwareengine.v1.ILoggingServer|null);
+
+                    /** UpdateLoggingServerRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateLoggingServerRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateLoggingServerRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IUpdateLoggingServerRequest): google.cloud.vmwareengine.v1.UpdateLoggingServerRequest;
+
+                    /**
+                     * Encodes the specified UpdateLoggingServerRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateLoggingServerRequest.verify|verify} messages.
+                     * @param message UpdateLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IUpdateLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateLoggingServerRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateLoggingServerRequest.verify|verify} messages.
+                     * @param message UpdateLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IUpdateLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateLoggingServerRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.UpdateLoggingServerRequest;
+
+                    /**
+                     * Decodes an UpdateLoggingServerRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.UpdateLoggingServerRequest;
+
+                    /**
+                     * Verifies an UpdateLoggingServerRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateLoggingServerRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateLoggingServerRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.UpdateLoggingServerRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateLoggingServerRequest message. Also converts values to other types if specified.
+                     * @param message UpdateLoggingServerRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.UpdateLoggingServerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateLoggingServerRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateLoggingServerRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteLoggingServerRequest. */
+                interface IDeleteLoggingServerRequest {
+
+                    /** DeleteLoggingServerRequest name */
+                    name?: (string|null);
+
+                    /** DeleteLoggingServerRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteLoggingServerRequest. */
+                class DeleteLoggingServerRequest implements IDeleteLoggingServerRequest {
+
+                    /**
+                     * Constructs a new DeleteLoggingServerRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDeleteLoggingServerRequest);
+
+                    /** DeleteLoggingServerRequest name. */
+                    public name: string;
+
+                    /** DeleteLoggingServerRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteLoggingServerRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteLoggingServerRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDeleteLoggingServerRequest): google.cloud.vmwareengine.v1.DeleteLoggingServerRequest;
+
+                    /**
+                     * Encodes the specified DeleteLoggingServerRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteLoggingServerRequest.verify|verify} messages.
+                     * @param message DeleteLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDeleteLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteLoggingServerRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteLoggingServerRequest.verify|verify} messages.
+                     * @param message DeleteLoggingServerRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDeleteLoggingServerRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteLoggingServerRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DeleteLoggingServerRequest;
+
+                    /**
+                     * Decodes a DeleteLoggingServerRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteLoggingServerRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DeleteLoggingServerRequest;
+
+                    /**
+                     * Verifies a DeleteLoggingServerRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteLoggingServerRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteLoggingServerRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DeleteLoggingServerRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteLoggingServerRequest message. Also converts values to other types if specified.
+                     * @param message DeleteLoggingServerRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DeleteLoggingServerRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteLoggingServerRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteLoggingServerRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -3287,6 +6505,9 @@ export namespace google {
 
                     /** ShowVcenterCredentialsRequest privateCloud */
                     privateCloud?: (string|null);
+
+                    /** ShowVcenterCredentialsRequest username */
+                    username?: (string|null);
                 }
 
                 /** Represents a ShowVcenterCredentialsRequest. */
@@ -3300,6 +6521,9 @@ export namespace google {
 
                     /** ShowVcenterCredentialsRequest privateCloud. */
                     public privateCloud: string;
+
+                    /** ShowVcenterCredentialsRequest username. */
+                    public username: string;
 
                     /**
                      * Creates a new ShowVcenterCredentialsRequest instance using the specified properties.
@@ -3490,6 +6714,9 @@ export namespace google {
 
                     /** ResetVcenterCredentialsRequest requestId */
                     requestId?: (string|null);
+
+                    /** ResetVcenterCredentialsRequest username */
+                    username?: (string|null);
                 }
 
                 /** Represents a ResetVcenterCredentialsRequest. */
@@ -3506,6 +6733,9 @@ export namespace google {
 
                     /** ResetVcenterCredentialsRequest requestId. */
                     public requestId: string;
+
+                    /** ResetVcenterCredentialsRequest username. */
+                    public username: string;
 
                     /**
                      * Creates a new ResetVcenterCredentialsRequest instance using the specified properties.
@@ -4009,6 +7239,1084 @@ export namespace google {
 
                     /**
                      * Gets the default type url for CreateHcxActivationKeyRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetDnsForwardingRequest. */
+                interface IGetDnsForwardingRequest {
+
+                    /** GetDnsForwardingRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetDnsForwardingRequest. */
+                class GetDnsForwardingRequest implements IGetDnsForwardingRequest {
+
+                    /**
+                     * Constructs a new GetDnsForwardingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetDnsForwardingRequest);
+
+                    /** GetDnsForwardingRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetDnsForwardingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetDnsForwardingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetDnsForwardingRequest): google.cloud.vmwareengine.v1.GetDnsForwardingRequest;
+
+                    /**
+                     * Encodes the specified GetDnsForwardingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetDnsForwardingRequest.verify|verify} messages.
+                     * @param message GetDnsForwardingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetDnsForwardingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetDnsForwardingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetDnsForwardingRequest.verify|verify} messages.
+                     * @param message GetDnsForwardingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetDnsForwardingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetDnsForwardingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetDnsForwardingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetDnsForwardingRequest;
+
+                    /**
+                     * Decodes a GetDnsForwardingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetDnsForwardingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetDnsForwardingRequest;
+
+                    /**
+                     * Verifies a GetDnsForwardingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetDnsForwardingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetDnsForwardingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetDnsForwardingRequest;
+
+                    /**
+                     * Creates a plain object from a GetDnsForwardingRequest message. Also converts values to other types if specified.
+                     * @param message GetDnsForwardingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetDnsForwardingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetDnsForwardingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetDnsForwardingRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateDnsForwardingRequest. */
+                interface IUpdateDnsForwardingRequest {
+
+                    /** UpdateDnsForwardingRequest dnsForwarding */
+                    dnsForwarding?: (google.cloud.vmwareengine.v1.IDnsForwarding|null);
+
+                    /** UpdateDnsForwardingRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateDnsForwardingRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateDnsForwardingRequest. */
+                class UpdateDnsForwardingRequest implements IUpdateDnsForwardingRequest {
+
+                    /**
+                     * Constructs a new UpdateDnsForwardingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IUpdateDnsForwardingRequest);
+
+                    /** UpdateDnsForwardingRequest dnsForwarding. */
+                    public dnsForwarding?: (google.cloud.vmwareengine.v1.IDnsForwarding|null);
+
+                    /** UpdateDnsForwardingRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateDnsForwardingRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateDnsForwardingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateDnsForwardingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IUpdateDnsForwardingRequest): google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest;
+
+                    /**
+                     * Encodes the specified UpdateDnsForwardingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest.verify|verify} messages.
+                     * @param message UpdateDnsForwardingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IUpdateDnsForwardingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateDnsForwardingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest.verify|verify} messages.
+                     * @param message UpdateDnsForwardingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IUpdateDnsForwardingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateDnsForwardingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateDnsForwardingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest;
+
+                    /**
+                     * Decodes an UpdateDnsForwardingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateDnsForwardingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest;
+
+                    /**
+                     * Verifies an UpdateDnsForwardingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateDnsForwardingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateDnsForwardingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateDnsForwardingRequest message. Also converts values to other types if specified.
+                     * @param message UpdateDnsForwardingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.UpdateDnsForwardingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateDnsForwardingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateDnsForwardingRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CreateNetworkPeeringRequest. */
+                interface ICreateNetworkPeeringRequest {
+
+                    /** CreateNetworkPeeringRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateNetworkPeeringRequest networkPeeringId */
+                    networkPeeringId?: (string|null);
+
+                    /** CreateNetworkPeeringRequest networkPeering */
+                    networkPeering?: (google.cloud.vmwareengine.v1.INetworkPeering|null);
+
+                    /** CreateNetworkPeeringRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateNetworkPeeringRequest. */
+                class CreateNetworkPeeringRequest implements ICreateNetworkPeeringRequest {
+
+                    /**
+                     * Constructs a new CreateNetworkPeeringRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ICreateNetworkPeeringRequest);
+
+                    /** CreateNetworkPeeringRequest parent. */
+                    public parent: string;
+
+                    /** CreateNetworkPeeringRequest networkPeeringId. */
+                    public networkPeeringId: string;
+
+                    /** CreateNetworkPeeringRequest networkPeering. */
+                    public networkPeering?: (google.cloud.vmwareengine.v1.INetworkPeering|null);
+
+                    /** CreateNetworkPeeringRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CreateNetworkPeeringRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateNetworkPeeringRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ICreateNetworkPeeringRequest): google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest;
+
+                    /**
+                     * Encodes the specified CreateNetworkPeeringRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest.verify|verify} messages.
+                     * @param message CreateNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ICreateNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateNetworkPeeringRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest.verify|verify} messages.
+                     * @param message CreateNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ICreateNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateNetworkPeeringRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest;
+
+                    /**
+                     * Decodes a CreateNetworkPeeringRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest;
+
+                    /**
+                     * Verifies a CreateNetworkPeeringRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateNetworkPeeringRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateNetworkPeeringRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest;
+
+                    /**
+                     * Creates a plain object from a CreateNetworkPeeringRequest message. Also converts values to other types if specified.
+                     * @param message CreateNetworkPeeringRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.CreateNetworkPeeringRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateNetworkPeeringRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateNetworkPeeringRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteNetworkPeeringRequest. */
+                interface IDeleteNetworkPeeringRequest {
+
+                    /** DeleteNetworkPeeringRequest name */
+                    name?: (string|null);
+
+                    /** DeleteNetworkPeeringRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteNetworkPeeringRequest. */
+                class DeleteNetworkPeeringRequest implements IDeleteNetworkPeeringRequest {
+
+                    /**
+                     * Constructs a new DeleteNetworkPeeringRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDeleteNetworkPeeringRequest);
+
+                    /** DeleteNetworkPeeringRequest name. */
+                    public name: string;
+
+                    /** DeleteNetworkPeeringRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteNetworkPeeringRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteNetworkPeeringRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDeleteNetworkPeeringRequest): google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest;
+
+                    /**
+                     * Encodes the specified DeleteNetworkPeeringRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest.verify|verify} messages.
+                     * @param message DeleteNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDeleteNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteNetworkPeeringRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest.verify|verify} messages.
+                     * @param message DeleteNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDeleteNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteNetworkPeeringRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest;
+
+                    /**
+                     * Decodes a DeleteNetworkPeeringRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest;
+
+                    /**
+                     * Verifies a DeleteNetworkPeeringRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteNetworkPeeringRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteNetworkPeeringRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteNetworkPeeringRequest message. Also converts values to other types if specified.
+                     * @param message DeleteNetworkPeeringRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DeleteNetworkPeeringRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteNetworkPeeringRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteNetworkPeeringRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetNetworkPeeringRequest. */
+                interface IGetNetworkPeeringRequest {
+
+                    /** GetNetworkPeeringRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetNetworkPeeringRequest. */
+                class GetNetworkPeeringRequest implements IGetNetworkPeeringRequest {
+
+                    /**
+                     * Constructs a new GetNetworkPeeringRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetNetworkPeeringRequest);
+
+                    /** GetNetworkPeeringRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetNetworkPeeringRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetNetworkPeeringRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetNetworkPeeringRequest): google.cloud.vmwareengine.v1.GetNetworkPeeringRequest;
+
+                    /**
+                     * Encodes the specified GetNetworkPeeringRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetNetworkPeeringRequest.verify|verify} messages.
+                     * @param message GetNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetNetworkPeeringRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetNetworkPeeringRequest.verify|verify} messages.
+                     * @param message GetNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetNetworkPeeringRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetNetworkPeeringRequest;
+
+                    /**
+                     * Decodes a GetNetworkPeeringRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetNetworkPeeringRequest;
+
+                    /**
+                     * Verifies a GetNetworkPeeringRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetNetworkPeeringRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetNetworkPeeringRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetNetworkPeeringRequest;
+
+                    /**
+                     * Creates a plain object from a GetNetworkPeeringRequest message. Also converts values to other types if specified.
+                     * @param message GetNetworkPeeringRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetNetworkPeeringRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetNetworkPeeringRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetNetworkPeeringRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListNetworkPeeringsRequest. */
+                interface IListNetworkPeeringsRequest {
+
+                    /** ListNetworkPeeringsRequest parent */
+                    parent?: (string|null);
+
+                    /** ListNetworkPeeringsRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListNetworkPeeringsRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListNetworkPeeringsRequest filter */
+                    filter?: (string|null);
+
+                    /** ListNetworkPeeringsRequest orderBy */
+                    orderBy?: (string|null);
+                }
+
+                /** Represents a ListNetworkPeeringsRequest. */
+                class ListNetworkPeeringsRequest implements IListNetworkPeeringsRequest {
+
+                    /**
+                     * Constructs a new ListNetworkPeeringsRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListNetworkPeeringsRequest);
+
+                    /** ListNetworkPeeringsRequest parent. */
+                    public parent: string;
+
+                    /** ListNetworkPeeringsRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListNetworkPeeringsRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListNetworkPeeringsRequest filter. */
+                    public filter: string;
+
+                    /** ListNetworkPeeringsRequest orderBy. */
+                    public orderBy: string;
+
+                    /**
+                     * Creates a new ListNetworkPeeringsRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListNetworkPeeringsRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListNetworkPeeringsRequest): google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest;
+
+                    /**
+                     * Encodes the specified ListNetworkPeeringsRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest.verify|verify} messages.
+                     * @param message ListNetworkPeeringsRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListNetworkPeeringsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListNetworkPeeringsRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest.verify|verify} messages.
+                     * @param message ListNetworkPeeringsRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListNetworkPeeringsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListNetworkPeeringsRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListNetworkPeeringsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest;
+
+                    /**
+                     * Decodes a ListNetworkPeeringsRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListNetworkPeeringsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest;
+
+                    /**
+                     * Verifies a ListNetworkPeeringsRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListNetworkPeeringsRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListNetworkPeeringsRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest;
+
+                    /**
+                     * Creates a plain object from a ListNetworkPeeringsRequest message. Also converts values to other types if specified.
+                     * @param message ListNetworkPeeringsRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListNetworkPeeringsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListNetworkPeeringsRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListNetworkPeeringsRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateNetworkPeeringRequest. */
+                interface IUpdateNetworkPeeringRequest {
+
+                    /** UpdateNetworkPeeringRequest networkPeering */
+                    networkPeering?: (google.cloud.vmwareengine.v1.INetworkPeering|null);
+
+                    /** UpdateNetworkPeeringRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateNetworkPeeringRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateNetworkPeeringRequest. */
+                class UpdateNetworkPeeringRequest implements IUpdateNetworkPeeringRequest {
+
+                    /**
+                     * Constructs a new UpdateNetworkPeeringRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IUpdateNetworkPeeringRequest);
+
+                    /** UpdateNetworkPeeringRequest networkPeering. */
+                    public networkPeering?: (google.cloud.vmwareengine.v1.INetworkPeering|null);
+
+                    /** UpdateNetworkPeeringRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateNetworkPeeringRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateNetworkPeeringRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateNetworkPeeringRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IUpdateNetworkPeeringRequest): google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest;
+
+                    /**
+                     * Encodes the specified UpdateNetworkPeeringRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest.verify|verify} messages.
+                     * @param message UpdateNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IUpdateNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateNetworkPeeringRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest.verify|verify} messages.
+                     * @param message UpdateNetworkPeeringRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IUpdateNetworkPeeringRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateNetworkPeeringRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest;
+
+                    /**
+                     * Decodes an UpdateNetworkPeeringRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateNetworkPeeringRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest;
+
+                    /**
+                     * Verifies an UpdateNetworkPeeringRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateNetworkPeeringRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateNetworkPeeringRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateNetworkPeeringRequest message. Also converts values to other types if specified.
+                     * @param message UpdateNetworkPeeringRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.UpdateNetworkPeeringRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateNetworkPeeringRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateNetworkPeeringRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListNetworkPeeringsResponse. */
+                interface IListNetworkPeeringsResponse {
+
+                    /** ListNetworkPeeringsResponse networkPeerings */
+                    networkPeerings?: (google.cloud.vmwareengine.v1.INetworkPeering[]|null);
+
+                    /** ListNetworkPeeringsResponse nextPageToken */
+                    nextPageToken?: (string|null);
+
+                    /** ListNetworkPeeringsResponse unreachable */
+                    unreachable?: (string[]|null);
+                }
+
+                /** Represents a ListNetworkPeeringsResponse. */
+                class ListNetworkPeeringsResponse implements IListNetworkPeeringsResponse {
+
+                    /**
+                     * Constructs a new ListNetworkPeeringsResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListNetworkPeeringsResponse);
+
+                    /** ListNetworkPeeringsResponse networkPeerings. */
+                    public networkPeerings: google.cloud.vmwareengine.v1.INetworkPeering[];
+
+                    /** ListNetworkPeeringsResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /** ListNetworkPeeringsResponse unreachable. */
+                    public unreachable: string[];
+
+                    /**
+                     * Creates a new ListNetworkPeeringsResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListNetworkPeeringsResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListNetworkPeeringsResponse): google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse;
+
+                    /**
+                     * Encodes the specified ListNetworkPeeringsResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse.verify|verify} messages.
+                     * @param message ListNetworkPeeringsResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListNetworkPeeringsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListNetworkPeeringsResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse.verify|verify} messages.
+                     * @param message ListNetworkPeeringsResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListNetworkPeeringsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListNetworkPeeringsResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListNetworkPeeringsResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse;
+
+                    /**
+                     * Decodes a ListNetworkPeeringsResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListNetworkPeeringsResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse;
+
+                    /**
+                     * Verifies a ListNetworkPeeringsResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListNetworkPeeringsResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListNetworkPeeringsResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse;
+
+                    /**
+                     * Creates a plain object from a ListNetworkPeeringsResponse message. Also converts values to other types if specified.
+                     * @param message ListNetworkPeeringsResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListNetworkPeeringsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListNetworkPeeringsResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListNetworkPeeringsResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListPeeringRoutesRequest. */
+                interface IListPeeringRoutesRequest {
+
+                    /** ListPeeringRoutesRequest parent */
+                    parent?: (string|null);
+
+                    /** ListPeeringRoutesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListPeeringRoutesRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListPeeringRoutesRequest filter */
+                    filter?: (string|null);
+                }
+
+                /** Represents a ListPeeringRoutesRequest. */
+                class ListPeeringRoutesRequest implements IListPeeringRoutesRequest {
+
+                    /**
+                     * Constructs a new ListPeeringRoutesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListPeeringRoutesRequest);
+
+                    /** ListPeeringRoutesRequest parent. */
+                    public parent: string;
+
+                    /** ListPeeringRoutesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListPeeringRoutesRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListPeeringRoutesRequest filter. */
+                    public filter: string;
+
+                    /**
+                     * Creates a new ListPeeringRoutesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListPeeringRoutesRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListPeeringRoutesRequest): google.cloud.vmwareengine.v1.ListPeeringRoutesRequest;
+
+                    /**
+                     * Encodes the specified ListPeeringRoutesRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListPeeringRoutesRequest.verify|verify} messages.
+                     * @param message ListPeeringRoutesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListPeeringRoutesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListPeeringRoutesRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListPeeringRoutesRequest.verify|verify} messages.
+                     * @param message ListPeeringRoutesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListPeeringRoutesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListPeeringRoutesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListPeeringRoutesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListPeeringRoutesRequest;
+
+                    /**
+                     * Decodes a ListPeeringRoutesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListPeeringRoutesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListPeeringRoutesRequest;
+
+                    /**
+                     * Verifies a ListPeeringRoutesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListPeeringRoutesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListPeeringRoutesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListPeeringRoutesRequest;
+
+                    /**
+                     * Creates a plain object from a ListPeeringRoutesRequest message. Also converts values to other types if specified.
+                     * @param message ListPeeringRoutesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListPeeringRoutesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListPeeringRoutesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListPeeringRoutesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListPeeringRoutesResponse. */
+                interface IListPeeringRoutesResponse {
+
+                    /** ListPeeringRoutesResponse peeringRoutes */
+                    peeringRoutes?: (google.cloud.vmwareengine.v1.IPeeringRoute[]|null);
+
+                    /** ListPeeringRoutesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+                }
+
+                /** Represents a ListPeeringRoutesResponse. */
+                class ListPeeringRoutesResponse implements IListPeeringRoutesResponse {
+
+                    /**
+                     * Constructs a new ListPeeringRoutesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListPeeringRoutesResponse);
+
+                    /** ListPeeringRoutesResponse peeringRoutes. */
+                    public peeringRoutes: google.cloud.vmwareengine.v1.IPeeringRoute[];
+
+                    /** ListPeeringRoutesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /**
+                     * Creates a new ListPeeringRoutesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListPeeringRoutesResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListPeeringRoutesResponse): google.cloud.vmwareengine.v1.ListPeeringRoutesResponse;
+
+                    /**
+                     * Encodes the specified ListPeeringRoutesResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListPeeringRoutesResponse.verify|verify} messages.
+                     * @param message ListPeeringRoutesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListPeeringRoutesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListPeeringRoutesResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListPeeringRoutesResponse.verify|verify} messages.
+                     * @param message ListPeeringRoutesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListPeeringRoutesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListPeeringRoutesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListPeeringRoutesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListPeeringRoutesResponse;
+
+                    /**
+                     * Decodes a ListPeeringRoutesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListPeeringRoutesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListPeeringRoutesResponse;
+
+                    /**
+                     * Verifies a ListPeeringRoutesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListPeeringRoutesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListPeeringRoutesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListPeeringRoutesResponse;
+
+                    /**
+                     * Creates a plain object from a ListPeeringRoutesResponse message. Also converts values to other types if specified.
+                     * @param message ListPeeringRoutesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListPeeringRoutesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListPeeringRoutesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListPeeringRoutesResponse
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -4663,6 +8971,763 @@ export namespace google {
 
                     /**
                      * Gets the default type url for DeleteNetworkPolicyRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListManagementDnsZoneBindingsRequest. */
+                interface IListManagementDnsZoneBindingsRequest {
+
+                    /** ListManagementDnsZoneBindingsRequest parent */
+                    parent?: (string|null);
+
+                    /** ListManagementDnsZoneBindingsRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListManagementDnsZoneBindingsRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListManagementDnsZoneBindingsRequest filter */
+                    filter?: (string|null);
+
+                    /** ListManagementDnsZoneBindingsRequest orderBy */
+                    orderBy?: (string|null);
+                }
+
+                /** Represents a ListManagementDnsZoneBindingsRequest. */
+                class ListManagementDnsZoneBindingsRequest implements IListManagementDnsZoneBindingsRequest {
+
+                    /**
+                     * Constructs a new ListManagementDnsZoneBindingsRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsRequest);
+
+                    /** ListManagementDnsZoneBindingsRequest parent. */
+                    public parent: string;
+
+                    /** ListManagementDnsZoneBindingsRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListManagementDnsZoneBindingsRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListManagementDnsZoneBindingsRequest filter. */
+                    public filter: string;
+
+                    /** ListManagementDnsZoneBindingsRequest orderBy. */
+                    public orderBy: string;
+
+                    /**
+                     * Creates a new ListManagementDnsZoneBindingsRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListManagementDnsZoneBindingsRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsRequest): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest;
+
+                    /**
+                     * Encodes the specified ListManagementDnsZoneBindingsRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest.verify|verify} messages.
+                     * @param message ListManagementDnsZoneBindingsRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListManagementDnsZoneBindingsRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest.verify|verify} messages.
+                     * @param message ListManagementDnsZoneBindingsRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListManagementDnsZoneBindingsRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListManagementDnsZoneBindingsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest;
+
+                    /**
+                     * Decodes a ListManagementDnsZoneBindingsRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListManagementDnsZoneBindingsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest;
+
+                    /**
+                     * Verifies a ListManagementDnsZoneBindingsRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListManagementDnsZoneBindingsRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListManagementDnsZoneBindingsRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest;
+
+                    /**
+                     * Creates a plain object from a ListManagementDnsZoneBindingsRequest message. Also converts values to other types if specified.
+                     * @param message ListManagementDnsZoneBindingsRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListManagementDnsZoneBindingsRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListManagementDnsZoneBindingsRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListManagementDnsZoneBindingsResponse. */
+                interface IListManagementDnsZoneBindingsResponse {
+
+                    /** ListManagementDnsZoneBindingsResponse managementDnsZoneBindings */
+                    managementDnsZoneBindings?: (google.cloud.vmwareengine.v1.IManagementDnsZoneBinding[]|null);
+
+                    /** ListManagementDnsZoneBindingsResponse nextPageToken */
+                    nextPageToken?: (string|null);
+
+                    /** ListManagementDnsZoneBindingsResponse unreachable */
+                    unreachable?: (string[]|null);
+                }
+
+                /** Represents a ListManagementDnsZoneBindingsResponse. */
+                class ListManagementDnsZoneBindingsResponse implements IListManagementDnsZoneBindingsResponse {
+
+                    /**
+                     * Constructs a new ListManagementDnsZoneBindingsResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsResponse);
+
+                    /** ListManagementDnsZoneBindingsResponse managementDnsZoneBindings. */
+                    public managementDnsZoneBindings: google.cloud.vmwareengine.v1.IManagementDnsZoneBinding[];
+
+                    /** ListManagementDnsZoneBindingsResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /** ListManagementDnsZoneBindingsResponse unreachable. */
+                    public unreachable: string[];
+
+                    /**
+                     * Creates a new ListManagementDnsZoneBindingsResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListManagementDnsZoneBindingsResponse instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsResponse): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse;
+
+                    /**
+                     * Encodes the specified ListManagementDnsZoneBindingsResponse message. Does not implicitly {@link google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse.verify|verify} messages.
+                     * @param message ListManagementDnsZoneBindingsResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListManagementDnsZoneBindingsResponse message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse.verify|verify} messages.
+                     * @param message ListManagementDnsZoneBindingsResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IListManagementDnsZoneBindingsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListManagementDnsZoneBindingsResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListManagementDnsZoneBindingsResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse;
+
+                    /**
+                     * Decodes a ListManagementDnsZoneBindingsResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListManagementDnsZoneBindingsResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse;
+
+                    /**
+                     * Verifies a ListManagementDnsZoneBindingsResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListManagementDnsZoneBindingsResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListManagementDnsZoneBindingsResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse;
+
+                    /**
+                     * Creates a plain object from a ListManagementDnsZoneBindingsResponse message. Also converts values to other types if specified.
+                     * @param message ListManagementDnsZoneBindingsResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ListManagementDnsZoneBindingsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListManagementDnsZoneBindingsResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListManagementDnsZoneBindingsResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetManagementDnsZoneBindingRequest. */
+                interface IGetManagementDnsZoneBindingRequest {
+
+                    /** GetManagementDnsZoneBindingRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetManagementDnsZoneBindingRequest. */
+                class GetManagementDnsZoneBindingRequest implements IGetManagementDnsZoneBindingRequest {
+
+                    /**
+                     * Constructs a new GetManagementDnsZoneBindingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetManagementDnsZoneBindingRequest);
+
+                    /** GetManagementDnsZoneBindingRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetManagementDnsZoneBindingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetManagementDnsZoneBindingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetManagementDnsZoneBindingRequest): google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Encodes the specified GetManagementDnsZoneBindingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message GetManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetManagementDnsZoneBindingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message GetManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetManagementDnsZoneBindingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Decodes a GetManagementDnsZoneBindingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Verifies a GetManagementDnsZoneBindingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetManagementDnsZoneBindingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetManagementDnsZoneBindingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Creates a plain object from a GetManagementDnsZoneBindingRequest message. Also converts values to other types if specified.
+                     * @param message GetManagementDnsZoneBindingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetManagementDnsZoneBindingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetManagementDnsZoneBindingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetManagementDnsZoneBindingRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CreateManagementDnsZoneBindingRequest. */
+                interface ICreateManagementDnsZoneBindingRequest {
+
+                    /** CreateManagementDnsZoneBindingRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateManagementDnsZoneBindingRequest managementDnsZoneBinding */
+                    managementDnsZoneBinding?: (google.cloud.vmwareengine.v1.IManagementDnsZoneBinding|null);
+
+                    /** CreateManagementDnsZoneBindingRequest managementDnsZoneBindingId */
+                    managementDnsZoneBindingId?: (string|null);
+
+                    /** CreateManagementDnsZoneBindingRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateManagementDnsZoneBindingRequest. */
+                class CreateManagementDnsZoneBindingRequest implements ICreateManagementDnsZoneBindingRequest {
+
+                    /**
+                     * Constructs a new CreateManagementDnsZoneBindingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ICreateManagementDnsZoneBindingRequest);
+
+                    /** CreateManagementDnsZoneBindingRequest parent. */
+                    public parent: string;
+
+                    /** CreateManagementDnsZoneBindingRequest managementDnsZoneBinding. */
+                    public managementDnsZoneBinding?: (google.cloud.vmwareengine.v1.IManagementDnsZoneBinding|null);
+
+                    /** CreateManagementDnsZoneBindingRequest managementDnsZoneBindingId. */
+                    public managementDnsZoneBindingId: string;
+
+                    /** CreateManagementDnsZoneBindingRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CreateManagementDnsZoneBindingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateManagementDnsZoneBindingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ICreateManagementDnsZoneBindingRequest): google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Encodes the specified CreateManagementDnsZoneBindingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message CreateManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ICreateManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateManagementDnsZoneBindingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message CreateManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ICreateManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateManagementDnsZoneBindingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Decodes a CreateManagementDnsZoneBindingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Verifies a CreateManagementDnsZoneBindingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateManagementDnsZoneBindingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateManagementDnsZoneBindingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Creates a plain object from a CreateManagementDnsZoneBindingRequest message. Also converts values to other types if specified.
+                     * @param message CreateManagementDnsZoneBindingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.CreateManagementDnsZoneBindingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateManagementDnsZoneBindingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateManagementDnsZoneBindingRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateManagementDnsZoneBindingRequest. */
+                interface IUpdateManagementDnsZoneBindingRequest {
+
+                    /** UpdateManagementDnsZoneBindingRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateManagementDnsZoneBindingRequest managementDnsZoneBinding */
+                    managementDnsZoneBinding?: (google.cloud.vmwareengine.v1.IManagementDnsZoneBinding|null);
+
+                    /** UpdateManagementDnsZoneBindingRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateManagementDnsZoneBindingRequest. */
+                class UpdateManagementDnsZoneBindingRequest implements IUpdateManagementDnsZoneBindingRequest {
+
+                    /**
+                     * Constructs a new UpdateManagementDnsZoneBindingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IUpdateManagementDnsZoneBindingRequest);
+
+                    /** UpdateManagementDnsZoneBindingRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateManagementDnsZoneBindingRequest managementDnsZoneBinding. */
+                    public managementDnsZoneBinding?: (google.cloud.vmwareengine.v1.IManagementDnsZoneBinding|null);
+
+                    /** UpdateManagementDnsZoneBindingRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateManagementDnsZoneBindingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateManagementDnsZoneBindingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IUpdateManagementDnsZoneBindingRequest): google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Encodes the specified UpdateManagementDnsZoneBindingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message UpdateManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IUpdateManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateManagementDnsZoneBindingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message UpdateManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IUpdateManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateManagementDnsZoneBindingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Decodes an UpdateManagementDnsZoneBindingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Verifies an UpdateManagementDnsZoneBindingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateManagementDnsZoneBindingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateManagementDnsZoneBindingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateManagementDnsZoneBindingRequest message. Also converts values to other types if specified.
+                     * @param message UpdateManagementDnsZoneBindingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.UpdateManagementDnsZoneBindingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateManagementDnsZoneBindingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateManagementDnsZoneBindingRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteManagementDnsZoneBindingRequest. */
+                interface IDeleteManagementDnsZoneBindingRequest {
+
+                    /** DeleteManagementDnsZoneBindingRequest name */
+                    name?: (string|null);
+
+                    /** DeleteManagementDnsZoneBindingRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteManagementDnsZoneBindingRequest. */
+                class DeleteManagementDnsZoneBindingRequest implements IDeleteManagementDnsZoneBindingRequest {
+
+                    /**
+                     * Constructs a new DeleteManagementDnsZoneBindingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDeleteManagementDnsZoneBindingRequest);
+
+                    /** DeleteManagementDnsZoneBindingRequest name. */
+                    public name: string;
+
+                    /** DeleteManagementDnsZoneBindingRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteManagementDnsZoneBindingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteManagementDnsZoneBindingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDeleteManagementDnsZoneBindingRequest): google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Encodes the specified DeleteManagementDnsZoneBindingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message DeleteManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDeleteManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteManagementDnsZoneBindingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message DeleteManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDeleteManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteManagementDnsZoneBindingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Decodes a DeleteManagementDnsZoneBindingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Verifies a DeleteManagementDnsZoneBindingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteManagementDnsZoneBindingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteManagementDnsZoneBindingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteManagementDnsZoneBindingRequest message. Also converts values to other types if specified.
+                     * @param message DeleteManagementDnsZoneBindingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DeleteManagementDnsZoneBindingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteManagementDnsZoneBindingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteManagementDnsZoneBindingRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a RepairManagementDnsZoneBindingRequest. */
+                interface IRepairManagementDnsZoneBindingRequest {
+
+                    /** RepairManagementDnsZoneBindingRequest name */
+                    name?: (string|null);
+
+                    /** RepairManagementDnsZoneBindingRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a RepairManagementDnsZoneBindingRequest. */
+                class RepairManagementDnsZoneBindingRequest implements IRepairManagementDnsZoneBindingRequest {
+
+                    /**
+                     * Constructs a new RepairManagementDnsZoneBindingRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IRepairManagementDnsZoneBindingRequest);
+
+                    /** RepairManagementDnsZoneBindingRequest name. */
+                    public name: string;
+
+                    /** RepairManagementDnsZoneBindingRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new RepairManagementDnsZoneBindingRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns RepairManagementDnsZoneBindingRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IRepairManagementDnsZoneBindingRequest): google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Encodes the specified RepairManagementDnsZoneBindingRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message RepairManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IRepairManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified RepairManagementDnsZoneBindingRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest.verify|verify} messages.
+                     * @param message RepairManagementDnsZoneBindingRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IRepairManagementDnsZoneBindingRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a RepairManagementDnsZoneBindingRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns RepairManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Decodes a RepairManagementDnsZoneBindingRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns RepairManagementDnsZoneBindingRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Verifies a RepairManagementDnsZoneBindingRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a RepairManagementDnsZoneBindingRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns RepairManagementDnsZoneBindingRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest;
+
+                    /**
+                     * Creates a plain object from a RepairManagementDnsZoneBindingRequest message. Also converts values to other types if specified.
+                     * @param message RepairManagementDnsZoneBindingRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.RepairManagementDnsZoneBindingRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this RepairManagementDnsZoneBindingRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for RepairManagementDnsZoneBindingRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -6195,6 +11260,321 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a GrantDnsBindPermissionRequest. */
+                interface IGrantDnsBindPermissionRequest {
+
+                    /** GrantDnsBindPermissionRequest name */
+                    name?: (string|null);
+
+                    /** GrantDnsBindPermissionRequest principal */
+                    principal?: (google.cloud.vmwareengine.v1.IPrincipal|null);
+
+                    /** GrantDnsBindPermissionRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a GrantDnsBindPermissionRequest. */
+                class GrantDnsBindPermissionRequest implements IGrantDnsBindPermissionRequest {
+
+                    /**
+                     * Constructs a new GrantDnsBindPermissionRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGrantDnsBindPermissionRequest);
+
+                    /** GrantDnsBindPermissionRequest name. */
+                    public name: string;
+
+                    /** GrantDnsBindPermissionRequest principal. */
+                    public principal?: (google.cloud.vmwareengine.v1.IPrincipal|null);
+
+                    /** GrantDnsBindPermissionRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new GrantDnsBindPermissionRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GrantDnsBindPermissionRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGrantDnsBindPermissionRequest): google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest;
+
+                    /**
+                     * Encodes the specified GrantDnsBindPermissionRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest.verify|verify} messages.
+                     * @param message GrantDnsBindPermissionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGrantDnsBindPermissionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GrantDnsBindPermissionRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest.verify|verify} messages.
+                     * @param message GrantDnsBindPermissionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGrantDnsBindPermissionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GrantDnsBindPermissionRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GrantDnsBindPermissionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest;
+
+                    /**
+                     * Decodes a GrantDnsBindPermissionRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GrantDnsBindPermissionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest;
+
+                    /**
+                     * Verifies a GrantDnsBindPermissionRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GrantDnsBindPermissionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GrantDnsBindPermissionRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest;
+
+                    /**
+                     * Creates a plain object from a GrantDnsBindPermissionRequest message. Also converts values to other types if specified.
+                     * @param message GrantDnsBindPermissionRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GrantDnsBindPermissionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GrantDnsBindPermissionRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GrantDnsBindPermissionRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a RevokeDnsBindPermissionRequest. */
+                interface IRevokeDnsBindPermissionRequest {
+
+                    /** RevokeDnsBindPermissionRequest name */
+                    name?: (string|null);
+
+                    /** RevokeDnsBindPermissionRequest principal */
+                    principal?: (google.cloud.vmwareengine.v1.IPrincipal|null);
+
+                    /** RevokeDnsBindPermissionRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a RevokeDnsBindPermissionRequest. */
+                class RevokeDnsBindPermissionRequest implements IRevokeDnsBindPermissionRequest {
+
+                    /**
+                     * Constructs a new RevokeDnsBindPermissionRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IRevokeDnsBindPermissionRequest);
+
+                    /** RevokeDnsBindPermissionRequest name. */
+                    public name: string;
+
+                    /** RevokeDnsBindPermissionRequest principal. */
+                    public principal?: (google.cloud.vmwareengine.v1.IPrincipal|null);
+
+                    /** RevokeDnsBindPermissionRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new RevokeDnsBindPermissionRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns RevokeDnsBindPermissionRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IRevokeDnsBindPermissionRequest): google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest;
+
+                    /**
+                     * Encodes the specified RevokeDnsBindPermissionRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest.verify|verify} messages.
+                     * @param message RevokeDnsBindPermissionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IRevokeDnsBindPermissionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified RevokeDnsBindPermissionRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest.verify|verify} messages.
+                     * @param message RevokeDnsBindPermissionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IRevokeDnsBindPermissionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a RevokeDnsBindPermissionRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns RevokeDnsBindPermissionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest;
+
+                    /**
+                     * Decodes a RevokeDnsBindPermissionRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns RevokeDnsBindPermissionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest;
+
+                    /**
+                     * Verifies a RevokeDnsBindPermissionRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a RevokeDnsBindPermissionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns RevokeDnsBindPermissionRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest;
+
+                    /**
+                     * Creates a plain object from a RevokeDnsBindPermissionRequest message. Also converts values to other types if specified.
+                     * @param message RevokeDnsBindPermissionRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.RevokeDnsBindPermissionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this RevokeDnsBindPermissionRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for RevokeDnsBindPermissionRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetDnsBindPermissionRequest. */
+                interface IGetDnsBindPermissionRequest {
+
+                    /** GetDnsBindPermissionRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetDnsBindPermissionRequest. */
+                class GetDnsBindPermissionRequest implements IGetDnsBindPermissionRequest {
+
+                    /**
+                     * Constructs a new GetDnsBindPermissionRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IGetDnsBindPermissionRequest);
+
+                    /** GetDnsBindPermissionRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetDnsBindPermissionRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetDnsBindPermissionRequest instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IGetDnsBindPermissionRequest): google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest;
+
+                    /**
+                     * Encodes the specified GetDnsBindPermissionRequest message. Does not implicitly {@link google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest.verify|verify} messages.
+                     * @param message GetDnsBindPermissionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IGetDnsBindPermissionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetDnsBindPermissionRequest message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest.verify|verify} messages.
+                     * @param message GetDnsBindPermissionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IGetDnsBindPermissionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetDnsBindPermissionRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetDnsBindPermissionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest;
+
+                    /**
+                     * Decodes a GetDnsBindPermissionRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetDnsBindPermissionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest;
+
+                    /**
+                     * Verifies a GetDnsBindPermissionRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetDnsBindPermissionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetDnsBindPermissionRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest;
+
+                    /**
+                     * Creates a plain object from a GetDnsBindPermissionRequest message. Also converts values to other types if specified.
+                     * @param message GetDnsBindPermissionRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.GetDnsBindPermissionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetDnsBindPermissionRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetDnsBindPermissionRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of a NetworkConfig. */
                 interface INetworkConfig {
 
@@ -6209,6 +11589,9 @@ export namespace google {
 
                     /** NetworkConfig managementIpAddressLayoutVersion */
                     managementIpAddressLayoutVersion?: (number|null);
+
+                    /** NetworkConfig dnsServerIp */
+                    dnsServerIp?: (string|null);
                 }
 
                 /** Represents a NetworkConfig. */
@@ -6231,6 +11614,9 @@ export namespace google {
 
                     /** NetworkConfig managementIpAddressLayoutVersion. */
                     public managementIpAddressLayoutVersion: number;
+
+                    /** NetworkConfig dnsServerIp. */
+                    public dnsServerIp: string;
 
                     /**
                      * Creates a new NetworkConfig instance using the specified properties.
@@ -6407,6 +11793,109 @@ export namespace google {
 
                     /**
                      * Gets the default type url for NodeTypeConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a StretchedClusterConfig. */
+                interface IStretchedClusterConfig {
+
+                    /** StretchedClusterConfig preferredLocation */
+                    preferredLocation?: (string|null);
+
+                    /** StretchedClusterConfig secondaryLocation */
+                    secondaryLocation?: (string|null);
+                }
+
+                /** Represents a StretchedClusterConfig. */
+                class StretchedClusterConfig implements IStretchedClusterConfig {
+
+                    /**
+                     * Constructs a new StretchedClusterConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IStretchedClusterConfig);
+
+                    /** StretchedClusterConfig preferredLocation. */
+                    public preferredLocation: string;
+
+                    /** StretchedClusterConfig secondaryLocation. */
+                    public secondaryLocation: string;
+
+                    /**
+                     * Creates a new StretchedClusterConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns StretchedClusterConfig instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IStretchedClusterConfig): google.cloud.vmwareengine.v1.StretchedClusterConfig;
+
+                    /**
+                     * Encodes the specified StretchedClusterConfig message. Does not implicitly {@link google.cloud.vmwareengine.v1.StretchedClusterConfig.verify|verify} messages.
+                     * @param message StretchedClusterConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IStretchedClusterConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified StretchedClusterConfig message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.StretchedClusterConfig.verify|verify} messages.
+                     * @param message StretchedClusterConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IStretchedClusterConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a StretchedClusterConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns StretchedClusterConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.StretchedClusterConfig;
+
+                    /**
+                     * Decodes a StretchedClusterConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns StretchedClusterConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.StretchedClusterConfig;
+
+                    /**
+                     * Verifies a StretchedClusterConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a StretchedClusterConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns StretchedClusterConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.StretchedClusterConfig;
+
+                    /**
+                     * Creates a plain object from a StretchedClusterConfig message. Also converts values to other types if specified.
+                     * @param message StretchedClusterConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.StretchedClusterConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this StretchedClusterConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for StretchedClusterConfig
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -6609,6 +12098,9 @@ export namespace google {
 
                         /** ManagementCluster nodeTypeConfigs */
                         nodeTypeConfigs?: ({ [k: string]: google.cloud.vmwareengine.v1.INodeTypeConfig }|null);
+
+                        /** ManagementCluster stretchedClusterConfig */
+                        stretchedClusterConfig?: (google.cloud.vmwareengine.v1.IStretchedClusterConfig|null);
                     }
 
                     /** Represents a ManagementCluster. */
@@ -6625,6 +12117,9 @@ export namespace google {
 
                         /** ManagementCluster nodeTypeConfigs. */
                         public nodeTypeConfigs: { [k: string]: google.cloud.vmwareengine.v1.INodeTypeConfig };
+
+                        /** ManagementCluster stretchedClusterConfig. */
+                        public stretchedClusterConfig?: (google.cloud.vmwareengine.v1.IStretchedClusterConfig|null);
 
                         /**
                          * Creates a new ManagementCluster instance using the specified properties.
@@ -6707,7 +12202,8 @@ export namespace google {
                     /** Type enum. */
                     enum Type {
                         STANDARD = 0,
-                        TIME_LIMITED = 1
+                        TIME_LIMITED = 1,
+                        STRETCHED = 2
                     }
                 }
 
@@ -6729,11 +12225,17 @@ export namespace google {
                     /** Cluster management */
                     management?: (boolean|null);
 
+                    /** Cluster autoscalingSettings */
+                    autoscalingSettings?: (google.cloud.vmwareengine.v1.IAutoscalingSettings|null);
+
                     /** Cluster uid */
                     uid?: (string|null);
 
                     /** Cluster nodeTypeConfigs */
                     nodeTypeConfigs?: ({ [k: string]: google.cloud.vmwareengine.v1.INodeTypeConfig }|null);
+
+                    /** Cluster stretchedClusterConfig */
+                    stretchedClusterConfig?: (google.cloud.vmwareengine.v1.IStretchedClusterConfig|null);
                 }
 
                 /** Represents a Cluster. */
@@ -6760,11 +12262,17 @@ export namespace google {
                     /** Cluster management. */
                     public management: boolean;
 
+                    /** Cluster autoscalingSettings. */
+                    public autoscalingSettings?: (google.cloud.vmwareengine.v1.IAutoscalingSettings|null);
+
                     /** Cluster uid. */
                     public uid: string;
 
                     /** Cluster nodeTypeConfigs. */
                     public nodeTypeConfigs: { [k: string]: google.cloud.vmwareengine.v1.INodeTypeConfig };
+
+                    /** Cluster stretchedClusterConfig. */
+                    public stretchedClusterConfig?: (google.cloud.vmwareengine.v1.IStretchedClusterConfig|null);
 
                     /**
                      * Creates a new Cluster instance using the specified properties.
@@ -6857,6 +12365,302 @@ export namespace google {
                     }
                 }
 
+                /** Properties of a Node. */
+                interface INode {
+
+                    /** Node name */
+                    name?: (string|null);
+
+                    /** Node fqdn */
+                    fqdn?: (string|null);
+
+                    /** Node internalIp */
+                    internalIp?: (string|null);
+
+                    /** Node nodeTypeId */
+                    nodeTypeId?: (string|null);
+
+                    /** Node version */
+                    version?: (string|null);
+
+                    /** Node customCoreCount */
+                    customCoreCount?: (number|Long|string|null);
+
+                    /** Node state */
+                    state?: (google.cloud.vmwareengine.v1.Node.State|keyof typeof google.cloud.vmwareengine.v1.Node.State|null);
+                }
+
+                /** Represents a Node. */
+                class Node implements INode {
+
+                    /**
+                     * Constructs a new Node.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.INode);
+
+                    /** Node name. */
+                    public name: string;
+
+                    /** Node fqdn. */
+                    public fqdn: string;
+
+                    /** Node internalIp. */
+                    public internalIp: string;
+
+                    /** Node nodeTypeId. */
+                    public nodeTypeId: string;
+
+                    /** Node version. */
+                    public version: string;
+
+                    /** Node customCoreCount. */
+                    public customCoreCount: (number|Long|string);
+
+                    /** Node state. */
+                    public state: (google.cloud.vmwareengine.v1.Node.State|keyof typeof google.cloud.vmwareengine.v1.Node.State);
+
+                    /**
+                     * Creates a new Node instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns Node instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.INode): google.cloud.vmwareengine.v1.Node;
+
+                    /**
+                     * Encodes the specified Node message. Does not implicitly {@link google.cloud.vmwareengine.v1.Node.verify|verify} messages.
+                     * @param message Node message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.INode, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified Node message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.Node.verify|verify} messages.
+                     * @param message Node message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.INode, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a Node message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns Node
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.Node;
+
+                    /**
+                     * Decodes a Node message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Node
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.Node;
+
+                    /**
+                     * Verifies a Node message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a Node message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns Node
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.Node;
+
+                    /**
+                     * Creates a plain object from a Node message. Also converts values to other types if specified.
+                     * @param message Node
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.Node, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this Node to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Node
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace Node {
+
+                    /** State enum. */
+                    enum State {
+                        STATE_UNSPECIFIED = 0,
+                        ACTIVE = 1,
+                        CREATING = 2,
+                        FAILED = 3,
+                        UPGRADING = 4
+                    }
+                }
+
+                /** Properties of an ExternalAddress. */
+                interface IExternalAddress {
+
+                    /** ExternalAddress name */
+                    name?: (string|null);
+
+                    /** ExternalAddress createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAddress updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAddress internalIp */
+                    internalIp?: (string|null);
+
+                    /** ExternalAddress externalIp */
+                    externalIp?: (string|null);
+
+                    /** ExternalAddress state */
+                    state?: (google.cloud.vmwareengine.v1.ExternalAddress.State|keyof typeof google.cloud.vmwareengine.v1.ExternalAddress.State|null);
+
+                    /** ExternalAddress uid */
+                    uid?: (string|null);
+
+                    /** ExternalAddress description */
+                    description?: (string|null);
+                }
+
+                /** Represents an ExternalAddress. */
+                class ExternalAddress implements IExternalAddress {
+
+                    /**
+                     * Constructs a new ExternalAddress.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IExternalAddress);
+
+                    /** ExternalAddress name. */
+                    public name: string;
+
+                    /** ExternalAddress createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAddress updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAddress internalIp. */
+                    public internalIp: string;
+
+                    /** ExternalAddress externalIp. */
+                    public externalIp: string;
+
+                    /** ExternalAddress state. */
+                    public state: (google.cloud.vmwareengine.v1.ExternalAddress.State|keyof typeof google.cloud.vmwareengine.v1.ExternalAddress.State);
+
+                    /** ExternalAddress uid. */
+                    public uid: string;
+
+                    /** ExternalAddress description. */
+                    public description: string;
+
+                    /**
+                     * Creates a new ExternalAddress instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ExternalAddress instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IExternalAddress): google.cloud.vmwareengine.v1.ExternalAddress;
+
+                    /**
+                     * Encodes the specified ExternalAddress message. Does not implicitly {@link google.cloud.vmwareengine.v1.ExternalAddress.verify|verify} messages.
+                     * @param message ExternalAddress message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IExternalAddress, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ExternalAddress message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ExternalAddress.verify|verify} messages.
+                     * @param message ExternalAddress message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IExternalAddress, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an ExternalAddress message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ExternalAddress
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ExternalAddress;
+
+                    /**
+                     * Decodes an ExternalAddress message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ExternalAddress
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ExternalAddress;
+
+                    /**
+                     * Verifies an ExternalAddress message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an ExternalAddress message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ExternalAddress
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ExternalAddress;
+
+                    /**
+                     * Creates a plain object from an ExternalAddress message. Also converts values to other types if specified.
+                     * @param message ExternalAddress
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ExternalAddress, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ExternalAddress to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ExternalAddress
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace ExternalAddress {
+
+                    /** State enum. */
+                    enum State {
+                        STATE_UNSPECIFIED = 0,
+                        ACTIVE = 1,
+                        CREATING = 2,
+                        UPDATING = 3,
+                        DELETING = 4
+                    }
+                }
+
                 /** Properties of a Subnet. */
                 interface ISubnet {
 
@@ -6874,6 +12678,9 @@ export namespace google {
 
                     /** Subnet state */
                     state?: (google.cloud.vmwareengine.v1.Subnet.State|keyof typeof google.cloud.vmwareengine.v1.Subnet.State|null);
+
+                    /** Subnet vlanId */
+                    vlanId?: (number|null);
                 }
 
                 /** Represents a Subnet. */
@@ -6899,6 +12706,9 @@ export namespace google {
 
                     /** Subnet state. */
                     public state: (google.cloud.vmwareengine.v1.Subnet.State|keyof typeof google.cloud.vmwareengine.v1.Subnet.State);
+
+                    /** Subnet vlanId. */
+                    public vlanId: number;
 
                     /**
                      * Creates a new Subnet instance using the specified properties.
@@ -6992,6 +12802,465 @@ export namespace google {
                     }
                 }
 
+                /** Properties of an ExternalAccessRule. */
+                interface IExternalAccessRule {
+
+                    /** ExternalAccessRule name */
+                    name?: (string|null);
+
+                    /** ExternalAccessRule createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAccessRule updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAccessRule description */
+                    description?: (string|null);
+
+                    /** ExternalAccessRule priority */
+                    priority?: (number|null);
+
+                    /** ExternalAccessRule action */
+                    action?: (google.cloud.vmwareengine.v1.ExternalAccessRule.Action|keyof typeof google.cloud.vmwareengine.v1.ExternalAccessRule.Action|null);
+
+                    /** ExternalAccessRule ipProtocol */
+                    ipProtocol?: (string|null);
+
+                    /** ExternalAccessRule sourceIpRanges */
+                    sourceIpRanges?: (google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange[]|null);
+
+                    /** ExternalAccessRule sourcePorts */
+                    sourcePorts?: (string[]|null);
+
+                    /** ExternalAccessRule destinationIpRanges */
+                    destinationIpRanges?: (google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange[]|null);
+
+                    /** ExternalAccessRule destinationPorts */
+                    destinationPorts?: (string[]|null);
+
+                    /** ExternalAccessRule state */
+                    state?: (google.cloud.vmwareengine.v1.ExternalAccessRule.State|keyof typeof google.cloud.vmwareengine.v1.ExternalAccessRule.State|null);
+
+                    /** ExternalAccessRule uid */
+                    uid?: (string|null);
+                }
+
+                /** Represents an ExternalAccessRule. */
+                class ExternalAccessRule implements IExternalAccessRule {
+
+                    /**
+                     * Constructs a new ExternalAccessRule.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IExternalAccessRule);
+
+                    /** ExternalAccessRule name. */
+                    public name: string;
+
+                    /** ExternalAccessRule createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAccessRule updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ExternalAccessRule description. */
+                    public description: string;
+
+                    /** ExternalAccessRule priority. */
+                    public priority: number;
+
+                    /** ExternalAccessRule action. */
+                    public action: (google.cloud.vmwareengine.v1.ExternalAccessRule.Action|keyof typeof google.cloud.vmwareengine.v1.ExternalAccessRule.Action);
+
+                    /** ExternalAccessRule ipProtocol. */
+                    public ipProtocol: string;
+
+                    /** ExternalAccessRule sourceIpRanges. */
+                    public sourceIpRanges: google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange[];
+
+                    /** ExternalAccessRule sourcePorts. */
+                    public sourcePorts: string[];
+
+                    /** ExternalAccessRule destinationIpRanges. */
+                    public destinationIpRanges: google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange[];
+
+                    /** ExternalAccessRule destinationPorts. */
+                    public destinationPorts: string[];
+
+                    /** ExternalAccessRule state. */
+                    public state: (google.cloud.vmwareengine.v1.ExternalAccessRule.State|keyof typeof google.cloud.vmwareengine.v1.ExternalAccessRule.State);
+
+                    /** ExternalAccessRule uid. */
+                    public uid: string;
+
+                    /**
+                     * Creates a new ExternalAccessRule instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ExternalAccessRule instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IExternalAccessRule): google.cloud.vmwareengine.v1.ExternalAccessRule;
+
+                    /**
+                     * Encodes the specified ExternalAccessRule message. Does not implicitly {@link google.cloud.vmwareengine.v1.ExternalAccessRule.verify|verify} messages.
+                     * @param message ExternalAccessRule message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IExternalAccessRule, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ExternalAccessRule message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ExternalAccessRule.verify|verify} messages.
+                     * @param message ExternalAccessRule message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IExternalAccessRule, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an ExternalAccessRule message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ExternalAccessRule
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ExternalAccessRule;
+
+                    /**
+                     * Decodes an ExternalAccessRule message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ExternalAccessRule
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ExternalAccessRule;
+
+                    /**
+                     * Verifies an ExternalAccessRule message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an ExternalAccessRule message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ExternalAccessRule
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ExternalAccessRule;
+
+                    /**
+                     * Creates a plain object from an ExternalAccessRule message. Also converts values to other types if specified.
+                     * @param message ExternalAccessRule
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ExternalAccessRule, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ExternalAccessRule to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ExternalAccessRule
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace ExternalAccessRule {
+
+                    /** Action enum. */
+                    enum Action {
+                        ACTION_UNSPECIFIED = 0,
+                        ALLOW = 1,
+                        DENY = 2
+                    }
+
+                    /** Properties of an IpRange. */
+                    interface IIpRange {
+
+                        /** IpRange ipAddress */
+                        ipAddress?: (string|null);
+
+                        /** IpRange ipAddressRange */
+                        ipAddressRange?: (string|null);
+
+                        /** IpRange externalAddress */
+                        externalAddress?: (string|null);
+                    }
+
+                    /** Represents an IpRange. */
+                    class IpRange implements IIpRange {
+
+                        /**
+                         * Constructs a new IpRange.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange);
+
+                        /** IpRange ipAddress. */
+                        public ipAddress?: (string|null);
+
+                        /** IpRange ipAddressRange. */
+                        public ipAddressRange?: (string|null);
+
+                        /** IpRange externalAddress. */
+                        public externalAddress?: (string|null);
+
+                        /** IpRange ipRange. */
+                        public ipRange?: ("ipAddress"|"ipAddressRange"|"externalAddress");
+
+                        /**
+                         * Creates a new IpRange instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns IpRange instance
+                         */
+                        public static create(properties?: google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange): google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange;
+
+                        /**
+                         * Encodes the specified IpRange message. Does not implicitly {@link google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.verify|verify} messages.
+                         * @param message IpRange message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified IpRange message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange.verify|verify} messages.
+                         * @param message IpRange message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.vmwareengine.v1.ExternalAccessRule.IIpRange, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an IpRange message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns IpRange
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange;
+
+                        /**
+                         * Decodes an IpRange message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns IpRange
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange;
+
+                        /**
+                         * Verifies an IpRange message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an IpRange message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns IpRange
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange;
+
+                        /**
+                         * Creates a plain object from an IpRange message. Also converts values to other types if specified.
+                         * @param message IpRange
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.vmwareengine.v1.ExternalAccessRule.IpRange, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this IpRange to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for IpRange
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** State enum. */
+                    enum State {
+                        STATE_UNSPECIFIED = 0,
+                        ACTIVE = 1,
+                        CREATING = 2,
+                        UPDATING = 3,
+                        DELETING = 4
+                    }
+                }
+
+                /** Properties of a LoggingServer. */
+                interface ILoggingServer {
+
+                    /** LoggingServer name */
+                    name?: (string|null);
+
+                    /** LoggingServer createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** LoggingServer updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** LoggingServer hostname */
+                    hostname?: (string|null);
+
+                    /** LoggingServer port */
+                    port?: (number|null);
+
+                    /** LoggingServer protocol */
+                    protocol?: (google.cloud.vmwareengine.v1.LoggingServer.Protocol|keyof typeof google.cloud.vmwareengine.v1.LoggingServer.Protocol|null);
+
+                    /** LoggingServer sourceType */
+                    sourceType?: (google.cloud.vmwareengine.v1.LoggingServer.SourceType|keyof typeof google.cloud.vmwareengine.v1.LoggingServer.SourceType|null);
+
+                    /** LoggingServer uid */
+                    uid?: (string|null);
+                }
+
+                /** Represents a LoggingServer. */
+                class LoggingServer implements ILoggingServer {
+
+                    /**
+                     * Constructs a new LoggingServer.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ILoggingServer);
+
+                    /** LoggingServer name. */
+                    public name: string;
+
+                    /** LoggingServer createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** LoggingServer updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** LoggingServer hostname. */
+                    public hostname: string;
+
+                    /** LoggingServer port. */
+                    public port: number;
+
+                    /** LoggingServer protocol. */
+                    public protocol: (google.cloud.vmwareengine.v1.LoggingServer.Protocol|keyof typeof google.cloud.vmwareengine.v1.LoggingServer.Protocol);
+
+                    /** LoggingServer sourceType. */
+                    public sourceType: (google.cloud.vmwareengine.v1.LoggingServer.SourceType|keyof typeof google.cloud.vmwareengine.v1.LoggingServer.SourceType);
+
+                    /** LoggingServer uid. */
+                    public uid: string;
+
+                    /**
+                     * Creates a new LoggingServer instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns LoggingServer instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ILoggingServer): google.cloud.vmwareengine.v1.LoggingServer;
+
+                    /**
+                     * Encodes the specified LoggingServer message. Does not implicitly {@link google.cloud.vmwareengine.v1.LoggingServer.verify|verify} messages.
+                     * @param message LoggingServer message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ILoggingServer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified LoggingServer message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.LoggingServer.verify|verify} messages.
+                     * @param message LoggingServer message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ILoggingServer, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a LoggingServer message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns LoggingServer
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.LoggingServer;
+
+                    /**
+                     * Decodes a LoggingServer message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns LoggingServer
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.LoggingServer;
+
+                    /**
+                     * Verifies a LoggingServer message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a LoggingServer message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns LoggingServer
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.LoggingServer;
+
+                    /**
+                     * Creates a plain object from a LoggingServer message. Also converts values to other types if specified.
+                     * @param message LoggingServer
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.LoggingServer, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this LoggingServer to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for LoggingServer
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace LoggingServer {
+
+                    /** Protocol enum. */
+                    enum Protocol {
+                        PROTOCOL_UNSPECIFIED = 0,
+                        UDP = 1,
+                        TCP = 2,
+                        TLS = 3,
+                        SSL = 4,
+                        RELP = 5
+                    }
+
+                    /** SourceType enum. */
+                    enum SourceType {
+                        SOURCE_TYPE_UNSPECIFIED = 0,
+                        ESXI = 1,
+                        VCSA = 2
+                    }
+                }
+
                 /** Properties of a NodeType. */
                 interface INodeType {
 
@@ -7018,6 +13287,15 @@ export namespace google {
 
                     /** NodeType availableCustomCoreCounts */
                     availableCustomCoreCounts?: (number[]|null);
+
+                    /** NodeType kind */
+                    kind?: (google.cloud.vmwareengine.v1.NodeType.Kind|keyof typeof google.cloud.vmwareengine.v1.NodeType.Kind|null);
+
+                    /** NodeType families */
+                    families?: (string[]|null);
+
+                    /** NodeType capabilities */
+                    capabilities?: (google.cloud.vmwareengine.v1.NodeType.Capability[]|null);
                 }
 
                 /** Represents a NodeType. */
@@ -7052,6 +13330,15 @@ export namespace google {
 
                     /** NodeType availableCustomCoreCounts. */
                     public availableCustomCoreCounts: number[];
+
+                    /** NodeType kind. */
+                    public kind: (google.cloud.vmwareengine.v1.NodeType.Kind|keyof typeof google.cloud.vmwareengine.v1.NodeType.Kind);
+
+                    /** NodeType families. */
+                    public families: string[];
+
+                    /** NodeType capabilities. */
+                    public capabilities: google.cloud.vmwareengine.v1.NodeType.Capability[];
 
                     /**
                      * Creates a new NodeType instance using the specified properties.
@@ -7129,6 +13416,22 @@ export namespace google {
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace NodeType {
+
+                    /** Kind enum. */
+                    enum Kind {
+                        KIND_UNSPECIFIED = 0,
+                        STANDARD = 1,
+                        STORAGE_ONLY = 2
+                    }
+
+                    /** Capability enum. */
+                    enum Capability {
+                        CAPABILITY_UNSPECIFIED = 0,
+                        STRETCHED_CLUSTERS = 1
+                    }
                 }
 
                 /** Properties of a Credentials. */
@@ -7487,7 +13790,8 @@ export namespace google {
                     enum State {
                         STATE_UNSPECIFIED = 0,
                         ACTIVE = 1,
-                        CREATING = 2
+                        CREATING = 2,
+                        ACTIVATING = 3
                     }
                 }
 
@@ -7738,6 +14042,801 @@ export namespace google {
                         STATE_UNSPECIFIED = 0,
                         ACTIVE = 1,
                         CREATING = 2
+                    }
+                }
+
+                /** Properties of an AutoscalingSettings. */
+                interface IAutoscalingSettings {
+
+                    /** AutoscalingSettings autoscalingPolicies */
+                    autoscalingPolicies?: ({ [k: string]: google.cloud.vmwareengine.v1.AutoscalingSettings.IAutoscalingPolicy }|null);
+
+                    /** AutoscalingSettings minClusterNodeCount */
+                    minClusterNodeCount?: (number|null);
+
+                    /** AutoscalingSettings maxClusterNodeCount */
+                    maxClusterNodeCount?: (number|null);
+
+                    /** AutoscalingSettings coolDownPeriod */
+                    coolDownPeriod?: (google.protobuf.IDuration|null);
+                }
+
+                /** Represents an AutoscalingSettings. */
+                class AutoscalingSettings implements IAutoscalingSettings {
+
+                    /**
+                     * Constructs a new AutoscalingSettings.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IAutoscalingSettings);
+
+                    /** AutoscalingSettings autoscalingPolicies. */
+                    public autoscalingPolicies: { [k: string]: google.cloud.vmwareengine.v1.AutoscalingSettings.IAutoscalingPolicy };
+
+                    /** AutoscalingSettings minClusterNodeCount. */
+                    public minClusterNodeCount: number;
+
+                    /** AutoscalingSettings maxClusterNodeCount. */
+                    public maxClusterNodeCount: number;
+
+                    /** AutoscalingSettings coolDownPeriod. */
+                    public coolDownPeriod?: (google.protobuf.IDuration|null);
+
+                    /**
+                     * Creates a new AutoscalingSettings instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AutoscalingSettings instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IAutoscalingSettings): google.cloud.vmwareengine.v1.AutoscalingSettings;
+
+                    /**
+                     * Encodes the specified AutoscalingSettings message. Does not implicitly {@link google.cloud.vmwareengine.v1.AutoscalingSettings.verify|verify} messages.
+                     * @param message AutoscalingSettings message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IAutoscalingSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AutoscalingSettings message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.AutoscalingSettings.verify|verify} messages.
+                     * @param message AutoscalingSettings message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IAutoscalingSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AutoscalingSettings message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AutoscalingSettings
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.AutoscalingSettings;
+
+                    /**
+                     * Decodes an AutoscalingSettings message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AutoscalingSettings
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.AutoscalingSettings;
+
+                    /**
+                     * Verifies an AutoscalingSettings message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AutoscalingSettings message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AutoscalingSettings
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.AutoscalingSettings;
+
+                    /**
+                     * Creates a plain object from an AutoscalingSettings message. Also converts values to other types if specified.
+                     * @param message AutoscalingSettings
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.AutoscalingSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AutoscalingSettings to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AutoscalingSettings
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace AutoscalingSettings {
+
+                    /** Properties of a Thresholds. */
+                    interface IThresholds {
+
+                        /** Thresholds scaleOut */
+                        scaleOut?: (number|null);
+
+                        /** Thresholds scaleIn */
+                        scaleIn?: (number|null);
+                    }
+
+                    /** Represents a Thresholds. */
+                    class Thresholds implements IThresholds {
+
+                        /**
+                         * Constructs a new Thresholds.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds);
+
+                        /** Thresholds scaleOut. */
+                        public scaleOut: number;
+
+                        /** Thresholds scaleIn. */
+                        public scaleIn: number;
+
+                        /**
+                         * Creates a new Thresholds instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns Thresholds instance
+                         */
+                        public static create(properties?: google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds): google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds;
+
+                        /**
+                         * Encodes the specified Thresholds message. Does not implicitly {@link google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds.verify|verify} messages.
+                         * @param message Thresholds message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified Thresholds message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds.verify|verify} messages.
+                         * @param message Thresholds message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a Thresholds message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns Thresholds
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds;
+
+                        /**
+                         * Decodes a Thresholds message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Thresholds
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds;
+
+                        /**
+                         * Verifies a Thresholds message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a Thresholds message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns Thresholds
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds;
+
+                        /**
+                         * Creates a plain object from a Thresholds message. Also converts values to other types if specified.
+                         * @param message Thresholds
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.vmwareengine.v1.AutoscalingSettings.Thresholds, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this Thresholds to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for Thresholds
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of an AutoscalingPolicy. */
+                    interface IAutoscalingPolicy {
+
+                        /** AutoscalingPolicy nodeTypeId */
+                        nodeTypeId?: (string|null);
+
+                        /** AutoscalingPolicy scaleOutSize */
+                        scaleOutSize?: (number|null);
+
+                        /** AutoscalingPolicy cpuThresholds */
+                        cpuThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /** AutoscalingPolicy grantedMemoryThresholds */
+                        grantedMemoryThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /** AutoscalingPolicy consumedMemoryThresholds */
+                        consumedMemoryThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /** AutoscalingPolicy storageThresholds */
+                        storageThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+                    }
+
+                    /** Represents an AutoscalingPolicy. */
+                    class AutoscalingPolicy implements IAutoscalingPolicy {
+
+                        /**
+                         * Constructs a new AutoscalingPolicy.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.vmwareengine.v1.AutoscalingSettings.IAutoscalingPolicy);
+
+                        /** AutoscalingPolicy nodeTypeId. */
+                        public nodeTypeId: string;
+
+                        /** AutoscalingPolicy scaleOutSize. */
+                        public scaleOutSize: number;
+
+                        /** AutoscalingPolicy cpuThresholds. */
+                        public cpuThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /** AutoscalingPolicy grantedMemoryThresholds. */
+                        public grantedMemoryThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /** AutoscalingPolicy consumedMemoryThresholds. */
+                        public consumedMemoryThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /** AutoscalingPolicy storageThresholds. */
+                        public storageThresholds?: (google.cloud.vmwareengine.v1.AutoscalingSettings.IThresholds|null);
+
+                        /**
+                         * Creates a new AutoscalingPolicy instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns AutoscalingPolicy instance
+                         */
+                        public static create(properties?: google.cloud.vmwareengine.v1.AutoscalingSettings.IAutoscalingPolicy): google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy;
+
+                        /**
+                         * Encodes the specified AutoscalingPolicy message. Does not implicitly {@link google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy.verify|verify} messages.
+                         * @param message AutoscalingPolicy message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.vmwareengine.v1.AutoscalingSettings.IAutoscalingPolicy, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified AutoscalingPolicy message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy.verify|verify} messages.
+                         * @param message AutoscalingPolicy message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.vmwareengine.v1.AutoscalingSettings.IAutoscalingPolicy, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an AutoscalingPolicy message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns AutoscalingPolicy
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy;
+
+                        /**
+                         * Decodes an AutoscalingPolicy message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns AutoscalingPolicy
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy;
+
+                        /**
+                         * Verifies an AutoscalingPolicy message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an AutoscalingPolicy message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns AutoscalingPolicy
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy;
+
+                        /**
+                         * Creates a plain object from an AutoscalingPolicy message. Also converts values to other types if specified.
+                         * @param message AutoscalingPolicy
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.vmwareengine.v1.AutoscalingSettings.AutoscalingPolicy, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this AutoscalingPolicy to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for AutoscalingPolicy
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+                }
+
+                /** Properties of a DnsForwarding. */
+                interface IDnsForwarding {
+
+                    /** DnsForwarding name */
+                    name?: (string|null);
+
+                    /** DnsForwarding createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** DnsForwarding updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** DnsForwarding forwardingRules */
+                    forwardingRules?: (google.cloud.vmwareengine.v1.DnsForwarding.IForwardingRule[]|null);
+                }
+
+                /** Represents a DnsForwarding. */
+                class DnsForwarding implements IDnsForwarding {
+
+                    /**
+                     * Constructs a new DnsForwarding.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDnsForwarding);
+
+                    /** DnsForwarding name. */
+                    public name: string;
+
+                    /** DnsForwarding createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** DnsForwarding updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** DnsForwarding forwardingRules. */
+                    public forwardingRules: google.cloud.vmwareengine.v1.DnsForwarding.IForwardingRule[];
+
+                    /**
+                     * Creates a new DnsForwarding instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DnsForwarding instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDnsForwarding): google.cloud.vmwareengine.v1.DnsForwarding;
+
+                    /**
+                     * Encodes the specified DnsForwarding message. Does not implicitly {@link google.cloud.vmwareengine.v1.DnsForwarding.verify|verify} messages.
+                     * @param message DnsForwarding message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDnsForwarding, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DnsForwarding message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DnsForwarding.verify|verify} messages.
+                     * @param message DnsForwarding message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDnsForwarding, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DnsForwarding message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DnsForwarding
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DnsForwarding;
+
+                    /**
+                     * Decodes a DnsForwarding message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DnsForwarding
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DnsForwarding;
+
+                    /**
+                     * Verifies a DnsForwarding message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DnsForwarding message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DnsForwarding
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DnsForwarding;
+
+                    /**
+                     * Creates a plain object from a DnsForwarding message. Also converts values to other types if specified.
+                     * @param message DnsForwarding
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DnsForwarding, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DnsForwarding to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DnsForwarding
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace DnsForwarding {
+
+                    /** Properties of a ForwardingRule. */
+                    interface IForwardingRule {
+
+                        /** ForwardingRule domain */
+                        domain?: (string|null);
+
+                        /** ForwardingRule nameServers */
+                        nameServers?: (string[]|null);
+                    }
+
+                    /** Represents a ForwardingRule. */
+                    class ForwardingRule implements IForwardingRule {
+
+                        /**
+                         * Constructs a new ForwardingRule.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.vmwareengine.v1.DnsForwarding.IForwardingRule);
+
+                        /** ForwardingRule domain. */
+                        public domain: string;
+
+                        /** ForwardingRule nameServers. */
+                        public nameServers: string[];
+
+                        /**
+                         * Creates a new ForwardingRule instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ForwardingRule instance
+                         */
+                        public static create(properties?: google.cloud.vmwareengine.v1.DnsForwarding.IForwardingRule): google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule;
+
+                        /**
+                         * Encodes the specified ForwardingRule message. Does not implicitly {@link google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule.verify|verify} messages.
+                         * @param message ForwardingRule message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.vmwareengine.v1.DnsForwarding.IForwardingRule, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ForwardingRule message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule.verify|verify} messages.
+                         * @param message ForwardingRule message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.vmwareengine.v1.DnsForwarding.IForwardingRule, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ForwardingRule message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ForwardingRule
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule;
+
+                        /**
+                         * Decodes a ForwardingRule message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ForwardingRule
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule;
+
+                        /**
+                         * Verifies a ForwardingRule message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ForwardingRule message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ForwardingRule
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule;
+
+                        /**
+                         * Creates a plain object from a ForwardingRule message. Also converts values to other types if specified.
+                         * @param message ForwardingRule
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.vmwareengine.v1.DnsForwarding.ForwardingRule, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ForwardingRule to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ForwardingRule
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+                }
+
+                /** Properties of a NetworkPeering. */
+                interface INetworkPeering {
+
+                    /** NetworkPeering name */
+                    name?: (string|null);
+
+                    /** NetworkPeering createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** NetworkPeering updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** NetworkPeering peerNetwork */
+                    peerNetwork?: (string|null);
+
+                    /** NetworkPeering exportCustomRoutes */
+                    exportCustomRoutes?: (boolean|null);
+
+                    /** NetworkPeering importCustomRoutes */
+                    importCustomRoutes?: (boolean|null);
+
+                    /** NetworkPeering exchangeSubnetRoutes */
+                    exchangeSubnetRoutes?: (boolean|null);
+
+                    /** NetworkPeering exportCustomRoutesWithPublicIp */
+                    exportCustomRoutesWithPublicIp?: (boolean|null);
+
+                    /** NetworkPeering importCustomRoutesWithPublicIp */
+                    importCustomRoutesWithPublicIp?: (boolean|null);
+
+                    /** NetworkPeering state */
+                    state?: (google.cloud.vmwareengine.v1.NetworkPeering.State|keyof typeof google.cloud.vmwareengine.v1.NetworkPeering.State|null);
+
+                    /** NetworkPeering stateDetails */
+                    stateDetails?: (string|null);
+
+                    /** NetworkPeering peerMtu */
+                    peerMtu?: (number|null);
+
+                    /** NetworkPeering peerNetworkType */
+                    peerNetworkType?: (google.cloud.vmwareengine.v1.NetworkPeering.PeerNetworkType|keyof typeof google.cloud.vmwareengine.v1.NetworkPeering.PeerNetworkType|null);
+
+                    /** NetworkPeering uid */
+                    uid?: (string|null);
+
+                    /** NetworkPeering vmwareEngineNetwork */
+                    vmwareEngineNetwork?: (string|null);
+
+                    /** NetworkPeering description */
+                    description?: (string|null);
+                }
+
+                /** Represents a NetworkPeering. */
+                class NetworkPeering implements INetworkPeering {
+
+                    /**
+                     * Constructs a new NetworkPeering.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.INetworkPeering);
+
+                    /** NetworkPeering name. */
+                    public name: string;
+
+                    /** NetworkPeering createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** NetworkPeering updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** NetworkPeering peerNetwork. */
+                    public peerNetwork: string;
+
+                    /** NetworkPeering exportCustomRoutes. */
+                    public exportCustomRoutes?: (boolean|null);
+
+                    /** NetworkPeering importCustomRoutes. */
+                    public importCustomRoutes?: (boolean|null);
+
+                    /** NetworkPeering exchangeSubnetRoutes. */
+                    public exchangeSubnetRoutes?: (boolean|null);
+
+                    /** NetworkPeering exportCustomRoutesWithPublicIp. */
+                    public exportCustomRoutesWithPublicIp?: (boolean|null);
+
+                    /** NetworkPeering importCustomRoutesWithPublicIp. */
+                    public importCustomRoutesWithPublicIp?: (boolean|null);
+
+                    /** NetworkPeering state. */
+                    public state: (google.cloud.vmwareengine.v1.NetworkPeering.State|keyof typeof google.cloud.vmwareengine.v1.NetworkPeering.State);
+
+                    /** NetworkPeering stateDetails. */
+                    public stateDetails: string;
+
+                    /** NetworkPeering peerMtu. */
+                    public peerMtu: number;
+
+                    /** NetworkPeering peerNetworkType. */
+                    public peerNetworkType: (google.cloud.vmwareengine.v1.NetworkPeering.PeerNetworkType|keyof typeof google.cloud.vmwareengine.v1.NetworkPeering.PeerNetworkType);
+
+                    /** NetworkPeering uid. */
+                    public uid: string;
+
+                    /** NetworkPeering vmwareEngineNetwork. */
+                    public vmwareEngineNetwork: string;
+
+                    /** NetworkPeering description. */
+                    public description: string;
+
+                    /** NetworkPeering _exportCustomRoutes. */
+                    public _exportCustomRoutes?: "exportCustomRoutes";
+
+                    /** NetworkPeering _importCustomRoutes. */
+                    public _importCustomRoutes?: "importCustomRoutes";
+
+                    /** NetworkPeering _exchangeSubnetRoutes. */
+                    public _exchangeSubnetRoutes?: "exchangeSubnetRoutes";
+
+                    /** NetworkPeering _exportCustomRoutesWithPublicIp. */
+                    public _exportCustomRoutesWithPublicIp?: "exportCustomRoutesWithPublicIp";
+
+                    /** NetworkPeering _importCustomRoutesWithPublicIp. */
+                    public _importCustomRoutesWithPublicIp?: "importCustomRoutesWithPublicIp";
+
+                    /**
+                     * Creates a new NetworkPeering instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns NetworkPeering instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.INetworkPeering): google.cloud.vmwareengine.v1.NetworkPeering;
+
+                    /**
+                     * Encodes the specified NetworkPeering message. Does not implicitly {@link google.cloud.vmwareengine.v1.NetworkPeering.verify|verify} messages.
+                     * @param message NetworkPeering message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.INetworkPeering, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified NetworkPeering message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.NetworkPeering.verify|verify} messages.
+                     * @param message NetworkPeering message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.INetworkPeering, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a NetworkPeering message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns NetworkPeering
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.NetworkPeering;
+
+                    /**
+                     * Decodes a NetworkPeering message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns NetworkPeering
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.NetworkPeering;
+
+                    /**
+                     * Verifies a NetworkPeering message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a NetworkPeering message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns NetworkPeering
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.NetworkPeering;
+
+                    /**
+                     * Creates a plain object from a NetworkPeering message. Also converts values to other types if specified.
+                     * @param message NetworkPeering
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.NetworkPeering, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this NetworkPeering to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for NetworkPeering
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace NetworkPeering {
+
+                    /** State enum. */
+                    enum State {
+                        STATE_UNSPECIFIED = 0,
+                        INACTIVE = 1,
+                        ACTIVE = 2,
+                        CREATING = 3,
+                        DELETING = 4
+                    }
+
+                    /** PeerNetworkType enum. */
+                    enum PeerNetworkType {
+                        PEER_NETWORK_TYPE_UNSPECIFIED = 0,
+                        STANDARD = 1,
+                        VMWARE_ENGINE_NETWORK = 2,
+                        PRIVATE_SERVICES_ACCESS = 3,
+                        NETAPP_CLOUD_VOLUMES = 4,
+                        THIRD_PARTY_SERVICE = 5,
+                        DELL_POWERSCALE = 6,
+                        GOOGLE_CLOUD_NETAPP_VOLUMES = 7
                     }
                 }
 
@@ -8154,6 +15253,161 @@ export namespace google {
                     }
                 }
 
+                /** Properties of a ManagementDnsZoneBinding. */
+                interface IManagementDnsZoneBinding {
+
+                    /** ManagementDnsZoneBinding name */
+                    name?: (string|null);
+
+                    /** ManagementDnsZoneBinding createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ManagementDnsZoneBinding updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ManagementDnsZoneBinding state */
+                    state?: (google.cloud.vmwareengine.v1.ManagementDnsZoneBinding.State|keyof typeof google.cloud.vmwareengine.v1.ManagementDnsZoneBinding.State|null);
+
+                    /** ManagementDnsZoneBinding description */
+                    description?: (string|null);
+
+                    /** ManagementDnsZoneBinding vpcNetwork */
+                    vpcNetwork?: (string|null);
+
+                    /** ManagementDnsZoneBinding vmwareEngineNetwork */
+                    vmwareEngineNetwork?: (string|null);
+
+                    /** ManagementDnsZoneBinding uid */
+                    uid?: (string|null);
+                }
+
+                /** Represents a ManagementDnsZoneBinding. */
+                class ManagementDnsZoneBinding implements IManagementDnsZoneBinding {
+
+                    /**
+                     * Constructs a new ManagementDnsZoneBinding.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IManagementDnsZoneBinding);
+
+                    /** ManagementDnsZoneBinding name. */
+                    public name: string;
+
+                    /** ManagementDnsZoneBinding createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ManagementDnsZoneBinding updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ManagementDnsZoneBinding state. */
+                    public state: (google.cloud.vmwareengine.v1.ManagementDnsZoneBinding.State|keyof typeof google.cloud.vmwareengine.v1.ManagementDnsZoneBinding.State);
+
+                    /** ManagementDnsZoneBinding description. */
+                    public description: string;
+
+                    /** ManagementDnsZoneBinding vpcNetwork. */
+                    public vpcNetwork?: (string|null);
+
+                    /** ManagementDnsZoneBinding vmwareEngineNetwork. */
+                    public vmwareEngineNetwork?: (string|null);
+
+                    /** ManagementDnsZoneBinding uid. */
+                    public uid: string;
+
+                    /** ManagementDnsZoneBinding bindNetwork. */
+                    public bindNetwork?: ("vpcNetwork"|"vmwareEngineNetwork");
+
+                    /**
+                     * Creates a new ManagementDnsZoneBinding instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ManagementDnsZoneBinding instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IManagementDnsZoneBinding): google.cloud.vmwareengine.v1.ManagementDnsZoneBinding;
+
+                    /**
+                     * Encodes the specified ManagementDnsZoneBinding message. Does not implicitly {@link google.cloud.vmwareengine.v1.ManagementDnsZoneBinding.verify|verify} messages.
+                     * @param message ManagementDnsZoneBinding message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IManagementDnsZoneBinding, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ManagementDnsZoneBinding message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.ManagementDnsZoneBinding.verify|verify} messages.
+                     * @param message ManagementDnsZoneBinding message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IManagementDnsZoneBinding, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ManagementDnsZoneBinding message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ManagementDnsZoneBinding
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.ManagementDnsZoneBinding;
+
+                    /**
+                     * Decodes a ManagementDnsZoneBinding message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ManagementDnsZoneBinding
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.ManagementDnsZoneBinding;
+
+                    /**
+                     * Verifies a ManagementDnsZoneBinding message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ManagementDnsZoneBinding message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ManagementDnsZoneBinding
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.ManagementDnsZoneBinding;
+
+                    /**
+                     * Creates a plain object from a ManagementDnsZoneBinding message. Also converts values to other types if specified.
+                     * @param message ManagementDnsZoneBinding
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.ManagementDnsZoneBinding, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ManagementDnsZoneBinding to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ManagementDnsZoneBinding
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace ManagementDnsZoneBinding {
+
+                    /** State enum. */
+                    enum State {
+                        STATE_UNSPECIFIED = 0,
+                        ACTIVE = 1,
+                        CREATING = 2,
+                        UPDATING = 3,
+                        DELETING = 4,
+                        FAILED = 5
+                    }
+                }
+
                 /** Properties of a VmwareEngineNetwork. */
                 interface IVmwareEngineNetwork {
 
@@ -8427,7 +15681,8 @@ export namespace google {
                     /** Type enum. */
                     enum Type {
                         TYPE_UNSPECIFIED = 0,
-                        LEGACY = 1
+                        LEGACY = 1,
+                        STANDARD = 2
                     }
                 }
 
@@ -8635,6 +15890,321 @@ export namespace google {
                         PEERING_ACTIVE = 1,
                         PEERING_INACTIVE = 2
                     }
+                }
+
+                /** Properties of a LocationMetadata. */
+                interface ILocationMetadata {
+
+                    /** LocationMetadata capabilities */
+                    capabilities?: (google.cloud.vmwareengine.v1.LocationMetadata.Capability[]|null);
+                }
+
+                /** Represents a LocationMetadata. */
+                class LocationMetadata implements ILocationMetadata {
+
+                    /**
+                     * Constructs a new LocationMetadata.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.ILocationMetadata);
+
+                    /** LocationMetadata capabilities. */
+                    public capabilities: google.cloud.vmwareengine.v1.LocationMetadata.Capability[];
+
+                    /**
+                     * Creates a new LocationMetadata instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns LocationMetadata instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.ILocationMetadata): google.cloud.vmwareengine.v1.LocationMetadata;
+
+                    /**
+                     * Encodes the specified LocationMetadata message. Does not implicitly {@link google.cloud.vmwareengine.v1.LocationMetadata.verify|verify} messages.
+                     * @param message LocationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.ILocationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified LocationMetadata message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.LocationMetadata.verify|verify} messages.
+                     * @param message LocationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.ILocationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a LocationMetadata message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns LocationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.LocationMetadata;
+
+                    /**
+                     * Decodes a LocationMetadata message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns LocationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.LocationMetadata;
+
+                    /**
+                     * Verifies a LocationMetadata message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a LocationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns LocationMetadata
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.LocationMetadata;
+
+                    /**
+                     * Creates a plain object from a LocationMetadata message. Also converts values to other types if specified.
+                     * @param message LocationMetadata
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.LocationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this LocationMetadata to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for LocationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace LocationMetadata {
+
+                    /** Capability enum. */
+                    enum Capability {
+                        CAPABILITY_UNSPECIFIED = 0,
+                        STRETCHED_CLUSTERS = 1
+                    }
+                }
+
+                /** Properties of a DnsBindPermission. */
+                interface IDnsBindPermission {
+
+                    /** DnsBindPermission name */
+                    name?: (string|null);
+
+                    /** DnsBindPermission principals */
+                    principals?: (google.cloud.vmwareengine.v1.IPrincipal[]|null);
+                }
+
+                /** Represents a DnsBindPermission. */
+                class DnsBindPermission implements IDnsBindPermission {
+
+                    /**
+                     * Constructs a new DnsBindPermission.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IDnsBindPermission);
+
+                    /** DnsBindPermission name. */
+                    public name: string;
+
+                    /** DnsBindPermission principals. */
+                    public principals: google.cloud.vmwareengine.v1.IPrincipal[];
+
+                    /**
+                     * Creates a new DnsBindPermission instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DnsBindPermission instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IDnsBindPermission): google.cloud.vmwareengine.v1.DnsBindPermission;
+
+                    /**
+                     * Encodes the specified DnsBindPermission message. Does not implicitly {@link google.cloud.vmwareengine.v1.DnsBindPermission.verify|verify} messages.
+                     * @param message DnsBindPermission message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IDnsBindPermission, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DnsBindPermission message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.DnsBindPermission.verify|verify} messages.
+                     * @param message DnsBindPermission message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IDnsBindPermission, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DnsBindPermission message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DnsBindPermission
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.DnsBindPermission;
+
+                    /**
+                     * Decodes a DnsBindPermission message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DnsBindPermission
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.DnsBindPermission;
+
+                    /**
+                     * Verifies a DnsBindPermission message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DnsBindPermission message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DnsBindPermission
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.DnsBindPermission;
+
+                    /**
+                     * Creates a plain object from a DnsBindPermission message. Also converts values to other types if specified.
+                     * @param message DnsBindPermission
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.DnsBindPermission, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DnsBindPermission to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DnsBindPermission
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a Principal. */
+                interface IPrincipal {
+
+                    /** Principal user */
+                    user?: (string|null);
+
+                    /** Principal serviceAccount */
+                    serviceAccount?: (string|null);
+                }
+
+                /** Represents a Principal. */
+                class Principal implements IPrincipal {
+
+                    /**
+                     * Constructs a new Principal.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.vmwareengine.v1.IPrincipal);
+
+                    /** Principal user. */
+                    public user?: (string|null);
+
+                    /** Principal serviceAccount. */
+                    public serviceAccount?: (string|null);
+
+                    /** Principal principal. */
+                    public principal?: ("user"|"serviceAccount");
+
+                    /**
+                     * Creates a new Principal instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns Principal instance
+                     */
+                    public static create(properties?: google.cloud.vmwareengine.v1.IPrincipal): google.cloud.vmwareengine.v1.Principal;
+
+                    /**
+                     * Encodes the specified Principal message. Does not implicitly {@link google.cloud.vmwareengine.v1.Principal.verify|verify} messages.
+                     * @param message Principal message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.vmwareengine.v1.IPrincipal, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified Principal message, length delimited. Does not implicitly {@link google.cloud.vmwareengine.v1.Principal.verify|verify} messages.
+                     * @param message Principal message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.vmwareengine.v1.IPrincipal, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a Principal message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns Principal
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.vmwareengine.v1.Principal;
+
+                    /**
+                     * Decodes a Principal message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Principal
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.vmwareengine.v1.Principal;
+
+                    /**
+                     * Verifies a Principal message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a Principal message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns Principal
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.vmwareengine.v1.Principal;
+
+                    /**
+                     * Creates a plain object from a Principal message. Also converts values to other types if specified.
+                     * @param message Principal
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.vmwareengine.v1.Principal, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this Principal to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Principal
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
             }
         }
@@ -9003,6 +16573,1493 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Properties of a CommonLanguageSettings. */
+        interface ICommonLanguageSettings {
+
+            /** CommonLanguageSettings referenceDocsUri */
+            referenceDocsUri?: (string|null);
+
+            /** CommonLanguageSettings destinations */
+            destinations?: (google.api.ClientLibraryDestination[]|null);
+        }
+
+        /** Represents a CommonLanguageSettings. */
+        class CommonLanguageSettings implements ICommonLanguageSettings {
+
+            /**
+             * Constructs a new CommonLanguageSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICommonLanguageSettings);
+
+            /** CommonLanguageSettings referenceDocsUri. */
+            public referenceDocsUri: string;
+
+            /** CommonLanguageSettings destinations. */
+            public destinations: google.api.ClientLibraryDestination[];
+
+            /**
+             * Creates a new CommonLanguageSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CommonLanguageSettings instance
+             */
+            public static create(properties?: google.api.ICommonLanguageSettings): google.api.CommonLanguageSettings;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CommonLanguageSettings;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CommonLanguageSettings;
+
+            /**
+             * Verifies a CommonLanguageSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CommonLanguageSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CommonLanguageSettings;
+
+            /**
+             * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+             * @param message CommonLanguageSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CommonLanguageSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CommonLanguageSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CommonLanguageSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ClientLibrarySettings. */
+        interface IClientLibrarySettings {
+
+            /** ClientLibrarySettings version */
+            version?: (string|null);
+
+            /** ClientLibrarySettings launchStage */
+            launchStage?: (google.api.LaunchStage|keyof typeof google.api.LaunchStage|null);
+
+            /** ClientLibrarySettings restNumericEnums */
+            restNumericEnums?: (boolean|null);
+
+            /** ClientLibrarySettings javaSettings */
+            javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings */
+            cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings */
+            phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings */
+            pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings */
+            nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings */
+            dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings */
+            rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings */
+            goSettings?: (google.api.IGoSettings|null);
+        }
+
+        /** Represents a ClientLibrarySettings. */
+        class ClientLibrarySettings implements IClientLibrarySettings {
+
+            /**
+             * Constructs a new ClientLibrarySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IClientLibrarySettings);
+
+            /** ClientLibrarySettings version. */
+            public version: string;
+
+            /** ClientLibrarySettings launchStage. */
+            public launchStage: (google.api.LaunchStage|keyof typeof google.api.LaunchStage);
+
+            /** ClientLibrarySettings restNumericEnums. */
+            public restNumericEnums: boolean;
+
+            /** ClientLibrarySettings javaSettings. */
+            public javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings. */
+            public cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings. */
+            public phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings. */
+            public pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings. */
+            public nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings. */
+            public dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings. */
+            public rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings. */
+            public goSettings?: (google.api.IGoSettings|null);
+
+            /**
+             * Creates a new ClientLibrarySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ClientLibrarySettings instance
+             */
+            public static create(properties?: google.api.IClientLibrarySettings): google.api.ClientLibrarySettings;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.ClientLibrarySettings;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.ClientLibrarySettings;
+
+            /**
+             * Verifies a ClientLibrarySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ClientLibrarySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.ClientLibrarySettings;
+
+            /**
+             * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+             * @param message ClientLibrarySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.ClientLibrarySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ClientLibrarySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ClientLibrarySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a Publishing. */
+        interface IPublishing {
+
+            /** Publishing methodSettings */
+            methodSettings?: (google.api.IMethodSettings[]|null);
+
+            /** Publishing newIssueUri */
+            newIssueUri?: (string|null);
+
+            /** Publishing documentationUri */
+            documentationUri?: (string|null);
+
+            /** Publishing apiShortName */
+            apiShortName?: (string|null);
+
+            /** Publishing githubLabel */
+            githubLabel?: (string|null);
+
+            /** Publishing codeownerGithubTeams */
+            codeownerGithubTeams?: (string[]|null);
+
+            /** Publishing docTagPrefix */
+            docTagPrefix?: (string|null);
+
+            /** Publishing organization */
+            organization?: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization|null);
+
+            /** Publishing librarySettings */
+            librarySettings?: (google.api.IClientLibrarySettings[]|null);
+
+            /** Publishing protoReferenceDocumentationUri */
+            protoReferenceDocumentationUri?: (string|null);
+        }
+
+        /** Represents a Publishing. */
+        class Publishing implements IPublishing {
+
+            /**
+             * Constructs a new Publishing.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPublishing);
+
+            /** Publishing methodSettings. */
+            public methodSettings: google.api.IMethodSettings[];
+
+            /** Publishing newIssueUri. */
+            public newIssueUri: string;
+
+            /** Publishing documentationUri. */
+            public documentationUri: string;
+
+            /** Publishing apiShortName. */
+            public apiShortName: string;
+
+            /** Publishing githubLabel. */
+            public githubLabel: string;
+
+            /** Publishing codeownerGithubTeams. */
+            public codeownerGithubTeams: string[];
+
+            /** Publishing docTagPrefix. */
+            public docTagPrefix: string;
+
+            /** Publishing organization. */
+            public organization: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization);
+
+            /** Publishing librarySettings. */
+            public librarySettings: google.api.IClientLibrarySettings[];
+
+            /** Publishing protoReferenceDocumentationUri. */
+            public protoReferenceDocumentationUri: string;
+
+            /**
+             * Creates a new Publishing instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Publishing instance
+             */
+            public static create(properties?: google.api.IPublishing): google.api.Publishing;
+
+            /**
+             * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.Publishing;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.Publishing;
+
+            /**
+             * Verifies a Publishing message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Publishing
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.Publishing;
+
+            /**
+             * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+             * @param message Publishing
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.Publishing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Publishing to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Publishing
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a JavaSettings. */
+        interface IJavaSettings {
+
+            /** JavaSettings libraryPackage */
+            libraryPackage?: (string|null);
+
+            /** JavaSettings serviceClassNames */
+            serviceClassNames?: ({ [k: string]: string }|null);
+
+            /** JavaSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a JavaSettings. */
+        class JavaSettings implements IJavaSettings {
+
+            /**
+             * Constructs a new JavaSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IJavaSettings);
+
+            /** JavaSettings libraryPackage. */
+            public libraryPackage: string;
+
+            /** JavaSettings serviceClassNames. */
+            public serviceClassNames: { [k: string]: string };
+
+            /** JavaSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new JavaSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns JavaSettings instance
+             */
+            public static create(properties?: google.api.IJavaSettings): google.api.JavaSettings;
+
+            /**
+             * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.JavaSettings;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.JavaSettings;
+
+            /**
+             * Verifies a JavaSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns JavaSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.JavaSettings;
+
+            /**
+             * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+             * @param message JavaSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.JavaSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this JavaSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for JavaSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a CppSettings. */
+        interface ICppSettings {
+
+            /** CppSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a CppSettings. */
+        class CppSettings implements ICppSettings {
+
+            /**
+             * Constructs a new CppSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICppSettings);
+
+            /** CppSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new CppSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CppSettings instance
+             */
+            public static create(properties?: google.api.ICppSettings): google.api.CppSettings;
+
+            /**
+             * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CppSettings;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CppSettings;
+
+            /**
+             * Verifies a CppSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CppSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CppSettings;
+
+            /**
+             * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+             * @param message CppSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CppSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CppSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CppSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PhpSettings. */
+        interface IPhpSettings {
+
+            /** PhpSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PhpSettings. */
+        class PhpSettings implements IPhpSettings {
+
+            /**
+             * Constructs a new PhpSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPhpSettings);
+
+            /** PhpSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PhpSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PhpSettings instance
+             */
+            public static create(properties?: google.api.IPhpSettings): google.api.PhpSettings;
+
+            /**
+             * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PhpSettings;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PhpSettings;
+
+            /**
+             * Verifies a PhpSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PhpSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PhpSettings;
+
+            /**
+             * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+             * @param message PhpSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PhpSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PhpSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PhpSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PythonSettings. */
+        interface IPythonSettings {
+
+            /** PythonSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PythonSettings. */
+        class PythonSettings implements IPythonSettings {
+
+            /**
+             * Constructs a new PythonSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPythonSettings);
+
+            /** PythonSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PythonSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PythonSettings instance
+             */
+            public static create(properties?: google.api.IPythonSettings): google.api.PythonSettings;
+
+            /**
+             * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PythonSettings;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PythonSettings;
+
+            /**
+             * Verifies a PythonSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PythonSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PythonSettings;
+
+            /**
+             * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+             * @param message PythonSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PythonSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PythonSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PythonSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a NodeSettings. */
+        interface INodeSettings {
+
+            /** NodeSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a NodeSettings. */
+        class NodeSettings implements INodeSettings {
+
+            /**
+             * Constructs a new NodeSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.INodeSettings);
+
+            /** NodeSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new NodeSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns NodeSettings instance
+             */
+            public static create(properties?: google.api.INodeSettings): google.api.NodeSettings;
+
+            /**
+             * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.NodeSettings;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.NodeSettings;
+
+            /**
+             * Verifies a NodeSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns NodeSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.NodeSettings;
+
+            /**
+             * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+             * @param message NodeSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.NodeSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this NodeSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for NodeSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DotnetSettings. */
+        interface IDotnetSettings {
+
+            /** DotnetSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices */
+            renamedServices?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings renamedResources */
+            renamedResources?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings ignoredResources */
+            ignoredResources?: (string[]|null);
+
+            /** DotnetSettings forcedNamespaceAliases */
+            forcedNamespaceAliases?: (string[]|null);
+
+            /** DotnetSettings handwrittenSignatures */
+            handwrittenSignatures?: (string[]|null);
+        }
+
+        /** Represents a DotnetSettings. */
+        class DotnetSettings implements IDotnetSettings {
+
+            /**
+             * Constructs a new DotnetSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IDotnetSettings);
+
+            /** DotnetSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices. */
+            public renamedServices: { [k: string]: string };
+
+            /** DotnetSettings renamedResources. */
+            public renamedResources: { [k: string]: string };
+
+            /** DotnetSettings ignoredResources. */
+            public ignoredResources: string[];
+
+            /** DotnetSettings forcedNamespaceAliases. */
+            public forcedNamespaceAliases: string[];
+
+            /** DotnetSettings handwrittenSignatures. */
+            public handwrittenSignatures: string[];
+
+            /**
+             * Creates a new DotnetSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DotnetSettings instance
+             */
+            public static create(properties?: google.api.IDotnetSettings): google.api.DotnetSettings;
+
+            /**
+             * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.DotnetSettings;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.DotnetSettings;
+
+            /**
+             * Verifies a DotnetSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DotnetSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.DotnetSettings;
+
+            /**
+             * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+             * @param message DotnetSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.DotnetSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DotnetSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DotnetSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RubySettings. */
+        interface IRubySettings {
+
+            /** RubySettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a RubySettings. */
+        class RubySettings implements IRubySettings {
+
+            /**
+             * Constructs a new RubySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRubySettings);
+
+            /** RubySettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new RubySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RubySettings instance
+             */
+            public static create(properties?: google.api.IRubySettings): google.api.RubySettings;
+
+            /**
+             * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RubySettings;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RubySettings;
+
+            /**
+             * Verifies a RubySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RubySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RubySettings;
+
+            /**
+             * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+             * @param message RubySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RubySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RubySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RubySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GoSettings. */
+        interface IGoSettings {
+
+            /** GoSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a GoSettings. */
+        class GoSettings implements IGoSettings {
+
+            /**
+             * Constructs a new GoSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IGoSettings);
+
+            /** GoSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new GoSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GoSettings instance
+             */
+            public static create(properties?: google.api.IGoSettings): google.api.GoSettings;
+
+            /**
+             * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.GoSettings;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.GoSettings;
+
+            /**
+             * Verifies a GoSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GoSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.GoSettings;
+
+            /**
+             * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+             * @param message GoSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.GoSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GoSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GoSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MethodSettings. */
+        interface IMethodSettings {
+
+            /** MethodSettings selector */
+            selector?: (string|null);
+
+            /** MethodSettings longRunning */
+            longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields */
+            autoPopulatedFields?: (string[]|null);
+        }
+
+        /** Represents a MethodSettings. */
+        class MethodSettings implements IMethodSettings {
+
+            /**
+             * Constructs a new MethodSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IMethodSettings);
+
+            /** MethodSettings selector. */
+            public selector: string;
+
+            /** MethodSettings longRunning. */
+            public longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields. */
+            public autoPopulatedFields: string[];
+
+            /**
+             * Creates a new MethodSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MethodSettings instance
+             */
+            public static create(properties?: google.api.IMethodSettings): google.api.MethodSettings;
+
+            /**
+             * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings;
+
+            /**
+             * Verifies a MethodSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MethodSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.MethodSettings;
+
+            /**
+             * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+             * @param message MethodSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.MethodSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MethodSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace MethodSettings {
+
+            /** Properties of a LongRunning. */
+            interface ILongRunning {
+
+                /** LongRunning initialPollDelay */
+                initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier */
+                pollDelayMultiplier?: (number|null);
+
+                /** LongRunning maxPollDelay */
+                maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout */
+                totalPollTimeout?: (google.protobuf.IDuration|null);
+            }
+
+            /** Represents a LongRunning. */
+            class LongRunning implements ILongRunning {
+
+                /**
+                 * Constructs a new LongRunning.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.api.MethodSettings.ILongRunning);
+
+                /** LongRunning initialPollDelay. */
+                public initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier. */
+                public pollDelayMultiplier: number;
+
+                /** LongRunning maxPollDelay. */
+                public maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout. */
+                public totalPollTimeout?: (google.protobuf.IDuration|null);
+
+                /**
+                 * Creates a new LongRunning instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LongRunning instance
+                 */
+                public static create(properties?: google.api.MethodSettings.ILongRunning): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Verifies a LongRunning message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LongRunning
+                 */
+                public static fromObject(object: { [k: string]: any }): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                 * @param message LongRunning
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.api.MethodSettings.LongRunning, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LongRunning to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LongRunning
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** ClientLibraryOrganization enum. */
+        enum ClientLibraryOrganization {
+            CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED = 0,
+            CLOUD = 1,
+            ADS = 2,
+            PHOTOS = 3,
+            STREET_VIEW = 4,
+            SHOPPING = 5,
+            GEO = 6,
+            GENERATIVE_AI = 7
+        }
+
+        /** ClientLibraryDestination enum. */
+        enum ClientLibraryDestination {
+            CLIENT_LIBRARY_DESTINATION_UNSPECIFIED = 0,
+            GITHUB = 10,
+            PACKAGE_MANAGER = 20
+        }
+
+        /** LaunchStage enum. */
+        enum LaunchStage {
+            LAUNCH_STAGE_UNSPECIFIED = 0,
+            UNIMPLEMENTED = 6,
+            PRELAUNCH = 7,
+            EARLY_ACCESS = 1,
+            ALPHA = 2,
+            BETA = 3,
+            GA = 4,
+            DEPRECATED = 5
+        }
+
         /** FieldBehavior enum. */
         enum FieldBehavior {
             FIELD_BEHAVIOR_UNSPECIFIED = 0,
@@ -9012,7 +18069,117 @@ export namespace google {
             INPUT_ONLY = 4,
             IMMUTABLE = 5,
             UNORDERED_LIST = 6,
-            NON_EMPTY_DEFAULT = 7
+            NON_EMPTY_DEFAULT = 7,
+            IDENTIFIER = 8
+        }
+
+        /** Properties of a FieldInfo. */
+        interface IFieldInfo {
+
+            /** FieldInfo format */
+            format?: (google.api.FieldInfo.Format|keyof typeof google.api.FieldInfo.Format|null);
+        }
+
+        /** Represents a FieldInfo. */
+        class FieldInfo implements IFieldInfo {
+
+            /**
+             * Constructs a new FieldInfo.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IFieldInfo);
+
+            /** FieldInfo format. */
+            public format: (google.api.FieldInfo.Format|keyof typeof google.api.FieldInfo.Format);
+
+            /**
+             * Creates a new FieldInfo instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FieldInfo instance
+             */
+            public static create(properties?: google.api.IFieldInfo): google.api.FieldInfo;
+
+            /**
+             * Encodes the specified FieldInfo message. Does not implicitly {@link google.api.FieldInfo.verify|verify} messages.
+             * @param message FieldInfo message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IFieldInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FieldInfo message, length delimited. Does not implicitly {@link google.api.FieldInfo.verify|verify} messages.
+             * @param message FieldInfo message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IFieldInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FieldInfo message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FieldInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.FieldInfo;
+
+            /**
+             * Decodes a FieldInfo message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FieldInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.FieldInfo;
+
+            /**
+             * Verifies a FieldInfo message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FieldInfo message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FieldInfo
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.FieldInfo;
+
+            /**
+             * Creates a plain object from a FieldInfo message. Also converts values to other types if specified.
+             * @param message FieldInfo
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.FieldInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FieldInfo to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FieldInfo
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FieldInfo {
+
+            /** Format enum. */
+            enum Format {
+                FORMAT_UNSPECIFIED = 0,
+                UUID4 = 1,
+                IPV4 = 2,
+                IPV6 = 3,
+                IPV4_OR_IPV6 = 4
+            }
         }
 
         /** Properties of a ResourceDescriptor. */
@@ -9368,6 +18535,21 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Edition enum. */
+        enum Edition {
+            EDITION_UNKNOWN = 0,
+            EDITION_PROTO2 = 998,
+            EDITION_PROTO3 = 999,
+            EDITION_2023 = 1000,
+            EDITION_2024 = 1001,
+            EDITION_1_TEST_ONLY = 1,
+            EDITION_2_TEST_ONLY = 2,
+            EDITION_99997_TEST_ONLY = 99997,
+            EDITION_99998_TEST_ONLY = 99998,
+            EDITION_99999_TEST_ONLY = 99999,
+            EDITION_MAX = 2147483647
+        }
+
         /** Properties of a FileDescriptorProto. */
         interface IFileDescriptorProto {
 
@@ -9408,7 +18590,7 @@ export namespace google {
             syntax?: (string|null);
 
             /** FileDescriptorProto edition */
-            edition?: (string|null);
+            edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
         }
 
         /** Represents a FileDescriptorProto. */
@@ -9457,7 +18639,7 @@ export namespace google {
             public syntax: string;
 
             /** FileDescriptorProto edition. */
-            public edition: string;
+            public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
 
             /**
              * Creates a new FileDescriptorProto instance using the specified properties.
@@ -9908,6 +19090,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
+
+            /** ExtensionRangeOptions declaration */
+            declaration?: (google.protobuf.ExtensionRangeOptions.IDeclaration[]|null);
+
+            /** ExtensionRangeOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification */
+            verification?: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState|null);
         }
 
         /** Represents an ExtensionRangeOptions. */
@@ -9921,6 +19112,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
+
+            /** ExtensionRangeOptions declaration. */
+            public declaration: google.protobuf.ExtensionRangeOptions.IDeclaration[];
+
+            /** ExtensionRangeOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification. */
+            public verification: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState);
 
             /**
              * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -9998,6 +19198,136 @@ export namespace google {
              * @returns The default type url
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace ExtensionRangeOptions {
+
+            /** Properties of a Declaration. */
+            interface IDeclaration {
+
+                /** Declaration number */
+                number?: (number|null);
+
+                /** Declaration fullName */
+                fullName?: (string|null);
+
+                /** Declaration type */
+                type?: (string|null);
+
+                /** Declaration reserved */
+                reserved?: (boolean|null);
+
+                /** Declaration repeated */
+                repeated?: (boolean|null);
+            }
+
+            /** Represents a Declaration. */
+            class Declaration implements IDeclaration {
+
+                /**
+                 * Constructs a new Declaration.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration);
+
+                /** Declaration number. */
+                public number: number;
+
+                /** Declaration fullName. */
+                public fullName: string;
+
+                /** Declaration type. */
+                public type: string;
+
+                /** Declaration reserved. */
+                public reserved: boolean;
+
+                /** Declaration repeated. */
+                public repeated: boolean;
+
+                /**
+                 * Creates a new Declaration instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns Declaration instance
+                 */
+                public static create(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Verifies a Declaration message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns Declaration
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                 * @param message Declaration
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.ExtensionRangeOptions.Declaration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this Declaration to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Declaration
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** VerificationState enum. */
+            enum VerificationState {
+                DECLARATION = 0,
+                UNVERIFIED = 1
+            }
         }
 
         /** Properties of a FieldDescriptorProto. */
@@ -10184,8 +19514,8 @@ export namespace google {
             /** Label enum. */
             enum Label {
                 LABEL_OPTIONAL = 1,
-                LABEL_REQUIRED = 2,
-                LABEL_REPEATED = 3
+                LABEL_REPEATED = 3,
+                LABEL_REQUIRED = 2
             }
         }
 
@@ -10897,9 +20227,6 @@ export namespace google {
             /** FileOptions pyGenericServices */
             pyGenericServices?: (boolean|null);
 
-            /** FileOptions phpGenericServices */
-            phpGenericServices?: (boolean|null);
-
             /** FileOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -10926,6 +20253,9 @@ export namespace google {
 
             /** FileOptions rubyPackage */
             rubyPackage?: (string|null);
+
+            /** FileOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -10973,9 +20303,6 @@ export namespace google {
             /** FileOptions pyGenericServices. */
             public pyGenericServices: boolean;
 
-            /** FileOptions phpGenericServices. */
-            public phpGenericServices: boolean;
-
             /** FileOptions deprecated. */
             public deprecated: boolean;
 
@@ -11002,6 +20329,9 @@ export namespace google {
 
             /** FileOptions rubyPackage. */
             public rubyPackage: string;
+
+            /** FileOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11109,6 +20439,12 @@ export namespace google {
             /** MessageOptions mapEntry */
             mapEntry?: (boolean|null);
 
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** MessageOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MessageOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -11136,6 +20472,12 @@ export namespace google {
 
             /** MessageOptions mapEntry. */
             public mapEntry: boolean;
+
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** MessageOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MessageOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11242,11 +20584,29 @@ export namespace google {
             /** FieldOptions weak */
             weak?: (boolean|null);
 
+            /** FieldOptions debugRedact */
+            debugRedact?: (boolean|null);
+
+            /** FieldOptions retention */
+            retention?: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention|null);
+
+            /** FieldOptions targets */
+            targets?: (google.protobuf.FieldOptions.OptionTargetType[]|null);
+
+            /** FieldOptions editionDefaults */
+            editionDefaults?: (google.protobuf.FieldOptions.IEditionDefault[]|null);
+
+            /** FieldOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** FieldOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
             /** FieldOptions .google.api.fieldBehavior */
             ".google.api.fieldBehavior"?: (google.api.FieldBehavior[]|null);
+
+            /** FieldOptions .google.api.fieldInfo */
+            ".google.api.fieldInfo"?: (google.api.IFieldInfo|null);
 
             /** FieldOptions .google.api.resourceReference */
             ".google.api.resourceReference"?: (google.api.IResourceReference|null);
@@ -11281,6 +20641,21 @@ export namespace google {
 
             /** FieldOptions weak. */
             public weak: boolean;
+
+            /** FieldOptions debugRedact. */
+            public debugRedact: boolean;
+
+            /** FieldOptions retention. */
+            public retention: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention);
+
+            /** FieldOptions targets. */
+            public targets: google.protobuf.FieldOptions.OptionTargetType[];
+
+            /** FieldOptions editionDefaults. */
+            public editionDefaults: google.protobuf.FieldOptions.IEditionDefault[];
+
+            /** FieldOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FieldOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11378,10 +20753,137 @@ export namespace google {
                 JS_STRING = 1,
                 JS_NUMBER = 2
             }
+
+            /** OptionRetention enum. */
+            enum OptionRetention {
+                RETENTION_UNKNOWN = 0,
+                RETENTION_RUNTIME = 1,
+                RETENTION_SOURCE = 2
+            }
+
+            /** OptionTargetType enum. */
+            enum OptionTargetType {
+                TARGET_TYPE_UNKNOWN = 0,
+                TARGET_TYPE_FILE = 1,
+                TARGET_TYPE_EXTENSION_RANGE = 2,
+                TARGET_TYPE_MESSAGE = 3,
+                TARGET_TYPE_FIELD = 4,
+                TARGET_TYPE_ONEOF = 5,
+                TARGET_TYPE_ENUM = 6,
+                TARGET_TYPE_ENUM_ENTRY = 7,
+                TARGET_TYPE_SERVICE = 8,
+                TARGET_TYPE_METHOD = 9
+            }
+
+            /** Properties of an EditionDefault. */
+            interface IEditionDefault {
+
+                /** EditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** EditionDefault value */
+                value?: (string|null);
+            }
+
+            /** Represents an EditionDefault. */
+            class EditionDefault implements IEditionDefault {
+
+                /**
+                 * Constructs a new EditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FieldOptions.IEditionDefault);
+
+                /** EditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** EditionDefault value. */
+                public value: string;
+
+                /**
+                 * Creates a new EditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns EditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FieldOptions.IEditionDefault): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Verifies an EditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns EditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                 * @param message EditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FieldOptions.EditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this EditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EditionDefault
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
         }
 
         /** Properties of an OneofOptions. */
         interface IOneofOptions {
+
+            /** OneofOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -11395,6 +20897,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IOneofOptions);
+
+            /** OneofOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11486,6 +20991,12 @@ export namespace google {
             /** EnumOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** EnumOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** EnumOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -11504,6 +21015,12 @@ export namespace google {
 
             /** EnumOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** EnumOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** EnumOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11592,6 +21109,12 @@ export namespace google {
             /** EnumValueOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumValueOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact */
+            debugRedact?: (boolean|null);
+
             /** EnumValueOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -11607,6 +21130,12 @@ export namespace google {
 
             /** EnumValueOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumValueOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact. */
+            public debugRedact: boolean;
 
             /** EnumValueOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11692,6 +21221,9 @@ export namespace google {
         /** Properties of a ServiceOptions. */
         interface IServiceOptions {
 
+            /** ServiceOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** ServiceOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -11713,6 +21245,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IServiceOptions);
+
+            /** ServiceOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** ServiceOptions deprecated. */
             public deprecated: boolean;
@@ -11807,6 +21342,9 @@ export namespace google {
             /** MethodOptions idempotencyLevel */
             idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel|null);
 
+            /** MethodOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MethodOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -11834,6 +21372,9 @@ export namespace google {
 
             /** MethodOptions idempotencyLevel. */
             public idempotencyLevel: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel);
+
+            /** MethodOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MethodOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -12158,6 +21699,394 @@ export namespace google {
 
                 /**
                  * Gets the default type url for NamePart
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** Properties of a FeatureSet. */
+        interface IFeatureSet {
+
+            /** FeatureSet fieldPresence */
+            fieldPresence?: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence|null);
+
+            /** FeatureSet enumType */
+            enumType?: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType|null);
+
+            /** FeatureSet repeatedFieldEncoding */
+            repeatedFieldEncoding?: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding|null);
+
+            /** FeatureSet utf8Validation */
+            utf8Validation?: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation|null);
+
+            /** FeatureSet messageEncoding */
+            messageEncoding?: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding|null);
+
+            /** FeatureSet jsonFormat */
+            jsonFormat?: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat|null);
+        }
+
+        /** Represents a FeatureSet. */
+        class FeatureSet implements IFeatureSet {
+
+            /**
+             * Constructs a new FeatureSet.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSet);
+
+            /** FeatureSet fieldPresence. */
+            public fieldPresence: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence);
+
+            /** FeatureSet enumType. */
+            public enumType: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType);
+
+            /** FeatureSet repeatedFieldEncoding. */
+            public repeatedFieldEncoding: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding);
+
+            /** FeatureSet utf8Validation. */
+            public utf8Validation: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation);
+
+            /** FeatureSet messageEncoding. */
+            public messageEncoding: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding);
+
+            /** FeatureSet jsonFormat. */
+            public jsonFormat: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat);
+
+            /**
+             * Creates a new FeatureSet instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSet instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSet): google.protobuf.FeatureSet;
+
+            /**
+             * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSet;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSet;
+
+            /**
+             * Verifies a FeatureSet message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSet
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSet;
+
+            /**
+             * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+             * @param message FeatureSet
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSet to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSet
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSet {
+
+            /** FieldPresence enum. */
+            enum FieldPresence {
+                FIELD_PRESENCE_UNKNOWN = 0,
+                EXPLICIT = 1,
+                IMPLICIT = 2,
+                LEGACY_REQUIRED = 3
+            }
+
+            /** EnumType enum. */
+            enum EnumType {
+                ENUM_TYPE_UNKNOWN = 0,
+                OPEN = 1,
+                CLOSED = 2
+            }
+
+            /** RepeatedFieldEncoding enum. */
+            enum RepeatedFieldEncoding {
+                REPEATED_FIELD_ENCODING_UNKNOWN = 0,
+                PACKED = 1,
+                EXPANDED = 2
+            }
+
+            /** Utf8Validation enum. */
+            enum Utf8Validation {
+                UTF8_VALIDATION_UNKNOWN = 0,
+                VERIFY = 2,
+                NONE = 3
+            }
+
+            /** MessageEncoding enum. */
+            enum MessageEncoding {
+                MESSAGE_ENCODING_UNKNOWN = 0,
+                LENGTH_PREFIXED = 1,
+                DELIMITED = 2
+            }
+
+            /** JsonFormat enum. */
+            enum JsonFormat {
+                JSON_FORMAT_UNKNOWN = 0,
+                ALLOW = 1,
+                LEGACY_BEST_EFFORT = 2
+            }
+        }
+
+        /** Properties of a FeatureSetDefaults. */
+        interface IFeatureSetDefaults {
+
+            /** FeatureSetDefaults defaults */
+            defaults?: (google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[]|null);
+
+            /** FeatureSetDefaults minimumEdition */
+            minimumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+            /** FeatureSetDefaults maximumEdition */
+            maximumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+        }
+
+        /** Represents a FeatureSetDefaults. */
+        class FeatureSetDefaults implements IFeatureSetDefaults {
+
+            /**
+             * Constructs a new FeatureSetDefaults.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSetDefaults);
+
+            /** FeatureSetDefaults defaults. */
+            public defaults: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[];
+
+            /** FeatureSetDefaults minimumEdition. */
+            public minimumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /** FeatureSetDefaults maximumEdition. */
+            public maximumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /**
+             * Creates a new FeatureSetDefaults instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSetDefaults instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSetDefaults): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Verifies a FeatureSetDefaults message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSetDefaults
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+             * @param message FeatureSetDefaults
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSetDefaults, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSetDefaults to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSetDefaults
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSetDefaults {
+
+            /** Properties of a FeatureSetEditionDefault. */
+            interface IFeatureSetEditionDefault {
+
+                /** FeatureSetEditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** FeatureSetEditionDefault features */
+                features?: (google.protobuf.IFeatureSet|null);
+            }
+
+            /** Represents a FeatureSetEditionDefault. */
+            class FeatureSetEditionDefault implements IFeatureSetEditionDefault {
+
+                /**
+                 * Constructs a new FeatureSetEditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault);
+
+                /** FeatureSetEditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** FeatureSetEditionDefault features. */
+                public features?: (google.protobuf.IFeatureSet|null);
+
+                /**
+                 * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns FeatureSetEditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Verifies a FeatureSetEditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns FeatureSetEditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                 * @param message FeatureSetEditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this FeatureSetEditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for FeatureSetEditionDefault
                  * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                  * @returns The default type url
                  */
@@ -12617,6 +22546,109 @@ export namespace google {
             }
         }
 
+        /** Properties of a Duration. */
+        interface IDuration {
+
+            /** Duration seconds */
+            seconds?: (number|Long|string|null);
+
+            /** Duration nanos */
+            nanos?: (number|null);
+        }
+
+        /** Represents a Duration. */
+        class Duration implements IDuration {
+
+            /**
+             * Constructs a new Duration.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IDuration);
+
+            /** Duration seconds. */
+            public seconds: (number|Long|string);
+
+            /** Duration nanos. */
+            public nanos: number;
+
+            /**
+             * Creates a new Duration instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Duration instance
+             */
+            public static create(properties?: google.protobuf.IDuration): google.protobuf.Duration;
+
+            /**
+             * Encodes the specified Duration message. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
+             * @param message Duration message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IDuration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Duration message, length delimited. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
+             * @param message Duration message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IDuration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Duration message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Duration
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Duration;
+
+            /**
+             * Decodes a Duration message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Duration
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Duration;
+
+            /**
+             * Verifies a Duration message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Duration message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Duration
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.Duration;
+
+            /**
+             * Creates a plain object from a Duration message. Also converts values to other types if specified.
+             * @param message Duration
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.Duration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Duration to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Duration
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
         /** Properties of a Timestamp. */
         interface ITimestamp {
 
@@ -12817,109 +22849,6 @@ export namespace google {
 
             /**
              * Gets the default type url for Any
-             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-             * @returns The default type url
-             */
-            public static getTypeUrl(typeUrlPrefix?: string): string;
-        }
-
-        /** Properties of a Duration. */
-        interface IDuration {
-
-            /** Duration seconds */
-            seconds?: (number|Long|string|null);
-
-            /** Duration nanos */
-            nanos?: (number|null);
-        }
-
-        /** Represents a Duration. */
-        class Duration implements IDuration {
-
-            /**
-             * Constructs a new Duration.
-             * @param [properties] Properties to set
-             */
-            constructor(properties?: google.protobuf.IDuration);
-
-            /** Duration seconds. */
-            public seconds: (number|Long|string);
-
-            /** Duration nanos. */
-            public nanos: number;
-
-            /**
-             * Creates a new Duration instance using the specified properties.
-             * @param [properties] Properties to set
-             * @returns Duration instance
-             */
-            public static create(properties?: google.protobuf.IDuration): google.protobuf.Duration;
-
-            /**
-             * Encodes the specified Duration message. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
-             * @param message Duration message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encode(message: google.protobuf.IDuration, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified Duration message, length delimited. Does not implicitly {@link google.protobuf.Duration.verify|verify} messages.
-             * @param message Duration message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encodeDelimited(message: google.protobuf.IDuration, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes a Duration message from the specified reader or buffer.
-             * @param reader Reader or buffer to decode from
-             * @param [length] Message length if known beforehand
-             * @returns Duration
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Duration;
-
-            /**
-             * Decodes a Duration message from the specified reader or buffer, length delimited.
-             * @param reader Reader or buffer to decode from
-             * @returns Duration
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Duration;
-
-            /**
-             * Verifies a Duration message.
-             * @param message Plain object to verify
-             * @returns `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): (string|null);
-
-            /**
-             * Creates a Duration message from a plain object. Also converts values to their respective internal types.
-             * @param object Plain object
-             * @returns Duration
-             */
-            public static fromObject(object: { [k: string]: any }): google.protobuf.Duration;
-
-            /**
-             * Creates a plain object from a Duration message. Also converts values to other types if specified.
-             * @param message Duration
-             * @param [options] Conversion options
-             * @returns Plain object
-             */
-            public static toObject(message: google.protobuf.Duration, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this Duration to JSON.
-             * @returns JSON object
-             */
-            public toJSON(): { [k: string]: any };
-
-            /**
-             * Gets the default type url for Duration
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */

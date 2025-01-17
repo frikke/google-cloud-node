@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ function main(parent, assessment) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The name of the project in which the assessment will be created,
-   *  in the format "projects/{project_number}".
+   *  Required. The name of the project in which the assessment is created,
+   *  in the format `projects/{project_number}`.
    */
   // const parent = 'abc123'
   /**

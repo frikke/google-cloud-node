@@ -2,7 +2,7 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Workflows: Node.js Samples](https://github.com/googleapis/google-cloud-node)
+# [Workflow Executions: Node.js Samples](https://github.com/googleapis/google-cloud-node)
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
@@ -30,7 +30,6 @@
   * [Workflows.get_workflow](#workflows.get_workflow)
   * [Workflows.list_workflows](#workflows.list_workflows)
   * [Workflows.update_workflow](#workflows.update_workflow)
-  * [Quickstart](#quickstart)
   * [Quickstart](#quickstart)
 
 ## Before you begin
@@ -364,23 +363,6 @@ __Usage:__
 
 
 `node packages/google-cloud-workflows-executions/samples/quickstart.js`
-
-
------
-
-
-
-
-### Quickstart
-
-View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-workflows-executions/samples/test/quickstart.js).
-
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-workflows-executions/samples/test/quickstart.js,samples/README.md)
-
-__Usage:__
-
-
-`node packages/google-cloud-workflows-executions/samples/test/quickstart.js`
 
 
 

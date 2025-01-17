@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +25,12 @@ import * as intentsModule from '../src';
 
 import {PassThrough} from 'stream';
 
-import {protobuf, operationsProtos, LocationProtos} from 'google-gax';
+import {
+  protobuf,
+  LROperation,
+  operationsProtos,
+  LocationProtos,
+} from 'google-gax';
 
 // Dynamically loaded proto JSON is needed to get the type information
 // to fill in default values for request objects
@@ -64,6 +69,38 @@ function stubSimpleCallWithCallback<ResponseType>(
   return error
     ? sinon.stub().callsArgWith(2, error)
     : sinon.stub().callsArgWith(2, null, response);
+}
+
+function stubLongRunningCall<ResponseType>(
+  response?: ResponseType,
+  callError?: Error,
+  lroError?: Error
+) {
+  const innerStub = lroError
+    ? sinon.stub().rejects(lroError)
+    : sinon.stub().resolves([response]);
+  const mockOperation = {
+    promise: innerStub,
+  };
+  return callError
+    ? sinon.stub().rejects(callError)
+    : sinon.stub().resolves([mockOperation]);
+}
+
+function stubLongRunningCallWithCallback<ResponseType>(
+  response?: ResponseType,
+  callError?: Error,
+  lroError?: Error
+) {
+  const innerStub = lroError
+    ? sinon.stub().rejects(lroError)
+    : sinon.stub().resolves([response]);
+  const mockOperation = {
+    promise: innerStub,
+  };
+  return callError
+    ? sinon.stub().callsArgWith(2, callError)
+    : sinon.stub().callsArgWith(2, null, mockOperation);
 }
 
 function stubPageStreamingCall<ResponseType>(
@@ -129,14 +166,92 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v3.IntentsClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath = intentsModule.v3.IntentsClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new intentsModule.v3.IntentsClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'dialogflow.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint = intentsModule.v3.IntentsClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new intentsModule.v3.IntentsClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath = intentsModule.v3.IntentsClient.servicePath;
+        assert.strictEqual(servicePath, 'dialogflow.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint = intentsModule.v3.IntentsClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'dialogflow.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new intentsModule.v3.IntentsClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'dialogflow.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new intentsModule.v3.IntentsClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'dialogflow.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new intentsModule.v3.IntentsClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'dialogflow.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new intentsModule.v3.IntentsClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'dialogflow.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new intentsModule.v3.IntentsClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -746,6 +861,394 @@ describe('v3.IntentsClient', () => {
     });
   });
 
+  describe('importIntents', () => {
+    it('invokes importIntents without error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ImportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ImportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.longrunning.Operation()
+      );
+      client.innerApiCalls.importIntents =
+        stubLongRunningCall(expectedResponse);
+      const [operation] = await client.importIntents(request);
+      const [response] = await operation.promise();
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes importIntents without error using callback', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ImportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ImportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.longrunning.Operation()
+      );
+      client.innerApiCalls.importIntents =
+        stubLongRunningCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.importIntents(
+          request,
+          (
+            err?: Error | null,
+            result?: LROperation<
+              protos.google.cloud.dialogflow.cx.v3.IImportIntentsResponse,
+              protos.google.cloud.dialogflow.cx.v3.IImportIntentsMetadata
+            > | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const operation = (await promise) as LROperation<
+        protos.google.cloud.dialogflow.cx.v3.IImportIntentsResponse,
+        protos.google.cloud.dialogflow.cx.v3.IImportIntentsMetadata
+      >;
+      const [response] = await operation.promise();
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes importIntents with call error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ImportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ImportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.importIntents = stubLongRunningCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.importIntents(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes importIntents with LRO error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ImportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ImportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.importIntents = stubLongRunningCall(
+        undefined,
+        undefined,
+        expectedError
+      );
+      const [operation] = await client.importIntents(request);
+      await assert.rejects(operation.promise(), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.importIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes checkImportIntentsProgress without error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const expectedResponse = generateSampleMessage(
+        new operationsProtos.google.longrunning.Operation()
+      );
+      expectedResponse.name = 'test';
+      expectedResponse.response = {type_url: 'url', value: Buffer.from('')};
+      expectedResponse.metadata = {type_url: 'url', value: Buffer.from('')};
+
+      client.operationsClient.getOperation = stubSimpleCall(expectedResponse);
+      const decodedOperation = await client.checkImportIntentsProgress(
+        expectedResponse.name
+      );
+      assert.deepStrictEqual(decodedOperation.name, expectedResponse.name);
+      assert(decodedOperation.metadata);
+      assert((client.operationsClient.getOperation as SinonStub).getCall(0));
+    });
+
+    it('invokes checkImportIntentsProgress with error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const expectedError = new Error('expected');
+
+      client.operationsClient.getOperation = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.checkImportIntentsProgress(''),
+        expectedError
+      );
+      assert((client.operationsClient.getOperation as SinonStub).getCall(0));
+    });
+  });
+
+  describe('exportIntents', () => {
+    it('invokes exportIntents without error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ExportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ExportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.longrunning.Operation()
+      );
+      client.innerApiCalls.exportIntents =
+        stubLongRunningCall(expectedResponse);
+      const [operation] = await client.exportIntents(request);
+      const [response] = await operation.promise();
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes exportIntents without error using callback', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ExportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ExportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.longrunning.Operation()
+      );
+      client.innerApiCalls.exportIntents =
+        stubLongRunningCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.exportIntents(
+          request,
+          (
+            err?: Error | null,
+            result?: LROperation<
+              protos.google.cloud.dialogflow.cx.v3.IExportIntentsResponse,
+              protos.google.cloud.dialogflow.cx.v3.IExportIntentsMetadata
+            > | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const operation = (await promise) as LROperation<
+        protos.google.cloud.dialogflow.cx.v3.IExportIntentsResponse,
+        protos.google.cloud.dialogflow.cx.v3.IExportIntentsMetadata
+      >;
+      const [response] = await operation.promise();
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes exportIntents with call error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ExportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ExportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.exportIntents = stubLongRunningCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.exportIntents(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes exportIntents with LRO error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.ExportIntentsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.ExportIntentsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.exportIntents = stubLongRunningCall(
+        undefined,
+        undefined,
+        expectedError
+      );
+      const [operation] = await client.exportIntents(request);
+      await assert.rejects(operation.promise(), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.exportIntents as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes checkExportIntentsProgress without error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const expectedResponse = generateSampleMessage(
+        new operationsProtos.google.longrunning.Operation()
+      );
+      expectedResponse.name = 'test';
+      expectedResponse.response = {type_url: 'url', value: Buffer.from('')};
+      expectedResponse.metadata = {type_url: 'url', value: Buffer.from('')};
+
+      client.operationsClient.getOperation = stubSimpleCall(expectedResponse);
+      const decodedOperation = await client.checkExportIntentsProgress(
+        expectedResponse.name
+      );
+      assert.deepStrictEqual(decodedOperation.name, expectedResponse.name);
+      assert(decodedOperation.metadata);
+      assert((client.operationsClient.getOperation as SinonStub).getCall(0));
+    });
+
+    it('invokes checkExportIntentsProgress with error', async () => {
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const expectedError = new Error('expected');
+
+      client.operationsClient.getOperation = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.checkExportIntentsProgress(''),
+        expectedError
+      );
+      assert((client.operationsClient.getOperation as SinonStub).getCall(0));
+    });
+  });
+
   describe('listIntents', () => {
     it('invokes listIntents without error', async () => {
       const client = new intentsModule.v3.IntentsClient({
@@ -926,9 +1429,9 @@ describe('v3.IntentsClient', () => {
       assert(
         (client.descriptors.page.listIntents.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -977,9 +1480,9 @@ describe('v3.IntentsClient', () => {
       assert(
         (client.descriptors.page.listIntents.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1026,9 +1529,9 @@ describe('v3.IntentsClient', () => {
       assert(
         (client.descriptors.page.listIntents.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1068,9 +1571,9 @@ describe('v3.IntentsClient', () => {
       assert(
         (client.descriptors.page.listIntents.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -1637,6 +2140,85 @@ describe('v3.IntentsClient', () => {
         assert.strictEqual(result, 'agentValue');
         assert(
           (client.pathTemplates.agentPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('agentGenerativeSettings', () => {
+      const fakePath = '/rendered/path/agentGenerativeSettings';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+      };
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.agentGenerativeSettingsPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.agentGenerativeSettingsPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('agentGenerativeSettingsPath', () => {
+        const result = client.agentGenerativeSettingsPath(
+          'projectValue',
+          'locationValue',
+          'agentValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromAgentGenerativeSettingsName', () => {
+        const result =
+          client.matchProjectFromAgentGenerativeSettingsName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromAgentGenerativeSettingsName', () => {
+        const result =
+          client.matchLocationFromAgentGenerativeSettingsName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromAgentGenerativeSettingsName', () => {
+        const result =
+          client.matchAgentFromAgentGenerativeSettingsName(fakePath);
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
@@ -2406,6 +2988,82 @@ describe('v3.IntentsClient', () => {
       });
     });
 
+    describe('generator', () => {
+      const fakePath = '/rendered/path/generator';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+        generator: 'generatorValue',
+      };
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.generatorPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.generatorPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('generatorPath', () => {
+        const result = client.generatorPath(
+          'projectValue',
+          'locationValue',
+          'agentValue',
+          'generatorValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.generatorPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromGeneratorName', () => {
+        const result = client.matchProjectFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromGeneratorName', () => {
+        const result = client.matchLocationFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromGeneratorName', () => {
+        const result = client.matchAgentFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchGeneratorFromGeneratorName', () => {
+        const result = client.matchGeneratorFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'generatorValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('intent', () => {
       const fakePath = '/rendered/path/intent';
       const expectedParameters = {
@@ -2803,6 +3461,132 @@ describe('v3.IntentsClient', () => {
       });
     });
 
+    describe('projectLocationAgentFlowTransitionRouteGroup', () => {
+      const fakePath =
+        '/rendered/path/projectLocationAgentFlowTransitionRouteGroup';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+        flow: 'flowValue',
+        transition_route_group: 'transitionRouteGroupValue',
+      };
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationAgentFlowTransitionRouteGroupPath', () => {
+        const result = client.projectLocationAgentFlowTransitionRouteGroupPath(
+          'projectValue',
+          'locationValue',
+          'agentValue',
+          'flowValue',
+          'transitionRouteGroupValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchProjectFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchLocationFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchAgentFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFlowFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchFlowFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'flowValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTransitionRouteGroupFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchTransitionRouteGroupFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'transitionRouteGroupValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('projectLocationAgentSessionEntityType', () => {
       const fakePath = '/rendered/path/projectLocationAgentSessionEntityType';
       const expectedParameters = {
@@ -2920,6 +3704,113 @@ describe('v3.IntentsClient', () => {
           (
             client.pathTemplates
               .projectLocationAgentSessionEntityTypePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationAgentTransitionRouteGroup', () => {
+      const fakePath =
+        '/rendered/path/projectLocationAgentTransitionRouteGroup';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+        transition_route_group: 'transitionRouteGroupValue',
+      };
+      const client = new intentsModule.v3.IntentsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationAgentTransitionRouteGroupPath', () => {
+        const result = client.projectLocationAgentTransitionRouteGroupPath(
+          'projectValue',
+          'locationValue',
+          'agentValue',
+          'transitionRouteGroupValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchProjectFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchLocationFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchAgentFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTransitionRouteGroupFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchTransitionRouteGroupFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'transitionRouteGroupValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
               .match as SinonStub
           )
             .getCall(-1)
@@ -3154,117 +4045,6 @@ describe('v3.IntentsClient', () => {
         assert.strictEqual(result, 'resultValue');
         assert(
           (client.pathTemplates.testCaseResultPathTemplate.match as SinonStub)
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-    });
-
-    describe('transitionRouteGroup', () => {
-      const fakePath = '/rendered/path/transitionRouteGroup';
-      const expectedParameters = {
-        project: 'projectValue',
-        location: 'locationValue',
-        agent: 'agentValue',
-        flow: 'flowValue',
-        transition_route_group: 'transitionRouteGroupValue',
-      };
-      const client = new intentsModule.v3.IntentsClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      client.initialize();
-      client.pathTemplates.transitionRouteGroupPathTemplate.render = sinon
-        .stub()
-        .returns(fakePath);
-      client.pathTemplates.transitionRouteGroupPathTemplate.match = sinon
-        .stub()
-        .returns(expectedParameters);
-
-      it('transitionRouteGroupPath', () => {
-        const result = client.transitionRouteGroupPath(
-          'projectValue',
-          'locationValue',
-          'agentValue',
-          'flowValue',
-          'transitionRouteGroupValue'
-        );
-        assert.strictEqual(result, fakePath);
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .render as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(expectedParameters)
-        );
-      });
-
-      it('matchProjectFromTransitionRouteGroupName', () => {
-        const result =
-          client.matchProjectFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'projectValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchLocationFromTransitionRouteGroupName', () => {
-        const result =
-          client.matchLocationFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'locationValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchAgentFromTransitionRouteGroupName', () => {
-        const result = client.matchAgentFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'agentValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchFlowFromTransitionRouteGroupName', () => {
-        const result = client.matchFlowFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'flowValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchTransitionRouteGroupFromTransitionRouteGroupName', () => {
-        const result =
-          client.matchTransitionRouteGroupFromTransitionRouteGroupName(
-            fakePath
-          );
-        assert.strictEqual(result, 'transitionRouteGroupValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
             .getCall(-1)
             .calledWith(fakePath)
         );

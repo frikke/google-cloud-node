@@ -1,5 +1,85 @@
 # Changelog
 
+## [4.6.0](https://github.com/googleapis/google-cloud-node/compare/billing-v4.5.0...billing-v4.6.0) (2024-12-18)
+
+
+### Features
+
+* [billing] added currency field to billing account message ([#5855](https://github.com/googleapis/google-cloud-node/issues/5855)) ([c7e55d4](https://github.com/googleapis/google-cloud-node/commit/c7e55d46da8f764b7cc5f971be866621f0d06d73))
+
+## [4.5.0](https://github.com/googleapis/google-cloud-node/compare/billing-v4.4.0...billing-v4.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [4.4.0](https://github.com/googleapis/google-cloud-node/compare/billing-v4.3.0...billing-v4.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5187](https://github.com/googleapis/google-cloud-node/issues/5187)) ([1952fbe](https://github.com/googleapis/google-cloud-node/commit/1952fbe432b96115278d42e5c1dbdbc7de39036b))
+
+## [4.3.0](https://github.com/googleapis/google-cloud-node/compare/billing-v4.2.0...billing-v4.3.0) (2024-02-09)
+
+
+### Features
+
+* Support for Trusted Private Cloud ([895830a](https://github.com/googleapis/google-cloud-node/commit/895830a3ef91666c30a96a7f68bd4cd1f582d58d))
+
+## [4.2.0](https://github.com/googleapis/google-cloud-node/compare/billing-v4.1.0...billing-v4.2.0) (2024-01-15)
+
+
+### Features
+
+* [billing] add new types QueryMode, QueryPlan, ResultSetStats ([#4924](https://github.com/googleapis/google-cloud-node/issues/4924)) ([86e0849](https://github.com/googleapis/google-cloud-node/commit/86e08494011b7f4e147906087c29e35fbb940cf5))
+
+## [4.1.0](https://github.com/googleapis/google-cloud-node/compare/billing-v4.0.2...billing-v4.1.0) (2024-01-05)
+
+
+### Features
+
+* [billing] added the MoveBillingAccount method, which allows changing which organization a billing account belongs to ([#4865](https://github.com/googleapis/google-cloud-node/issues/4865)) ([5560948](https://github.com/googleapis/google-cloud-node/commit/5560948570389b22e16a621a9b66dc4afba823fa))
+
+## [4.0.2](https://github.com/googleapis/google-cloud-node/compare/billing-v4.0.1...billing-v4.0.2) (2023-09-08)
+
+
+### Bug Fixes
+
+* [billing] fixed resource_reference for name in GetProjectBillingInfo ([#4619](https://github.com/googleapis/google-cloud-node/issues/4619)) ([9bcc6c6](https://github.com/googleapis/google-cloud-node/commit/9bcc6c65f72a6a3d6c1f027635f1707880c7cc66))
+
+## [4.0.1](https://github.com/googleapis/google-cloud-node/compare/billing-v4.0.0...billing-v4.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4584](https://github.com/googleapis/google-cloud-node/issues/4584)) ([13537fc](https://github.com/googleapis/google-cloud-node/commit/13537fcd6e3c552199d5057daf3b00c24033c908))
+
+## [4.0.0](https://github.com/googleapis/google-cloud-node/compare/billing-v3.4.0...billing-v4.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4460](https://github.com/googleapis/google-cloud-node/issues/4460)) ([c32965c](https://github.com/googleapis/google-cloud-node/commit/c32965c0c4a5975ba37371ecd819d9cffb080aa5))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/billing-v3.3.2...billing-v3.4.0) (2023-06-28)
+
+
+### Features
+
+* [billing] added resource_reference for name in GetProjectBillingInfoRequest message ([#4356](https://github.com/googleapis/google-cloud-node/issues/4356)) ([a77e51f](https://github.com/googleapis/google-cloud-node/commit/a77e51fe3fc235676189525f6a582844a830cc99))
+
 ## [3.3.2](https://github.com/googleapis/google-cloud-node/compare/billing-v3.3.1...billing-v3.3.2) (2023-04-13)
 
 

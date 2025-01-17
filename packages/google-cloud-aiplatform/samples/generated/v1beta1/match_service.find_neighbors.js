@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ function main(indexEndpoint) {
   /**
    *  The list of queries.
    */
-  // const queries = 1234
+  // const queries = [1,2,3,4]
   /**
    *  If set to true, the full datapoints (including all vector values and
    *  restricts) of the nearest neighbors are returned.

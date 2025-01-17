@@ -4,6 +4,91 @@
 
 [1]: https://www.npmjs.com/package/nodejs-translate?activeTab=versions
 
+## [8.5.0](https://github.com/googleapis/google-cloud-node/compare/translate-v8.4.0...translate-v8.5.0) (2024-08-19)
+
+
+### Features
+
+* [translate] Add BigQuery Metastore Partition Service API version v1alpha ([#5611](https://github.com/googleapis/google-cloud-node/issues/5611)) ([700a937](https://github.com/googleapis/google-cloud-node/commit/700a9373dd608cd2a76856c26249ca01aa11ec5f))
+
+## [8.4.0](https://github.com/googleapis/google-cloud-node/compare/translate-v8.3.0...translate-v8.4.0) (2024-08-09)
+
+
+### Features
+
+* [translate] Adds AdaptiveMt HTML/Glossary support ([#5603](https://github.com/googleapis/google-cloud-node/issues/5603)) ([07ab536](https://github.com/googleapis/google-cloud-node/commit/07ab536e89a98ee6e330c293604fbc49d32eb244))
+
+## [8.3.0](https://github.com/googleapis/google-cloud-node/compare/translate-v8.2.0...translate-v8.3.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [8.2.0](https://github.com/googleapis/google-cloud-node/compare/translate-v8.1.0...translate-v8.2.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5191](https://github.com/googleapis/google-cloud-node/issues/5191)) ([57567db](https://github.com/googleapis/google-cloud-node/commit/57567db36033ca53ae2f54e6517b8cd12145bb82))
+
+## [8.1.0](https://github.com/googleapis/google-cloud-node/compare/translate-v8.0.3...translate-v8.1.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5028](https://github.com/googleapis/google-cloud-node/issues/5028)) ([852f3eb](https://github.com/googleapis/google-cloud-node/commit/852f3ebf065ee24e910580b9a1fc365acb3a744a))
+
+## [8.0.3](https://github.com/googleapis/google-cloud-node/compare/translate-v8.0.2...translate-v8.0.3) (2024-01-05)
+
+
+### Bug Fixes
+
+* [translate] correct long audio synthesis HTTP binding ([#4889](https://github.com/googleapis/google-cloud-node/issues/4889)) ([f7ea397](https://github.com/googleapis/google-cloud-node/commit/f7ea397a129b9f2532be84f72ff455b454b59437))
+
+## [8.0.2](https://github.com/googleapis/google-cloud-node/compare/translate-v8.0.1...translate-v8.0.2) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4588](https://github.com/googleapis/google-cloud-node/issues/4588)) ([e5ad564](https://github.com/googleapis/google-cloud-node/commit/e5ad564f74dc7a36c0e8cd8de173428a99f1deae))
+* **deps:** Update dependency @google-cloud/automl to v4 ([#4545](https://github.com/googleapis/google-cloud-node/issues/4545)) ([ccf817a](https://github.com/googleapis/google-cloud-node/commit/ccf817a2ce9f54b6cab93920a29b27fa30105846))
+* **deps:** Update dependency @google-cloud/promisify to v4 ([#4533](https://github.com/googleapis/google-cloud-node/issues/4533)) ([58950c9](https://github.com/googleapis/google-cloud-node/commit/58950c9e39d6f7f7e81d545b8e3a3166f51e457b))
+* **deps:** Update dependency @google-cloud/vision to v4 ([#4534](https://github.com/googleapis/google-cloud-node/issues/4534)) ([df60e7a](https://github.com/googleapis/google-cloud-node/commit/df60e7a2b3757cf75da9828a18df539f55ff2ca3))
+
+## [8.0.1](https://github.com/googleapis/google-cloud-node/compare/translate-v8.0.0...translate-v8.0.1) (2023-08-09)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @google-cloud/promisify to v4 ([#4520](https://github.com/googleapis/google-cloud-node/issues/4520)) ([e0e9343](https://github.com/googleapis/google-cloud-node/commit/e0e93433ca78c88f232498fec56d773c2550658d))
+* **deps:** Update dependency @google-cloud/text-to-speech to v5 ([#4513](https://github.com/googleapis/google-cloud-node/issues/4513)) ([8bef5cf](https://github.com/googleapis/google-cloud-node/commit/8bef5cfbe11f86c171ac5424cde14cd255ce0e09))
+* **deps:** Update dependency @google-cloud/vision to v4 ([#4521](https://github.com/googleapis/google-cloud-node/issues/4521)) ([30bae66](https://github.com/googleapis/google-cloud-node/commit/30bae66289904330ce557b741c117713c6877d77))
+
+## [8.0.0](https://github.com/googleapis/google-cloud-node/compare/translate-v7.2.2...translate-v8.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [translate] fix typings for IAM methods ([#4458](https://github.com/googleapis/google-cloud-node/issues/4458)) ([083f9ad](https://github.com/googleapis/google-cloud-node/commit/083f9ad4b37f05bc801f839ba7bbb74306206e83))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [7.2.2](https://github.com/googleapis/google-cloud-node/compare/translate-v7.2.1...translate-v7.2.2) (2023-06-28)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency yargs to v17 ([#4351](https://github.com/googleapis/google-cloud-node/issues/4351)) ([4fb5285](https://github.com/googleapis/google-cloud-node/commit/4fb528559c204cee33329c4e55021aa1fd0e4974))
+
 ## [7.2.1](https://github.com/googleapis/google-cloud-node/compare/translate-v7.2.0...translate-v7.2.1) (2023-04-13)
 
 

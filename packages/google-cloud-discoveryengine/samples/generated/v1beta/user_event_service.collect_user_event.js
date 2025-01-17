@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ function main(parent, userEvent) {
   /**
    *  The URL including cgi-parameters but excluding the hash fragment with a
    *  length limit of 5,000 characters. This is often more useful than the
-   *  referer URL, because many browsers only send the domain for 3rd party
+   *  referer URL, because many browsers only send the domain for third-party
    *  requests.
    */
   // const uri = 'abc123'

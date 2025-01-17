@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ function main(parent, query, pageSize) {
    *  Tags for Identifying Languages (https://tools.ietf.org/html/bcp47).
    *  The maximum number of allowed characters is 255.
    */
-  // const languageCodes = 'abc123'
+  // const languageCodes = ['abc','def']
   /**
    *  Required. Completion result count.
    *  The maximum allowed page size is 10.

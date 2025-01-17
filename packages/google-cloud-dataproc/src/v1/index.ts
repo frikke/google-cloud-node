@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,4 +21,6 @@ export {BatchControllerClient} from './batch_controller_client';
 export {ClusterControllerClient} from './cluster_controller_client';
 export {JobControllerClient} from './job_controller_client';
 export {NodeGroupControllerClient} from './node_group_controller_client';
+export {SessionControllerClient} from './session_controller_client';
+export {SessionTemplateControllerClient} from './session_template_controller_client';
 export {WorkflowTemplateServiceClient} from './workflow_template_service_client';

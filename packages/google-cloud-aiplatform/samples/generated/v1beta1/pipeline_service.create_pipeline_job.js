@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ function main(parent, pipelineJob) {
    *  the PipelineJob name. If not provided, an ID will be automatically
    *  generated.
    *  This value should be less than 128 characters, and valid characters
-   *  are /[a-z][0-9]-/.
+   *  are `/[a-z][0-9]-/`.
    */
   // const pipelineJobId = 'abc123'
 

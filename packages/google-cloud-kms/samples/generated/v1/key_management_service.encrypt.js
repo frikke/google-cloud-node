@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ function main(name, plaintext) {
    *  the plaintext and additional_authenticated_data fields must be no larger
    *  than 8KiB.
    */
-  // const plaintext = 'Buffer.from('string')'
+  // const plaintext = Buffer.from('string')
   /**
    *  Optional. Optional data that, if specified, must also be provided during
    *  decryption through
@@ -64,7 +64,7 @@ function main(name, plaintext) {
    *  the plaintext and additional_authenticated_data fields must be no larger
    *  than 8KiB.
    */
-  // const additionalAuthenticatedData = 'Buffer.from('string')'
+  // const additionalAuthenticatedData = Buffer.from('string')
   /**
    *  Optional. An optional CRC32C checksum of the
    *  EncryptRequest.plaintext google.cloud.kms.v1.EncryptRequest.plaintext.

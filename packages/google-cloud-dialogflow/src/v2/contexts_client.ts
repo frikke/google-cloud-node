@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v2/contexts_client_config.json`.
@@ -40,7 +41,7 @@ import * as gapicConfig from './contexts_client_config.json';
 const version = require('../../../package.json').version;
 
 /**
- *  Service for managing {@link google.cloud.dialogflow.v2.Context|Contexts}.
+ *  Service for managing {@link protos.google.cloud.dialogflow.v2.Context|Contexts}.
  * @class
  * @memberof v2
  */
@@ -52,6 +53,8 @@ export class ContextsClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -93,8 +96,7 @@ export class ContextsClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -102,7 +104,7 @@ export class ContextsClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new ContextsClient({fallback: 'rest'}, gax);
+   *     const client = new ContextsClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -111,8 +113,27 @@ export class ContextsClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof ContextsClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'dialogflow.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -127,7 +148,7 @@ export class ContextsClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -152,10 +173,10 @@ export class ContextsClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -165,14 +186,14 @@ export class ContextsClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -187,6 +208,12 @@ export class ContextsClient {
     this.pathTemplates = {
       conversationDatasetPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/conversationDatasets/{conversation_dataset}'
+      ),
+      encryptionSpecPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/encryptionSpec'
+      ),
+      generatorPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/generators/{generator}'
       ),
       projectPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}'
@@ -429,19 +456,50 @@ export class ContextsClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -498,9 +556,8 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.v2.Context | Context}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.v2.Context|Context}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/contexts.get_context.js</caption>
    * region_tag:dialogflow_v2_generated_Contexts_GetContext_async
@@ -512,7 +569,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext,
       protos.google.cloud.dialogflow.v2.IGetContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getContext(
@@ -552,7 +609,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext,
       protos.google.cloud.dialogflow.v2.IGetContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -592,9 +649,8 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.v2.Context | Context}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.v2.Context|Context}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/contexts.create_context.js</caption>
    * region_tag:dialogflow_v2_generated_Contexts_CreateContext_async
@@ -606,7 +662,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext,
       protos.google.cloud.dialogflow.v2.ICreateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createContext(
@@ -652,7 +708,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext,
       protos.google.cloud.dialogflow.v2.ICreateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -685,9 +741,8 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.v2.Context | Context}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.v2.Context|Context}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/contexts.update_context.js</caption>
    * region_tag:dialogflow_v2_generated_Contexts_UpdateContext_async
@@ -699,7 +754,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext,
       protos.google.cloud.dialogflow.v2.IUpdateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateContext(
@@ -745,7 +800,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext,
       protos.google.cloud.dialogflow.v2.IUpdateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -781,9 +836,8 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/contexts.delete_context.js</caption>
    * region_tag:dialogflow_v2_generated_Contexts_DeleteContext_async
@@ -795,7 +849,7 @@ export class ContextsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.dialogflow.v2.IDeleteContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteContext(
@@ -841,7 +895,7 @@ export class ContextsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.dialogflow.v2.IDeleteContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -877,9 +931,8 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/contexts.delete_all_contexts.js</caption>
    * region_tag:dialogflow_v2_generated_Contexts_DeleteAllContexts_async
@@ -891,7 +944,7 @@ export class ContextsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.dialogflow.v2.IDeleteAllContextsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteAllContexts(
@@ -937,7 +990,7 @@ export class ContextsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.dialogflow.v2.IDeleteAllContextsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -979,14 +1032,13 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dialogflow.v2.Context | Context}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dialogflow.v2.Context|Context}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listContextsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listContexts(
@@ -996,7 +1048,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext[],
       protos.google.cloud.dialogflow.v2.IListContextsRequest | null,
-      protos.google.cloud.dialogflow.v2.IListContextsResponse
+      protos.google.cloud.dialogflow.v2.IListContextsResponse,
     ]
   >;
   listContexts(
@@ -1042,7 +1094,7 @@ export class ContextsClient {
     [
       protos.google.cloud.dialogflow.v2.IContext[],
       protos.google.cloud.dialogflow.v2.IListContextsRequest | null,
-      protos.google.cloud.dialogflow.v2.IListContextsResponse
+      protos.google.cloud.dialogflow.v2.IListContextsResponse,
     ]
   > | void {
     request = request || {};
@@ -1083,13 +1135,12 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dialogflow.v2.Context | Context} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dialogflow.v2.Context|Context} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listContextsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listContextsStream(
@@ -1135,12 +1186,11 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dialogflow.v2.Context | Context}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dialogflow.v2.Context|Context}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/contexts.list_contexts.js</caption>
    * region_tag:dialogflow_v2_generated_Contexts_ListContexts_async
@@ -1177,8 +1227,7 @@ export class ContextsClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1224,12 +1273,11 @@ export class ContextsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1309,6 +1357,98 @@ export class ContextsClient {
     return this.pathTemplates.conversationDatasetPathTemplate.match(
       conversationDatasetName
     ).conversation_dataset;
+  }
+
+  /**
+   * Return a fully-qualified encryptionSpec resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @returns {string} Resource name string.
+   */
+  encryptionSpecPath(project: string, location: string) {
+    return this.pathTemplates.encryptionSpecPathTemplate.render({
+      project: project,
+      location: location,
+    });
+  }
+
+  /**
+   * Parse the project from EncryptionSpec resource.
+   *
+   * @param {string} encryptionSpecName
+   *   A fully-qualified path representing EncryptionSpec resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromEncryptionSpecName(encryptionSpecName: string) {
+    return this.pathTemplates.encryptionSpecPathTemplate.match(
+      encryptionSpecName
+    ).project;
+  }
+
+  /**
+   * Parse the location from EncryptionSpec resource.
+   *
+   * @param {string} encryptionSpecName
+   *   A fully-qualified path representing EncryptionSpec resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromEncryptionSpecName(encryptionSpecName: string) {
+    return this.pathTemplates.encryptionSpecPathTemplate.match(
+      encryptionSpecName
+    ).location;
+  }
+
+  /**
+   * Return a fully-qualified generator resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} generator
+   * @returns {string} Resource name string.
+   */
+  generatorPath(project: string, location: string, generator: string) {
+    return this.pathTemplates.generatorPathTemplate.render({
+      project: project,
+      location: location,
+      generator: generator,
+    });
+  }
+
+  /**
+   * Parse the project from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .location;
+  }
+
+  /**
+   * Parse the generator from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the generator.
+   */
+  matchGeneratorFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .generator;
   }
 
   /**

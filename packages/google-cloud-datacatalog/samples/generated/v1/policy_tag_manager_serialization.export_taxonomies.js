@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ function main(parent, taxonomies) {
   /**
    *  Required. Resource names of the taxonomies to export.
    */
-  // const taxonomies = 'abc123'
+  // const taxonomies = ['abc','def']
   /**
    *  Serialized export taxonomies that contain all the policy
    *  tags as nested protocol buffers.

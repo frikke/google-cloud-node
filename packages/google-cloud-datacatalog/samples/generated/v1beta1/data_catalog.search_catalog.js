@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 'use strict';
 
-function main(scope, query) {
+function main(scope) {
   // [START datacatalog_v1beta1_generated_DataCatalog_SearchCatalog_async]
   /**
    * This snippet has been automatically generated and should be regarded as a code template only.
@@ -36,8 +36,9 @@ function main(scope, query) {
    */
   // const scope = {}
   /**
-   *  Required. The query string in search query syntax. The query must be non-empty.
-   *  Query strings can be simple as "x" or more qualified as:
+   *  Optional. The query string in search query syntax. An empty query string
+   *  will result in all data assets (in the specified scope) that the user has
+   *  access to. Query strings can be simple as "x" or more qualified as:
    *  * name:x
    *  * column:x
    *  * description:y
@@ -54,8 +55,8 @@ function main(scope, query) {
   // const pageSize = 1234
   /**
    *  Optional. Pagination token returned in an earlier
-   *  SearchCatalogResponse.next_page_token google.cloud.datacatalog.v1beta1.SearchCatalogResponse.next_page_token, which
-   *  indicates that this is a continuation of a prior
+   *  SearchCatalogResponse.next_page_token google.cloud.datacatalog.v1beta1.SearchCatalogResponse.next_page_token,
+   *  which indicates that this is a continuation of a prior
    *  SearchCatalogRequest google.cloud.datacatalog.v1beta1.DataCatalog.SearchCatalog 
    *  call, and that the system should return the next page of data. If empty,
    *  the first page is returned.
@@ -67,6 +68,7 @@ function main(scope, query) {
    *    * `relevance`, only supports descending
    *    * `last_modified_timestamp asc|desc`, defaults to descending if not
    *      specified
+   *    * `default` that can only be descending
    *  If not specified, defaults to `relevance` descending.
    */
   // const orderBy = 'abc123'
@@ -81,11 +83,10 @@ function main(scope, query) {
     // Construct request
     const request = {
       scope,
-      query,
     };
 
     // Run request
-    const iterable = await datacatalogClient.searchCatalogAsync(request);
+    const iterable = datacatalogClient.searchCatalogAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

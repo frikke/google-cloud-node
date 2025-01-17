@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v2alpha/user_event_service_client_config.json`.
@@ -52,6 +53,8 @@ export class UserEventServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -94,8 +97,7 @@ export class UserEventServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -103,7 +105,7 @@ export class UserEventServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new UserEventServiceClient({fallback: 'rest'}, gax);
+   *     const client = new UserEventServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -112,8 +114,27 @@ export class UserEventServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof UserEventServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'retail.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -128,7 +149,7 @@ export class UserEventServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -153,10 +174,10 @@ export class UserEventServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -166,14 +187,14 @@ export class UserEventServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -186,8 +207,14 @@ export class UserEventServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      alertConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/alertConfig'
+      ),
       attributesConfigPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}/attributesConfig'
+      ),
+      branchPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/catalogs/{catalog}/branches/{branch}'
       ),
       catalogPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}'
@@ -198,6 +225,9 @@ export class UserEventServiceClient {
       controlPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}/controls/{control}'
       ),
+      loggingConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/loggingConfig'
+      ),
       merchantCenterAccountLinkPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}/merchantCenterAccountLinks/{merchant_center_account_link}'
       ),
@@ -206,6 +236,9 @@ export class UserEventServiceClient {
       ),
       productPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}/branches/{branch}/products/{product}'
+      ),
+      retailProjectPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/retailProject'
       ),
       servingConfigPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}/servingConfigs/{serving_config}'
@@ -220,7 +253,7 @@ export class UserEventServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -262,6 +295,12 @@ export class UserEventServiceClient {
     const importUserEventsMetadata = protoFilesRoot.lookup(
       '.google.cloud.retail.v2alpha.ImportMetadata'
     ) as gax.protobuf.Type;
+    const exportUserEventsResponse = protoFilesRoot.lookup(
+      '.google.cloud.retail.v2alpha.ExportUserEventsResponse'
+    ) as gax.protobuf.Type;
+    const exportUserEventsMetadata = protoFilesRoot.lookup(
+      '.google.cloud.retail.v2alpha.ExportMetadata'
+    ) as gax.protobuf.Type;
     const rejoinUserEventsResponse = protoFilesRoot.lookup(
       '.google.cloud.retail.v2alpha.RejoinUserEventsResponse'
     ) as gax.protobuf.Type;
@@ -279,6 +318,11 @@ export class UserEventServiceClient {
         this.operationsClient,
         importUserEventsResponse.decode.bind(importUserEventsResponse),
         importUserEventsMetadata.decode.bind(importUserEventsMetadata)
+      ),
+      exportUserEvents: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        exportUserEventsResponse.decode.bind(exportUserEventsResponse),
+        exportUserEventsMetadata.decode.bind(exportUserEventsMetadata)
       ),
       rejoinUserEvents: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
@@ -341,6 +385,7 @@ export class UserEventServiceClient {
       'collectUserEvent',
       'purgeUserEvents',
       'importUserEvents',
+      'exportUserEvents',
       'rejoinUserEvents',
     ];
     for (const methodName of userEventServiceStubMethods) {
@@ -374,19 +419,50 @@ export class UserEventServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'retail.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'retail.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -443,9 +519,8 @@ export class UserEventServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.retail.v2alpha.UserEvent | UserEvent}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.retail.v2alpha.UserEvent|UserEvent}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.write_user_event.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_WriteUserEvent_async
@@ -457,7 +532,7 @@ export class UserEventServiceClient {
     [
       protos.google.cloud.retail.v2alpha.IUserEvent,
       protos.google.cloud.retail.v2alpha.IWriteUserEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   writeUserEvent(
@@ -503,7 +578,7 @@ export class UserEventServiceClient {
     [
       protos.google.cloud.retail.v2alpha.IUserEvent,
       protos.google.cloud.retail.v2alpha.IWriteUserEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -559,9 +634,8 @@ export class UserEventServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.HttpBody | HttpBody}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.HttpBody|HttpBody}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.collect_user_event.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_CollectUserEvent_async
@@ -573,7 +647,7 @@ export class UserEventServiceClient {
     [
       protos.google.api.IHttpBody,
       protos.google.cloud.retail.v2alpha.ICollectUserEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   collectUserEvent(
@@ -619,7 +693,7 @@ export class UserEventServiceClient {
     [
       protos.google.api.IHttpBody,
       protos.google.cloud.retail.v2alpha.ICollectUserEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -659,7 +733,7 @@ export class UserEventServiceClient {
    *   eligible fields for filtering are:
    *
    *   * `eventType`: Double quoted
-   *   {@link google.cloud.retail.v2alpha.UserEvent.event_type|UserEvent.event_type}
+   *   {@link protos.google.cloud.retail.v2alpha.UserEvent.event_type|UserEvent.event_type}
    *   string.
    *   * `eventTime`: in ISO 8601 "zulu" format.
    *   * `visitorId`: Double quoted string. Specifying this will delete all
@@ -688,8 +762,7 @@ export class UserEventServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.purge_user_events.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_PurgeUserEvents_async
@@ -704,7 +777,7 @@ export class UserEventServiceClient {
         protos.google.cloud.retail.v2alpha.IPurgeMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   purgeUserEvents(
@@ -757,7 +830,7 @@ export class UserEventServiceClient {
         protos.google.cloud.retail.v2alpha.IPurgeMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -784,8 +857,7 @@ export class UserEventServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.purge_user_events.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_PurgeUserEvents_async
@@ -837,8 +909,7 @@ export class UserEventServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.import_user_events.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_ImportUserEvents_async
@@ -853,7 +924,7 @@ export class UserEventServiceClient {
         protos.google.cloud.retail.v2alpha.IImportMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   importUserEvents(
@@ -906,7 +977,7 @@ export class UserEventServiceClient {
         protos.google.cloud.retail.v2alpha.IImportMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -933,8 +1004,7 @@ export class UserEventServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.import_user_events.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_ImportUserEvents_async
@@ -963,6 +1033,186 @@ export class UserEventServiceClient {
     >;
   }
   /**
+   * Exports user events.
+   *
+   * `Operation.response` is of type `ExportResponse`.
+   * `Operation.metadata` is of type `ExportMetadata`.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Resource name of a
+   *   {@link protos.google.cloud.retail.v2alpha.Catalog|Catalog}. For example
+   *   `projects/1234/locations/global/catalogs/default_catalog`
+   * @param {google.cloud.retail.v2alpha.OutputConfig} request.outputConfig
+   *   Required. The output location of the data.
+   * @param {string} request.filter
+   *   A filtering expression to specify restrictions on returned events.
+   *   The expression is a sequence of terms. Each term applies a restriction to
+   *   the returned user events. Use this expression to restrict results to a
+   *   specific time range or to filter events by eventType.
+   *   For example, `eventTime > "2012-04-23T18:25:43.511Z"
+   *   eventsMissingCatalogItems eventTime<"2012-04-23T18:25:43.511Z"
+   *   eventType=search`
+   *
+   *     We expect only three types of fields:
+   *
+   *      * `eventTime`: This can be specified twice, once with a
+   *        less than operator and once with a greater than operator. The
+   *        `eventTime` restriction should result in one, contiguous, valid,
+   *        `eventTime` range.
+   *
+   *      * `eventType`: Boolean operators `OR` and `NOT` are supported if the
+   *        expression is enclosed in parentheses and the operators are separated
+   *        from the tag values by a space.
+   *
+   *      * `eventsMissingCatalogItems`: This restricts results
+   *        to events for which catalog items were not found in the catalog. The
+   *        default behavior is to return only those events for which catalog
+   *        items were found.
+   *
+   *     Some examples of valid filters expressions:
+   *
+   *     * Example 1: `eventTime > "2012-04-23T18:25:43.511Z"
+   *               eventTime < "2012-04-23T18:30:43.511Z"`
+   *     * Example 2: `eventTime > "2012-04-23T18:25:43.511Z"
+   *               eventType = detail-page-view`
+   *     * Example 3: `eventsMissingCatalogItems
+   *               eventType = (NOT search) eventTime <
+   *               "2018-04-23T18:30:43.511Z"`
+   *     * Example 4: `eventTime > "2012-04-23T18:25:43.511Z"`
+   *     * Example 5: `eventType = (detail-page-view OR search)`
+   *     * Example 6: `eventsMissingCatalogItems`
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v2alpha/user_event_service.export_user_events.js</caption>
+   * region_tag:retail_v2alpha_generated_UserEventService_ExportUserEvents_async
+   */
+  exportUserEvents(
+    request?: protos.google.cloud.retail.v2alpha.IExportUserEventsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.retail.v2alpha.IExportUserEventsResponse,
+        protos.google.cloud.retail.v2alpha.IExportMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  exportUserEvents(
+    request: protos.google.cloud.retail.v2alpha.IExportUserEventsRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.retail.v2alpha.IExportUserEventsResponse,
+        protos.google.cloud.retail.v2alpha.IExportMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  exportUserEvents(
+    request: protos.google.cloud.retail.v2alpha.IExportUserEventsRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.retail.v2alpha.IExportUserEventsResponse,
+        protos.google.cloud.retail.v2alpha.IExportMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  exportUserEvents(
+    request?: protos.google.cloud.retail.v2alpha.IExportUserEventsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.retail.v2alpha.IExportUserEventsResponse,
+            protos.google.cloud.retail.v2alpha.IExportMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.retail.v2alpha.IExportUserEventsResponse,
+        protos.google.cloud.retail.v2alpha.IExportMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.retail.v2alpha.IExportUserEventsResponse,
+        protos.google.cloud.retail.v2alpha.IExportMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.exportUserEvents(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `exportUserEvents()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v2alpha/user_event_service.export_user_events.js</caption>
+   * region_tag:retail_v2alpha_generated_UserEventService_ExportUserEvents_async
+   */
+  async checkExportUserEventsProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.retail.v2alpha.ExportUserEventsResponse,
+      protos.google.cloud.retail.v2alpha.ExportMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.exportUserEvents,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.retail.v2alpha.ExportUserEventsResponse,
+      protos.google.cloud.retail.v2alpha.ExportMetadata
+    >;
+  }
+  /**
    * Starts a user-event rejoin operation with latest product catalog. Events
    * are not annotated with detailed product information for products that are
    * missing from the catalog when the user event is ingested. These
@@ -988,8 +1238,7 @@ export class UserEventServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.rejoin_user_events.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_RejoinUserEvents_async
@@ -1004,7 +1253,7 @@ export class UserEventServiceClient {
         protos.google.cloud.retail.v2alpha.IRejoinUserEventsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   rejoinUserEvents(
@@ -1057,7 +1306,7 @@ export class UserEventServiceClient {
         protos.google.cloud.retail.v2alpha.IRejoinUserEventsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1084,8 +1333,7 @@ export class UserEventServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2alpha/user_event_service.rejoin_user_events.js</caption>
    * region_tag:retail_v2alpha_generated_UserEventService_RejoinUserEvents_async
@@ -1124,8 +1372,7 @@ export class UserEventServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1171,12 +1418,11 @@ export class UserEventServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1373,6 +1619,30 @@ export class UserEventServiceClient {
   // --------------------
 
   /**
+   * Return a fully-qualified alertConfig resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  alertConfigPath(project: string) {
+    return this.pathTemplates.alertConfigPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from AlertConfig resource.
+   *
+   * @param {string} alertConfigName
+   *   A fully-qualified path representing AlertConfig resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAlertConfigName(alertConfigName: string) {
+    return this.pathTemplates.alertConfigPathTemplate.match(alertConfigName)
+      .project;
+  }
+
+  /**
    * Return a fully-qualified attributesConfig resource name string.
    *
    * @param {string} project
@@ -1425,6 +1695,73 @@ export class UserEventServiceClient {
     return this.pathTemplates.attributesConfigPathTemplate.match(
       attributesConfigName
     ).catalog;
+  }
+
+  /**
+   * Return a fully-qualified branch resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} catalog
+   * @param {string} branch
+   * @returns {string} Resource name string.
+   */
+  branchPath(
+    project: string,
+    location: string,
+    catalog: string,
+    branch: string
+  ) {
+    return this.pathTemplates.branchPathTemplate.render({
+      project: project,
+      location: location,
+      catalog: catalog,
+      branch: branch,
+    });
+  }
+
+  /**
+   * Parse the project from Branch resource.
+   *
+   * @param {string} branchName
+   *   A fully-qualified path representing Branch resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromBranchName(branchName: string) {
+    return this.pathTemplates.branchPathTemplate.match(branchName).project;
+  }
+
+  /**
+   * Parse the location from Branch resource.
+   *
+   * @param {string} branchName
+   *   A fully-qualified path representing Branch resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromBranchName(branchName: string) {
+    return this.pathTemplates.branchPathTemplate.match(branchName).location;
+  }
+
+  /**
+   * Parse the catalog from Branch resource.
+   *
+   * @param {string} branchName
+   *   A fully-qualified path representing Branch resource.
+   * @returns {string} A string representing the catalog.
+   */
+  matchCatalogFromBranchName(branchName: string) {
+    return this.pathTemplates.branchPathTemplate.match(branchName).catalog;
+  }
+
+  /**
+   * Parse the branch from Branch resource.
+   *
+   * @param {string} branchName
+   *   A fully-qualified path representing Branch resource.
+   * @returns {string} A string representing the branch.
+   */
+  matchBranchFromBranchName(branchName: string) {
+    return this.pathTemplates.branchPathTemplate.match(branchName).branch;
   }
 
   /**
@@ -1596,6 +1933,30 @@ export class UserEventServiceClient {
    */
   matchControlFromControlName(controlName: string) {
     return this.pathTemplates.controlPathTemplate.match(controlName).control;
+  }
+
+  /**
+   * Return a fully-qualified loggingConfig resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  loggingConfigPath(project: string) {
+    return this.pathTemplates.loggingConfigPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from LoggingConfig resource.
+   *
+   * @param {string} loggingConfigName
+   *   A fully-qualified path representing LoggingConfig resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromLoggingConfigName(loggingConfigName: string) {
+    return this.pathTemplates.loggingConfigPathTemplate.match(loggingConfigName)
+      .project;
   }
 
   /**
@@ -1822,6 +2183,30 @@ export class UserEventServiceClient {
    */
   matchProductFromProductName(productName: string) {
     return this.pathTemplates.productPathTemplate.match(productName).product;
+  }
+
+  /**
+   * Return a fully-qualified retailProject resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  retailProjectPath(project: string) {
+    return this.pathTemplates.retailProjectPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from RetailProject resource.
+   *
+   * @param {string} retailProjectName
+   *   A fully-qualified path representing RetailProject resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromRetailProjectName(retailProjectName: string) {
+    return this.pathTemplates.retailProjectPathTemplate.match(retailProjectName)
+      .project;
   }
 
   /**

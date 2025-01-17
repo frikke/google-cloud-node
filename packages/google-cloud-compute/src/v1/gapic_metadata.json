@@ -77,6 +77,11 @@
                 "insert"
               ]
             },
+            "Move": {
+              "methods": [
+                "move"
+              ]
+            },
             "SetLabels": {
               "methods": [
                 "setLabels"
@@ -114,6 +119,11 @@
             "Insert": {
               "methods": [
                 "insert"
+              ]
+            },
+            "Move": {
+              "methods": [
+                "move"
               ]
             },
             "SetLabels": {
@@ -256,6 +266,11 @@
                 "get"
               ]
             },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
             "Insert": {
               "methods": [
                 "insert"
@@ -269,6 +284,16 @@
             "SetEdgeSecurityPolicy": {
               "methods": [
                 "setEdgeSecurityPolicy"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
               ]
             },
             "Update": {
@@ -308,6 +333,11 @@
                 "get"
               ]
             },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
             "Insert": {
               "methods": [
                 "insert"
@@ -321,6 +351,16 @@
             "SetEdgeSecurityPolicy": {
               "methods": [
                 "setEdgeSecurityPolicy"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
               ]
             },
             "Update": {
@@ -399,6 +439,11 @@
                 "setSecurityPolicy"
               ]
             },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
             "Update": {
               "methods": [
                 "update"
@@ -416,6 +461,13 @@
                 "list",
                 "listStream",
                 "listAsync"
+              ]
+            },
+            "ListUsable": {
+              "methods": [
+                "listUsable",
+                "listUsableStream",
+                "listUsableAsync"
               ]
             }
           }
@@ -478,6 +530,11 @@
                 "setSecurityPolicy"
               ]
             },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
             "Update": {
               "methods": [
                 "update"
@@ -496,6 +553,13 @@
                 "listStream",
                 "listAsync"
               ]
+            },
+            "ListUsable": {
+              "methods": [
+                "listUsable",
+                "listUsableStream",
+                "listUsableAsync"
+              ]
             }
           }
         }
@@ -509,6 +573,11 @@
             "AddResourcePolicies": {
               "methods": [
                 "addResourcePolicies"
+              ]
+            },
+            "BulkInsert": {
+              "methods": [
+                "bulkInsert"
               ]
             },
             "CreateSnapshot": {
@@ -554,6 +623,21 @@
             "SetLabels": {
               "methods": [
                 "setLabels"
+              ]
+            },
+            "StartAsyncReplication": {
+              "methods": [
+                "startAsyncReplication"
+              ]
+            },
+            "StopAsyncReplication": {
+              "methods": [
+                "stopAsyncReplication"
+              ]
+            },
+            "StopGroupAsyncReplication": {
+              "methods": [
+                "stopGroupAsyncReplication"
               ]
             },
             "TestIamPermissions": {
@@ -590,6 +674,11 @@
                 "addResourcePolicies"
               ]
             },
+            "BulkInsert": {
+              "methods": [
+                "bulkInsert"
+              ]
+            },
             "CreateSnapshot": {
               "methods": [
                 "createSnapshot"
@@ -633,6 +722,21 @@
             "SetLabels": {
               "methods": [
                 "setLabels"
+              ]
+            },
+            "StartAsyncReplication": {
+              "methods": [
+                "startAsyncReplication"
+              ]
+            },
+            "StopAsyncReplication": {
+              "methods": [
+                "stopAsyncReplication"
+              ]
+            },
+            "StopGroupAsyncReplication": {
+              "methods": [
+                "stopGroupAsyncReplication"
               ]
             },
             "TestIamPermissions": {
@@ -1191,6 +1295,11 @@
                 "insert"
               ]
             },
+            "Move": {
+              "methods": [
+                "move"
+              ]
+            },
             "SetLabels": {
               "methods": [
                 "setLabels"
@@ -1221,6 +1330,11 @@
             "Insert": {
               "methods": [
                 "insert"
+              ]
+            },
+            "Move": {
+              "methods": [
+                "move"
               ]
             },
             "SetLabels": {
@@ -1851,6 +1965,74 @@
         }
       }
     },
+    "InstanceGroupManagerResizeRequests": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "InstanceGroupManagerResizeRequestsClient",
+          "rpcs": {
+            "Cancel": {
+              "methods": [
+                "cancel"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "InstanceGroupManagerResizeRequestsClient",
+          "rpcs": {
+            "Cancel": {
+              "methods": [
+                "cancel"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "InstanceGroupManagers": {
       "clients": {
         "grpc": {
@@ -1916,6 +2098,11 @@
                 "resize"
               ]
             },
+            "ResumeInstances": {
+              "methods": [
+                "resumeInstances"
+              ]
+            },
             "SetInstanceTemplate": {
               "methods": [
                 "setInstanceTemplate"
@@ -1924,6 +2111,21 @@
             "SetTargetPools": {
               "methods": [
                 "setTargetPools"
+              ]
+            },
+            "StartInstances": {
+              "methods": [
+                "startInstances"
+              ]
+            },
+            "StopInstances": {
+              "methods": [
+                "stopInstances"
+              ]
+            },
+            "SuspendInstances": {
+              "methods": [
+                "suspendInstances"
               ]
             },
             "UpdatePerInstanceConfigs": {
@@ -2031,6 +2233,11 @@
                 "resize"
               ]
             },
+            "ResumeInstances": {
+              "methods": [
+                "resumeInstances"
+              ]
+            },
             "SetInstanceTemplate": {
               "methods": [
                 "setInstanceTemplate"
@@ -2039,6 +2246,21 @@
             "SetTargetPools": {
               "methods": [
                 "setTargetPools"
+              ]
+            },
+            "StartInstances": {
+              "methods": [
+                "startInstances"
+              ]
+            },
+            "StopInstances": {
+              "methods": [
+                "stopInstances"
+              ]
+            },
+            "SuspendInstances": {
+              "methods": [
+                "suspendInstances"
               ]
             },
             "UpdatePerInstanceConfigs": {
@@ -2281,6 +2503,11 @@
                 "insert"
               ]
             },
+            "PerformMaintenance": {
+              "methods": [
+                "performMaintenance"
+              ]
+            },
             "RemoveResourcePolicies": {
               "methods": [
                 "removeResourcePolicies"
@@ -2349,6 +2576,11 @@
             "SetScheduling": {
               "methods": [
                 "setScheduling"
+              ]
+            },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
               ]
             },
             "SetServiceAccount": {
@@ -2522,6 +2754,11 @@
                 "insert"
               ]
             },
+            "PerformMaintenance": {
+              "methods": [
+                "performMaintenance"
+              ]
+            },
             "RemoveResourcePolicies": {
               "methods": [
                 "removeResourcePolicies"
@@ -2590,6 +2827,11 @@
             "SetScheduling": {
               "methods": [
                 "setScheduling"
+              ]
+            },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
               ]
             },
             "SetServiceAccount": {
@@ -2687,6 +2929,40 @@
         }
       }
     },
+    "InstanceSettingsService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "InstanceSettingsServiceClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "InstanceSettingsServiceClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            }
+          }
+        }
+      }
+    },
     "InstanceTemplates": {
       "clients": {
         "grpc": {
@@ -2764,6 +3040,118 @@
             "SetIamPolicy": {
               "methods": [
                 "setIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
+            "AggregatedList": {
+              "methods": [
+                "aggregatedList",
+                "aggregatedListStream",
+                "aggregatedListAsync"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "InstantSnapshots": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "InstantSnapshotsClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "setLabels"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
+            "AggregatedList": {
+              "methods": [
+                "aggregatedList",
+                "aggregatedListStream",
+                "aggregatedListAsync"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "InstantSnapshotsClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "setLabels"
               ]
             },
             "TestIamPermissions": {
@@ -2919,6 +3307,44 @@
         }
       }
     },
+    "InterconnectRemoteLocations": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "InterconnectRemoteLocationsClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "InterconnectRemoteLocationsClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "Interconnects": {
       "clients": {
         "grpc": {
@@ -2937,6 +3363,11 @@
             "GetDiagnostics": {
               "methods": [
                 "getDiagnostics"
+              ]
+            },
+            "GetMacsecConfig": {
+              "methods": [
+                "getMacsecConfig"
               ]
             },
             "Insert": {
@@ -2979,6 +3410,11 @@
             "GetDiagnostics": {
               "methods": [
                 "getDiagnostics"
+              ]
+            },
+            "GetMacsecConfig": {
+              "methods": [
+                "getMacsecConfig"
               ]
             },
             "Insert": {
@@ -3294,6 +3730,11 @@
                 "insert"
               ]
             },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            },
             "SetIamPolicy": {
               "methods": [
                 "setIamPolicy"
@@ -3341,6 +3782,11 @@
             "Insert": {
               "methods": [
                 "insert"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "patch"
               ]
             },
             "SetIamPolicy": {
@@ -3733,6 +4179,44 @@
         }
       }
     },
+    "NetworkProfiles": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "NetworkProfilesClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "NetworkProfilesClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "Networks": {
       "clients": {
         "grpc": {
@@ -3905,6 +4389,11 @@
                 "patch"
               ]
             },
+            "PerformMaintenance": {
+              "methods": [
+                "performMaintenance"
+              ]
+            },
             "SetIamPolicy": {
               "methods": [
                 "setIamPolicy"
@@ -3984,6 +4473,11 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "PerformMaintenance": {
+              "methods": [
+                "performMaintenance"
               ]
             },
             "SetIamPolicy": {
@@ -4322,6 +4816,11 @@
                 "moveInstance"
               ]
             },
+            "SetCloudArmorTier": {
+              "methods": [
+                "setCloudArmorTier"
+              ]
+            },
             "SetCommonInstanceMetadata": {
               "methods": [
                 "setCommonInstanceMetadata"
@@ -4396,6 +4895,11 @@
                 "moveInstance"
               ]
             },
+            "SetCloudArmorTier": {
+              "methods": [
+                "setCloudArmorTier"
+              ]
+            },
             "SetCommonInstanceMetadata": {
               "methods": [
                 "setCommonInstanceMetadata"
@@ -4434,6 +4938,11 @@
         "grpc": {
           "libraryClient": "PublicAdvertisedPrefixesClient",
           "rpcs": {
+            "Announce": {
+              "methods": [
+                "announce"
+              ]
+            },
             "Delete": {
               "methods": [
                 "delete"
@@ -4452,6 +4961,11 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "Withdraw": {
+              "methods": [
+                "withdraw"
               ]
             },
             "List": {
@@ -4466,6 +4980,11 @@
         "grpc-fallback": {
           "libraryClient": "PublicAdvertisedPrefixesClient",
           "rpcs": {
+            "Announce": {
+              "methods": [
+                "announce"
+              ]
+            },
             "Delete": {
               "methods": [
                 "delete"
@@ -4484,6 +5003,11 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "Withdraw": {
+              "methods": [
+                "withdraw"
               ]
             },
             "List": {
@@ -4502,6 +5026,11 @@
         "grpc": {
           "libraryClient": "PublicDelegatedPrefixesClient",
           "rpcs": {
+            "Announce": {
+              "methods": [
+                "announce"
+              ]
+            },
             "Delete": {
               "methods": [
                 "delete"
@@ -4520,6 +5049,11 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "Withdraw": {
+              "methods": [
+                "withdraw"
               ]
             },
             "AggregatedList": {
@@ -4541,6 +5075,11 @@
         "grpc-fallback": {
           "libraryClient": "PublicDelegatedPrefixesClient",
           "rpcs": {
+            "Announce": {
+              "methods": [
+                "announce"
+              ]
+            },
             "Delete": {
               "methods": [
                 "delete"
@@ -4559,6 +5098,11 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "Withdraw": {
+              "methods": [
+                "withdraw"
               ]
             },
             "AggregatedList": {
@@ -4697,6 +5241,16 @@
                 "setIamPolicy"
               ]
             },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
             "Update": {
               "methods": [
                 "update"
@@ -4707,6 +5261,13 @@
                 "list",
                 "listStream",
                 "listAsync"
+              ]
+            },
+            "ListUsable": {
+              "methods": [
+                "listUsable",
+                "listUsableStream",
+                "listUsableAsync"
               ]
             }
           }
@@ -4749,6 +5310,16 @@
                 "setIamPolicy"
               ]
             },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
             "Update": {
               "methods": [
                 "update"
@@ -4759,6 +5330,13 @@
                 "list",
                 "listStream",
                 "listAsync"
+              ]
+            },
+            "ListUsable": {
+              "methods": [
+                "listUsable",
+                "listUsableStream",
+                "listUsableAsync"
               ]
             }
           }
@@ -4847,6 +5425,11 @@
                 "addResourcePolicies"
               ]
             },
+            "BulkInsert": {
+              "methods": [
+                "bulkInsert"
+              ]
+            },
             "CreateSnapshot": {
               "methods": [
                 "createSnapshot"
@@ -4890,6 +5473,21 @@
             "SetLabels": {
               "methods": [
                 "setLabels"
+              ]
+            },
+            "StartAsyncReplication": {
+              "methods": [
+                "startAsyncReplication"
+              ]
+            },
+            "StopAsyncReplication": {
+              "methods": [
+                "stopAsyncReplication"
+              ]
+            },
+            "StopGroupAsyncReplication": {
+              "methods": [
+                "stopGroupAsyncReplication"
               ]
             },
             "TestIamPermissions": {
@@ -4919,6 +5517,11 @@
                 "addResourcePolicies"
               ]
             },
+            "BulkInsert": {
+              "methods": [
+                "bulkInsert"
+              ]
+            },
             "CreateSnapshot": {
               "methods": [
                 "createSnapshot"
@@ -4962,6 +5565,21 @@
             "SetLabels": {
               "methods": [
                 "setLabels"
+              ]
+            },
+            "StartAsyncReplication": {
+              "methods": [
+                "startAsyncReplication"
+              ]
+            },
+            "StopAsyncReplication": {
+              "methods": [
+                "stopAsyncReplication"
+              ]
+            },
+            "StopGroupAsyncReplication": {
+              "methods": [
+                "stopGroupAsyncReplication"
               ]
             },
             "TestIamPermissions": {
@@ -5234,6 +5852,11 @@
                 "resize"
               ]
             },
+            "ResumeInstances": {
+              "methods": [
+                "resumeInstances"
+              ]
+            },
             "SetInstanceTemplate": {
               "methods": [
                 "setInstanceTemplate"
@@ -5242,6 +5865,21 @@
             "SetTargetPools": {
               "methods": [
                 "setTargetPools"
+              ]
+            },
+            "StartInstances": {
+              "methods": [
+                "startInstances"
+              ]
+            },
+            "StopInstances": {
+              "methods": [
+                "stopInstances"
+              ]
+            },
+            "SuspendInstances": {
+              "methods": [
+                "suspendInstances"
               ]
             },
             "UpdatePerInstanceConfigs": {
@@ -5342,6 +5980,11 @@
                 "resize"
               ]
             },
+            "ResumeInstances": {
+              "methods": [
+                "resumeInstances"
+              ]
+            },
             "SetInstanceTemplate": {
               "methods": [
                 "setInstanceTemplate"
@@ -5350,6 +5993,21 @@
             "SetTargetPools": {
               "methods": [
                 "setTargetPools"
+              ]
+            },
+            "StartInstances": {
+              "methods": [
+                "startInstances"
+              ]
+            },
+            "StopInstances": {
+              "methods": [
+                "stopInstances"
+              ]
+            },
+            "SuspendInstances": {
+              "methods": [
+                "suspendInstances"
               ]
             },
             "UpdatePerInstanceConfigs": {
@@ -5533,10 +6191,10 @@
         }
       }
     },
-    "RegionNetworkEndpointGroups": {
+    "RegionInstantSnapshots": {
       "clients": {
         "grpc": {
-          "libraryClient": "RegionNetworkEndpointGroupsClient",
+          "libraryClient": "RegionInstantSnapshotsClient",
           "rpcs": {
             "Delete": {
               "methods": [
@@ -5548,9 +6206,29 @@
                 "get"
               ]
             },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
             "Insert": {
               "methods": [
                 "insert"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "setLabels"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
               ]
             },
             "List": {
@@ -5563,11 +6241,72 @@
           }
         },
         "grpc-fallback": {
-          "libraryClient": "RegionNetworkEndpointGroupsClient",
+          "libraryClient": "RegionInstantSnapshotsClient",
           "rpcs": {
             "Delete": {
               "methods": [
                 "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "setLabels"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "RegionNetworkEndpointGroups": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "RegionNetworkEndpointGroupsClient",
+          "rpcs": {
+            "AttachNetworkEndpoints": {
+              "methods": [
+                "attachNetworkEndpoints"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "DetachNetworkEndpoints": {
+              "methods": [
+                "detachNetworkEndpoints"
               ]
             },
             "Get": {
@@ -5585,6 +6324,57 @@
                 "list",
                 "listStream",
                 "listAsync"
+              ]
+            },
+            "ListNetworkEndpoints": {
+              "methods": [
+                "listNetworkEndpoints",
+                "listNetworkEndpointsStream",
+                "listNetworkEndpointsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "RegionNetworkEndpointGroupsClient",
+          "rpcs": {
+            "AttachNetworkEndpoints": {
+              "methods": [
+                "attachNetworkEndpoints"
+              ]
+            },
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "DetachNetworkEndpoints": {
+              "methods": [
+                "detachNetworkEndpoints"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            },
+            "ListNetworkEndpoints": {
+              "methods": [
+                "listNetworkEndpoints",
+                "listNetworkEndpointsStream",
+                "listNetworkEndpointsAsync"
               ]
             }
           }
@@ -5938,6 +6728,11 @@
         "grpc": {
           "libraryClient": "RegionSecurityPoliciesClient",
           "rpcs": {
+            "AddRule": {
+              "methods": [
+                "addRule"
+              ]
+            },
             "Delete": {
               "methods": [
                 "delete"
@@ -5948,6 +6743,11 @@
                 "get"
               ]
             },
+            "GetRule": {
+              "methods": [
+                "getRule"
+              ]
+            },
             "Insert": {
               "methods": [
                 "insert"
@@ -5956,6 +6756,21 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "PatchRule": {
+              "methods": [
+                "patchRule"
+              ]
+            },
+            "RemoveRule": {
+              "methods": [
+                "removeRule"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "setLabels"
               ]
             },
             "List": {
@@ -5970,6 +6785,11 @@
         "grpc-fallback": {
           "libraryClient": "RegionSecurityPoliciesClient",
           "rpcs": {
+            "AddRule": {
+              "methods": [
+                "addRule"
+              ]
+            },
             "Delete": {
               "methods": [
                 "delete"
@@ -5980,6 +6800,11 @@
                 "get"
               ]
             },
+            "GetRule": {
+              "methods": [
+                "getRule"
+              ]
+            },
             "Insert": {
               "methods": [
                 "insert"
@@ -5988,6 +6813,21 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "PatchRule": {
+              "methods": [
+                "patchRule"
+              ]
+            },
+            "RemoveRule": {
+              "methods": [
+                "removeRule"
+              ]
+            },
+            "SetLabels": {
+              "methods": [
+                "setLabels"
               ]
             },
             "List": {
@@ -6439,6 +7279,34 @@
         }
       }
     },
+    "RegionZones": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "RegionZonesClient",
+          "rpcs": {
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "RegionZonesClient",
+          "rpcs": {
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "Reservations": {
       "clients": {
         "grpc": {
@@ -6586,6 +7454,11 @@
                 "insert"
               ]
             },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            },
             "SetIamPolicy": {
               "methods": [
                 "setIamPolicy"
@@ -6635,6 +7508,11 @@
                 "insert"
               ]
             },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            },
             "SetIamPolicy": {
               "methods": [
                 "setIamPolicy"
@@ -6676,6 +7554,11 @@
             "Get": {
               "methods": [
                 "get"
+              ]
+            },
+            "GetNatIpInfo": {
+              "methods": [
+                "getNatIpInfo"
               ]
             },
             "GetRouterStatus": {
@@ -6737,6 +7620,11 @@
             "Get": {
               "methods": [
                 "get"
+              ]
+            },
+            "GetNatIpInfo": {
+              "methods": [
+                "getNatIpInfo"
               ]
             },
             "GetRouterStatus": {
@@ -7199,6 +8087,40 @@
         }
       }
     },
+    "SnapshotSettingsService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "SnapshotSettingsServiceClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "SnapshotSettingsServiceClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "Patch": {
+              "methods": [
+                "patch"
+              ]
+            }
+          }
+        }
+      }
+    },
     "SslCertificates": {
       "clients": {
         "grpc": {
@@ -7343,6 +8265,184 @@
             "Patch": {
               "methods": [
                 "patch"
+              ]
+            },
+            "AggregatedList": {
+              "methods": [
+                "aggregatedList",
+                "aggregatedListStream",
+                "aggregatedListAsync"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "StoragePools": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "StoragePoolsClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
+            "Update": {
+              "methods": [
+                "update"
+              ]
+            },
+            "AggregatedList": {
+              "methods": [
+                "aggregatedList",
+                "aggregatedListStream",
+                "aggregatedListAsync"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            },
+            "ListDisks": {
+              "methods": [
+                "listDisks",
+                "listDisksStream",
+                "listDisksAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "StoragePoolsClient",
+          "rpcs": {
+            "Delete": {
+              "methods": [
+                "delete"
+              ]
+            },
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "GetIamPolicy": {
+              "methods": [
+                "getIamPolicy"
+              ]
+            },
+            "Insert": {
+              "methods": [
+                "insert"
+              ]
+            },
+            "SetIamPolicy": {
+              "methods": [
+                "setIamPolicy"
+              ]
+            },
+            "TestIamPermissions": {
+              "methods": [
+                "testIamPermissions"
+              ]
+            },
+            "Update": {
+              "methods": [
+                "update"
+              ]
+            },
+            "AggregatedList": {
+              "methods": [
+                "aggregatedList",
+                "aggregatedListStream",
+                "aggregatedListAsync"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            },
+            "ListDisks": {
+              "methods": [
+                "listDisks",
+                "listDisksStream",
+                "listDisksAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "StoragePoolTypes": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "StoragePoolTypesClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
+              ]
+            },
+            "AggregatedList": {
+              "methods": [
+                "aggregatedList",
+                "aggregatedListStream",
+                "aggregatedListAsync"
+              ]
+            },
+            "List": {
+              "methods": [
+                "list",
+                "listStream",
+                "listAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "StoragePoolTypesClient",
+          "rpcs": {
+            "Get": {
+              "methods": [
+                "get"
               ]
             },
             "AggregatedList": {
@@ -7821,6 +8921,11 @@
                 "insert"
               ]
             },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
+              ]
+            },
             "AggregatedList": {
               "methods": [
                 "aggregatedList",
@@ -7853,6 +8958,11 @@
             "Insert": {
               "methods": [
                 "insert"
+              ]
+            },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
               ]
             },
             "AggregatedList": {
@@ -7923,6 +9033,11 @@
                 "setBackup"
               ]
             },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
+              ]
+            },
             "AggregatedList": {
               "methods": [
                 "aggregatedList",
@@ -7985,6 +9100,11 @@
             "SetBackup": {
               "methods": [
                 "setBackup"
+              ]
+            },
+            "SetSecurityPolicy": {
+              "methods": [
+                "setSecurityPolicy"
               ]
             },
             "AggregatedList": {

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ function main(parent) {
   /**
    *  Required. The Execution from which the Executions should be listed.
    *  To list all Executions across Jobs, use "-" instead of Job name.
-   *  Format: projects/{project}/locations/{location}/jobs/{job}, where {project}
-   *  can be project id or number.
+   *  Format: `projects/{project}/locations/{location}/jobs/{job}`, where
+   *  `{project}` can be project id or number.
    */
   // const parent = 'abc123'
   /**
@@ -62,7 +62,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await runClient.listExecutionsAsync(request);
+    const iterable = runClient.listExecutionsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

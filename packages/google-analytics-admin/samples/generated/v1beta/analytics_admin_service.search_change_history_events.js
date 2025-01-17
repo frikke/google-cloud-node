@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,29 +30,32 @@ function main(account) {
    */
   /**
    *  Required. The account resource for which to return change history
-   *  resources.
+   *  resources. Format: accounts/{account}
+   *  Example: `accounts/100`
    */
   // const account = 'abc123'
   /**
    *  Optional. Resource name for a child property. If set, only return changes
    *  made to this property or its child resources.
+   *  Format: properties/{propertyId}
+   *  Example: `properties/100`
    */
   // const property = 'abc123'
   /**
    *  Optional. If set, only return changes if they are for a resource that
    *  matches at least one of these types.
    */
-  // const resourceType = 1234
+  // const resourceType = [1,2,3,4]
   /**
    *  Optional. If set, only return changes that match one or more of these types
    *  of actions.
    */
-  // const action = 1234
+  // const action = [1,2,3,4]
   /**
    *  Optional. If set, only return changes if they are made by a user in this
    *  list.
    */
-  // const actorEmail = 'abc123'
+  // const actorEmail = ['abc','def']
   /**
    *  Optional. If set, only return changes made after this time (inclusive).
    */
@@ -90,7 +93,7 @@ function main(account) {
     };
 
     // Run request
-    const iterable = await adminClient.searchChangeHistoryEventsAsync(request);
+    const iterable = adminClient.searchChangeHistoryEventsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

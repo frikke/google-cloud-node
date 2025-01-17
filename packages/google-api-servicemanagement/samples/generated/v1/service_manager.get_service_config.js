@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ function main(serviceName, configId) {
    */
   /**
    *  Required. The name of the service.  See the
-   *  overview (https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *  example: `example.googleapis.com`.
+   *  overview (https://cloud.google.com/service-management/overview) for naming
+   *  requirements.  For example: `example.googleapis.com`.
    */
   // const serviceName = 'abc123'
   /**

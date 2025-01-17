@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ function main(parent, links) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The project and location you want search in the format `projects/* /locations/*`
+   *  Required. The project and location where you want to search.
    */
   // const parent = 'abc123'
   /**
@@ -39,7 +39,7 @@ function main(parent, links) {
    *  `INVALID_ARGUMENT` error.
    *  Format: `projects/{project}/locations/{location}/links/{link}`.
    */
-  // const links = 'abc123'
+  // const links = ['abc','def']
   /**
    *  The maximum number of processes to return in a single page of the response.
    *  A page may contain fewer results than this value.
@@ -68,7 +68,7 @@ function main(parent, links) {
     };
 
     // Run request
-    const iterable = await lineageClient.batchSearchLinkProcessesAsync(request);
+    const iterable = lineageClient.batchSearchLinkProcessesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

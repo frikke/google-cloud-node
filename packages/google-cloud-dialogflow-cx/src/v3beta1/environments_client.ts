@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v3beta1/environments_client_config.json`.
@@ -43,7 +44,7 @@ const version = require('../../../package.json').version;
 
 /**
  *  Service for managing
- *  {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environments}.
+ *  {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environments}.
  * @class
  * @memberof v3beta1
  */
@@ -55,6 +56,8 @@ export class EnvironmentsClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -97,8 +100,7 @@ export class EnvironmentsClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -106,7 +108,7 @@ export class EnvironmentsClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new EnvironmentsClient({fallback: 'rest'}, gax);
+   *     const client = new EnvironmentsClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -115,8 +117,27 @@ export class EnvironmentsClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof EnvironmentsClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'dialogflow.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -131,7 +152,7 @@ export class EnvironmentsClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -156,10 +177,10 @@ export class EnvironmentsClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -169,14 +190,14 @@ export class EnvironmentsClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -192,6 +213,9 @@ export class EnvironmentsClient {
       agentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}'
       ),
+      agentGenerativeSettingsPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/generativeSettings'
+      ),
       agentValidationResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/validationResult'
       ),
@@ -200,6 +224,9 @@ export class EnvironmentsClient {
       ),
       continuousTestResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/environments/{environment}/continuousTestResults/{continuous_test_result}'
+      ),
+      conversationPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/conversations/{conversation}'
       ),
       deploymentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/environments/{environment}/deployments/{deployment}'
@@ -210,6 +237,9 @@ export class EnvironmentsClient {
       environmentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/environments/{environment}'
       ),
+      examplePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/playbooks/{playbook}/examples/{example}'
+      ),
       experimentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/environments/{environment}/experiments/{experiment}'
       ),
@@ -218,6 +248,9 @@ export class EnvironmentsClient {
       ),
       flowValidationResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/validationResult'
+      ),
+      generatorPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/generators/{generator}'
       ),
       intentPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/intents/{intent}'
@@ -228,6 +261,12 @@ export class EnvironmentsClient {
       pagePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/pages/{page}'
       ),
+      playbookPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/playbooks/{playbook}'
+      ),
+      playbookVersionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/playbooks/{playbook}/versions/{version}'
+      ),
       projectPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}'
       ),
@@ -235,9 +274,17 @@ export class EnvironmentsClient {
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/agents/{agent}/environments/{environment}/sessions/{session}/entityTypes/{entity_type}'
         ),
+      projectLocationAgentFlowTransitionRouteGroupPathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/transitionRouteGroups/{transition_route_group}'
+        ),
       projectLocationAgentSessionEntityTypePathTemplate:
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/agents/{agent}/sessions/{session}/entityTypes/{entity_type}'
+        ),
+      projectLocationAgentTransitionRouteGroupPathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/agents/{agent}/transitionRouteGroups/{transition_route_group}'
         ),
       securitySettingsPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/securitySettings/{security_settings}'
@@ -248,8 +295,8 @@ export class EnvironmentsClient {
       testCaseResultPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/testCases/{test_case}/results/{result}'
       ),
-      transitionRouteGroupPathTemplate: new this._gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/transitionRouteGroups/{transition_route_group}'
+      toolPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/agents/{agent}/tools/{tool}'
       ),
       versionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/versions/{version}'
@@ -288,7 +335,7 @@ export class EnvironmentsClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -469,19 +516,50 @@ export class EnvironmentsClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dialogflow.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -525,21 +603,19 @@ export class EnvironmentsClient {
   // -------------------
   /**
    * Retrieves the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The name of the
-   *   {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}. Format:
-   *   `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.get_environment.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_GetEnvironment_async
@@ -554,7 +630,7 @@ export class EnvironmentsClient {
         | protos.google.cloud.dialogflow.cx.v3beta1.IGetEnvironmentRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getEnvironment(
@@ -603,7 +679,7 @@ export class EnvironmentsClient {
         | protos.google.cloud.dialogflow.cx.v3beta1.IGetEnvironmentRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -626,21 +702,20 @@ export class EnvironmentsClient {
   }
   /**
    * Deletes the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. The name of the
-   *   {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment} to delete.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment} to delete.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.delete_environment.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_DeleteEnvironment_async
@@ -655,7 +730,7 @@ export class EnvironmentsClient {
         | protos.google.cloud.dialogflow.cx.v3beta1.IDeleteEnvironmentRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteEnvironment(
@@ -704,7 +779,7 @@ export class EnvironmentsClient {
         | protos.google.cloud.dialogflow.cx.v3beta1.IDeleteEnvironmentRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -727,8 +802,8 @@ export class EnvironmentsClient {
   }
 
   /**
-   * Creates an {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment} in
-   * the specified {@link google.cloud.dialogflow.cx.v3beta1.Agent|Agent}.
+   * Creates an {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment} in
+   * the specified {@link protos.google.cloud.dialogflow.cx.v3beta1.Agent|Agent}.
    *
    * This method is a [long-running
    * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation).
@@ -736,14 +811,14 @@ export class EnvironmentsClient {
    *
    * - `metadata`: An empty [Struct
    *   message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
-   * - `response`: {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}
+   * - `response`: {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The {@link google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to create
-   *   an {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment} for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *   Required. The {@link protos.google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to create
+   *   an {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment} for.
+   *   Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {google.cloud.dialogflow.cx.v3beta1.Environment} request.environment
    *   Required. The environment to create.
    * @param {object} [options]
@@ -752,8 +827,7 @@ export class EnvironmentsClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.create_environment.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_CreateEnvironment_async
@@ -768,7 +842,7 @@ export class EnvironmentsClient {
         protos.google.protobuf.IStruct
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createEnvironment(
@@ -821,7 +895,7 @@ export class EnvironmentsClient {
         protos.google.protobuf.IStruct
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -848,8 +922,7 @@ export class EnvironmentsClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.create_environment.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_CreateEnvironment_async
@@ -879,7 +952,7 @@ export class EnvironmentsClient {
   }
   /**
    * Updates the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *
    * This method is a [long-running
    * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation).
@@ -887,7 +960,7 @@ export class EnvironmentsClient {
    *
    * - `metadata`: An empty [Struct
    *   message](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#struct)
-   * - `response`: {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}
+   * - `response`: {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -901,8 +974,7 @@ export class EnvironmentsClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.update_environment.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_UpdateEnvironment_async
@@ -917,7 +989,7 @@ export class EnvironmentsClient {
         protos.google.protobuf.IStruct
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateEnvironment(
@@ -970,7 +1042,7 @@ export class EnvironmentsClient {
         protos.google.protobuf.IStruct
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -997,8 +1069,7 @@ export class EnvironmentsClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.update_environment.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_UpdateEnvironment_async
@@ -1028,30 +1099,29 @@ export class EnvironmentsClient {
   }
   /**
    * Kicks off a continuous test under the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *
    * This method is a [long-running
    * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation).
    * The returned `Operation` type has the following method-specific fields:
    *
    * - `metadata`:
-   * {@link google.cloud.dialogflow.cx.v3beta1.RunContinuousTestMetadata|RunContinuousTestMetadata}
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.RunContinuousTestMetadata|RunContinuousTestMetadata}
    * - `response`:
-   * {@link google.cloud.dialogflow.cx.v3beta1.RunContinuousTestResponse|RunContinuousTestResponse}
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.RunContinuousTestResponse|RunContinuousTestResponse}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.environment
-   *   Required. Format: `projects/<Project ID>/locations/<Location
-   *   ID>/agents/<Agent ID>/environments/<Environment ID>`.
+   *   Required. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.run_continuous_test.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_RunContinuousTest_async
@@ -1066,7 +1136,7 @@ export class EnvironmentsClient {
         protos.google.cloud.dialogflow.cx.v3beta1.IRunContinuousTestMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runContinuousTest(
@@ -1119,7 +1189,7 @@ export class EnvironmentsClient {
         protos.google.cloud.dialogflow.cx.v3beta1.IRunContinuousTestMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1146,8 +1216,7 @@ export class EnvironmentsClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.run_continuous_test.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_RunContinuousTest_async
@@ -1177,35 +1246,34 @@ export class EnvironmentsClient {
   }
   /**
    * Deploys a flow to the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *
    * This method is a [long-running
    * operation](https://cloud.google.com/dialogflow/cx/docs/how/long-running-operation).
    * The returned `Operation` type has the following method-specific fields:
    *
    * - `metadata`:
-   * {@link google.cloud.dialogflow.cx.v3beta1.DeployFlowMetadata|DeployFlowMetadata}
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.DeployFlowMetadata|DeployFlowMetadata}
    * - `response`:
-   * {@link google.cloud.dialogflow.cx.v3beta1.DeployFlowResponse|DeployFlowResponse}
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.DeployFlowResponse|DeployFlowResponse}
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.environment
    *   Required. The environment to deploy the flow to.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {string} request.flowVersion
    *   Required. The flow version to deploy.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   flows/<Flow ID>/versions/<Version ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>/versions/<VersionID>`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.deploy_flow.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_DeployFlow_async
@@ -1220,7 +1288,7 @@ export class EnvironmentsClient {
         protos.google.cloud.dialogflow.cx.v3beta1.IDeployFlowMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deployFlow(
@@ -1273,7 +1341,7 @@ export class EnvironmentsClient {
         protos.google.cloud.dialogflow.cx.v3beta1.IDeployFlowMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1300,8 +1368,7 @@ export class EnvironmentsClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.deploy_flow.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_DeployFlow_async
@@ -1331,14 +1398,14 @@ export class EnvironmentsClient {
   }
   /**
    * Returns the list of all environments in the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Agent|Agent}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Agent|Agent}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The {@link google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to list all
-   *   environments for. Format: `projects/<Project ID>/locations/<Location
-   *   ID>/agents/<Agent ID>`.
+   *   Required. The {@link protos.google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to list all
+   *   environments for. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 20 and
    *   at most 100.
@@ -1347,14 +1414,13 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listEnvironmentsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEnvironments(
@@ -1364,7 +1430,7 @@ export class EnvironmentsClient {
     [
       protos.google.cloud.dialogflow.cx.v3beta1.IEnvironment[],
       protos.google.cloud.dialogflow.cx.v3beta1.IListEnvironmentsRequest | null,
-      protos.google.cloud.dialogflow.cx.v3beta1.IListEnvironmentsResponse
+      protos.google.cloud.dialogflow.cx.v3beta1.IListEnvironmentsResponse,
     ]
   >;
   listEnvironments(
@@ -1410,7 +1476,7 @@ export class EnvironmentsClient {
     [
       protos.google.cloud.dialogflow.cx.v3beta1.IEnvironment[],
       protos.google.cloud.dialogflow.cx.v3beta1.IListEnvironmentsRequest | null,
-      protos.google.cloud.dialogflow.cx.v3beta1.IListEnvironmentsResponse
+      protos.google.cloud.dialogflow.cx.v3beta1.IListEnvironmentsResponse,
     ]
   > | void {
     request = request || {};
@@ -1437,9 +1503,9 @@ export class EnvironmentsClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The {@link google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to list all
-   *   environments for. Format: `projects/<Project ID>/locations/<Location
-   *   ID>/agents/<Agent ID>`.
+   *   Required. The {@link protos.google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to list all
+   *   environments for. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 20 and
    *   at most 100.
@@ -1448,13 +1514,12 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listEnvironmentsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEnvironmentsStream(
@@ -1486,9 +1551,9 @@ export class EnvironmentsClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The {@link google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to list all
-   *   environments for. Format: `projects/<Project ID>/locations/<Location
-   *   ID>/agents/<Agent ID>`.
+   *   Required. The {@link protos.google.cloud.dialogflow.cx.v3beta1.Agent|Agent} to list all
+   *   environments for. Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 20 and
    *   at most 100.
@@ -1497,12 +1562,11 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.list_environments.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_ListEnvironments_async
@@ -1530,14 +1594,14 @@ export class EnvironmentsClient {
   }
   /**
    * Looks up the history of the specified
-   * {@link google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
+   * {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Resource name of the environment to look up the history for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1546,14 +1610,13 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `lookupEnvironmentHistoryAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   lookupEnvironmentHistory(
@@ -1563,7 +1626,7 @@ export class EnvironmentsClient {
     [
       protos.google.cloud.dialogflow.cx.v3beta1.IEnvironment[],
       protos.google.cloud.dialogflow.cx.v3beta1.ILookupEnvironmentHistoryRequest | null,
-      protos.google.cloud.dialogflow.cx.v3beta1.ILookupEnvironmentHistoryResponse
+      protos.google.cloud.dialogflow.cx.v3beta1.ILookupEnvironmentHistoryResponse,
     ]
   >;
   lookupEnvironmentHistory(
@@ -1609,7 +1672,7 @@ export class EnvironmentsClient {
     [
       protos.google.cloud.dialogflow.cx.v3beta1.IEnvironment[],
       protos.google.cloud.dialogflow.cx.v3beta1.ILookupEnvironmentHistoryRequest | null,
-      protos.google.cloud.dialogflow.cx.v3beta1.ILookupEnvironmentHistoryResponse
+      protos.google.cloud.dialogflow.cx.v3beta1.ILookupEnvironmentHistoryResponse,
     ]
   > | void {
     request = request || {};
@@ -1641,8 +1704,8 @@ export class EnvironmentsClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Resource name of the environment to look up the history for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1651,13 +1714,12 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `lookupEnvironmentHistoryAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   lookupEnvironmentHistoryStream(
@@ -1690,8 +1752,8 @@ export class EnvironmentsClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Required. Resource name of the environment to look up the history for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-   *   ID>/environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1700,12 +1762,11 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dialogflow.cx.v3beta1.Environment | Environment}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dialogflow.cx.v3beta1.Environment|Environment}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.lookup_environment_history.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_LookupEnvironmentHistory_async
@@ -1738,8 +1799,8 @@ export class EnvironmentsClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The environment to list results for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1748,14 +1809,13 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dialogflow.cx.v3beta1.ContinuousTestResult | ContinuousTestResult}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dialogflow.cx.v3beta1.ContinuousTestResult|ContinuousTestResult}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listContinuousTestResultsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listContinuousTestResults(
@@ -1765,7 +1825,7 @@ export class EnvironmentsClient {
     [
       protos.google.cloud.dialogflow.cx.v3beta1.IContinuousTestResult[],
       protos.google.cloud.dialogflow.cx.v3beta1.IListContinuousTestResultsRequest | null,
-      protos.google.cloud.dialogflow.cx.v3beta1.IListContinuousTestResultsResponse
+      protos.google.cloud.dialogflow.cx.v3beta1.IListContinuousTestResultsResponse,
     ]
   >;
   listContinuousTestResults(
@@ -1811,7 +1871,7 @@ export class EnvironmentsClient {
     [
       protos.google.cloud.dialogflow.cx.v3beta1.IContinuousTestResult[],
       protos.google.cloud.dialogflow.cx.v3beta1.IListContinuousTestResultsRequest | null,
-      protos.google.cloud.dialogflow.cx.v3beta1.IListContinuousTestResultsResponse
+      protos.google.cloud.dialogflow.cx.v3beta1.IListContinuousTestResultsResponse,
     ]
   > | void {
     request = request || {};
@@ -1843,8 +1903,8 @@ export class EnvironmentsClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The environment to list results for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1853,13 +1913,12 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dialogflow.cx.v3beta1.ContinuousTestResult | ContinuousTestResult} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dialogflow.cx.v3beta1.ContinuousTestResult|ContinuousTestResult} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listContinuousTestResultsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listContinuousTestResultsStream(
@@ -1892,8 +1951,8 @@ export class EnvironmentsClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The environment to list results for.
-   *   Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>/
-   *   environments/<Environment ID>`.
+   *   Format:
+   *   `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/environments/<EnvironmentID>`.
    * @param {number} request.pageSize
    *   The maximum number of items to return in a single page. By default 100 and
    *   at most 1000.
@@ -1902,12 +1961,11 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dialogflow.cx.v3beta1.ContinuousTestResult | ContinuousTestResult}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dialogflow.cx.v3beta1.ContinuousTestResult|ContinuousTestResult}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v3beta1/environments.list_continuous_test_results.js</caption>
    * region_tag:dialogflow_v3beta1_generated_Environments_ListContinuousTestResults_async
@@ -1944,8 +2002,7 @@ export class EnvironmentsClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1991,12 +2048,11 @@ export class EnvironmentsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -2242,6 +2298,71 @@ export class EnvironmentsClient {
   }
 
   /**
+   * Return a fully-qualified agentGenerativeSettings resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @returns {string} Resource name string.
+   */
+  agentGenerativeSettingsPath(
+    project: string,
+    location: string,
+    agent: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+    });
+  }
+
+  /**
+   * Parse the project from AgentGenerativeSettings resource.
+   *
+   * @param {string} agentGenerativeSettingsName
+   *   A fully-qualified path representing AgentGenerativeSettings resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAgentGenerativeSettingsName(
+    agentGenerativeSettingsName: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.match(
+      agentGenerativeSettingsName
+    ).project;
+  }
+
+  /**
+   * Parse the location from AgentGenerativeSettings resource.
+   *
+   * @param {string} agentGenerativeSettingsName
+   *   A fully-qualified path representing AgentGenerativeSettings resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromAgentGenerativeSettingsName(
+    agentGenerativeSettingsName: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.match(
+      agentGenerativeSettingsName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from AgentGenerativeSettings resource.
+   *
+   * @param {string} agentGenerativeSettingsName
+   *   A fully-qualified path representing AgentGenerativeSettings resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromAgentGenerativeSettingsName(
+    agentGenerativeSettingsName: string
+  ) {
+    return this.pathTemplates.agentGenerativeSettingsPathTemplate.match(
+      agentGenerativeSettingsName
+    ).agent;
+  }
+
+  /**
    * Return a fully-qualified agentValidationResult resource name string.
    *
    * @param {string} project
@@ -2461,6 +2582,77 @@ export class EnvironmentsClient {
     return this.pathTemplates.continuousTestResultPathTemplate.match(
       continuousTestResultName
     ).continuous_test_result;
+  }
+
+  /**
+   * Return a fully-qualified conversation resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} conversation
+   * @returns {string} Resource name string.
+   */
+  conversationPath(
+    project: string,
+    location: string,
+    agent: string,
+    conversation: string
+  ) {
+    return this.pathTemplates.conversationPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+      conversation: conversation,
+    });
+  }
+
+  /**
+   * Parse the project from Conversation resource.
+   *
+   * @param {string} conversationName
+   *   A fully-qualified path representing Conversation resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromConversationName(conversationName: string) {
+    return this.pathTemplates.conversationPathTemplate.match(conversationName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Conversation resource.
+   *
+   * @param {string} conversationName
+   *   A fully-qualified path representing Conversation resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromConversationName(conversationName: string) {
+    return this.pathTemplates.conversationPathTemplate.match(conversationName)
+      .location;
+  }
+
+  /**
+   * Parse the agent from Conversation resource.
+   *
+   * @param {string} conversationName
+   *   A fully-qualified path representing Conversation resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromConversationName(conversationName: string) {
+    return this.pathTemplates.conversationPathTemplate.match(conversationName)
+      .agent;
+  }
+
+  /**
+   * Parse the conversation from Conversation resource.
+   *
+   * @param {string} conversationName
+   *   A fully-qualified path representing Conversation resource.
+   * @returns {string} A string representing the conversation.
+   */
+  matchConversationFromConversationName(conversationName: string) {
+    return this.pathTemplates.conversationPathTemplate.match(conversationName)
+      .conversation;
   }
 
   /**
@@ -2692,6 +2884,87 @@ export class EnvironmentsClient {
   }
 
   /**
+   * Return a fully-qualified example resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} playbook
+   * @param {string} example
+   * @returns {string} Resource name string.
+   */
+  examplePath(
+    project: string,
+    location: string,
+    agent: string,
+    playbook: string,
+    example: string
+  ) {
+    return this.pathTemplates.examplePathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+      playbook: playbook,
+      example: example,
+    });
+  }
+
+  /**
+   * Parse the project from Example resource.
+   *
+   * @param {string} exampleName
+   *   A fully-qualified path representing Example resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromExampleName(exampleName: string) {
+    return this.pathTemplates.examplePathTemplate.match(exampleName).project;
+  }
+
+  /**
+   * Parse the location from Example resource.
+   *
+   * @param {string} exampleName
+   *   A fully-qualified path representing Example resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromExampleName(exampleName: string) {
+    return this.pathTemplates.examplePathTemplate.match(exampleName).location;
+  }
+
+  /**
+   * Parse the agent from Example resource.
+   *
+   * @param {string} exampleName
+   *   A fully-qualified path representing Example resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromExampleName(exampleName: string) {
+    return this.pathTemplates.examplePathTemplate.match(exampleName).agent;
+  }
+
+  /**
+   * Parse the playbook from Example resource.
+   *
+   * @param {string} exampleName
+   *   A fully-qualified path representing Example resource.
+   * @returns {string} A string representing the playbook.
+   */
+  matchPlaybookFromExampleName(exampleName: string) {
+    return this.pathTemplates.examplePathTemplate.match(exampleName).playbook;
+  }
+
+  /**
+   * Parse the example from Example resource.
+   *
+   * @param {string} exampleName
+   *   A fully-qualified path representing Example resource.
+   * @returns {string} A string representing the example.
+   */
+  matchExampleFromExampleName(exampleName: string) {
+    return this.pathTemplates.examplePathTemplate.match(exampleName).example;
+  }
+
+  /**
    * Return a fully-qualified experiment resource name string.
    *
    * @param {string} project
@@ -2915,6 +3188,76 @@ export class EnvironmentsClient {
   }
 
   /**
+   * Return a fully-qualified generator resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} generator
+   * @returns {string} Resource name string.
+   */
+  generatorPath(
+    project: string,
+    location: string,
+    agent: string,
+    generator: string
+  ) {
+    return this.pathTemplates.generatorPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+      generator: generator,
+    });
+  }
+
+  /**
+   * Parse the project from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .location;
+  }
+
+  /**
+   * Parse the agent from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName).agent;
+  }
+
+  /**
+   * Parse the generator from Generator resource.
+   *
+   * @param {string} generatorName
+   *   A fully-qualified path representing Generator resource.
+   * @returns {string} A string representing the generator.
+   */
+  matchGeneratorFromGeneratorName(generatorName: string) {
+    return this.pathTemplates.generatorPathTemplate.match(generatorName)
+      .generator;
+  }
+
+  /**
    * Return a fully-qualified intent resource name string.
    *
    * @param {string} project
@@ -3094,6 +3437,164 @@ export class EnvironmentsClient {
   }
 
   /**
+   * Return a fully-qualified playbook resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} playbook
+   * @returns {string} Resource name string.
+   */
+  playbookPath(
+    project: string,
+    location: string,
+    agent: string,
+    playbook: string
+  ) {
+    return this.pathTemplates.playbookPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+      playbook: playbook,
+    });
+  }
+
+  /**
+   * Parse the project from Playbook resource.
+   *
+   * @param {string} playbookName
+   *   A fully-qualified path representing Playbook resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromPlaybookName(playbookName: string) {
+    return this.pathTemplates.playbookPathTemplate.match(playbookName).project;
+  }
+
+  /**
+   * Parse the location from Playbook resource.
+   *
+   * @param {string} playbookName
+   *   A fully-qualified path representing Playbook resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromPlaybookName(playbookName: string) {
+    return this.pathTemplates.playbookPathTemplate.match(playbookName).location;
+  }
+
+  /**
+   * Parse the agent from Playbook resource.
+   *
+   * @param {string} playbookName
+   *   A fully-qualified path representing Playbook resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromPlaybookName(playbookName: string) {
+    return this.pathTemplates.playbookPathTemplate.match(playbookName).agent;
+  }
+
+  /**
+   * Parse the playbook from Playbook resource.
+   *
+   * @param {string} playbookName
+   *   A fully-qualified path representing Playbook resource.
+   * @returns {string} A string representing the playbook.
+   */
+  matchPlaybookFromPlaybookName(playbookName: string) {
+    return this.pathTemplates.playbookPathTemplate.match(playbookName).playbook;
+  }
+
+  /**
+   * Return a fully-qualified playbookVersion resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} playbook
+   * @param {string} version
+   * @returns {string} Resource name string.
+   */
+  playbookVersionPath(
+    project: string,
+    location: string,
+    agent: string,
+    playbook: string,
+    version: string
+  ) {
+    return this.pathTemplates.playbookVersionPathTemplate.render({
+      project: project,
+      location: location,
+      agent: agent,
+      playbook: playbook,
+      version: version,
+    });
+  }
+
+  /**
+   * Parse the project from PlaybookVersion resource.
+   *
+   * @param {string} playbookVersionName
+   *   A fully-qualified path representing PlaybookVersion resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromPlaybookVersionName(playbookVersionName: string) {
+    return this.pathTemplates.playbookVersionPathTemplate.match(
+      playbookVersionName
+    ).project;
+  }
+
+  /**
+   * Parse the location from PlaybookVersion resource.
+   *
+   * @param {string} playbookVersionName
+   *   A fully-qualified path representing PlaybookVersion resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromPlaybookVersionName(playbookVersionName: string) {
+    return this.pathTemplates.playbookVersionPathTemplate.match(
+      playbookVersionName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from PlaybookVersion resource.
+   *
+   * @param {string} playbookVersionName
+   *   A fully-qualified path representing PlaybookVersion resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromPlaybookVersionName(playbookVersionName: string) {
+    return this.pathTemplates.playbookVersionPathTemplate.match(
+      playbookVersionName
+    ).agent;
+  }
+
+  /**
+   * Parse the playbook from PlaybookVersion resource.
+   *
+   * @param {string} playbookVersionName
+   *   A fully-qualified path representing PlaybookVersion resource.
+   * @returns {string} A string representing the playbook.
+   */
+  matchPlaybookFromPlaybookVersionName(playbookVersionName: string) {
+    return this.pathTemplates.playbookVersionPathTemplate.match(
+      playbookVersionName
+    ).playbook;
+  }
+
+  /**
+   * Parse the version from PlaybookVersion resource.
+   *
+   * @param {string} playbookVersionName
+   *   A fully-qualified path representing PlaybookVersion resource.
+   * @returns {string} A string representing the version.
+   */
+  matchVersionFromPlaybookVersionName(playbookVersionName: string) {
+    return this.pathTemplates.playbookVersionPathTemplate.match(
+      playbookVersionName
+    ).version;
+  }
+
+  /**
    * Return a fully-qualified project resource name string.
    *
    * @param {string} project
@@ -3238,6 +3739,109 @@ export class EnvironmentsClient {
   }
 
   /**
+   * Return a fully-qualified projectLocationAgentFlowTransitionRouteGroup resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} flow
+   * @param {string} transition_route_group
+   * @returns {string} Resource name string.
+   */
+  projectLocationAgentFlowTransitionRouteGroupPath(
+    project: string,
+    location: string,
+    agent: string,
+    flow: string,
+    transitionRouteGroup: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.render(
+      {
+        project: project,
+        location: location,
+        agent: agent,
+        flow: flow,
+        transition_route_group: transitionRouteGroup,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).agent;
+  }
+
+  /**
+   * Parse the flow from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the flow.
+   */
+  matchFlowFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).flow;
+  }
+
+  /**
+   * Parse the transition_route_group from ProjectLocationAgentFlowTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentFlowTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_flow_transition_route_group resource.
+   * @returns {string} A string representing the transition_route_group.
+   */
+  matchTransitionRouteGroupFromProjectLocationAgentFlowTransitionRouteGroupName(
+    projectLocationAgentFlowTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentFlowTransitionRouteGroupName
+    ).transition_route_group;
+  }
+
+  /**
    * Return a fully-qualified projectLocationAgentSessionEntityType resource name string.
    *
    * @param {string} project
@@ -3338,6 +3942,91 @@ export class EnvironmentsClient {
     return this.pathTemplates.projectLocationAgentSessionEntityTypePathTemplate.match(
       projectLocationAgentSessionEntityTypeName
     ).entity_type;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationAgentTransitionRouteGroup resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} agent
+   * @param {string} transition_route_group
+   * @returns {string} Resource name string.
+   */
+  projectLocationAgentTransitionRouteGroupPath(
+    project: string,
+    location: string,
+    agent: string,
+    transitionRouteGroup: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.render(
+      {
+        project: project,
+        location: location,
+        agent: agent,
+        transition_route_group: transitionRouteGroup,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).location;
+  }
+
+  /**
+   * Parse the agent from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the agent.
+   */
+  matchAgentFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).agent;
+  }
+
+  /**
+   * Parse the transition_route_group from ProjectLocationAgentTransitionRouteGroup resource.
+   *
+   * @param {string} projectLocationAgentTransitionRouteGroupName
+   *   A fully-qualified path representing project_location_agent_transition_route_group resource.
+   * @returns {string} A string representing the transition_route_group.
+   */
+  matchTransitionRouteGroupFromProjectLocationAgentTransitionRouteGroupName(
+    projectLocationAgentTransitionRouteGroupName: string
+  ) {
+    return this.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match(
+      projectLocationAgentTransitionRouteGroupName
+    ).transition_route_group;
   }
 
   /**
@@ -3559,96 +4248,65 @@ export class EnvironmentsClient {
   }
 
   /**
-   * Return a fully-qualified transitionRouteGroup resource name string.
+   * Return a fully-qualified tool resource name string.
    *
    * @param {string} project
    * @param {string} location
    * @param {string} agent
-   * @param {string} flow
-   * @param {string} transition_route_group
+   * @param {string} tool
    * @returns {string} Resource name string.
    */
-  transitionRouteGroupPath(
-    project: string,
-    location: string,
-    agent: string,
-    flow: string,
-    transitionRouteGroup: string
-  ) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.render({
+  toolPath(project: string, location: string, agent: string, tool: string) {
+    return this.pathTemplates.toolPathTemplate.render({
       project: project,
       location: location,
       agent: agent,
-      flow: flow,
-      transition_route_group: transitionRouteGroup,
+      tool: tool,
     });
   }
 
   /**
-   * Parse the project from TransitionRouteGroup resource.
+   * Parse the project from Tool resource.
    *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
+   * @param {string} toolName
+   *   A fully-qualified path representing Tool resource.
    * @returns {string} A string representing the project.
    */
-  matchProjectFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).project;
+  matchProjectFromToolName(toolName: string) {
+    return this.pathTemplates.toolPathTemplate.match(toolName).project;
   }
 
   /**
-   * Parse the location from TransitionRouteGroup resource.
+   * Parse the location from Tool resource.
    *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
+   * @param {string} toolName
+   *   A fully-qualified path representing Tool resource.
    * @returns {string} A string representing the location.
    */
-  matchLocationFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).location;
+  matchLocationFromToolName(toolName: string) {
+    return this.pathTemplates.toolPathTemplate.match(toolName).location;
   }
 
   /**
-   * Parse the agent from TransitionRouteGroup resource.
+   * Parse the agent from Tool resource.
    *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
+   * @param {string} toolName
+   *   A fully-qualified path representing Tool resource.
    * @returns {string} A string representing the agent.
    */
-  matchAgentFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).agent;
+  matchAgentFromToolName(toolName: string) {
+    return this.pathTemplates.toolPathTemplate.match(toolName).agent;
   }
 
   /**
-   * Parse the flow from TransitionRouteGroup resource.
+   * Parse the tool from Tool resource.
    *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the flow.
+   * @param {string} toolName
+   *   A fully-qualified path representing Tool resource.
+   * @returns {string} A string representing the tool.
    */
-  matchFlowFromTransitionRouteGroupName(transitionRouteGroupName: string) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).flow;
-  }
-
-  /**
-   * Parse the transition_route_group from TransitionRouteGroup resource.
-   *
-   * @param {string} transitionRouteGroupName
-   *   A fully-qualified path representing TransitionRouteGroup resource.
-   * @returns {string} A string representing the transition_route_group.
-   */
-  matchTransitionRouteGroupFromTransitionRouteGroupName(
-    transitionRouteGroupName: string
-  ) {
-    return this.pathTemplates.transitionRouteGroupPathTemplate.match(
-      transitionRouteGroupName
-    ).transition_route_group;
+  matchToolFromToolName(toolName: string) {
+    return this.pathTemplates.toolPathTemplate.match(toolName).tool;
   }
 
   /**

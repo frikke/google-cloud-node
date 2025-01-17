@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ function main(parent) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The name of the Data Catalog resource to list the tags of. The resource
-   *  could be an Entry google.cloud.datacatalog.v1beta1.Entry  or an
+   *  Required. The name of the Data Catalog resource to list the tags of. The
+   *  resource could be an Entry google.cloud.datacatalog.v1beta1.Entry  or an
    *  EntryGroup google.cloud.datacatalog.v1beta1.EntryGroup.
    *  Examples:
    *  * projects/{project_id}/locations/{location}/entryGroups/{entry_group_id}
@@ -60,7 +60,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await datacatalogClient.listTagsAsync(request);
+    const iterable = datacatalogClient.listTagsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/video_stitcher_service_client_config.json`.
@@ -56,6 +57,8 @@ export class VideoStitcherServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -97,8 +100,7 @@ export class VideoStitcherServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -106,7 +108,7 @@ export class VideoStitcherServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new VideoStitcherServiceClient({fallback: 'rest'}, gax);
+   *     const client = new VideoStitcherServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -115,8 +117,27 @@ export class VideoStitcherServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof VideoStitcherServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'videostitcher.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -131,7 +152,7 @@ export class VideoStitcherServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -156,23 +177,23 @@ export class VideoStitcherServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -208,6 +229,9 @@ export class VideoStitcherServiceClient {
       ),
       vodAdTagDetailPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/vodSessions/{vod_session}/vodAdTagDetails/{vod_ad_tag_detail}'
+      ),
+      vodConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/vodConfigs/{vod_config}'
       ),
       vodSessionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/vodSessions/{vod_session}'
@@ -251,6 +275,11 @@ export class VideoStitcherServiceClient {
         'nextPageToken',
         'liveConfigs'
       ),
+      listVodConfigs: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'vodConfigs'
+      ),
     };
 
     const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
@@ -261,7 +290,7 @@ export class VideoStitcherServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -334,6 +363,30 @@ export class VideoStitcherServiceClient {
     const deleteLiveConfigMetadata = protoFilesRoot.lookup(
       '.google.cloud.video.stitcher.v1.OperationMetadata'
     ) as gax.protobuf.Type;
+    const updateLiveConfigResponse = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.LiveConfig'
+    ) as gax.protobuf.Type;
+    const updateLiveConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const createVodConfigResponse = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.VodConfig'
+    ) as gax.protobuf.Type;
+    const createVodConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteVodConfigResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteVodConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const updateVodConfigResponse = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.VodConfig'
+    ) as gax.protobuf.Type;
+    const updateVodConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.stitcher.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
 
     this.descriptors.longrunning = {
       createCdnKey: new this._gaxModule.LongrunningDescriptor(
@@ -375,6 +428,26 @@ export class VideoStitcherServiceClient {
         this.operationsClient,
         deleteLiveConfigResponse.decode.bind(deleteLiveConfigResponse),
         deleteLiveConfigMetadata.decode.bind(deleteLiveConfigMetadata)
+      ),
+      updateLiveConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updateLiveConfigResponse.decode.bind(updateLiveConfigResponse),
+        updateLiveConfigMetadata.decode.bind(updateLiveConfigMetadata)
+      ),
+      createVodConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createVodConfigResponse.decode.bind(createVodConfigResponse),
+        createVodConfigMetadata.decode.bind(createVodConfigMetadata)
+      ),
+      deleteVodConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteVodConfigResponse.decode.bind(deleteVodConfigResponse),
+        deleteVodConfigMetadata.decode.bind(deleteVodConfigMetadata)
+      ),
+      updateVodConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updateVodConfigResponse.decode.bind(updateVodConfigResponse),
+        updateVodConfigMetadata.decode.bind(updateVodConfigMetadata)
       ),
     };
 
@@ -453,6 +526,12 @@ export class VideoStitcherServiceClient {
       'listLiveConfigs',
       'getLiveConfig',
       'deleteLiveConfig',
+      'updateLiveConfig',
+      'createVodConfig',
+      'listVodConfigs',
+      'getVodConfig',
+      'deleteVodConfig',
+      'updateVodConfig',
     ];
     for (const methodName of videoStitcherServiceStubMethods) {
       const callPromise = this.videoStitcherServiceStub.then(
@@ -488,19 +567,50 @@ export class VideoStitcherServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'videostitcher.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'videostitcher.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -550,9 +660,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.CdnKey | CdnKey}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.CdnKey|CdnKey}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetCdnKey_async
@@ -564,7 +673,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ICdnKey,
       protos.google.cloud.video.stitcher.v1.IGetCdnKeyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCdnKey(
@@ -610,7 +719,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ICdnKey,
       protos.google.cloud.video.stitcher.v1.IGetCdnKeyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -645,9 +754,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.VodSession | VodSession}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.VodSession|VodSession}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_vod_session.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateVodSession_async
@@ -662,7 +770,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.ICreateVodSessionRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createVodSession(
@@ -711,7 +819,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.ICreateVodSessionRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -744,9 +852,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.VodSession | VodSession}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.VodSession|VodSession}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_vod_session.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetVodSession_async
@@ -758,7 +865,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.IVodSession,
       protos.google.cloud.video.stitcher.v1.IGetVodSessionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getVodSession(
@@ -804,7 +911,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.IVodSession,
       protos.google.cloud.video.stitcher.v1.IGetVodSessionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -837,9 +944,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.VodStitchDetail | VodStitchDetail}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.VodStitchDetail|VodStitchDetail}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_vod_stitch_detail.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetVodStitchDetail_async
@@ -854,7 +960,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.IGetVodStitchDetailRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getVodStitchDetail(
@@ -903,7 +1009,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.IGetVodStitchDetailRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -936,9 +1042,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.VodAdTagDetail | VodAdTagDetail}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.VodAdTagDetail|VodAdTagDetail}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_vod_ad_tag_detail.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetVodAdTagDetail_async
@@ -953,7 +1058,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.IGetVodAdTagDetailRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getVodAdTagDetail(
@@ -1002,7 +1107,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.IGetVodAdTagDetailRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1034,9 +1139,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.LiveAdTagDetail | LiveAdTagDetail}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.LiveAdTagDetail|LiveAdTagDetail}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_live_ad_tag_detail.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetLiveAdTagDetail_async
@@ -1051,7 +1155,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.IGetLiveAdTagDetailRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getLiveAdTagDetail(
@@ -1100,7 +1204,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.IGetLiveAdTagDetailRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1132,9 +1236,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.Slate | Slate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.Slate|Slate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetSlate_async
@@ -1146,7 +1249,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ISlate,
       protos.google.cloud.video.stitcher.v1.IGetSlateRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getSlate(
@@ -1186,7 +1289,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ISlate,
       protos.google.cloud.video.stitcher.v1.IGetSlateRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1220,9 +1323,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.LiveSession | LiveSession}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.LiveSession|LiveSession}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_live_session.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateLiveSession_async
@@ -1237,7 +1339,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.ICreateLiveSessionRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createLiveSession(
@@ -1286,7 +1388,7 @@ export class VideoStitcherServiceClient {
         | protos.google.cloud.video.stitcher.v1.ICreateLiveSessionRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1318,9 +1420,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.LiveSession | LiveSession}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.LiveSession|LiveSession}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_live_session.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetLiveSession_async
@@ -1332,7 +1433,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveSession,
       protos.google.cloud.video.stitcher.v1.IGetLiveSessionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getLiveSession(
@@ -1378,7 +1479,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveSession,
       protos.google.cloud.video.stitcher.v1.IGetLiveSessionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1412,9 +1513,8 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.stitcher.v1.LiveConfig | LiveConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.LiveConfig|LiveConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.get_live_config.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_GetLiveConfig_async
@@ -1426,7 +1526,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveConfig,
       protos.google.cloud.video.stitcher.v1.IGetLiveConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getLiveConfig(
@@ -1472,7 +1572,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveConfig,
       protos.google.cloud.video.stitcher.v1.IGetLiveConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1492,6 +1592,98 @@ export class VideoStitcherServiceClient {
       });
     this.initialize();
     return this.innerApiCalls.getLiveConfig(request, options, callback);
+  }
+  /**
+   * Returns the specified VOD config managed by the Video
+   * Stitcher API service.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the VOD config to be retrieved, in the form
+   *   of `projects/{project_number}/locations/{location}/vodConfigs/{id}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.stitcher.v1.VodConfig|VodConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.get_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_GetVodConfig_async
+   */
+  getVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.stitcher.v1.IVodConfig,
+      protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.video.stitcher.v1.IVodConfig,
+      | protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest,
+    callback: Callback<
+      protos.google.cloud.video.stitcher.v1.IVodConfig,
+      | protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.video.stitcher.v1.IVodConfig,
+          | protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.video.stitcher.v1.IVodConfig,
+      | protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.stitcher.v1.IVodConfig,
+      protos.google.cloud.video.stitcher.v1.IGetVodConfigRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getVodConfig(request, options, callback);
   }
 
   /**
@@ -1517,8 +1709,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateCdnKey_async
@@ -1533,7 +1724,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCdnKey(
@@ -1586,7 +1777,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1613,8 +1804,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateCdnKey_async
@@ -1656,8 +1846,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteCdnKey_async
@@ -1672,7 +1861,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCdnKey(
@@ -1725,7 +1914,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1752,8 +1941,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteCdnKey_async
@@ -1799,8 +1987,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.update_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateCdnKey_async
@@ -1815,7 +2002,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCdnKey(
@@ -1868,7 +2055,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1895,8 +2082,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.update_cdn_key.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateCdnKey_async
@@ -1959,8 +2145,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateSlate_async
@@ -1975,7 +2160,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createSlate(
@@ -2028,7 +2213,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2055,8 +2240,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateSlate_async
@@ -2099,8 +2283,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.update_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateSlate_async
@@ -2115,7 +2298,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateSlate(
@@ -2168,7 +2351,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2195,8 +2378,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.update_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateSlate_async
@@ -2238,8 +2420,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteSlate_async
@@ -2254,7 +2435,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteSlate(
@@ -2307,7 +2488,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2334,8 +2515,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_slate.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteSlate_async
@@ -2396,8 +2576,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_live_config.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateLiveConfig_async
@@ -2412,7 +2591,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createLiveConfig(
@@ -2465,7 +2644,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2492,8 +2671,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.create_live_config.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateLiveConfig_async
@@ -2535,8 +2713,7 @@ export class VideoStitcherServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_live_config.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteLiveConfig_async
@@ -2551,7 +2728,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteLiveConfig(
@@ -2604,7 +2781,7 @@ export class VideoStitcherServiceClient {
         protos.google.cloud.video.stitcher.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2631,8 +2808,7 @@ export class VideoStitcherServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_live_config.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteLiveConfig_async
@@ -2661,6 +2837,583 @@ export class VideoStitcherServiceClient {
     >;
   }
   /**
+   * Updates the specified LiveConfig. Only update fields specified
+   * in the call method body.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.cloud.video.stitcher.v1.LiveConfig} request.liveConfig
+   *   Required. The LiveConfig resource which replaces the resource on the
+   *   server.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Required. The update mask applies to the resource.
+   *   For the `FieldMask` definition, see
+   *   https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.update_live_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateLiveConfig_async
+   */
+  updateLiveConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IUpdateLiveConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.ILiveConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updateLiveConfig(
+    request: protos.google.cloud.video.stitcher.v1.IUpdateLiveConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.ILiveConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateLiveConfig(
+    request: protos.google.cloud.video.stitcher.v1.IUpdateLiveConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.ILiveConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateLiveConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IUpdateLiveConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.video.stitcher.v1.ILiveConfig,
+            protos.google.cloud.video.stitcher.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.ILiveConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.ILiveConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'live_config.name': request.liveConfig!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updateLiveConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `updateLiveConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.update_live_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateLiveConfig_async
+   */
+  async checkUpdateLiveConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.video.stitcher.v1.LiveConfig,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updateLiveConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.video.stitcher.v1.LiveConfig,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Registers the VOD config with the provided unique ID in
+   * the specified region.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project in which the VOD config should be created, in
+   *   the form of `projects/{project_number}/locations/{location}`.
+   * @param {string} request.vodConfigId
+   *   Required. The unique identifier ID to use for the VOD config.
+   * @param {google.cloud.video.stitcher.v1.VodConfig} request.vodConfig
+   *   Required. The VOD config resource to create.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server will know to ignore
+   *   the request if it has already been completed. The server will guarantee
+   *   that for at least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported `(00000000-0000-0000-0000-000000000000)`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.create_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateVodConfig_async
+   */
+  createVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.ICreateVodConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.ICreateVodConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.ICreateVodConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.ICreateVodConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.video.stitcher.v1.IVodConfig,
+            protos.google.cloud.video.stitcher.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createVodConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createVodConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.create_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_CreateVodConfig_async
+   */
+  async checkCreateVodConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.video.stitcher.v1.VodConfig,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createVodConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.video.stitcher.v1.VodConfig,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes the specified VOD config.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the VOD config to be deleted, in the form of
+   *   `projects/{project_number}/locations/{location}/vodConfigs/{id}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteVodConfig_async
+   */
+  deleteVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IDeleteVodConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.IDeleteVodConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.IDeleteVodConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IDeleteVodConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.video.stitcher.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteVodConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteVodConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.delete_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_DeleteVodConfig_async
+   */
+  async checkDeleteVodConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteVodConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Updates the specified VOD config. Only update fields specified
+   * in the call method body.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.cloud.video.stitcher.v1.VodConfig} request.vodConfig
+   *   Required. The VOD config resource which replaces the resource on the
+   *   server.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Required. The update mask applies to the resource.
+   *   For the `FieldMask` definition, see
+   *   https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.update_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateVodConfig_async
+   */
+  updateVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IUpdateVodConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updateVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.IUpdateVodConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateVodConfig(
+    request: protos.google.cloud.video.stitcher.v1.IUpdateVodConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateVodConfig(
+    request?: protos.google.cloud.video.stitcher.v1.IUpdateVodConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.video.stitcher.v1.IVodConfig,
+            protos.google.cloud.video.stitcher.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.stitcher.v1.IVodConfig,
+        protos.google.cloud.video.stitcher.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'vod_config.name': request.vodConfig!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updateVodConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `updateVodConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.update_vod_config.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_UpdateVodConfig_async
+   */
+  async checkUpdateVodConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.video.stitcher.v1.VodConfig,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updateVodConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.video.stitcher.v1.VodConfig,
+      protos.google.cloud.video.stitcher.v1.OperationMetadata
+    >;
+  }
+  /**
    * Lists all CDN keys in the specified project and location.
    *
    * @param {Object} request
@@ -2680,14 +3433,13 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.stitcher.v1.CdnKey | CdnKey}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.CdnKey|CdnKey}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCdnKeysAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCdnKeys(
@@ -2697,7 +3449,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ICdnKey[],
       protos.google.cloud.video.stitcher.v1.IListCdnKeysRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListCdnKeysResponse
+      protos.google.cloud.video.stitcher.v1.IListCdnKeysResponse,
     ]
   >;
   listCdnKeys(
@@ -2743,7 +3495,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ICdnKey[],
       protos.google.cloud.video.stitcher.v1.IListCdnKeysRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListCdnKeysResponse
+      protos.google.cloud.video.stitcher.v1.IListCdnKeysResponse,
     ]
   > | void {
     request = request || {};
@@ -2784,13 +3536,12 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.stitcher.v1.CdnKey | CdnKey} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.CdnKey|CdnKey} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCdnKeysAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCdnKeysStream(
@@ -2836,12 +3587,11 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.stitcher.v1.CdnKey | CdnKey}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.stitcher.v1.CdnKey|CdnKey}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.list_cdn_keys.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_ListCdnKeys_async
@@ -2883,14 +3633,13 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.stitcher.v1.VodStitchDetail | VodStitchDetail}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.VodStitchDetail|VodStitchDetail}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listVodStitchDetailsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listVodStitchDetails(
@@ -2900,7 +3649,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.IVodStitchDetail[],
       protos.google.cloud.video.stitcher.v1.IListVodStitchDetailsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListVodStitchDetailsResponse
+      protos.google.cloud.video.stitcher.v1.IListVodStitchDetailsResponse,
     ]
   >;
   listVodStitchDetails(
@@ -2946,7 +3695,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.IVodStitchDetail[],
       protos.google.cloud.video.stitcher.v1.IListVodStitchDetailsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListVodStitchDetailsResponse
+      protos.google.cloud.video.stitcher.v1.IListVodStitchDetailsResponse,
     ]
   > | void {
     request = request || {};
@@ -2982,13 +3731,12 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.stitcher.v1.VodStitchDetail | VodStitchDetail} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.VodStitchDetail|VodStitchDetail} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listVodStitchDetailsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listVodStitchDetailsStream(
@@ -3029,12 +3777,11 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.stitcher.v1.VodStitchDetail | VodStitchDetail}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.stitcher.v1.VodStitchDetail|VodStitchDetail}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.list_vod_stitch_details.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_ListVodStitchDetails_async
@@ -3075,14 +3822,13 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.stitcher.v1.VodAdTagDetail | VodAdTagDetail}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.VodAdTagDetail|VodAdTagDetail}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listVodAdTagDetailsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listVodAdTagDetails(
@@ -3092,7 +3838,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.IVodAdTagDetail[],
       protos.google.cloud.video.stitcher.v1.IListVodAdTagDetailsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListVodAdTagDetailsResponse
+      protos.google.cloud.video.stitcher.v1.IListVodAdTagDetailsResponse,
     ]
   >;
   listVodAdTagDetails(
@@ -3138,7 +3884,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.IVodAdTagDetail[],
       protos.google.cloud.video.stitcher.v1.IListVodAdTagDetailsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListVodAdTagDetailsResponse
+      protos.google.cloud.video.stitcher.v1.IListVodAdTagDetailsResponse,
     ]
   > | void {
     request = request || {};
@@ -3174,13 +3920,12 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.stitcher.v1.VodAdTagDetail | VodAdTagDetail} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.VodAdTagDetail|VodAdTagDetail} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listVodAdTagDetailsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listVodAdTagDetailsStream(
@@ -3221,12 +3966,11 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.stitcher.v1.VodAdTagDetail | VodAdTagDetail}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.stitcher.v1.VodAdTagDetail|VodAdTagDetail}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.list_vod_ad_tag_details.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_ListVodAdTagDetails_async
@@ -3267,14 +4011,13 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.stitcher.v1.LiveAdTagDetail | LiveAdTagDetail}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.LiveAdTagDetail|LiveAdTagDetail}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listLiveAdTagDetailsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listLiveAdTagDetails(
@@ -3284,7 +4027,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveAdTagDetail[],
       protos.google.cloud.video.stitcher.v1.IListLiveAdTagDetailsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListLiveAdTagDetailsResponse
+      protos.google.cloud.video.stitcher.v1.IListLiveAdTagDetailsResponse,
     ]
   >;
   listLiveAdTagDetails(
@@ -3330,7 +4073,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveAdTagDetail[],
       protos.google.cloud.video.stitcher.v1.IListLiveAdTagDetailsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListLiveAdTagDetailsResponse
+      protos.google.cloud.video.stitcher.v1.IListLiveAdTagDetailsResponse,
     ]
   > | void {
     request = request || {};
@@ -3366,13 +4109,12 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.stitcher.v1.LiveAdTagDetail | LiveAdTagDetail} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.LiveAdTagDetail|LiveAdTagDetail} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listLiveAdTagDetailsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listLiveAdTagDetailsStream(
@@ -3413,12 +4155,11 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.stitcher.v1.LiveAdTagDetail | LiveAdTagDetail}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.stitcher.v1.LiveAdTagDetail|LiveAdTagDetail}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.list_live_ad_tag_details.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_ListLiveAdTagDetails_async
@@ -3464,14 +4205,13 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.stitcher.v1.Slate | Slate}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.Slate|Slate}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listSlatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSlates(
@@ -3481,7 +4221,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ISlate[],
       protos.google.cloud.video.stitcher.v1.IListSlatesRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListSlatesResponse
+      protos.google.cloud.video.stitcher.v1.IListSlatesResponse,
     ]
   >;
   listSlates(
@@ -3527,7 +4267,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ISlate[],
       protos.google.cloud.video.stitcher.v1.IListSlatesRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListSlatesResponse
+      protos.google.cloud.video.stitcher.v1.IListSlatesResponse,
     ]
   > | void {
     request = request || {};
@@ -3568,13 +4308,12 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.stitcher.v1.Slate | Slate} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.Slate|Slate} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listSlatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSlatesStream(
@@ -3620,12 +4359,11 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.stitcher.v1.Slate | Slate}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.stitcher.v1.Slate|Slate}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.list_slates.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_ListSlates_async
@@ -3674,14 +4412,13 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.stitcher.v1.LiveConfig | LiveConfig}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.LiveConfig|LiveConfig}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listLiveConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listLiveConfigs(
@@ -3691,7 +4428,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveConfig[],
       protos.google.cloud.video.stitcher.v1.IListLiveConfigsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListLiveConfigsResponse
+      protos.google.cloud.video.stitcher.v1.IListLiveConfigsResponse,
     ]
   >;
   listLiveConfigs(
@@ -3737,7 +4474,7 @@ export class VideoStitcherServiceClient {
     [
       protos.google.cloud.video.stitcher.v1.ILiveConfig[],
       protos.google.cloud.video.stitcher.v1.IListLiveConfigsRequest | null,
-      protos.google.cloud.video.stitcher.v1.IListLiveConfigsResponse
+      protos.google.cloud.video.stitcher.v1.IListLiveConfigsResponse,
     ]
   > | void {
     request = request || {};
@@ -3780,13 +4517,12 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.stitcher.v1.LiveConfig | LiveConfig} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.LiveConfig|LiveConfig} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listLiveConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listLiveConfigsStream(
@@ -3834,12 +4570,11 @@ export class VideoStitcherServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.stitcher.v1.LiveConfig | LiveConfig}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.stitcher.v1.LiveConfig|LiveConfig}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/video_stitcher_service.list_live_configs.js</caption>
    * region_tag:videostitcher_v1_generated_VideoStitcherService_ListLiveConfigs_async
@@ -3864,6 +4599,220 @@ export class VideoStitcherServiceClient {
       request as {},
       callSettings
     ) as AsyncIterable<protos.google.cloud.video.stitcher.v1.ILiveConfig>;
+  }
+  /**
+   * Lists all VOD configs managed by the Video Stitcher API that
+   * belong to the specified project and region.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project that contains the list of VOD configs, in the
+   *   form of `projects/{project_number}/locations/{location}`.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of items to return.
+   * @param {string} [request.pageToken]
+   *   Optional. The next_page_token value returned from a previous List request,
+   *   if any.
+   * @param {string} [request.filter]
+   *   Optional. The filter to apply to list results (see
+   *   [Filtering](https://google.aip.dev/160)).
+   * @param {string} [request.orderBy]
+   *   Optional. Specifies the ordering of results following
+   *   [Cloud API
+   *   syntax](https://cloud.google.com/apis/design/design_patterns#sorting_order).
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.stitcher.v1.VodConfig|VodConfig}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listVodConfigsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listVodConfigs(
+    request?: protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.stitcher.v1.IVodConfig[],
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest | null,
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsResponse,
+    ]
+  >;
+  listVodConfigs(
+    request: protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+      | protos.google.cloud.video.stitcher.v1.IListVodConfigsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.stitcher.v1.IVodConfig
+    >
+  ): void;
+  listVodConfigs(
+    request: protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+      | protos.google.cloud.video.stitcher.v1.IListVodConfigsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.stitcher.v1.IVodConfig
+    >
+  ): void;
+  listVodConfigs(
+    request?: protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+          | protos.google.cloud.video.stitcher.v1.IListVodConfigsResponse
+          | null
+          | undefined,
+          protos.google.cloud.video.stitcher.v1.IVodConfig
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+      | protos.google.cloud.video.stitcher.v1.IListVodConfigsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.stitcher.v1.IVodConfig
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.stitcher.v1.IVodConfig[],
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest | null,
+      protos.google.cloud.video.stitcher.v1.IListVodConfigsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listVodConfigs(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project that contains the list of VOD configs, in the
+   *   form of `projects/{project_number}/locations/{location}`.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of items to return.
+   * @param {string} [request.pageToken]
+   *   Optional. The next_page_token value returned from a previous List request,
+   *   if any.
+   * @param {string} [request.filter]
+   *   Optional. The filter to apply to list results (see
+   *   [Filtering](https://google.aip.dev/160)).
+   * @param {string} [request.orderBy]
+   *   Optional. Specifies the ordering of results following
+   *   [Cloud API
+   *   syntax](https://cloud.google.com/apis/design/design_patterns#sorting_order).
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.stitcher.v1.VodConfig|VodConfig} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listVodConfigsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listVodConfigsStream(
+    request?: protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listVodConfigs'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listVodConfigs.createStream(
+      this.innerApiCalls.listVodConfigs as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listVodConfigs`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project that contains the list of VOD configs, in the
+   *   form of `projects/{project_number}/locations/{location}`.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of items to return.
+   * @param {string} [request.pageToken]
+   *   Optional. The next_page_token value returned from a previous List request,
+   *   if any.
+   * @param {string} [request.filter]
+   *   Optional. The filter to apply to list results (see
+   *   [Filtering](https://google.aip.dev/160)).
+   * @param {string} [request.orderBy]
+   *   Optional. Specifies the ordering of results following
+   *   [Cloud API
+   *   syntax](https://cloud.google.com/apis/design/design_patterns#sorting_order).
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.video.stitcher.v1.VodConfig|VodConfig}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/video_stitcher_service.list_vod_configs.js</caption>
+   * region_tag:videostitcher_v1_generated_VideoStitcherService_ListVodConfigs_async
+   */
+  listVodConfigsAsync(
+    request?: protos.google.cloud.video.stitcher.v1.IListVodConfigsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.video.stitcher.v1.IVodConfig> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listVodConfigs'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listVodConfigs.asyncIterate(
+      this.innerApiCalls['listVodConfigs'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.video.stitcher.v1.IVodConfig>;
   }
   /**
    * Gets the latest state of a long-running operation.  Clients can use this
@@ -4453,6 +5402,58 @@ export class VideoStitcherServiceClient {
     return this.pathTemplates.vodAdTagDetailPathTemplate.match(
       vodAdTagDetailName
     ).vod_ad_tag_detail;
+  }
+
+  /**
+   * Return a fully-qualified vodConfig resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} vod_config
+   * @returns {string} Resource name string.
+   */
+  vodConfigPath(project: string, location: string, vodConfig: string) {
+    return this.pathTemplates.vodConfigPathTemplate.render({
+      project: project,
+      location: location,
+      vod_config: vodConfig,
+    });
+  }
+
+  /**
+   * Parse the project from VodConfig resource.
+   *
+   * @param {string} vodConfigName
+   *   A fully-qualified path representing VodConfig resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromVodConfigName(vodConfigName: string) {
+    return this.pathTemplates.vodConfigPathTemplate.match(vodConfigName)
+      .project;
+  }
+
+  /**
+   * Parse the location from VodConfig resource.
+   *
+   * @param {string} vodConfigName
+   *   A fully-qualified path representing VodConfig resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromVodConfigName(vodConfigName: string) {
+    return this.pathTemplates.vodConfigPathTemplate.match(vodConfigName)
+      .location;
+  }
+
+  /**
+   * Parse the vod_config from VodConfig resource.
+   *
+   * @param {string} vodConfigName
+   *   A fully-qualified path representing VodConfig resource.
+   * @returns {string} A string representing the vod_config.
+   */
+  matchVodConfigFromVodConfigName(vodConfigName: string) {
+    return this.pathTemplates.vodConfigPathTemplate.match(vodConfigName)
+      .vod_config;
   }
 
   /**

@@ -1,5 +1,106 @@
 # Changelog
 
+## [1.11.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.10.0...contentwarehouse-v1.11.0) (2024-10-30)
+
+
+### Features
+
+* [contentwarehouse] Updated the exponential backoff settings for the Document AI ProcessDocument and BatchProcessDocuments methods ([#5763](https://github.com/googleapis/google-cloud-node/issues/5763)) ([c605006](https://github.com/googleapis/google-cloud-node/commit/c6050069aa75b31a262ff243c9f5407707926856))
+
+## [1.10.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.9.0...contentwarehouse-v1.10.0) (2024-08-19)
+
+
+### Features
+
+* [contentwarehouse] A new field `imageless_mode` is added to message `.google.cloud.documentai.v1.ProcessRequest` ([#5598](https://github.com/googleapis/google-cloud-node/issues/5598)) ([d2ba736](https://github.com/googleapis/google-cloud-node/commit/d2ba736d327901a153e2d9261a7e8824261255e6))
+
+## [1.9.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.8.0...contentwarehouse-v1.9.0) (2024-06-03)
+
+
+### Features
+
+* [contentwarehouse] Make Layout Parser generally available in V1 ([#5394](https://github.com/googleapis/google-cloud-node/issues/5394)) ([489b166](https://github.com/googleapis/google-cloud-node/commit/489b16633276bcc446d2936ffb75bc68e57116e8))
+
+## [1.8.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.7.0...contentwarehouse-v1.8.0) (2024-05-21)
+
+
+### Features
+
+* [contentwarehouse] update Nodejs generator to send API versions in headers for GAPICs ([#5335](https://github.com/googleapis/google-cloud-node/issues/5335)) ([093bfb2](https://github.com/googleapis/google-cloud-node/commit/093bfb29464688846c513e2b3293c18ccd4507a6))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [1.7.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.6.0...contentwarehouse-v1.7.0) (2024-04-18)
+
+
+### Features
+
+* [contentwarehouse] A new message `FoundationModelTuningOptions` is added ([#5243](https://github.com/googleapis/google-cloud-node/issues/5243)) ([280a42e](https://github.com/googleapis/google-cloud-node/commit/280a42e0b9e8559ca895f8545ed4f261c41dfaa3))
+
+## [1.6.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.5.0...contentwarehouse-v1.6.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5187](https://github.com/googleapis/google-cloud-node/issues/5187)) ([1952fbe](https://github.com/googleapis/google-cloud-node/commit/1952fbe432b96115278d42e5c1dbdbc7de39036b))
+
+## [1.5.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.4.0...contentwarehouse-v1.5.0) (2024-02-22)
+
+
+### Features
+
+* [contentwarehouse] A new field `schema_override` is added to message `ProcessOptions` ([#5052](https://github.com/googleapis/google-cloud-node/issues/5052)) ([e1afd1f](https://github.com/googleapis/google-cloud-node/commit/e1afd1fc6779e73022f996ffa44378d0096f6269))
+
+## [1.4.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.3.0...contentwarehouse-v1.4.0) (2024-02-07)
+
+
+### Features
+
+* [contentwarehouse] expose model_type in v1 processor, so that user can see the model_type after get or list processor version ([#5006](https://github.com/googleapis/google-cloud-node/issues/5006)) ([d82cadd](https://github.com/googleapis/google-cloud-node/commit/d82caddf977cc9cb99cae2d1847df252adc708cb))
+
+## [1.3.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.2.0...contentwarehouse-v1.3.0) (2023-10-18)
+
+
+### Features
+
+* [contentwarehouse] add matched_token_page_indices field in DocumentWarehouse API ([#4700](https://github.com/googleapis/google-cloud-node/issues/4700)) ([8ea16a1](https://github.com/googleapis/google-cloud-node/commit/8ea16a1535e4162dac7b9bd621c731330712f899))
+
+## [1.2.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.1.0...contentwarehouse-v1.2.0) (2023-09-19)
+
+
+### Features
+
+* [contentwarehouse] add `ROOT_FOLDER` field to Document Warehouse API v1 ([#4672](https://github.com/googleapis/google-cloud-node/issues/4672)) ([998711e](https://github.com/googleapis/google-cloud-node/commit/998711e948c717d5b0bd878d1e0e8cf861831d52))
+
+## [1.1.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v1.0.0...contentwarehouse-v1.1.0) (2023-09-06)
+
+
+### Features
+
+* [contentwarehouse] add `disposition_time`, `legal_hold`, `document_is_retention_folder`, `document_is_legal_hold_folder`, `question_answer`, `document_name_filter` field to Document Warehouse API v1 ([#4537](https://github.com/googleapis/google-cloud-node/issues/4537)) ([78fd166](https://github.com/googleapis/google-cloud-node/commit/78fd166534555720b93d2b37f28307c6003390ff))
+* [contentwarehouse] add Pipeline Service to Document Warehouse API v1 ([#4558](https://github.com/googleapis/google-cloud-node/issues/4558)) ([18c7503](https://github.com/googleapis/google-cloud-node/commit/18c750378975440bb8ff8168e7f72b8de24fcfac))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4585](https://github.com/googleapis/google-cloud-node/issues/4585)) ([b6cea45](https://github.com/googleapis/google-cloud-node/commit/b6cea45d03faaa7bd6e5daa36ebd0063a1e1f251))
+
+## [1.0.0](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v0.5.1...contentwarehouse-v1.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4460](https://github.com/googleapis/google-cloud-node/issues/4460)) ([c32965c](https://github.com/googleapis/google-cloud-node/commit/c32965c0c4a5975ba37371ecd819d9cffb080aa5))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [0.5.1](https://github.com/googleapis/google-cloud-node/compare/contentwarehouse-v0.5.0...contentwarehouse-v0.5.1) (2023-04-13)
 
 

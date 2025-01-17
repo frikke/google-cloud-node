@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,6 +46,8 @@ function main(azureNodePool, updateMask) {
    *   *   `autoscaling.min_node_count`.
    *   *   `autoscaling.max_node_count`.
    *   *   `config.ssh_config.authorized_key`.
+   *   *   `management.auto_repair`.
+   *   *   `management`.
    */
   // const updateMask = {}
 

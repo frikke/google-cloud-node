@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,6 +44,12 @@ function main(sshPublicKey) {
    *  The view configures whether to retrieve security keys information.
    */
   // const view = {}
+  /**
+   *  Optional. The regions to which to assert that the key was written.
+   *  If unspecified, defaults to all regions.
+   *  Regions are listed at https://cloud.google.com/about/locations#region.
+   */
+  // const regions = ['abc','def']
 
   // Imports the Oslogin library
   const {OsLoginServiceClient} = require('@google-cloud/os-login').v1beta;

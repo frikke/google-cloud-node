@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ function main(product, localInventories) {
    *  is identified by its place ID. At most 3000 inventories are allowed per
    *  request.
    */
-  // const localInventories = 1234
+  // const localInventories = [1,2,3,4]
   /**
    *  Indicates which inventory fields in the provided list of
    *  LocalInventory google.cloud.retail.v2alpha.LocalInventory  to update. The

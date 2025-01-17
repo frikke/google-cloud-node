@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import * as sinon from 'sinon';
 import {SinonStub} from 'sinon';
 import {describe, it} from 'mocha';
 import * as predictionserviceModule from '../src';
+
+import {PassThrough} from 'stream';
 
 import {protobuf, IamProtos, LocationProtos} from 'google-gax';
 
@@ -64,6 +66,41 @@ function stubSimpleCallWithCallback<ResponseType>(
     : sinon.stub().callsArgWith(2, null, response);
 }
 
+function stubServerStreamingCall<ResponseType>(
+  response?: ResponseType,
+  error?: Error
+) {
+  const transformStub = error
+    ? sinon.stub().callsArgWith(2, error)
+    : sinon.stub().callsArgWith(2, null, response);
+  const mockStream = new PassThrough({
+    objectMode: true,
+    transform: transformStub,
+  });
+  // write something to the stream to trigger transformStub and send the response back to the client
+  setImmediate(() => {
+    mockStream.write({});
+  });
+  setImmediate(() => {
+    mockStream.end();
+  });
+  return sinon.stub().returns(mockStream);
+}
+
+function stubBidiStreamingCall<ResponseType>(
+  response?: ResponseType,
+  error?: Error
+) {
+  const transformStub = error
+    ? sinon.stub().callsArgWith(2, error)
+    : sinon.stub().callsArgWith(2, null, response);
+  const mockStream = new PassThrough({
+    objectMode: true,
+    transform: transformStub,
+  });
+  return sinon.stub().returns(mockStream);
+}
+
 function stubAsyncIterationCall<ResponseType>(
   responses?: ResponseType[],
   error?: Error
@@ -89,16 +126,95 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.PredictionServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        predictionserviceModule.v1.PredictionServiceClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'aiplatform.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        predictionserviceModule.v1.PredictionServiceClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          predictionserviceModule.v1.PredictionServiceClient.servicePath;
+        assert.strictEqual(servicePath, 'aiplatform.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          predictionserviceModule.v1.PredictionServiceClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'aiplatform.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'aiplatform.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'aiplatform.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client =
+            new predictionserviceModule.v1.PredictionServiceClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'aiplatform.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new predictionserviceModule.v1.PredictionServiceClient(
+            {universeDomain: 'configured.example.com'}
+          );
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'aiplatform.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new predictionserviceModule.v1.PredictionServiceClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -441,6 +557,266 @@ describe('v1.PredictionServiceClient', () => {
     });
   });
 
+  describe('directPredict', () => {
+    it('invokes directPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectPredictResponse()
+      );
+      client.innerApiCalls.directPredict = stubSimpleCall(expectedResponse);
+      const [response] = await client.directPredict(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.directPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.directPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes directPredict without error using callback', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectPredictResponse()
+      );
+      client.innerApiCalls.directPredict =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.directPredict(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.aiplatform.v1.IDirectPredictResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.directPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.directPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes directPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.directPredict = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.directPredict(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.directPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.directPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes directPredict with closed client', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.directPredict(request), expectedError);
+    });
+  });
+
+  describe('directRawPredict', () => {
+    it('invokes directRawPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectRawPredictResponse()
+      );
+      client.innerApiCalls.directRawPredict = stubSimpleCall(expectedResponse);
+      const [response] = await client.directRawPredict(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.directRawPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.directRawPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes directRawPredict without error using callback', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectRawPredictResponse()
+      );
+      client.innerApiCalls.directRawPredict =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.directRawPredict(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.aiplatform.v1.IDirectRawPredictResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.directRawPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.directRawPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes directRawPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.directRawPredict = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.directRawPredict(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.directRawPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.directRawPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes directRawPredict with closed client', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.DirectRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.DirectRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.directRawPredict(request), expectedError);
+    });
+  });
+
   describe('explain', () => {
     it('invokes explain without error', async () => {
       const client = new predictionserviceModule.v1.PredictionServiceClient({
@@ -565,6 +941,1013 @@ describe('v1.PredictionServiceClient', () => {
       const expectedError = new Error('The client has already been closed.');
       client.close();
       await assert.rejects(client.explain(request), expectedError);
+    });
+  });
+
+  describe('generateContent', () => {
+    it('invokes generateContent without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedHeaderRequestParams = `model=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentResponse()
+      );
+      client.innerApiCalls.generateContent = stubSimpleCall(expectedResponse);
+      const [response] = await client.generateContent(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.generateContent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.generateContent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes generateContent without error using callback', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedHeaderRequestParams = `model=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentResponse()
+      );
+      client.innerApiCalls.generateContent =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.generateContent(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.aiplatform.v1.IGenerateContentResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.generateContent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.generateContent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes generateContent with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedHeaderRequestParams = `model=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.generateContent = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.generateContent(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.generateContent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.generateContent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes generateContent with closed client', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.generateContent(request), expectedError);
+    });
+  });
+
+  describe('streamRawPredict', () => {
+    it('invokes streamRawPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.api.HttpBody()
+      );
+      client.innerApiCalls.streamRawPredict =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.streamRawPredict(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on('data', (response: protos.google.api.HttpBody) => {
+          resolve(response);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.streamRawPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.streamRawPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes streamRawPredict without error and gaxServerStreamingRetries enabled', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        gaxServerStreamingRetries: true,
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.api.HttpBody()
+      );
+      client.innerApiCalls.streamRawPredict =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.streamRawPredict(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on('data', (response: protos.google.api.HttpBody) => {
+          resolve(response);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.streamRawPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.streamRawPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes streamRawPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.streamRawPredict = stubServerStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.streamRawPredict(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on('data', (response: protos.google.api.HttpBody) => {
+          resolve(response);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+      const actualRequest = (
+        client.innerApiCalls.streamRawPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.streamRawPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes streamRawPredict with closed client', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamRawPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamRawPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      const stream = client.streamRawPredict(request, {
+        retryRequestOptions: {noResponseRetries: 0},
+      });
+      const promise = new Promise((resolve, reject) => {
+        stream.on('data', (response: protos.google.api.HttpBody) => {
+          resolve(response);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+    });
+    it('should create a client with gaxServerStreamingRetries enabled', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        gaxServerStreamingRetries: true,
+      });
+      assert(client);
+    });
+  });
+
+  describe('serverStreamingPredict', () => {
+    it('invokes serverStreamingPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamingPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictResponse()
+      );
+      client.innerApiCalls.serverStreamingPredict =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.serverStreamingPredict(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.serverStreamingPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.serverStreamingPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes serverStreamingPredict without error and gaxServerStreamingRetries enabled', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        gaxServerStreamingRetries: true,
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamingPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictResponse()
+      );
+      client.innerApiCalls.serverStreamingPredict =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.serverStreamingPredict(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.serverStreamingPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.serverStreamingPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes serverStreamingPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamingPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedHeaderRequestParams = `endpoint=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.serverStreamingPredict = stubServerStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.serverStreamingPredict(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+      const actualRequest = (
+        client.innerApiCalls.serverStreamingPredict as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.serverStreamingPredict as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes serverStreamingPredict with closed client', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.StreamingPredictRequest',
+        ['endpoint']
+      );
+      request.endpoint = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      const stream = client.serverStreamingPredict(request, {
+        retryRequestOptions: {noResponseRetries: 0},
+      });
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+    });
+    it('should create a client with gaxServerStreamingRetries enabled', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        gaxServerStreamingRetries: true,
+      });
+      assert(client);
+    });
+  });
+
+  describe('streamGenerateContent', () => {
+    it('invokes streamGenerateContent without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedHeaderRequestParams = `model=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentResponse()
+      );
+      client.innerApiCalls.streamGenerateContent =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.streamGenerateContent(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.GenerateContentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.streamGenerateContent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.streamGenerateContent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes streamGenerateContent without error and gaxServerStreamingRetries enabled', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        gaxServerStreamingRetries: true,
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedHeaderRequestParams = `model=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentResponse()
+      );
+      client.innerApiCalls.streamGenerateContent =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.streamGenerateContent(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.GenerateContentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.streamGenerateContent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.streamGenerateContent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes streamGenerateContent with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedHeaderRequestParams = `model=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.streamGenerateContent = stubServerStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.streamGenerateContent(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.GenerateContentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+      const actualRequest = (
+        client.innerApiCalls.streamGenerateContent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.streamGenerateContent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes streamGenerateContent with closed client', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.GenerateContentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.aiplatform.v1.GenerateContentRequest',
+        ['model']
+      );
+      request.model = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      const stream = client.streamGenerateContent(request, {
+        retryRequestOptions: {noResponseRetries: 0},
+      });
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.GenerateContentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+    });
+    it('should create a client with gaxServerStreamingRetries enabled', () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        gaxServerStreamingRetries: true,
+      });
+      assert(client);
+    });
+  });
+
+  describe('streamDirectPredict', () => {
+    it('invokes streamDirectPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamDirectPredictRequest()
+      );
+
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamDirectPredictResponse()
+      );
+      client.innerApiCalls.streamDirectPredict =
+        stubBidiStreamingCall(expectedResponse);
+      const stream = client.streamDirectPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamDirectPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      assert(
+        (client.innerApiCalls.streamDirectPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+
+    it('invokes streamDirectPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamDirectPredictRequest()
+      );
+      const expectedError = new Error('expected');
+      client.innerApiCalls.streamDirectPredict = stubBidiStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.streamDirectPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamDirectPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      await assert.rejects(promise, expectedError);
+      assert(
+        (client.innerApiCalls.streamDirectPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+  });
+
+  describe('streamDirectRawPredict', () => {
+    it('invokes streamDirectRawPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamDirectRawPredictRequest()
+      );
+
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamDirectRawPredictResponse()
+      );
+      client.innerApiCalls.streamDirectRawPredict =
+        stubBidiStreamingCall(expectedResponse);
+      const stream = client.streamDirectRawPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamDirectRawPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      assert(
+        (client.innerApiCalls.streamDirectRawPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+
+    it('invokes streamDirectRawPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamDirectRawPredictRequest()
+      );
+      const expectedError = new Error('expected');
+      client.innerApiCalls.streamDirectRawPredict = stubBidiStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.streamDirectRawPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamDirectRawPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      await assert.rejects(promise, expectedError);
+      assert(
+        (client.innerApiCalls.streamDirectRawPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+  });
+
+  describe('streamingPredict', () => {
+    it('invokes streamingPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictRequest()
+      );
+
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictResponse()
+      );
+      client.innerApiCalls.streamingPredict =
+        stubBidiStreamingCall(expectedResponse);
+      const stream = client.streamingPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      assert(
+        (client.innerApiCalls.streamingPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+
+    it('invokes streamingPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingPredictRequest()
+      );
+      const expectedError = new Error('expected');
+      client.innerApiCalls.streamingPredict = stubBidiStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.streamingPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      await assert.rejects(promise, expectedError);
+      assert(
+        (client.innerApiCalls.streamingPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+  });
+
+  describe('streamingRawPredict', () => {
+    it('invokes streamingRawPredict without error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingRawPredictRequest()
+      );
+
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingRawPredictResponse()
+      );
+      client.innerApiCalls.streamingRawPredict =
+        stubBidiStreamingCall(expectedResponse);
+      const stream = client.streamingRawPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingRawPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      assert(
+        (client.innerApiCalls.streamingRawPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
+    });
+
+    it('invokes streamingRawPredict with error', async () => {
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.aiplatform.v1.StreamingRawPredictRequest()
+      );
+      const expectedError = new Error('expected');
+      client.innerApiCalls.streamingRawPredict = stubBidiStreamingCall(
+        undefined,
+        expectedError
+      );
+      const stream = client.streamingRawPredict();
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.aiplatform.v1.StreamingRawPredictResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+        stream.write(request);
+        stream.end();
+      });
+      await assert.rejects(promise, expectedError);
+      assert(
+        (client.innerApiCalls.streamingRawPredict as SinonStub)
+          .getCall(0)
+          .calledWith(null)
+      );
+      assert.deepStrictEqual(
+        ((stream as unknown as PassThrough)._transform as SinonStub).getCall(0)
+          .args[0],
+        request
+      );
     });
   });
   describe('getIamPolicy', () => {
@@ -1754,6 +3137,164 @@ describe('v1.PredictionServiceClient', () => {
       });
     });
 
+    describe('datasetVersion', () => {
+      const fakePath = '/rendered/path/datasetVersion';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        dataset: 'datasetValue',
+        dataset_version: 'datasetVersionValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.datasetVersionPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.datasetVersionPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('datasetVersionPath', () => {
+        const result = client.datasetVersionPath(
+          'projectValue',
+          'locationValue',
+          'datasetValue',
+          'datasetVersionValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.datasetVersionPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromDatasetVersionName', () => {
+        const result = client.matchProjectFromDatasetVersionName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.datasetVersionPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromDatasetVersionName', () => {
+        const result = client.matchLocationFromDatasetVersionName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.datasetVersionPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchDatasetFromDatasetVersionName', () => {
+        const result = client.matchDatasetFromDatasetVersionName(fakePath);
+        assert.strictEqual(result, 'datasetValue');
+        assert(
+          (client.pathTemplates.datasetVersionPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchDatasetVersionFromDatasetVersionName', () => {
+        const result =
+          client.matchDatasetVersionFromDatasetVersionName(fakePath);
+        assert.strictEqual(result, 'datasetVersionValue');
+        assert(
+          (client.pathTemplates.datasetVersionPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('deploymentResourcePool', () => {
+      const fakePath = '/rendered/path/deploymentResourcePool';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        deployment_resource_pool: 'deploymentResourcePoolValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.deploymentResourcePoolPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.deploymentResourcePoolPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('deploymentResourcePoolPath', () => {
+        const result = client.deploymentResourcePoolPath(
+          'projectValue',
+          'locationValue',
+          'deploymentResourcePoolValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.deploymentResourcePoolPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromDeploymentResourcePoolName', () => {
+        const result =
+          client.matchProjectFromDeploymentResourcePoolName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.deploymentResourcePoolPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromDeploymentResourcePoolName', () => {
+        const result =
+          client.matchLocationFromDeploymentResourcePoolName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.deploymentResourcePoolPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchDeploymentResourcePoolFromDeploymentResourcePoolName', () => {
+        const result =
+          client.matchDeploymentResourcePoolFromDeploymentResourcePoolName(
+            fakePath
+          );
+        assert.strictEqual(result, 'deploymentResourcePoolValue');
+        assert(
+          (
+            client.pathTemplates.deploymentResourcePoolPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('entityType', () => {
       const fakePath = '/rendered/path/entityType';
       const expectedParameters = {
@@ -1906,88 +3447,295 @@ describe('v1.PredictionServiceClient', () => {
       });
     });
 
-    describe('feature', () => {
-      const fakePath = '/rendered/path/feature';
+    describe('featureGroup', () => {
+      const fakePath = '/rendered/path/featureGroup';
       const expectedParameters = {
         project: 'projectValue',
         location: 'locationValue',
-        featurestore: 'featurestoreValue',
-        entity_type: 'entityTypeValue',
-        feature: 'featureValue',
+        feature_group: 'featureGroupValue',
       };
       const client = new predictionserviceModule.v1.PredictionServiceClient({
         credentials: {client_email: 'bogus', private_key: 'bogus'},
         projectId: 'bogus',
       });
       client.initialize();
-      client.pathTemplates.featurePathTemplate.render = sinon
+      client.pathTemplates.featureGroupPathTemplate.render = sinon
         .stub()
         .returns(fakePath);
-      client.pathTemplates.featurePathTemplate.match = sinon
+      client.pathTemplates.featureGroupPathTemplate.match = sinon
         .stub()
         .returns(expectedParameters);
 
-      it('featurePath', () => {
-        const result = client.featurePath(
+      it('featureGroupPath', () => {
+        const result = client.featureGroupPath(
           'projectValue',
           'locationValue',
-          'featurestoreValue',
-          'entityTypeValue',
-          'featureValue'
+          'featureGroupValue'
         );
         assert.strictEqual(result, fakePath);
         assert(
-          (client.pathTemplates.featurePathTemplate.render as SinonStub)
+          (client.pathTemplates.featureGroupPathTemplate.render as SinonStub)
             .getCall(-1)
             .calledWith(expectedParameters)
         );
       });
 
-      it('matchProjectFromFeatureName', () => {
-        const result = client.matchProjectFromFeatureName(fakePath);
+      it('matchProjectFromFeatureGroupName', () => {
+        const result = client.matchProjectFromFeatureGroupName(fakePath);
         assert.strictEqual(result, 'projectValue');
         assert(
-          (client.pathTemplates.featurePathTemplate.match as SinonStub)
+          (client.pathTemplates.featureGroupPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchLocationFromFeatureName', () => {
-        const result = client.matchLocationFromFeatureName(fakePath);
+      it('matchLocationFromFeatureGroupName', () => {
+        const result = client.matchLocationFromFeatureGroupName(fakePath);
         assert.strictEqual(result, 'locationValue');
         assert(
-          (client.pathTemplates.featurePathTemplate.match as SinonStub)
+          (client.pathTemplates.featureGroupPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchFeaturestoreFromFeatureName', () => {
-        const result = client.matchFeaturestoreFromFeatureName(fakePath);
-        assert.strictEqual(result, 'featurestoreValue');
+      it('matchFeatureGroupFromFeatureGroupName', () => {
+        const result = client.matchFeatureGroupFromFeatureGroupName(fakePath);
+        assert.strictEqual(result, 'featureGroupValue');
         assert(
-          (client.pathTemplates.featurePathTemplate.match as SinonStub)
+          (client.pathTemplates.featureGroupPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('featureOnlineStore', () => {
+      const fakePath = '/rendered/path/featureOnlineStore';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        feature_online_store: 'featureOnlineStoreValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.featureOnlineStorePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.featureOnlineStorePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('featureOnlineStorePath', () => {
+        const result = client.featureOnlineStorePath(
+          'projectValue',
+          'locationValue',
+          'featureOnlineStoreValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.featureOnlineStorePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromFeatureOnlineStoreName', () => {
+        const result = client.matchProjectFromFeatureOnlineStoreName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.featureOnlineStorePathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchEntityTypeFromFeatureName', () => {
-        const result = client.matchEntityTypeFromFeatureName(fakePath);
-        assert.strictEqual(result, 'entityTypeValue');
+      it('matchLocationFromFeatureOnlineStoreName', () => {
+        const result = client.matchLocationFromFeatureOnlineStoreName(fakePath);
+        assert.strictEqual(result, 'locationValue');
         assert(
-          (client.pathTemplates.featurePathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.featureOnlineStorePathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
       });
 
-      it('matchFeatureFromFeatureName', () => {
-        const result = client.matchFeatureFromFeatureName(fakePath);
-        assert.strictEqual(result, 'featureValue');
+      it('matchFeatureOnlineStoreFromFeatureOnlineStoreName', () => {
+        const result =
+          client.matchFeatureOnlineStoreFromFeatureOnlineStoreName(fakePath);
+        assert.strictEqual(result, 'featureOnlineStoreValue');
         assert(
-          (client.pathTemplates.featurePathTemplate.match as SinonStub)
+          (
+            client.pathTemplates.featureOnlineStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('featureView', () => {
+      const fakePath = '/rendered/path/featureView';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        feature_online_store: 'featureOnlineStoreValue',
+        feature_view: 'featureViewValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.featureViewPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.featureViewPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('featureViewPath', () => {
+        const result = client.featureViewPath(
+          'projectValue',
+          'locationValue',
+          'featureOnlineStoreValue',
+          'featureViewValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.featureViewPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromFeatureViewName', () => {
+        const result = client.matchProjectFromFeatureViewName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.featureViewPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromFeatureViewName', () => {
+        const result = client.matchLocationFromFeatureViewName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.featureViewPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureOnlineStoreFromFeatureViewName', () => {
+        const result =
+          client.matchFeatureOnlineStoreFromFeatureViewName(fakePath);
+        assert.strictEqual(result, 'featureOnlineStoreValue');
+        assert(
+          (client.pathTemplates.featureViewPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureViewFromFeatureViewName', () => {
+        const result = client.matchFeatureViewFromFeatureViewName(fakePath);
+        assert.strictEqual(result, 'featureViewValue');
+        assert(
+          (client.pathTemplates.featureViewPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('featureViewSync', () => {
+      const fakePath = '/rendered/path/featureViewSync';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        feature_online_store: 'featureOnlineStoreValue',
+        feature_view: 'featureViewValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.featureViewSyncPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.featureViewSyncPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('featureViewSyncPath', () => {
+        const result = client.featureViewSyncPath(
+          'projectValue',
+          'locationValue',
+          'featureOnlineStoreValue',
+          'featureViewValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.featureViewSyncPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromFeatureViewSyncName', () => {
+        const result = client.matchProjectFromFeatureViewSyncName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.featureViewSyncPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromFeatureViewSyncName', () => {
+        const result = client.matchLocationFromFeatureViewSyncName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.featureViewSyncPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureOnlineStoreFromFeatureViewSyncName', () => {
+        const result =
+          client.matchFeatureOnlineStoreFromFeatureViewSyncName(fakePath);
+        assert.strictEqual(result, 'featureOnlineStoreValue');
+        assert(
+          (client.pathTemplates.featureViewSyncPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureViewFromFeatureViewSyncName', () => {
+        const result = client.matchFeatureViewFromFeatureViewSyncName(fakePath);
+        assert.strictEqual(result, 'featureViewValue');
+        assert(
+          (client.pathTemplates.featureViewSyncPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );
@@ -2878,6 +4626,310 @@ describe('v1.PredictionServiceClient', () => {
       });
     });
 
+    describe('notebookExecutionJob', () => {
+      const fakePath = '/rendered/path/notebookExecutionJob';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        notebook_execution_job: 'notebookExecutionJobValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.notebookExecutionJobPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.notebookExecutionJobPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('notebookExecutionJobPath', () => {
+        const result = client.notebookExecutionJobPath(
+          'projectValue',
+          'locationValue',
+          'notebookExecutionJobValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.notebookExecutionJobPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromNotebookExecutionJobName', () => {
+        const result =
+          client.matchProjectFromNotebookExecutionJobName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.notebookExecutionJobPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromNotebookExecutionJobName', () => {
+        const result =
+          client.matchLocationFromNotebookExecutionJobName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.notebookExecutionJobPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchNotebookExecutionJobFromNotebookExecutionJobName', () => {
+        const result =
+          client.matchNotebookExecutionJobFromNotebookExecutionJobName(
+            fakePath
+          );
+        assert.strictEqual(result, 'notebookExecutionJobValue');
+        assert(
+          (
+            client.pathTemplates.notebookExecutionJobPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('notebookRuntime', () => {
+      const fakePath = '/rendered/path/notebookRuntime';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        notebook_runtime: 'notebookRuntimeValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.notebookRuntimePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.notebookRuntimePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('notebookRuntimePath', () => {
+        const result = client.notebookRuntimePath(
+          'projectValue',
+          'locationValue',
+          'notebookRuntimeValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.notebookRuntimePathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromNotebookRuntimeName', () => {
+        const result = client.matchProjectFromNotebookRuntimeName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.notebookRuntimePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromNotebookRuntimeName', () => {
+        const result = client.matchLocationFromNotebookRuntimeName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.notebookRuntimePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchNotebookRuntimeFromNotebookRuntimeName', () => {
+        const result =
+          client.matchNotebookRuntimeFromNotebookRuntimeName(fakePath);
+        assert.strictEqual(result, 'notebookRuntimeValue');
+        assert(
+          (client.pathTemplates.notebookRuntimePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('notebookRuntimeTemplate', () => {
+      const fakePath = '/rendered/path/notebookRuntimeTemplate';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        notebook_runtime_template: 'notebookRuntimeTemplateValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.notebookRuntimeTemplatePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.notebookRuntimeTemplatePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('notebookRuntimeTemplatePath', () => {
+        const result = client.notebookRuntimeTemplatePath(
+          'projectValue',
+          'locationValue',
+          'notebookRuntimeTemplateValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.notebookRuntimeTemplatePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromNotebookRuntimeTemplateName', () => {
+        const result =
+          client.matchProjectFromNotebookRuntimeTemplateName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.notebookRuntimeTemplatePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromNotebookRuntimeTemplateName', () => {
+        const result =
+          client.matchLocationFromNotebookRuntimeTemplateName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.notebookRuntimeTemplatePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchNotebookRuntimeTemplateFromNotebookRuntimeTemplateName', () => {
+        const result =
+          client.matchNotebookRuntimeTemplateFromNotebookRuntimeTemplateName(
+            fakePath
+          );
+        assert.strictEqual(result, 'notebookRuntimeTemplateValue');
+        assert(
+          (
+            client.pathTemplates.notebookRuntimeTemplatePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('persistentResource', () => {
+      const fakePath = '/rendered/path/persistentResource';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        persistent_resource: 'persistentResourceValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.persistentResourcePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.persistentResourcePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('persistentResourcePath', () => {
+        const result = client.persistentResourcePath(
+          'projectValue',
+          'locationValue',
+          'persistentResourceValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.persistentResourcePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromPersistentResourceName', () => {
+        const result = client.matchProjectFromPersistentResourceName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.persistentResourcePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromPersistentResourceName', () => {
+        const result = client.matchLocationFromPersistentResourceName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.persistentResourcePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchPersistentResourceFromPersistentResourceName', () => {
+        const result =
+          client.matchPersistentResourceFromPersistentResourceName(fakePath);
+        assert.strictEqual(result, 'persistentResourceValue');
+        assert(
+          (
+            client.pathTemplates.persistentResourcePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('pipelineJob', () => {
       const fakePath = '/rendered/path/pipelineJob';
       const expectedParameters = {
@@ -3013,6 +5065,233 @@ describe('v1.PredictionServiceClient', () => {
         assert(
           (
             client.pathTemplates.projectLocationEndpointPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationFeatureGroupFeature', () => {
+      const fakePath = '/rendered/path/projectLocationFeatureGroupFeature';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        feature_group: 'featureGroupValue',
+        feature: 'featureValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationFeatureGroupFeaturePath', () => {
+        const result = client.projectLocationFeatureGroupFeaturePath(
+          'projectValue',
+          'locationValue',
+          'featureGroupValue',
+          'featureValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationFeatureGroupFeatureName', () => {
+        const result =
+          client.matchProjectFromProjectLocationFeatureGroupFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationFeatureGroupFeatureName', () => {
+        const result =
+          client.matchLocationFromProjectLocationFeatureGroupFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureGroupFromProjectLocationFeatureGroupFeatureName', () => {
+        const result =
+          client.matchFeatureGroupFromProjectLocationFeatureGroupFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'featureGroupValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureFromProjectLocationFeatureGroupFeatureName', () => {
+        const result =
+          client.matchFeatureFromProjectLocationFeatureGroupFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'featureValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationFeaturestoreEntityTypeFeature', () => {
+      const fakePath =
+        '/rendered/path/projectLocationFeaturestoreEntityTypeFeature';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        featurestore: 'featurestoreValue',
+        entity_type: 'entityTypeValue',
+        feature: 'featureValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationFeaturestoreEntityTypeFeaturePath', () => {
+        const result = client.projectLocationFeaturestoreEntityTypeFeaturePath(
+          'projectValue',
+          'locationValue',
+          'featurestoreValue',
+          'entityTypeValue',
+          'featureValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationFeaturestoreEntityTypeFeaturePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationFeaturestoreEntityTypeFeatureName', () => {
+        const result =
+          client.matchProjectFromProjectLocationFeaturestoreEntityTypeFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationFeaturestoreEntityTypeFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationFeaturestoreEntityTypeFeatureName', () => {
+        const result =
+          client.matchLocationFromProjectLocationFeaturestoreEntityTypeFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationFeaturestoreEntityTypeFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeaturestoreFromProjectLocationFeaturestoreEntityTypeFeatureName', () => {
+        const result =
+          client.matchFeaturestoreFromProjectLocationFeaturestoreEntityTypeFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'featurestoreValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationFeaturestoreEntityTypeFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchEntityTypeFromProjectLocationFeaturestoreEntityTypeFeatureName', () => {
+        const result =
+          client.matchEntityTypeFromProjectLocationFeaturestoreEntityTypeFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'entityTypeValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationFeaturestoreEntityTypeFeaturePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFeatureFromProjectLocationFeaturestoreEntityTypeFeatureName', () => {
+        const result =
+          client.matchFeatureFromProjectLocationFeaturestoreEntityTypeFeatureName(
+            fakePath
+          );
+        assert.strictEqual(result, 'featureValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationFeaturestoreEntityTypeFeaturePathTemplate
               .match as SinonStub
           )
             .getCall(-1)
@@ -3236,6 +5515,70 @@ describe('v1.PredictionServiceClient', () => {
         assert.strictEqual(result, 'savedQueryValue');
         assert(
           (client.pathTemplates.savedQueryPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('schedule', () => {
+      const fakePath = '/rendered/path/schedule';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        schedule: 'scheduleValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.schedulePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.schedulePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('schedulePath', () => {
+        const result = client.schedulePath(
+          'projectValue',
+          'locationValue',
+          'scheduleValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.schedulePathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromScheduleName', () => {
+        const result = client.matchProjectFromScheduleName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.schedulePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromScheduleName', () => {
+        const result = client.matchLocationFromScheduleName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.schedulePathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchScheduleFromScheduleName', () => {
+        const result = client.matchScheduleFromScheduleName(fakePath);
+        assert.strictEqual(result, 'scheduleValue');
+        assert(
+          (client.pathTemplates.schedulePathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );
@@ -3882,6 +6225,70 @@ describe('v1.PredictionServiceClient', () => {
         assert.strictEqual(result, 'trialValue');
         assert(
           (client.pathTemplates.trialPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('tuningJob', () => {
+      const fakePath = '/rendered/path/tuningJob';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        tuning_job: 'tuningJobValue',
+      };
+      const client = new predictionserviceModule.v1.PredictionServiceClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.tuningJobPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.tuningJobPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('tuningJobPath', () => {
+        const result = client.tuningJobPath(
+          'projectValue',
+          'locationValue',
+          'tuningJobValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.tuningJobPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromTuningJobName', () => {
+        const result = client.matchProjectFromTuningJobName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.tuningJobPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromTuningJobName', () => {
+        const result = client.matchLocationFromTuningJobName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.tuningJobPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTuningJobFromTuningJobName', () => {
+        const result = client.matchTuningJobFromTuningJobName(fakePath);
+        assert.strictEqual(result, 'tuningJobValue');
+        assert(
+          (client.pathTemplates.tuningJobPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );

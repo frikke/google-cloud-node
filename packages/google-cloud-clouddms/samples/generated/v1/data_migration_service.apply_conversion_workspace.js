@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,19 @@ function main(name) {
    */
   // const filter = 'abc123'
   /**
-   *  Fully qualified (Uri) name of the destination connection profile.
+   *  Optional. Only validates the apply process, but doesn't change the
+   *  destination database. Only works for PostgreSQL destination connection
+   *  profile.
+   */
+  // const dryRun = true
+  /**
+   *  Optional. Specifies whether the conversion workspace is to be committed
+   *  automatically after the apply.
+   */
+  // const autoCommit = true
+  /**
+   *  Optional. Fully qualified (Uri) name of the destination connection
+   *  profile.
    */
   // const connectionProfile = 'abc123'
 

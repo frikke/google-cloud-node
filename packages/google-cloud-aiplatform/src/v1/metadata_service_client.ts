@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/metadata_service_client_config.json`.
@@ -56,6 +57,8 @@ export class MetadataServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -99,8 +102,7 @@ export class MetadataServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -108,7 +110,7 @@ export class MetadataServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new MetadataServiceClient({fallback: 'rest'}, gax);
+   *     const client = new MetadataServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -117,8 +119,27 @@ export class MetadataServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof MetadataServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'aiplatform.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -129,8 +150,11 @@ export class MetadataServiceClient {
       (typeof window !== 'undefined' && typeof window?.fetch === 'function');
     opts = Object.assign({servicePath, port, clientConfig, fallback}, opts);
 
+    // Request numeric enum values if REST transport is used.
+    opts.numericEnums = true;
+
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -155,10 +179,10 @@ export class MetadataServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -170,14 +194,14 @@ export class MetadataServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -217,14 +241,29 @@ export class MetadataServiceClient {
       datasetPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/datasets/{dataset}'
       ),
+      datasetVersionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/datasets/{dataset}/datasetVersions/{dataset_version}'
+      ),
+      deploymentResourcePoolPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}'
+      ),
       entityTypePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}'
       ),
       executionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/metadataStores/{metadata_store}/executions/{execution}'
       ),
-      featurePathTemplate: new this._gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}'
+      featureGroupPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureGroups/{feature_group}'
+      ),
+      featureOnlineStorePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}'
+      ),
+      featureViewPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}/featureViews/{feature_view}'
+      ),
+      featureViewSyncPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}/featureViews/{feature_view}/featureViewSyncs/feature_view_sync'
       ),
       featurestorePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/featurestores/{featurestore}'
@@ -266,6 +305,18 @@ export class MetadataServiceClient {
       nasTrialDetailPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/nasJobs/{nas_job}/nasTrialDetails/{nas_trial_detail}'
       ),
+      notebookExecutionJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookExecutionJobs/{notebook_execution_job}'
+      ),
+      notebookRuntimePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookRuntimes/{notebook_runtime}'
+      ),
+      notebookRuntimeTemplatePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookRuntimeTemplates/{notebook_runtime_template}'
+      ),
+      persistentResourcePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/persistentResources/{persistent_resource}'
+      ),
       pipelineJobPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}'
       ),
@@ -275,6 +326,14 @@ export class MetadataServiceClient {
       projectLocationEndpointPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/endpoints/{endpoint}'
       ),
+      projectLocationFeatureGroupFeaturePathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/featureGroups/{feature_group}/features/{feature}'
+        ),
+      projectLocationFeaturestoreEntityTypeFeaturePathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}'
+        ),
       projectLocationPublisherModelPathTemplate:
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/publishers/{publisher}/models/{model}'
@@ -284,6 +343,9 @@ export class MetadataServiceClient {
       ),
       savedQueryPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/datasets/{dataset}/savedQueries/{saved_query}'
+      ),
+      schedulePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/schedules/{schedule}'
       ),
       specialistPoolPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/specialistPools/{specialist_pool}'
@@ -308,6 +370,9 @@ export class MetadataServiceClient {
       ),
       trialPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/studies/{study}/trials/{trial}'
+      ),
+      tuningJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/tuningJobs/{tuning_job}'
       ),
     };
 
@@ -350,7 +415,7 @@ export class MetadataServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -371,6 +436,18 @@ export class MetadataServiceClient {
               post: '/v1/{resource=projects/*/locations/*/featurestores/*/entityTypes/*}:getIamPolicy',
             },
             {
+              post: '/v1/{resource=projects/*/locations/*/models/*}:getIamPolicy',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:getIamPolicy',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*}:getIamPolicy',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:getIamPolicy',
+            },
+            {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:getIamPolicy',
             },
             {
@@ -385,6 +462,15 @@ export class MetadataServiceClient {
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:getIamPolicy',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/publishers/*/models/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:getIamPolicy',
+            },
           ],
         },
         {
@@ -394,6 +480,22 @@ export class MetadataServiceClient {
           additional_bindings: [
             {
               post: '/v1/{resource=projects/*/locations/*/featurestores/*/entityTypes/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/models/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:setIamPolicy',
               body: '*',
             },
             {
@@ -416,6 +518,14 @@ export class MetadataServiceClient {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:setIamPolicy',
               body: '*',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:setIamPolicy',
+              body: '*',
+            },
           ],
         },
         {
@@ -424,6 +534,18 @@ export class MetadataServiceClient {
           additional_bindings: [
             {
               post: '/v1/{resource=projects/*/locations/*/featurestores/*/entityTypes/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/models/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*}:testIamPermissions',
+            },
+            {
+              post: '/v1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:testIamPermissions',
             },
             {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:testIamPermissions',
@@ -440,12 +562,24 @@ export class MetadataServiceClient {
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:testIamPermissions',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:testIamPermissions',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:testIamPermissions',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.CancelOperation',
           post: '/ui/{name=projects/*/locations/*/operations/*}:cancel',
           additional_bindings: [
+            {
+              post: '/ui/{name=projects/*/locations/*/agents/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/apps/*/operations/*}:cancel',
+            },
             {
               post: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}:cancel',
             },
@@ -471,6 +605,12 @@ export class MetadataServiceClient {
               post: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}:cancel',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}:cancel',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}:cancel',
             },
             {
@@ -489,10 +629,25 @@ export class MetadataServiceClient {
               post: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:cancel',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}:cancel',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:cancel',
@@ -508,6 +663,18 @@ export class MetadataServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/studies/*/operations/*}:cancel',
@@ -580,10 +747,25 @@ export class MetadataServiceClient {
               post: '/v1/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:cancel',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/tuningJobs/*/operations/*}:cancel',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/indexes/*/operations/*}:cancel',
             },
             {
               post: '/v1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:cancel',
             },
             {
               post: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:cancel',
@@ -598,6 +780,18 @@ export class MetadataServiceClient {
               post: '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/studies/*/operations/*}:cancel',
             },
             {
@@ -608,6 +802,9 @@ export class MetadataServiceClient {
             },
             {
               post: '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/schedules/*/operations/*}:cancel',
             },
             {
               post: '/v1/{name=projects/*/locations/*/specialistPools/*/operations/*}:cancel',
@@ -630,6 +827,8 @@ export class MetadataServiceClient {
           selector: 'google.longrunning.Operations.DeleteOperation',
           delete: '/ui/{name=projects/*/locations/*/operations/*}',
           additional_bindings: [
+            {delete: '/ui/{name=projects/*/locations/*/agents/*/operations/*}'},
+            {delete: '/ui/{name=projects/*/locations/*/apps/*/operations/*}'},
             {
               delete:
                 '/ui/{name=projects/*/locations/*/datasets/*/operations/*}',
@@ -661,6 +860,14 @@ export class MetadataServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/extensions/*}/operations',
             },
             {
               delete:
@@ -696,6 +903,22 @@ export class MetadataServiceClient {
             },
             {
               delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
+            },
+            {
+              delete:
                 '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
             },
             {
@@ -710,6 +933,22 @@ export class MetadataServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}',
             },
             {
               delete:
@@ -750,6 +989,22 @@ export class MetadataServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
             },
             {delete: '/v1/{name=projects/*/locations/*/operations/*}'},
             {
@@ -814,6 +1069,22 @@ export class MetadataServiceClient {
             },
             {
               delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
             },
             {
@@ -824,6 +1095,18 @@ export class MetadataServiceClient {
             {
               delete:
                 '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
             },
             {
               delete:
@@ -839,7 +1122,15 @@ export class MetadataServiceClient {
             },
             {
               delete:
+                '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/schedules/*/operations/*}',
             },
             {
               delete:
@@ -861,12 +1152,30 @@ export class MetadataServiceClient {
               delete:
                 '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
             },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.GetOperation',
           get: '/ui/{name=projects/*/locations/*/operations/*}',
           additional_bindings: [
+            {get: '/ui/{name=projects/*/locations/*/agents/*/operations/*}'},
+            {get: '/ui/{name=projects/*/locations/*/apps/*/operations/*}'},
             {get: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/datasets/*/dataItems/*/operations/*}',
@@ -891,6 +1200,12 @@ export class MetadataServiceClient {
             },
             {get: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}'},
             {
+              get: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}',
+            },
+            {
               get: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}',
             },
             {
@@ -908,9 +1223,24 @@ export class MetadataServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}',
+            },
             {get: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
             },
             {
               get: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
@@ -924,6 +1254,18 @@ export class MetadataServiceClient {
             {get: '/ui/{name=projects/*/locations/*/models/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}',
             },
             {get: '/ui/{name=projects/*/locations/*/studies/*/operations/*}'},
             {
@@ -950,6 +1292,18 @@ export class MetadataServiceClient {
             },
             {
               get: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
             },
             {get: '/v1/{name=projects/*/locations/*/operations/*}'},
             {get: '/v1/{name=projects/*/locations/*/datasets/*/operations/*}'},
@@ -987,9 +1341,24 @@ export class MetadataServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/tuningJobs/*/operations/*}',
+            },
             {get: '/v1/{name=projects/*/locations/*/indexes/*/operations/*}'},
             {
               get: '/v1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
             },
             {
               get: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
@@ -1001,6 +1370,15 @@ export class MetadataServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
             {get: '/v1/{name=projects/*/locations/*/studies/*/operations/*}'},
             {
               get: '/v1/{name=projects/*/locations/*/studies/*/trials/*/operations/*}',
@@ -1009,8 +1387,12 @@ export class MetadataServiceClient {
               get: '/v1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}',
             },
             {
+              get: '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}',
+            },
+            {
               get: '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}',
             },
+            {get: '/v1/{name=projects/*/locations/*/schedules/*/operations/*}'},
             {
               get: '/v1/{name=projects/*/locations/*/specialistPools/*/operations/*}',
             },
@@ -1026,12 +1408,26 @@ export class MetadataServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.ListOperations',
           get: '/ui/{name=projects/*/locations/*}/operations',
           additional_bindings: [
+            {get: '/ui/{name=projects/*/locations/*/agents/*}/operations'},
+            {get: '/ui/{name=projects/*/locations/*/apps/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/datasets/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/datasets/*/dataItems/*}/operations',
@@ -1051,6 +1447,10 @@ export class MetadataServiceClient {
             {get: '/ui/{name=projects/*/locations/*/edgeDevices/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/endpoints/*}/operations'},
             {
+              get: '/ui/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {get: '/ui/{name=projects/*/locations/*/extensions/*}/operations'},
+            {
               get: '/ui/{name=projects/*/locations/*/featurestores/*}/operations',
             },
             {
@@ -1066,9 +1466,22 @@ export class MetadataServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*}/operations',
             },
+            {get: '/ui/{name=projects/*/locations/*/tuningJobs/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/indexes/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/indexEndpoints/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*}/operations',
@@ -1083,12 +1496,24 @@ export class MetadataServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/models/*/evaluations/*}/operations',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimes/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*}/operations',
+            },
             {get: '/ui/{name=projects/*/locations/*/studies/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/studies/*/trials/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/trainingPipelines/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/persistentResources/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/pipelineJobs/*}/operations',
@@ -1108,6 +1533,18 @@ export class MetadataServiceClient {
             },
             {
               get: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
             },
             {get: '/v1/{name=projects/*/locations/*}/operations'},
             {get: '/v1/{name=projects/*/locations/*/datasets/*}/operations'},
@@ -1143,9 +1580,22 @@ export class MetadataServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/hyperparameterTuningJobs/*}/operations',
             },
+            {get: '/v1/{name=projects/*/locations/*/tuningJobs/*}/operations'},
             {get: '/v1/{name=projects/*/locations/*/indexes/*}/operations'},
             {
               get: '/v1/{name=projects/*/locations/*/indexEndpoints/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*}/operations',
             },
             {
               get: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*}/operations',
@@ -1157,6 +1607,15 @@ export class MetadataServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/models/*/evaluations/*}/operations',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimes/*}/operations',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*}/operations',
+            },
             {get: '/v1/{name=projects/*/locations/*/studies/*}/operations'},
             {
               get: '/v1/{name=projects/*/locations/*/studies/*/trials/*}/operations',
@@ -1165,8 +1624,12 @@ export class MetadataServiceClient {
               get: '/v1/{name=projects/*/locations/*/trainingPipelines/*}/operations',
             },
             {
+              get: '/v1/{name=projects/*/locations/*/persistentResources/*}/operations',
+            },
+            {
               get: '/v1/{name=projects/*/locations/*/pipelineJobs/*}/operations',
             },
+            {get: '/v1/{name=projects/*/locations/*/schedules/*}/operations'},
             {
               get: '/v1/{name=projects/*/locations/*/specialistPools/*}/operations',
             },
@@ -1182,12 +1645,30 @@ export class MetadataServiceClient {
             {
               get: '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*}/operations',
             },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              get: '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.WaitOperation',
           post: '/ui/{name=projects/*/locations/*/operations/*}:wait',
           additional_bindings: [
+            {
+              post: '/ui/{name=projects/*/locations/*/agents/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/apps/*/operations/*}:wait',
+            },
             {
               post: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}:wait',
             },
@@ -1213,6 +1694,12 @@ export class MetadataServiceClient {
               post: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}:wait',
             },
             {
@@ -1231,10 +1718,25 @@ export class MetadataServiceClient {
               post: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:wait',
@@ -1252,6 +1754,15 @@ export class MetadataServiceClient {
               post: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/studies/*/operations/*}:wait',
             },
             {
@@ -1259,6 +1770,9 @@ export class MetadataServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:wait',
@@ -1280,6 +1794,18 @@ export class MetadataServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
             },
             {post: '/v1/{name=projects/*/locations/*/operations/*}:wait'},
             {
@@ -1328,6 +1854,18 @@ export class MetadataServiceClient {
               post: '/v1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:wait',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:wait',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:wait',
             },
             {
@@ -1340,6 +1878,15 @@ export class MetadataServiceClient {
               post: '/v1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:wait',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/studies/*/operations/*}:wait',
             },
             {
@@ -1349,7 +1896,13 @@ export class MetadataServiceClient {
               post: '/v1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:wait',
             },
             {
+              post: '/v1/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait',
+            },
+            {
               post: '/v1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/schedules/*/operations/*}:wait',
             },
             {
               post: '/v1/{name=projects/*/locations/*/specialistPools/*/operations/*}:wait',
@@ -1365,6 +1918,18 @@ export class MetadataServiceClient {
             },
             {
               post: '/v1/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              post: '/v1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
             },
           ],
         },
@@ -1582,19 +2147,50 @@ export class MetadataServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'aiplatform.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'aiplatform.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -1645,9 +2241,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.MetadataStore | MetadataStore}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.MetadataStore|MetadataStore}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.get_metadata_store.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_GetMetadataStore_async
@@ -1659,7 +2254,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataStore,
       protos.google.cloud.aiplatform.v1.IGetMetadataStoreRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getMetadataStore(
@@ -1705,7 +2300,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataStore,
       protos.google.cloud.aiplatform.v1.IGetMetadataStoreRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1742,16 +2337,15 @@ export class MetadataServiceClient {
    *   The {artifact} portion of the resource name with the format:
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/artifacts/{artifact}`
    *   If not provided, the Artifact's ID will be a UUID generated by the service.
-   *   Must be 4-128 characters in length. Valid characters are `/{@link 0-9|a-z}-/`.
+   *   Must be 4-128 characters in length. Valid characters are `/{@link protos.0-9|a-z}-/`.
    *   Must be unique across all Artifacts in the parent MetadataStore. (Otherwise
    *   the request will fail with ALREADY_EXISTS, or PERMISSION_DENIED if the
    *   caller can't view the preexisting Artifact.)
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Artifact | Artifact}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.create_artifact.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_CreateArtifact_async
@@ -1763,7 +2357,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact,
       protos.google.cloud.aiplatform.v1.ICreateArtifactRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createArtifact(
@@ -1809,7 +2403,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact,
       protos.google.cloud.aiplatform.v1.ICreateArtifactRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1842,9 +2436,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Artifact | Artifact}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.get_artifact.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_GetArtifact_async
@@ -1856,7 +2449,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact,
       protos.google.cloud.aiplatform.v1.IGetArtifactRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getArtifact(
@@ -1896,7 +2489,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact,
       protos.google.cloud.aiplatform.v1.IGetArtifactRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1924,21 +2517,20 @@ export class MetadataServiceClient {
    *   The request object that will be sent.
    * @param {google.cloud.aiplatform.v1.Artifact} request.artifact
    *   Required. The Artifact containing updates.
-   *   The Artifact's {@link google.cloud.aiplatform.v1.Artifact.name|Artifact.name}
+   *   The Artifact's {@link protos.google.cloud.aiplatform.v1.Artifact.name|Artifact.name}
    *   field is used to identify the Artifact to be updated. Format:
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/artifacts/{artifact}`
    * @param {google.protobuf.FieldMask} [request.updateMask]
    *   Optional. A FieldMask indicating which fields should be updated.
    * @param {boolean} request.allowMissing
-   *   If set to true, and the {@link google.cloud.aiplatform.v1.Artifact|Artifact} is
-   *   not found, a new {@link google.cloud.aiplatform.v1.Artifact|Artifact} is
+   *   If set to true, and the {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact} is
+   *   not found, a new {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact} is
    *   created.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Artifact | Artifact}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.update_artifact.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_UpdateArtifact_async
@@ -1950,7 +2542,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact,
       protos.google.cloud.aiplatform.v1.IUpdateArtifactRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateArtifact(
@@ -1996,7 +2588,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact,
       protos.google.cloud.aiplatform.v1.IUpdateArtifactRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2032,16 +2624,15 @@ export class MetadataServiceClient {
    *   The {context} portion of the resource name with the format:
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/contexts/{context}`.
    *   If not provided, the Context's ID will be a UUID generated by the service.
-   *   Must be 4-128 characters in length. Valid characters are `/{@link 0-9|a-z}-/`.
+   *   Must be 4-128 characters in length. Valid characters are `/{@link protos.0-9|a-z}-/`.
    *   Must be unique across all Contexts in the parent MetadataStore. (Otherwise
    *   the request will fail with ALREADY_EXISTS, or PERMISSION_DENIED if the
    *   caller can't view the preexisting Context.)
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Context | Context}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Context|Context}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.create_context.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_CreateContext_async
@@ -2053,7 +2644,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext,
       protos.google.cloud.aiplatform.v1.ICreateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createContext(
@@ -2099,7 +2690,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext,
       protos.google.cloud.aiplatform.v1.ICreateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2132,9 +2723,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Context | Context}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Context|Context}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.get_context.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_GetContext_async
@@ -2146,7 +2736,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext,
       protos.google.cloud.aiplatform.v1.IGetContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getContext(
@@ -2186,7 +2776,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext,
       protos.google.cloud.aiplatform.v1.IGetContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2214,20 +2804,19 @@ export class MetadataServiceClient {
    *   The request object that will be sent.
    * @param {google.cloud.aiplatform.v1.Context} request.context
    *   Required. The Context containing updates.
-   *   The Context's {@link google.cloud.aiplatform.v1.Context.name|Context.name} field
+   *   The Context's {@link protos.google.cloud.aiplatform.v1.Context.name|Context.name} field
    *   is used to identify the Context to be updated. Format:
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/contexts/{context}`
    * @param {google.protobuf.FieldMask} [request.updateMask]
    *   Optional. A FieldMask indicating which fields should be updated.
    * @param {boolean} request.allowMissing
-   *   If set to true, and the {@link google.cloud.aiplatform.v1.Context|Context} is
-   *   not found, a new {@link google.cloud.aiplatform.v1.Context|Context} is created.
+   *   If set to true, and the {@link protos.google.cloud.aiplatform.v1.Context|Context} is
+   *   not found, a new {@link protos.google.cloud.aiplatform.v1.Context|Context} is created.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Context | Context}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Context|Context}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.update_context.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_UpdateContext_async
@@ -2239,7 +2828,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext,
       protos.google.cloud.aiplatform.v1.IUpdateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateContext(
@@ -2285,7 +2874,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext,
       protos.google.cloud.aiplatform.v1.IUpdateContextRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2331,9 +2920,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.AddContextArtifactsAndExecutionsResponse | AddContextArtifactsAndExecutionsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.AddContextArtifactsAndExecutionsResponse|AddContextArtifactsAndExecutionsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.add_context_artifacts_and_executions.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_AddContextArtifactsAndExecutions_async
@@ -2348,7 +2936,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IAddContextArtifactsAndExecutionsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   addContextArtifactsAndExecutions(
@@ -2397,7 +2985,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IAddContextArtifactsAndExecutionsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2441,9 +3029,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.AddContextChildrenResponse | AddContextChildrenResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.AddContextChildrenResponse|AddContextChildrenResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.add_context_children.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_AddContextChildren_async
@@ -2455,7 +3042,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IAddContextChildrenResponse,
       protos.google.cloud.aiplatform.v1.IAddContextChildrenRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   addContextChildren(
@@ -2501,7 +3088,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IAddContextChildrenResponse,
       protos.google.cloud.aiplatform.v1.IAddContextChildrenRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2539,9 +3126,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.RemoveContextChildrenResponse | RemoveContextChildrenResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.RemoveContextChildrenResponse|RemoveContextChildrenResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.remove_context_children.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_RemoveContextChildren_async
@@ -2556,7 +3142,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IRemoveContextChildrenRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   removeContextChildren(
@@ -2605,7 +3191,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IRemoveContextChildrenRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2644,9 +3230,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.LineageSubgraph | LineageSubgraph}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.LineageSubgraph|LineageSubgraph}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.query_context_lineage_subgraph.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_QueryContextLineageSubgraph_async
@@ -2661,7 +3246,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IQueryContextLineageSubgraphRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   queryContextLineageSubgraph(
@@ -2710,7 +3295,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IQueryContextLineageSubgraphRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2752,16 +3337,15 @@ export class MetadataServiceClient {
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/executions/{execution}`
    *   If not provided, the Execution's ID will be a UUID generated by the
    *   service.
-   *   Must be 4-128 characters in length. Valid characters are `/{@link 0-9|a-z}-/`.
+   *   Must be 4-128 characters in length. Valid characters are `/{@link protos.0-9|a-z}-/`.
    *   Must be unique across all Executions in the parent MetadataStore.
    *   (Otherwise the request will fail with ALREADY_EXISTS, or PERMISSION_DENIED
    *   if the caller can't view the preexisting Execution.)
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Execution | Execution}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Execution|Execution}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.create_execution.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_CreateExecution_async
@@ -2773,7 +3357,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution,
       protos.google.cloud.aiplatform.v1.ICreateExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createExecution(
@@ -2819,7 +3403,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution,
       protos.google.cloud.aiplatform.v1.ICreateExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2852,9 +3436,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Execution | Execution}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Execution|Execution}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.get_execution.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_GetExecution_async
@@ -2866,7 +3449,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution,
       protos.google.cloud.aiplatform.v1.IGetExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getExecution(
@@ -2906,7 +3489,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution,
       protos.google.cloud.aiplatform.v1.IGetExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2934,21 +3517,20 @@ export class MetadataServiceClient {
    *   The request object that will be sent.
    * @param {google.cloud.aiplatform.v1.Execution} request.execution
    *   Required. The Execution containing updates.
-   *   The Execution's {@link google.cloud.aiplatform.v1.Execution.name|Execution.name}
+   *   The Execution's {@link protos.google.cloud.aiplatform.v1.Execution.name|Execution.name}
    *   field is used to identify the Execution to be updated. Format:
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/executions/{execution}`
    * @param {google.protobuf.FieldMask} [request.updateMask]
    *   Optional. A FieldMask indicating which fields should be updated.
    * @param {boolean} request.allowMissing
-   *   If set to true, and the {@link google.cloud.aiplatform.v1.Execution|Execution}
-   *   is not found, a new {@link google.cloud.aiplatform.v1.Execution|Execution} is
+   *   If set to true, and the {@link protos.google.cloud.aiplatform.v1.Execution|Execution}
+   *   is not found, a new {@link protos.google.cloud.aiplatform.v1.Execution|Execution} is
    *   created.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.Execution | Execution}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.Execution|Execution}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.update_execution.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_UpdateExecution_async
@@ -2960,7 +3542,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution,
       protos.google.cloud.aiplatform.v1.IUpdateExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateExecution(
@@ -3006,7 +3588,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution,
       protos.google.cloud.aiplatform.v1.IUpdateExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3045,9 +3627,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.AddExecutionEventsResponse | AddExecutionEventsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.AddExecutionEventsResponse|AddExecutionEventsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.add_execution_events.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_AddExecutionEvents_async
@@ -3059,7 +3640,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IAddExecutionEventsResponse,
       protos.google.cloud.aiplatform.v1.IAddExecutionEventsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   addExecutionEvents(
@@ -3105,7 +3686,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IAddExecutionEventsResponse,
       protos.google.cloud.aiplatform.v1.IAddExecutionEventsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3140,9 +3721,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.LineageSubgraph | LineageSubgraph}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.LineageSubgraph|LineageSubgraph}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.query_execution_inputs_and_outputs.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_QueryExecutionInputsAndOutputs_async
@@ -3157,7 +3737,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IQueryExecutionInputsAndOutputsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   queryExecutionInputsAndOutputs(
@@ -3206,7 +3786,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IQueryExecutionInputsAndOutputsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3247,16 +3827,15 @@ export class MetadataServiceClient {
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}/metadataSchemas/{metadataschema}`
    *   If not provided, the MetadataStore's ID will be a UUID generated by the
    *   service.
-   *   Must be 4-128 characters in length. Valid characters are `/{@link 0-9|a-z}-/`.
+   *   Must be 4-128 characters in length. Valid characters are `/{@link protos.0-9|a-z}-/`.
    *   Must be unique across all MetadataSchemas in the parent Location.
    *   (Otherwise the request will fail with ALREADY_EXISTS, or PERMISSION_DENIED
    *   if the caller can't view the preexisting MetadataSchema.)
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.MetadataSchema | MetadataSchema}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.MetadataSchema|MetadataSchema}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.create_metadata_schema.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_CreateMetadataSchema_async
@@ -3271,7 +3850,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.ICreateMetadataSchemaRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createMetadataSchema(
@@ -3320,7 +3899,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.ICreateMetadataSchemaRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3353,9 +3932,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.MetadataSchema | MetadataSchema}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.MetadataSchema|MetadataSchema}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.get_metadata_schema.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_GetMetadataSchema_async
@@ -3367,7 +3945,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataSchema,
       protos.google.cloud.aiplatform.v1.IGetMetadataSchemaRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getMetadataSchema(
@@ -3413,7 +3991,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataSchema,
       protos.google.cloud.aiplatform.v1.IGetMetadataSchemaRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3483,9 +4061,8 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1.LineageSubgraph | LineageSubgraph}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1.LineageSubgraph|LineageSubgraph}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.query_artifact_lineage_subgraph.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_QueryArtifactLineageSubgraph_async
@@ -3500,7 +4077,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IQueryArtifactLineageSubgraphRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   queryArtifactLineageSubgraph(
@@ -3549,7 +4126,7 @@ export class MetadataServiceClient {
         | protos.google.cloud.aiplatform.v1.IQueryArtifactLineageSubgraphRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3591,7 +4168,7 @@ export class MetadataServiceClient {
    *   `projects/{project}/locations/{location}/metadataStores/{metadatastore}`
    *   If not provided, the MetadataStore's ID will be a UUID generated by the
    *   service.
-   *   Must be 4-128 characters in length. Valid characters are `/{@link 0-9|a-z}-/`.
+   *   Must be 4-128 characters in length. Valid characters are `/{@link protos.0-9|a-z}-/`.
    *   Must be unique across all MetadataStores in the parent Location.
    *   (Otherwise the request will fail with ALREADY_EXISTS, or PERMISSION_DENIED
    *   if the caller can't view the preexisting MetadataStore.)
@@ -3601,8 +4178,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.create_metadata_store.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_CreateMetadataStore_async
@@ -3617,7 +4193,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.ICreateMetadataStoreOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createMetadataStore(
@@ -3670,7 +4246,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.ICreateMetadataStoreOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3697,8 +4273,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.create_metadata_store.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_CreateMetadataStore_async
@@ -3744,8 +4319,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_metadata_store.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteMetadataStore_async
@@ -3760,7 +4334,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteMetadataStoreOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteMetadataStore(
@@ -3813,7 +4387,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteMetadataStoreOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3840,8 +4414,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_metadata_store.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteMetadataStore_async
@@ -3888,8 +4461,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_artifact.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteArtifact_async
@@ -3904,7 +4476,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteArtifact(
@@ -3957,7 +4529,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3984,8 +4556,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_artifact.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteArtifact_async
@@ -4035,8 +4606,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.purge_artifacts.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_PurgeArtifacts_async
@@ -4051,7 +4621,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IPurgeArtifactsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   purgeArtifacts(
@@ -4104,7 +4674,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IPurgeArtifactsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4131,8 +4701,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.purge_artifacts.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_PurgeArtifacts_async
@@ -4182,8 +4751,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_context.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteContext_async
@@ -4198,7 +4766,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteContext(
@@ -4251,7 +4819,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4278,8 +4846,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_context.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteContext_async
@@ -4329,8 +4896,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.purge_contexts.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_PurgeContexts_async
@@ -4345,7 +4911,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IPurgeContextsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   purgeContexts(
@@ -4398,7 +4964,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IPurgeContextsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4425,8 +4991,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.purge_contexts.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_PurgeContexts_async
@@ -4473,8 +5038,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_execution.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteExecution_async
@@ -4489,7 +5053,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteExecution(
@@ -4542,7 +5106,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4569,8 +5133,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.delete_execution.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_DeleteExecution_async
@@ -4620,8 +5183,7 @@ export class MetadataServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.purge_executions.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_PurgeExecutions_async
@@ -4636,7 +5198,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IPurgeExecutionsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   purgeExecutions(
@@ -4689,7 +5251,7 @@ export class MetadataServiceClient {
         protos.google.cloud.aiplatform.v1.IPurgeExecutionsMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4716,8 +5278,7 @@ export class MetadataServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.purge_executions.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_PurgeExecutions_async
@@ -4760,7 +5321,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListMetadataStores|MetadataService.ListMetadataStores}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListMetadataStores|MetadataService.ListMetadataStores}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -4769,14 +5330,13 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1.MetadataStore | MetadataStore}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1.MetadataStore|MetadataStore}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listMetadataStoresAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMetadataStores(
@@ -4786,7 +5346,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataStore[],
       protos.google.cloud.aiplatform.v1.IListMetadataStoresRequest | null,
-      protos.google.cloud.aiplatform.v1.IListMetadataStoresResponse
+      protos.google.cloud.aiplatform.v1.IListMetadataStoresResponse,
     ]
   >;
   listMetadataStores(
@@ -4832,7 +5392,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataStore[],
       protos.google.cloud.aiplatform.v1.IListMetadataStoresRequest | null,
-      protos.google.cloud.aiplatform.v1.IListMetadataStoresResponse
+      protos.google.cloud.aiplatform.v1.IListMetadataStoresResponse,
     ]
   > | void {
     request = request || {};
@@ -4868,7 +5428,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListMetadataStores|MetadataService.ListMetadataStores}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListMetadataStores|MetadataService.ListMetadataStores}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -4877,13 +5437,12 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1.MetadataStore | MetadataStore} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1.MetadataStore|MetadataStore} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listMetadataStoresAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMetadataStoresStream(
@@ -4924,7 +5483,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListMetadataStores|MetadataService.ListMetadataStores}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListMetadataStores|MetadataService.ListMetadataStores}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -4933,12 +5492,11 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1.MetadataStore | MetadataStore}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataStore|MetadataStore}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.list_metadata_stores.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_ListMetadataStores_async
@@ -4978,7 +5536,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListArtifacts|MetadataService.ListArtifacts}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListArtifacts|MetadataService.ListArtifacts}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5026,14 +5584,13 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1.Artifact | Artifact}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listArtifactsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listArtifacts(
@@ -5043,7 +5600,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact[],
       protos.google.cloud.aiplatform.v1.IListArtifactsRequest | null,
-      protos.google.cloud.aiplatform.v1.IListArtifactsResponse
+      protos.google.cloud.aiplatform.v1.IListArtifactsResponse,
     ]
   >;
   listArtifacts(
@@ -5089,7 +5646,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IArtifact[],
       protos.google.cloud.aiplatform.v1.IListArtifactsRequest | null,
-      protos.google.cloud.aiplatform.v1.IListArtifactsResponse
+      protos.google.cloud.aiplatform.v1.IListArtifactsResponse,
     ]
   > | void {
     request = request || {};
@@ -5124,7 +5681,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListArtifacts|MetadataService.ListArtifacts}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListArtifacts|MetadataService.ListArtifacts}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5172,13 +5729,12 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1.Artifact | Artifact} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listArtifactsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listArtifactsStream(
@@ -5218,7 +5774,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListArtifacts|MetadataService.ListArtifacts}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListArtifacts|MetadataService.ListArtifacts}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5266,12 +5822,11 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1.Artifact | Artifact}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1.Artifact|Artifact}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.list_artifacts.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_ListArtifacts_async
@@ -5311,7 +5866,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListContexts|MetadataService.ListContexts}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListContexts|MetadataService.ListContexts}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5363,14 +5918,13 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1.Context | Context}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1.Context|Context}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listContextsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listContexts(
@@ -5380,7 +5934,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext[],
       protos.google.cloud.aiplatform.v1.IListContextsRequest | null,
-      protos.google.cloud.aiplatform.v1.IListContextsResponse
+      protos.google.cloud.aiplatform.v1.IListContextsResponse,
     ]
   >;
   listContexts(
@@ -5426,7 +5980,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IContext[],
       protos.google.cloud.aiplatform.v1.IListContextsRequest | null,
-      protos.google.cloud.aiplatform.v1.IListContextsResponse
+      protos.google.cloud.aiplatform.v1.IListContextsResponse,
     ]
   > | void {
     request = request || {};
@@ -5461,7 +6015,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListContexts|MetadataService.ListContexts}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListContexts|MetadataService.ListContexts}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5513,13 +6067,12 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1.Context | Context} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1.Context|Context} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listContextsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listContextsStream(
@@ -5559,7 +6112,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListContexts|MetadataService.ListContexts}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListContexts|MetadataService.ListContexts}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5611,12 +6164,11 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1.Context | Context}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1.Context|Context}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.list_contexts.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_ListContexts_async
@@ -5656,7 +6208,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListExecutions|MetadataService.ListExecutions}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListExecutions|MetadataService.ListExecutions}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5704,14 +6256,13 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1.Execution | Execution}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1.Execution|Execution}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listExecutionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listExecutions(
@@ -5721,7 +6272,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution[],
       protos.google.cloud.aiplatform.v1.IListExecutionsRequest | null,
-      protos.google.cloud.aiplatform.v1.IListExecutionsResponse
+      protos.google.cloud.aiplatform.v1.IListExecutionsResponse,
     ]
   >;
   listExecutions(
@@ -5767,7 +6318,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IExecution[],
       protos.google.cloud.aiplatform.v1.IListExecutionsRequest | null,
-      protos.google.cloud.aiplatform.v1.IListExecutionsResponse
+      protos.google.cloud.aiplatform.v1.IListExecutionsResponse,
     ]
   > | void {
     request = request || {};
@@ -5802,7 +6353,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListExecutions|MetadataService.ListExecutions}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListExecutions|MetadataService.ListExecutions}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5850,13 +6401,12 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1.Execution | Execution} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1.Execution|Execution} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listExecutionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listExecutionsStream(
@@ -5896,7 +6446,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListExecutions|MetadataService.ListExecutions}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListExecutions|MetadataService.ListExecutions}
    *   call. Provide this to retrieve the subsequent page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -5944,12 +6494,11 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1.Execution | Execution}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1.Execution|Execution}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.list_executions.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_ListExecutions_async
@@ -5990,7 +6539,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListMetadataSchemas|MetadataService.ListMetadataSchemas}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListMetadataSchemas|MetadataService.ListMetadataSchemas}
    *   call. Provide this to retrieve the next page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -6001,14 +6550,13 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1.MetadataSchema | MetadataSchema}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1.MetadataSchema|MetadataSchema}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listMetadataSchemasAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMetadataSchemas(
@@ -6018,7 +6566,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataSchema[],
       protos.google.cloud.aiplatform.v1.IListMetadataSchemasRequest | null,
-      protos.google.cloud.aiplatform.v1.IListMetadataSchemasResponse
+      protos.google.cloud.aiplatform.v1.IListMetadataSchemasResponse,
     ]
   >;
   listMetadataSchemas(
@@ -6064,7 +6612,7 @@ export class MetadataServiceClient {
     [
       protos.google.cloud.aiplatform.v1.IMetadataSchema[],
       protos.google.cloud.aiplatform.v1.IListMetadataSchemasRequest | null,
-      protos.google.cloud.aiplatform.v1.IListMetadataSchemasResponse
+      protos.google.cloud.aiplatform.v1.IListMetadataSchemasResponse,
     ]
   > | void {
     request = request || {};
@@ -6100,7 +6648,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListMetadataSchemas|MetadataService.ListMetadataSchemas}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListMetadataSchemas|MetadataService.ListMetadataSchemas}
    *   call. Provide this to retrieve the next page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -6111,13 +6659,12 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1.MetadataSchema | MetadataSchema} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1.MetadataSchema|MetadataSchema} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listMetadataSchemasAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMetadataSchemasStream(
@@ -6158,7 +6705,7 @@ export class MetadataServiceClient {
    *   Must be in range 1-1000, inclusive. Defaults to 100.
    * @param {string} request.pageToken
    *   A page token, received from a previous
-   *   {@link google.cloud.aiplatform.v1.MetadataService.ListMetadataSchemas|MetadataService.ListMetadataSchemas}
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataService.ListMetadataSchemas|MetadataService.ListMetadataSchemas}
    *   call. Provide this to retrieve the next page.
    *
    *   When paginating, all other provided parameters must match the call that
@@ -6169,12 +6716,11 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1.MetadataSchema | MetadataSchema}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1.MetadataSchema|MetadataSchema}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/metadata_service.list_metadata_schemas.js</caption>
    * region_tag:aiplatform_v1_generated_MetadataService_ListMetadataSchemas_async
@@ -6239,7 +6785,7 @@ export class MetadataServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -6260,8 +6806,7 @@ export class MetadataServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -6287,7 +6832,7 @@ export class MetadataServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -6308,8 +6853,7 @@ export class MetadataServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -6336,7 +6880,7 @@ export class MetadataServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -6351,8 +6895,7 @@ export class MetadataServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -6398,12 +6941,11 @@ export class MetadataServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -7186,6 +7728,146 @@ export class MetadataServiceClient {
   }
 
   /**
+   * Return a fully-qualified datasetVersion resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} dataset
+   * @param {string} dataset_version
+   * @returns {string} Resource name string.
+   */
+  datasetVersionPath(
+    project: string,
+    location: string,
+    dataset: string,
+    datasetVersion: string
+  ) {
+    return this.pathTemplates.datasetVersionPathTemplate.render({
+      project: project,
+      location: location,
+      dataset: dataset,
+      dataset_version: datasetVersion,
+    });
+  }
+
+  /**
+   * Parse the project from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).project;
+  }
+
+  /**
+   * Parse the location from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).location;
+  }
+
+  /**
+   * Parse the dataset from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the dataset.
+   */
+  matchDatasetFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).dataset;
+  }
+
+  /**
+   * Parse the dataset_version from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the dataset_version.
+   */
+  matchDatasetVersionFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).dataset_version;
+  }
+
+  /**
+   * Return a fully-qualified deploymentResourcePool resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} deployment_resource_pool
+   * @returns {string} Resource name string.
+   */
+  deploymentResourcePoolPath(
+    project: string,
+    location: string,
+    deploymentResourcePool: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.render({
+      project: project,
+      location: location,
+      deployment_resource_pool: deploymentResourcePool,
+    });
+  }
+
+  /**
+   * Parse the project from DeploymentResourcePool resource.
+   *
+   * @param {string} deploymentResourcePoolName
+   *   A fully-qualified path representing DeploymentResourcePool resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDeploymentResourcePoolName(
+    deploymentResourcePoolName: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.match(
+      deploymentResourcePoolName
+    ).project;
+  }
+
+  /**
+   * Parse the location from DeploymentResourcePool resource.
+   *
+   * @param {string} deploymentResourcePoolName
+   *   A fully-qualified path representing DeploymentResourcePool resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDeploymentResourcePoolName(
+    deploymentResourcePoolName: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.match(
+      deploymentResourcePoolName
+    ).location;
+  }
+
+  /**
+   * Parse the deployment_resource_pool from DeploymentResourcePool resource.
+   *
+   * @param {string} deploymentResourcePoolName
+   *   A fully-qualified path representing DeploymentResourcePool resource.
+   * @returns {string} A string representing the deployment_resource_pool.
+   */
+  matchDeploymentResourcePoolFromDeploymentResourcePoolName(
+    deploymentResourcePoolName: string
+  ) {
+    return this.pathTemplates.deploymentResourcePoolPathTemplate.match(
+      deploymentResourcePoolName
+    ).deployment_resource_pool;
+  }
+
+  /**
    * Return a fully-qualified entityType resource name string.
    *
    * @param {string} project
@@ -7328,86 +8010,262 @@ export class MetadataServiceClient {
   }
 
   /**
-   * Return a fully-qualified feature resource name string.
+   * Return a fully-qualified featureGroup resource name string.
    *
    * @param {string} project
    * @param {string} location
-   * @param {string} featurestore
-   * @param {string} entity_type
-   * @param {string} feature
+   * @param {string} feature_group
    * @returns {string} Resource name string.
    */
-  featurePath(
-    project: string,
-    location: string,
-    featurestore: string,
-    entityType: string,
-    feature: string
-  ) {
-    return this.pathTemplates.featurePathTemplate.render({
+  featureGroupPath(project: string, location: string, featureGroup: string) {
+    return this.pathTemplates.featureGroupPathTemplate.render({
       project: project,
       location: location,
-      featurestore: featurestore,
-      entity_type: entityType,
-      feature: feature,
+      feature_group: featureGroup,
     });
   }
 
   /**
-   * Parse the project from Feature resource.
+   * Parse the project from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
    * @returns {string} A string representing the project.
    */
-  matchProjectFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).project;
+  matchProjectFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .project;
   }
 
   /**
-   * Parse the location from Feature resource.
+   * Parse the location from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
    * @returns {string} A string representing the location.
    */
-  matchLocationFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).location;
+  matchLocationFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .location;
   }
 
   /**
-   * Parse the featurestore from Feature resource.
+   * Parse the feature_group from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the featurestore.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
+   * @returns {string} A string representing the feature_group.
    */
-  matchFeaturestoreFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName)
-      .featurestore;
+  matchFeatureGroupFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .feature_group;
   }
 
   /**
-   * Parse the entity_type from Feature resource.
+   * Return a fully-qualified featureOnlineStore resource name string.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the entity_type.
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @returns {string} Resource name string.
    */
-  matchEntityTypeFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName)
-      .entity_type;
+  featureOnlineStorePath(
+    project: string,
+    location: string,
+    featureOnlineStore: string
+  ) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+    });
   }
 
   /**
-   * Parse the feature from Feature resource.
+   * Parse the project from FeatureOnlineStore resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the feature.
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the project.
    */
-  matchFeatureFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).feature;
+  matchProjectFromFeatureOnlineStoreName(featureOnlineStoreName: string) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureOnlineStoreName(featureOnlineStoreName: string) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureOnlineStoreName(
+    featureOnlineStoreName: string
+  ) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).feature_online_store;
+  }
+
+  /**
+   * Return a fully-qualified featureView resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @param {string} feature_view
+   * @returns {string} Resource name string.
+   */
+  featureViewPath(
+    project: string,
+    location: string,
+    featureOnlineStore: string,
+    featureView: string
+  ) {
+    return this.pathTemplates.featureViewPathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+      feature_view: featureView,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .project;
+  }
+
+  /**
+   * Parse the location from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .feature_online_store;
+  }
+
+  /**
+   * Parse the feature_view from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the feature_view.
+   */
+  matchFeatureViewFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .feature_view;
+  }
+
+  /**
+   * Return a fully-qualified featureViewSync resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @param {string} feature_view
+   * @returns {string} Resource name string.
+   */
+  featureViewSyncPath(
+    project: string,
+    location: string,
+    featureOnlineStore: string,
+    featureView: string
+  ) {
+    return this.pathTemplates.featureViewSyncPathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+      feature_view: featureView,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).feature_online_store;
+  }
+
+  /**
+   * Parse the feature_view from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the feature_view.
+   */
+  matchFeatureViewFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).feature_view;
   }
 
   /**
@@ -8198,6 +9056,252 @@ export class MetadataServiceClient {
   }
 
   /**
+   * Return a fully-qualified notebookExecutionJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_execution_job
+   * @returns {string} Resource name string.
+   */
+  notebookExecutionJobPath(
+    project: string,
+    location: string,
+    notebookExecutionJob: string
+  ) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.render({
+      project: project,
+      location: location,
+      notebook_execution_job: notebookExecutionJob,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookExecutionJobName(notebookExecutionJobName: string) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookExecutionJobName(notebookExecutionJobName: string) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_execution_job from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the notebook_execution_job.
+   */
+  matchNotebookExecutionJobFromNotebookExecutionJobName(
+    notebookExecutionJobName: string
+  ) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).notebook_execution_job;
+  }
+
+  /**
+   * Return a fully-qualified notebookRuntime resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_runtime
+   * @returns {string} Resource name string.
+   */
+  notebookRuntimePath(
+    project: string,
+    location: string,
+    notebookRuntime: string
+  ) {
+    return this.pathTemplates.notebookRuntimePathTemplate.render({
+      project: project,
+      location: location,
+      notebook_runtime: notebookRuntime,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_runtime from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the notebook_runtime.
+   */
+  matchNotebookRuntimeFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).notebook_runtime;
+  }
+
+  /**
+   * Return a fully-qualified notebookRuntimeTemplate resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_runtime_template
+   * @returns {string} Resource name string.
+   */
+  notebookRuntimeTemplatePath(
+    project: string,
+    location: string,
+    notebookRuntimeTemplate: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.render({
+      project: project,
+      location: location,
+      notebook_runtime_template: notebookRuntimeTemplate,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_runtime_template from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the notebook_runtime_template.
+   */
+  matchNotebookRuntimeTemplateFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).notebook_runtime_template;
+  }
+
+  /**
+   * Return a fully-qualified persistentResource resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} persistent_resource
+   * @returns {string} Resource name string.
+   */
+  persistentResourcePath(
+    project: string,
+    location: string,
+    persistentResource: string
+  ) {
+    return this.pathTemplates.persistentResourcePathTemplate.render({
+      project: project,
+      location: location,
+      persistent_resource: persistentResource,
+    });
+  }
+
+  /**
+   * Parse the project from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromPersistentResourceName(persistentResourceName: string) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).project;
+  }
+
+  /**
+   * Parse the location from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromPersistentResourceName(persistentResourceName: string) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).location;
+  }
+
+  /**
+   * Parse the persistent_resource from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the persistent_resource.
+   */
+  matchPersistentResourceFromPersistentResourceName(
+    persistentResourceName: string
+  ) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).persistent_resource;
+  }
+
+  /**
    * Return a fully-qualified pipelineJob resource name string.
    *
    * @param {string} project
@@ -8335,6 +9439,194 @@ export class MetadataServiceClient {
     return this.pathTemplates.projectLocationEndpointPathTemplate.match(
       projectLocationEndpointName
     ).endpoint;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationFeatureGroupFeature resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_group
+   * @param {string} feature
+   * @returns {string} Resource name string.
+   */
+  projectLocationFeatureGroupFeaturePath(
+    project: string,
+    location: string,
+    featureGroup: string,
+    feature: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.render(
+      {
+        project: project,
+        location: location,
+        feature_group: featureGroup,
+        feature: feature,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_group from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the feature_group.
+   */
+  matchFeatureGroupFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).feature_group;
+  }
+
+  /**
+   * Parse the feature from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the feature.
+   */
+  matchFeatureFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).feature;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationFeaturestoreEntityTypeFeature resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} featurestore
+   * @param {string} entity_type
+   * @param {string} feature
+   * @returns {string} Resource name string.
+   */
+  projectLocationFeaturestoreEntityTypeFeaturePath(
+    project: string,
+    location: string,
+    featurestore: string,
+    entityType: string,
+    feature: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.render(
+      {
+        project: project,
+        location: location,
+        featurestore: featurestore,
+        entity_type: entityType,
+        feature: feature,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).location;
+  }
+
+  /**
+   * Parse the featurestore from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the featurestore.
+   */
+  matchFeaturestoreFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).featurestore;
+  }
+
+  /**
+   * Parse the entity_type from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the entity_type.
+   */
+  matchEntityTypeFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).entity_type;
+  }
+
+  /**
+   * Parse the feature from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the feature.
+   */
+  matchFeatureFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).feature;
   }
 
   /**
@@ -8529,6 +9821,55 @@ export class MetadataServiceClient {
   matchSavedQueryFromSavedQueryName(savedQueryName: string) {
     return this.pathTemplates.savedQueryPathTemplate.match(savedQueryName)
       .saved_query;
+  }
+
+  /**
+   * Return a fully-qualified schedule resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} schedule
+   * @returns {string} Resource name string.
+   */
+  schedulePath(project: string, location: string, schedule: string) {
+    return this.pathTemplates.schedulePathTemplate.render({
+      project: project,
+      location: location,
+      schedule: schedule,
+    });
+  }
+
+  /**
+   * Parse the project from Schedule resource.
+   *
+   * @param {string} scheduleName
+   *   A fully-qualified path representing Schedule resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromScheduleName(scheduleName: string) {
+    return this.pathTemplates.schedulePathTemplate.match(scheduleName).project;
+  }
+
+  /**
+   * Parse the location from Schedule resource.
+   *
+   * @param {string} scheduleName
+   *   A fully-qualified path representing Schedule resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromScheduleName(scheduleName: string) {
+    return this.pathTemplates.schedulePathTemplate.match(scheduleName).location;
+  }
+
+  /**
+   * Parse the schedule from Schedule resource.
+   *
+   * @param {string} scheduleName
+   *   A fully-qualified path representing Schedule resource.
+   * @returns {string} A string representing the schedule.
+   */
+  matchScheduleFromScheduleName(scheduleName: string) {
+    return this.pathTemplates.schedulePathTemplate.match(scheduleName).schedule;
   }
 
   /**
@@ -9097,6 +10438,58 @@ export class MetadataServiceClient {
    */
   matchTrialFromTrialName(trialName: string) {
     return this.pathTemplates.trialPathTemplate.match(trialName).trial;
+  }
+
+  /**
+   * Return a fully-qualified tuningJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} tuning_job
+   * @returns {string} Resource name string.
+   */
+  tuningJobPath(project: string, location: string, tuningJob: string) {
+    return this.pathTemplates.tuningJobPathTemplate.render({
+      project: project,
+      location: location,
+      tuning_job: tuningJob,
+    });
+  }
+
+  /**
+   * Parse the project from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .project;
+  }
+
+  /**
+   * Parse the location from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .location;
+  }
+
+  /**
+   * Parse the tuning_job from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the tuning_job.
+   */
+  matchTuningJobFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .tuning_job;
   }
 
   /**

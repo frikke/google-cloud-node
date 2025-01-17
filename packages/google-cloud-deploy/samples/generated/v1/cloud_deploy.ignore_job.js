@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,8 +30,7 @@ function main(rollout, phaseId, jobId) {
    */
   /**
    *  Required. Name of the Rollout. Format is
-   *  projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/
-   *  releases/{release}/rollouts/{rollout}.
+   *  `projects/{project}/locations/{location}/deliveryPipelines/{deliveryPipeline}/releases/{release}/rollouts/{rollout}`.
    */
   // const rollout = 'abc123'
   /**
@@ -42,6 +41,11 @@ function main(rollout, phaseId, jobId) {
    *  Required. The job ID for the Job to ignore.
    */
   // const jobId = 'abc123'
+  /**
+   *  Optional. Deploy policies to override. Format is
+   *  `projects/{project}/locations/{location}/deployPolicies/{deployPolicy}`.
+   */
+  // const overrideDeployPolicy = ['abc','def']
 
   // Imports the Deploy library
   const {CloudDeployClient} = require('@google-cloud/deploy').v1;

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,15 +31,16 @@ function main(project) {
   /**
    *  Required. The name of the project to search related account group
    *  memberships from. Specify the project name in the following format:
-   *  "projects/{project}".
+   *  `projects/{project}`.
    */
   // const project = 'my-project'
   /**
-   *  Optional. The unique stable hashed user identifier we should search
-   *  connections to. The identifier should correspond to a `hashed_account_id`
-   *  provided in a previous `CreateAssessment` or `AnnotateAssessment` call.
+   *  Optional. The unique stable account identifier used to search connections.
+   *  The identifier should correspond to an `account_id` provided in a previous
+   *  `CreateAssessment` or `AnnotateAssessment` call. Either hashed_account_id
+   *  or account_id must be set, but not both.
    */
-  // const hashedAccountId = 'Buffer.from('string')'
+  // const accountId = 'abc123'
   /**
    *  Optional. The maximum number of groups to return. The service might return
    *  fewer than this value. If unspecified, at most 50 groups are returned. The
@@ -69,7 +70,7 @@ function main(project) {
     };
 
     // Run request
-    const iterable = await recaptchaenterpriseClient.searchRelatedAccountGroupMembershipsAsync(request);
+    const iterable = recaptchaenterpriseClient.searchRelatedAccountGroupMembershipsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

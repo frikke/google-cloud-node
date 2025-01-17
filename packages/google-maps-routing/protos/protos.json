@@ -1,4 +1,7 @@
 {
+  "options": {
+    "syntax": "proto3"
+  },
   "nested": {
     "google": {
       "nested": {
@@ -160,18 +163,6 @@
                 }
               }
             },
-            "Duration": {
-              "fields": {
-                "seconds": {
-                  "type": "int64",
-                  "id": 1
-                },
-                "nanos": {
-                  "type": "int32",
-                  "id": 2
-                }
-              }
-            },
             "FileDescriptorSet": {
               "fields": {
                 "file": {
@@ -179,6 +170,21 @@
                   "type": "FileDescriptorProto",
                   "id": 1
                 }
+              }
+            },
+            "Edition": {
+              "values": {
+                "EDITION_UNKNOWN": 0,
+                "EDITION_PROTO2": 998,
+                "EDITION_PROTO3": 999,
+                "EDITION_2023": 1000,
+                "EDITION_2024": 1001,
+                "EDITION_1_TEST_ONLY": 1,
+                "EDITION_2_TEST_ONLY": 2,
+                "EDITION_99997_TEST_ONLY": 99997,
+                "EDITION_99998_TEST_ONLY": 99998,
+                "EDITION_99999_TEST_ONLY": 99999,
+                "EDITION_MAX": 2147483647
               }
             },
             "FileDescriptorProto": {
@@ -245,8 +251,8 @@
                   "id": 12
                 },
                 "edition": {
-                  "type": "string",
-                  "id": 13
+                  "type": "Edition",
+                  "id": 14
                 }
               }
             },
@@ -338,6 +344,26 @@
                   "rule": "repeated",
                   "type": "UninterpretedOption",
                   "id": 999
+                },
+                "declaration": {
+                  "rule": "repeated",
+                  "type": "Declaration",
+                  "id": 2,
+                  "options": {
+                    "retention": "RETENTION_SOURCE"
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 50
+                },
+                "verification": {
+                  "type": "VerificationState",
+                  "id": 3,
+                  "options": {
+                    "default": "UNVERIFIED",
+                    "retention": "RETENTION_SOURCE"
+                  }
                 }
               },
               "extensions": [
@@ -345,7 +371,45 @@
                   1000,
                   536870911
                 ]
-              ]
+              ],
+              "nested": {
+                "Declaration": {
+                  "fields": {
+                    "number": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "fullName": {
+                      "type": "string",
+                      "id": 2
+                    },
+                    "type": {
+                      "type": "string",
+                      "id": 3
+                    },
+                    "reserved": {
+                      "type": "bool",
+                      "id": 5
+                    },
+                    "repeated": {
+                      "type": "bool",
+                      "id": 6
+                    }
+                  },
+                  "reserved": [
+                    [
+                      4,
+                      4
+                    ]
+                  ]
+                },
+                "VerificationState": {
+                  "values": {
+                    "DECLARATION": 0,
+                    "UNVERIFIED": 1
+                  }
+                }
+              }
             },
             "FieldDescriptorProto": {
               "fields": {
@@ -420,8 +484,8 @@
                 "Label": {
                   "values": {
                     "LABEL_OPTIONAL": 1,
-                    "LABEL_REQUIRED": 2,
-                    "LABEL_REPEATED": 3
+                    "LABEL_REPEATED": 3,
+                    "LABEL_REQUIRED": 2
                   }
                 }
               }
@@ -609,13 +673,6 @@
                     "default": false
                   }
                 },
-                "phpGenericServices": {
-                  "type": "bool",
-                  "id": 42,
-                  "options": {
-                    "default": false
-                  }
-                },
                 "deprecated": {
                   "type": "bool",
                   "id": 23,
@@ -658,6 +715,10 @@
                   "type": "string",
                   "id": 45
                 },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 50
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -671,6 +732,10 @@
                 ]
               ],
               "reserved": [
+                [
+                  42,
+                  42
+                ],
                 [
                   38,
                   38
@@ -712,6 +777,17 @@
                 "mapEntry": {
                   "type": "bool",
                   "id": 7
+                },
+                "deprecatedLegacyJsonFieldConflicts": {
+                  "type": "bool",
+                  "id": 11,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 12
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -796,6 +872,34 @@
                     "default": false
                   }
                 },
+                "debugRedact": {
+                  "type": "bool",
+                  "id": 16,
+                  "options": {
+                    "default": false
+                  }
+                },
+                "retention": {
+                  "type": "OptionRetention",
+                  "id": 17
+                },
+                "targets": {
+                  "rule": "repeated",
+                  "type": "OptionTargetType",
+                  "id": 19,
+                  "options": {
+                    "packed": false
+                  }
+                },
+                "editionDefaults": {
+                  "rule": "repeated",
+                  "type": "EditionDefault",
+                  "id": 20
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 21
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -812,6 +916,10 @@
                 [
                   4,
                   4
+                ],
+                [
+                  18,
+                  18
                 ]
               ],
               "nested": {
@@ -828,11 +936,48 @@
                     "JS_STRING": 1,
                     "JS_NUMBER": 2
                   }
+                },
+                "OptionRetention": {
+                  "values": {
+                    "RETENTION_UNKNOWN": 0,
+                    "RETENTION_RUNTIME": 1,
+                    "RETENTION_SOURCE": 2
+                  }
+                },
+                "OptionTargetType": {
+                  "values": {
+                    "TARGET_TYPE_UNKNOWN": 0,
+                    "TARGET_TYPE_FILE": 1,
+                    "TARGET_TYPE_EXTENSION_RANGE": 2,
+                    "TARGET_TYPE_MESSAGE": 3,
+                    "TARGET_TYPE_FIELD": 4,
+                    "TARGET_TYPE_ONEOF": 5,
+                    "TARGET_TYPE_ENUM": 6,
+                    "TARGET_TYPE_ENUM_ENTRY": 7,
+                    "TARGET_TYPE_SERVICE": 8,
+                    "TARGET_TYPE_METHOD": 9
+                  }
+                },
+                "EditionDefault": {
+                  "fields": {
+                    "edition": {
+                      "type": "Edition",
+                      "id": 3
+                    },
+                    "value": {
+                      "type": "string",
+                      "id": 2
+                    }
+                  }
                 }
               }
             },
             "OneofOptions": {
               "fields": {
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 1
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -858,6 +1003,17 @@
                   "options": {
                     "default": false
                   }
+                },
+                "deprecatedLegacyJsonFieldConflicts": {
+                  "type": "bool",
+                  "id": 6,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 7
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -887,6 +1043,17 @@
                     "default": false
                   }
                 },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 2
+                },
+                "debugRedact": {
+                  "type": "bool",
+                  "id": 3,
+                  "options": {
+                    "default": false
+                  }
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -902,6 +1069,10 @@
             },
             "ServiceOptions": {
               "fields": {
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 34
+                },
                 "deprecated": {
                   "type": "bool",
                   "id": 33,
@@ -937,6 +1108,10 @@
                   "options": {
                     "default": "IDEMPOTENCY_UNKNOWN"
                   }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 35
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -1003,6 +1178,166 @@
                     "isExtension": {
                       "rule": "required",
                       "type": "bool",
+                      "id": 2
+                    }
+                  }
+                }
+              }
+            },
+            "FeatureSet": {
+              "fields": {
+                "fieldPresence": {
+                  "type": "FieldPresence",
+                  "id": 1,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_2023",
+                    "edition_defaults.value": "EXPLICIT"
+                  }
+                },
+                "enumType": {
+                  "type": "EnumType",
+                  "id": 2,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "OPEN"
+                  }
+                },
+                "repeatedFieldEncoding": {
+                  "type": "RepeatedFieldEncoding",
+                  "id": 3,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "PACKED"
+                  }
+                },
+                "utf8Validation": {
+                  "type": "Utf8Validation",
+                  "id": 4,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "VERIFY"
+                  }
+                },
+                "messageEncoding": {
+                  "type": "MessageEncoding",
+                  "id": 5,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO2",
+                    "edition_defaults.value": "LENGTH_PREFIXED"
+                  }
+                },
+                "jsonFormat": {
+                  "type": "JsonFormat",
+                  "id": 6,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "ALLOW"
+                  }
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  1000
+                ],
+                [
+                  1001,
+                  1001
+                ],
+                [
+                  9995,
+                  9999
+                ]
+              ],
+              "reserved": [
+                [
+                  999,
+                  999
+                ]
+              ],
+              "nested": {
+                "FieldPresence": {
+                  "values": {
+                    "FIELD_PRESENCE_UNKNOWN": 0,
+                    "EXPLICIT": 1,
+                    "IMPLICIT": 2,
+                    "LEGACY_REQUIRED": 3
+                  }
+                },
+                "EnumType": {
+                  "values": {
+                    "ENUM_TYPE_UNKNOWN": 0,
+                    "OPEN": 1,
+                    "CLOSED": 2
+                  }
+                },
+                "RepeatedFieldEncoding": {
+                  "values": {
+                    "REPEATED_FIELD_ENCODING_UNKNOWN": 0,
+                    "PACKED": 1,
+                    "EXPANDED": 2
+                  }
+                },
+                "Utf8Validation": {
+                  "values": {
+                    "UTF8_VALIDATION_UNKNOWN": 0,
+                    "VERIFY": 2,
+                    "NONE": 3
+                  }
+                },
+                "MessageEncoding": {
+                  "values": {
+                    "MESSAGE_ENCODING_UNKNOWN": 0,
+                    "LENGTH_PREFIXED": 1,
+                    "DELIMITED": 2
+                  }
+                },
+                "JsonFormat": {
+                  "values": {
+                    "JSON_FORMAT_UNKNOWN": 0,
+                    "ALLOW": 1,
+                    "LEGACY_BEST_EFFORT": 2
+                  }
+                }
+              }
+            },
+            "FeatureSetDefaults": {
+              "fields": {
+                "defaults": {
+                  "rule": "repeated",
+                  "type": "FeatureSetEditionDefault",
+                  "id": 1
+                },
+                "minimumEdition": {
+                  "type": "Edition",
+                  "id": 4
+                },
+                "maximumEdition": {
+                  "type": "Edition",
+                  "id": 5
+                }
+              },
+              "nested": {
+                "FeatureSetEditionDefault": {
+                  "fields": {
+                    "edition": {
+                      "type": "Edition",
+                      "id": 3
+                    },
+                    "features": {
+                      "type": "FeatureSet",
                       "id": 2
                     }
                   }
@@ -1092,6 +1427,18 @@
                 }
               }
             },
+            "Duration": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            },
             "Timestamp": {
               "fields": {
                 "seconds": {
@@ -1155,6 +1502,18 @@
                 }
               }
             },
+            "LocalizedText": {
+              "fields": {
+                "text": {
+                  "type": "string",
+                  "id": 1
+                },
+                "languageCode": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
             "Money": {
               "fields": {
                 "currencyCode": {
@@ -1179,7 +1538,6 @@
               "nested": {
                 "v2": {
                   "options": {
-                    "cc_enable_arenas": true,
                     "csharp_namespace": "Google.Maps.Routing.V2",
                     "go_package": "cloud.google.com/go/maps/routing/apiv2/routingpb;routingpb",
                     "java_multiple_files": true,
@@ -1187,7 +1545,8 @@
                     "java_package": "com.google.maps.routing.v2",
                     "objc_class_prefix": "GMRV2",
                     "php_namespace": "Google\\Maps\\Routing\\V2",
-                    "ruby_package": "Google::Maps::Routing::V2"
+                    "ruby_package": "Google::Maps::Routing::V2",
+                    "cc_enable_arenas": true
                   },
                   "nested": {
                     "FallbackInfo": {
@@ -1268,6 +1627,18 @@
                         }
                       }
                     },
+                    "LocalizedTime": {
+                      "fields": {
+                        "time": {
+                          "type": "google.type.LocalizedText",
+                          "id": 1
+                        },
+                        "timeZone": {
+                          "type": "string",
+                          "id": 2
+                        }
+                      }
+                    },
                     "Location": {
                       "fields": {
                         "latLng": {
@@ -1300,7 +1671,9 @@
                         "FERRY": 15,
                         "FERRY_TRAIN": 16,
                         "ROUNDABOUT_LEFT": 17,
-                        "ROUNDABOUT_RIGHT": 18
+                        "ROUNDABOUT_RIGHT": 18,
+                        "DEPART": 19,
+                        "NAME_CHANGE": 20
                       }
                     },
                     "NavigationInstruction": {
@@ -1349,6 +1722,89 @@
                         "GEO_JSON_LINESTRING": 2
                       }
                     },
+                    "PolylineDetails": {
+                      "fields": {
+                        "flyoverInfo": {
+                          "rule": "repeated",
+                          "type": "FlyoverInfo",
+                          "id": 12
+                        },
+                        "narrowRoadInfo": {
+                          "rule": "repeated",
+                          "type": "NarrowRoadInfo",
+                          "id": 13
+                        }
+                      },
+                      "nested": {
+                        "PolylinePointIndex": {
+                          "oneofs": {
+                            "_startIndex": {
+                              "oneof": [
+                                "startIndex"
+                              ]
+                            },
+                            "_endIndex": {
+                              "oneof": [
+                                "endIndex"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "startIndex": {
+                              "type": "int32",
+                              "id": 1,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "endIndex": {
+                              "type": "int32",
+                              "id": 2,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            }
+                          }
+                        },
+                        "RoadFeatureState": {
+                          "values": {
+                            "ROAD_FEATURE_STATE_UNSPECIFIED": 0,
+                            "EXISTS": 1,
+                            "DOES_NOT_EXIST": 2
+                          }
+                        },
+                        "FlyoverInfo": {
+                          "fields": {
+                            "flyoverPresence": {
+                              "type": "RoadFeatureState",
+                              "id": 1,
+                              "options": {
+                                "(google.api.field_behavior)": "OUTPUT_ONLY"
+                              }
+                            },
+                            "polylinePointIndex": {
+                              "type": "PolylinePointIndex",
+                              "id": 2
+                            }
+                          }
+                        },
+                        "NarrowRoadInfo": {
+                          "fields": {
+                            "narrowRoadPresence": {
+                              "type": "RoadFeatureState",
+                              "id": 1,
+                              "options": {
+                                "(google.api.field_behavior)": "OUTPUT_ONLY"
+                              }
+                            },
+                            "polylinePointIndex": {
+                              "type": "PolylinePointIndex",
+                              "id": 2
+                            }
+                          }
+                        }
+                      }
+                    },
                     "Route": {
                       "fields": {
                         "routeLabels": {
@@ -1394,9 +1850,44 @@
                           "type": "RouteTravelAdvisory",
                           "id": 9
                         },
+                        "optimizedIntermediateWaypointIndex": {
+                          "rule": "repeated",
+                          "type": "int32",
+                          "id": 10
+                        },
+                        "localizedValues": {
+                          "type": "RouteLocalizedValues",
+                          "id": 11
+                        },
                         "routeToken": {
                           "type": "string",
                           "id": 12
+                        },
+                        "polylineDetails": {
+                          "type": "PolylineDetails",
+                          "id": 14
+                        }
+                      },
+                      "nested": {
+                        "RouteLocalizedValues": {
+                          "fields": {
+                            "distance": {
+                              "type": "google.type.LocalizedText",
+                              "id": 1
+                            },
+                            "duration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 2
+                            },
+                            "staticDuration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 3
+                            },
+                            "transitFare": {
+                              "type": "google.type.LocalizedText",
+                              "id": 4
+                            }
+                          }
                         }
                       }
                     },
@@ -1414,6 +1905,14 @@
                         "fuelConsumptionMicroliters": {
                           "type": "int64",
                           "id": 5
+                        },
+                        "routeRestrictionsPartiallyIgnored": {
+                          "type": "bool",
+                          "id": 6
+                        },
+                        "transitFare": {
+                          "type": "google.type.Money",
+                          "id": 7
                         }
                       }
                     },
@@ -1473,6 +1972,81 @@
                         "travelAdvisory": {
                           "type": "RouteLegTravelAdvisory",
                           "id": 8
+                        },
+                        "localizedValues": {
+                          "type": "RouteLegLocalizedValues",
+                          "id": 9
+                        },
+                        "stepsOverview": {
+                          "type": "StepsOverview",
+                          "id": 10
+                        }
+                      },
+                      "nested": {
+                        "RouteLegLocalizedValues": {
+                          "fields": {
+                            "distance": {
+                              "type": "google.type.LocalizedText",
+                              "id": 1
+                            },
+                            "duration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 2
+                            },
+                            "staticDuration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 3
+                            }
+                          }
+                        },
+                        "StepsOverview": {
+                          "fields": {
+                            "multiModalSegments": {
+                              "rule": "repeated",
+                              "type": "MultiModalSegment",
+                              "id": 1
+                            }
+                          },
+                          "nested": {
+                            "MultiModalSegment": {
+                              "oneofs": {
+                                "_stepStartIndex": {
+                                  "oneof": [
+                                    "stepStartIndex"
+                                  ]
+                                },
+                                "_stepEndIndex": {
+                                  "oneof": [
+                                    "stepEndIndex"
+                                  ]
+                                }
+                              },
+                              "fields": {
+                                "stepStartIndex": {
+                                  "type": "int32",
+                                  "id": 1,
+                                  "options": {
+                                    "proto3_optional": true
+                                  }
+                                },
+                                "stepEndIndex": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "proto3_optional": true
+                                  }
+                                },
+                                "navigationInstruction": {
+                                  "type": "NavigationInstruction",
+                                  "id": 3
+                                },
+                                "travelMode": {
+                                  "type": "RouteTravelMode",
+                                  "id": 4
+                                }
+                              }
+                            }
+                          }
                         }
                       }
                     },
@@ -1505,6 +2079,98 @@
                         "travelAdvisory": {
                           "type": "RouteLegStepTravelAdvisory",
                           "id": 7
+                        },
+                        "localizedValues": {
+                          "type": "RouteLegStepLocalizedValues",
+                          "id": 8
+                        },
+                        "transitDetails": {
+                          "type": "RouteLegStepTransitDetails",
+                          "id": 9
+                        },
+                        "travelMode": {
+                          "type": "RouteTravelMode",
+                          "id": 10
+                        }
+                      },
+                      "nested": {
+                        "RouteLegStepLocalizedValues": {
+                          "fields": {
+                            "distance": {
+                              "type": "google.type.LocalizedText",
+                              "id": 1
+                            },
+                            "staticDuration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 3
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "RouteLegStepTransitDetails": {
+                      "fields": {
+                        "stopDetails": {
+                          "type": "TransitStopDetails",
+                          "id": 1
+                        },
+                        "localizedValues": {
+                          "type": "TransitDetailsLocalizedValues",
+                          "id": 2
+                        },
+                        "headsign": {
+                          "type": "string",
+                          "id": 3
+                        },
+                        "headway": {
+                          "type": "google.protobuf.Duration",
+                          "id": 4
+                        },
+                        "transitLine": {
+                          "type": "TransitLine",
+                          "id": 5
+                        },
+                        "stopCount": {
+                          "type": "int32",
+                          "id": 6
+                        },
+                        "tripShortText": {
+                          "type": "string",
+                          "id": 7
+                        }
+                      },
+                      "nested": {
+                        "TransitStopDetails": {
+                          "fields": {
+                            "arrivalStop": {
+                              "type": "TransitStop",
+                              "id": 1
+                            },
+                            "arrivalTime": {
+                              "type": "google.protobuf.Timestamp",
+                              "id": 2
+                            },
+                            "departureStop": {
+                              "type": "TransitStop",
+                              "id": 3
+                            },
+                            "departureTime": {
+                              "type": "google.protobuf.Timestamp",
+                              "id": 4
+                            }
+                          }
+                        },
+                        "TransitDetailsLocalizedValues": {
+                          "fields": {
+                            "arrivalTime": {
+                              "type": "LocalizedTime",
+                              "id": 1
+                            },
+                            "departureTime": {
+                              "type": "LocalizedTime",
+                              "id": 2
+                            }
+                          }
                         }
                       }
                     },
@@ -1513,7 +2179,18 @@
                         "ROUTE_LABEL_UNSPECIFIED": 0,
                         "DEFAULT_ROUTE": 1,
                         "DEFAULT_ROUTE_ALTERNATE": 2,
-                        "FUEL_EFFICIENT": 3
+                        "FUEL_EFFICIENT": 3,
+                        "SHORTER_DISTANCE": 4
+                      }
+                    },
+                    "RouteTravelMode": {
+                      "values": {
+                        "TRAVEL_MODE_UNSPECIFIED": 0,
+                        "DRIVE": 1,
+                        "BICYCLE": 2,
+                        "WALK": 3,
+                        "TWO_WHEELER": 4,
+                        "TRANSIT": 7
                       }
                     },
                     "SpeedReadingInterval": {
@@ -1574,6 +2251,116 @@
                         }
                       }
                     },
+                    "TransitAgency": {
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "phoneNumber": {
+                          "type": "string",
+                          "id": 2
+                        },
+                        "uri": {
+                          "type": "string",
+                          "id": 3
+                        }
+                      }
+                    },
+                    "TransitLine": {
+                      "fields": {
+                        "agencies": {
+                          "rule": "repeated",
+                          "type": "TransitAgency",
+                          "id": 1
+                        },
+                        "name": {
+                          "type": "string",
+                          "id": 2
+                        },
+                        "uri": {
+                          "type": "string",
+                          "id": 3
+                        },
+                        "color": {
+                          "type": "string",
+                          "id": 4
+                        },
+                        "iconUri": {
+                          "type": "string",
+                          "id": 5
+                        },
+                        "nameShort": {
+                          "type": "string",
+                          "id": 6
+                        },
+                        "textColor": {
+                          "type": "string",
+                          "id": 7
+                        },
+                        "vehicle": {
+                          "type": "TransitVehicle",
+                          "id": 8
+                        }
+                      }
+                    },
+                    "TransitStop": {
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "location": {
+                          "type": "Location",
+                          "id": 2
+                        }
+                      }
+                    },
+                    "TransitVehicle": {
+                      "fields": {
+                        "name": {
+                          "type": "google.type.LocalizedText",
+                          "id": 1
+                        },
+                        "type": {
+                          "type": "TransitVehicleType",
+                          "id": 2
+                        },
+                        "iconUri": {
+                          "type": "string",
+                          "id": 3
+                        },
+                        "localIconUri": {
+                          "type": "string",
+                          "id": 4
+                        }
+                      },
+                      "nested": {
+                        "TransitVehicleType": {
+                          "values": {
+                            "TRANSIT_VEHICLE_TYPE_UNSPECIFIED": 0,
+                            "BUS": 1,
+                            "CABLE_CAR": 2,
+                            "COMMUTER_TRAIN": 3,
+                            "FERRY": 4,
+                            "FUNICULAR": 5,
+                            "GONDOLA_LIFT": 6,
+                            "HEAVY_RAIL": 7,
+                            "HIGH_SPEED_TRAIN": 8,
+                            "INTERCITY_BUS": 9,
+                            "LONG_DISTANCE_TRAIN": 10,
+                            "METRO_RAIL": 11,
+                            "MONORAIL": 12,
+                            "OTHER": 13,
+                            "RAIL": 14,
+                            "SHARE_TAXI": 15,
+                            "SUBWAY": 16,
+                            "TRAM": 17,
+                            "TROLLEYBUS": 18
+                          }
+                        }
+                      }
+                    },
                     "RouteModifiers": {
                       "fields": {
                         "avoidTolls": {
@@ -1604,6 +2391,11 @@
                       }
                     },
                     "TollPass": {
+                      "valuesOptions": {
+                        "US_MI_IQ_PROX_CARD": {
+                          "deprecated": true
+                        }
+                      },
                       "values": {
                         "TOLL_PASS_UNSPECIFIED": 0,
                         "AU_ETOLL_TAG": 82,
@@ -1625,6 +2417,8 @@
                         "ID_E_TOLL": 16,
                         "IN_FASTAG": 78,
                         "IN_LOCAL_HP_PLATE_EXEMPT": 79,
+                        "JP_ETC": 98,
+                        "JP_ETC2": 99,
                         "MX_IAVE": 90,
                         "MX_PASE": 91,
                         "MX_QUICKPASS": 93,
@@ -1664,6 +2458,7 @@
                         "US_MI_BCPASS": 94,
                         "US_MI_GROSSE_ILE_TOLL_BRIDGE_PASS_TAG": 37,
                         "US_MI_IQ_PROX_CARD": 38,
+                        "US_MI_IQ_TAG": 95,
                         "US_MI_MACKINAC_BRIDGE_MAC_PASS": 39,
                         "US_MI_NEXPRESS_TOLL": 40,
                         "US_MN_EZPASSMN": 41,
@@ -1679,6 +2474,7 @@
                         "US_PA_EZPASSPA": 45,
                         "US_RI_EZPASSRI": 46,
                         "US_SC_PALPASS": 47,
+                        "US_TX_AVI_TAG": 97,
                         "US_TX_BANCPASS": 48,
                         "US_TX_DEL_RIO_PASS": 49,
                         "US_TX_EFAST_PASS": 50,
@@ -1686,6 +2482,7 @@
                         "US_TX_EPTOLL": 52,
                         "US_TX_EZ_CROSS": 53,
                         "US_TX_EZTAG": 54,
+                        "US_TX_FUEGO_TAG": 96,
                         "US_TX_LAREDO_TRADE_TAG": 55,
                         "US_TX_PLUSPASS": 56,
                         "US_TX_TOLLTAG": 57,
@@ -1697,6 +2494,7 @@
                         "US_WA_GOOD_TO_GO": 1,
                         "US_WV_EZPASSWV": 62,
                         "US_WV_MEMORIAL_BRIDGE_TICKETS": 63,
+                        "US_WV_MOV_PASS": 100,
                         "US_WV_NEWELL_TOLL_BRIDGE_TICKET": 64
                       }
                     },
@@ -1715,15 +2513,6 @@
                         "ELECTRIC": 2,
                         "HYBRID": 3,
                         "DIESEL": 4
-                      }
-                    },
-                    "RouteTravelMode": {
-                      "values": {
-                        "TRAVEL_MODE_UNSPECIFIED": 0,
-                        "DRIVE": 1,
-                        "BICYCLE": 2,
-                        "WALK": 3,
-                        "TWO_WHEELER": 4
                       }
                     },
                     "Routes": {
@@ -1825,6 +2614,13 @@
                             "(google.api.field_behavior)": "OPTIONAL"
                           }
                         },
+                        "arrivalTime": {
+                          "type": "google.protobuf.Timestamp",
+                          "id": 19,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
                         "computeAlternativeRoutes": {
                           "type": "bool",
                           "id": 8,
@@ -1860,6 +2656,13 @@
                             "(google.api.field_behavior)": "OPTIONAL"
                           }
                         },
+                        "optimizeWaypointOrder": {
+                          "type": "bool",
+                          "id": 13,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
                         "requestedReferenceRoutes": {
                           "rule": "repeated",
                           "type": "ReferenceRoute",
@@ -1875,13 +2678,28 @@
                           "options": {
                             "(google.api.field_behavior)": "OPTIONAL"
                           }
+                        },
+                        "trafficModel": {
+                          "type": "TrafficModel",
+                          "id": 18,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "transitPreferences": {
+                          "type": "TransitPreferences",
+                          "id": 20,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
                         }
                       },
                       "nested": {
                         "ReferenceRoute": {
                           "values": {
                             "REFERENCE_ROUTE_UNSPECIFIED": 0,
-                            "FUEL_EFFICIENT": 1
+                            "FUEL_EFFICIENT": 1,
+                            "SHORTER_DISTANCE": 2
                           }
                         },
                         "ExtraComputation": {
@@ -1889,7 +2707,10 @@
                             "EXTRA_COMPUTATION_UNSPECIFIED": 0,
                             "TOLLS": 1,
                             "FUEL_CONSUMPTION": 2,
-                            "TRAFFIC_ON_POLYLINE": 3
+                            "TRAFFIC_ON_POLYLINE": 3,
+                            "HTML_FORMATTED_NAVIGATION_INSTRUCTIONS": 4,
+                            "FLYOVER_INFO_ON_POLYLINE": 7,
+                            "NARROW_ROAD_INFO_ON_POLYLINE": 8
                           }
                         }
                       }
@@ -1950,6 +2771,13 @@
                             "(google.api.field_behavior)": "OPTIONAL"
                           }
                         },
+                        "arrivalTime": {
+                          "type": "google.protobuf.Timestamp",
+                          "id": 11,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
                         "languageCode": {
                           "type": "string",
                           "id": 6,
@@ -1964,10 +2792,31 @@
                             "(google.api.field_behavior)": "OPTIONAL"
                           }
                         },
+                        "units": {
+                          "type": "Units",
+                          "id": 7,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
                         "extraComputations": {
                           "rule": "repeated",
                           "type": "ExtraComputation",
                           "id": 8,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "trafficModel": {
+                          "type": "TrafficModel",
+                          "id": 10,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "transitPreferences": {
+                          "type": "TransitPreferences",
+                          "id": 12,
                           "options": {
                             "(google.api.field_behavior)": "OPTIONAL"
                           }
@@ -2066,6 +2915,32 @@
                         "fallbackInfo": {
                           "type": "FallbackInfo",
                           "id": 8
+                        },
+                        "localizedValues": {
+                          "type": "LocalizedValues",
+                          "id": 10
+                        }
+                      },
+                      "nested": {
+                        "LocalizedValues": {
+                          "fields": {
+                            "distance": {
+                              "type": "google.type.LocalizedText",
+                              "id": 1
+                            },
+                            "duration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 2
+                            },
+                            "staticDuration": {
+                              "type": "google.type.LocalizedText",
+                              "id": 3
+                            },
+                            "transitFare": {
+                              "type": "google.type.LocalizedText",
+                              "id": 4
+                            }
+                          }
                         }
                       }
                     },
@@ -2082,6 +2957,46 @@
                         "TRAFFIC_UNAWARE": 1,
                         "TRAFFIC_AWARE": 2,
                         "TRAFFIC_AWARE_OPTIMAL": 3
+                      }
+                    },
+                    "TrafficModel": {
+                      "values": {
+                        "TRAFFIC_MODEL_UNSPECIFIED": 0,
+                        "BEST_GUESS": 1,
+                        "PESSIMISTIC": 2,
+                        "OPTIMISTIC": 3
+                      }
+                    },
+                    "TransitPreferences": {
+                      "fields": {
+                        "allowedTravelModes": {
+                          "rule": "repeated",
+                          "type": "TransitTravelMode",
+                          "id": 1
+                        },
+                        "routingPreference": {
+                          "type": "TransitRoutingPreference",
+                          "id": 2
+                        }
+                      },
+                      "nested": {
+                        "TransitTravelMode": {
+                          "values": {
+                            "TRANSIT_TRAVEL_MODE_UNSPECIFIED": 0,
+                            "BUS": 1,
+                            "SUBWAY": 2,
+                            "TRAIN": 3,
+                            "LIGHT_RAIL": 4,
+                            "RAIL": 5
+                          }
+                        },
+                        "TransitRoutingPreference": {
+                          "values": {
+                            "TRANSIT_ROUTING_PREFERENCE_UNSPECIFIED": 0,
+                            "LESS_WALKING": 1,
+                            "FEWER_TRANSFERS": 2
+                          }
+                        }
                       }
                     },
                     "Units": {
@@ -2165,14 +3080,33 @@
         },
         "api": {
           "options": {
-            "go_package": "google.golang.org/genproto/googleapis/api/annotations;annotations",
+            "go_package": "google.golang.org/genproto/googleapis/api;api",
             "java_multiple_files": true,
-            "java_outer_classname": "FieldBehaviorProto",
+            "java_outer_classname": "LaunchStageProto",
             "java_package": "com.google.api",
             "objc_class_prefix": "GAPI",
             "cc_enable_arenas": true
           },
           "nested": {
+            "fieldBehavior": {
+              "rule": "repeated",
+              "type": "google.api.FieldBehavior",
+              "id": 1052,
+              "extend": "google.protobuf.FieldOptions"
+            },
+            "FieldBehavior": {
+              "values": {
+                "FIELD_BEHAVIOR_UNSPECIFIED": 0,
+                "OPTIONAL": 1,
+                "REQUIRED": 2,
+                "OUTPUT_ONLY": 3,
+                "INPUT_ONLY": 4,
+                "IMMUTABLE": 5,
+                "UNORDERED_LIST": 6,
+                "NON_EMPTY_DEFAULT": 7,
+                "IDENTIFIER": 8
+              }
+            },
             "http": {
               "type": "HttpRule",
               "id": 72295728,
@@ -2276,22 +3210,283 @@
               "id": 1050,
               "extend": "google.protobuf.ServiceOptions"
             },
-            "fieldBehavior": {
-              "rule": "repeated",
-              "type": "google.api.FieldBehavior",
-              "id": 1052,
-              "extend": "google.protobuf.FieldOptions"
+            "CommonLanguageSettings": {
+              "fields": {
+                "referenceDocsUri": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "destinations": {
+                  "rule": "repeated",
+                  "type": "ClientLibraryDestination",
+                  "id": 2
+                }
+              }
             },
-            "FieldBehavior": {
+            "ClientLibrarySettings": {
+              "fields": {
+                "version": {
+                  "type": "string",
+                  "id": 1
+                },
+                "launchStage": {
+                  "type": "LaunchStage",
+                  "id": 2
+                },
+                "restNumericEnums": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "javaSettings": {
+                  "type": "JavaSettings",
+                  "id": 21
+                },
+                "cppSettings": {
+                  "type": "CppSettings",
+                  "id": 22
+                },
+                "phpSettings": {
+                  "type": "PhpSettings",
+                  "id": 23
+                },
+                "pythonSettings": {
+                  "type": "PythonSettings",
+                  "id": 24
+                },
+                "nodeSettings": {
+                  "type": "NodeSettings",
+                  "id": 25
+                },
+                "dotnetSettings": {
+                  "type": "DotnetSettings",
+                  "id": 26
+                },
+                "rubySettings": {
+                  "type": "RubySettings",
+                  "id": 27
+                },
+                "goSettings": {
+                  "type": "GoSettings",
+                  "id": 28
+                }
+              }
+            },
+            "Publishing": {
+              "fields": {
+                "methodSettings": {
+                  "rule": "repeated",
+                  "type": "MethodSettings",
+                  "id": 2
+                },
+                "newIssueUri": {
+                  "type": "string",
+                  "id": 101
+                },
+                "documentationUri": {
+                  "type": "string",
+                  "id": 102
+                },
+                "apiShortName": {
+                  "type": "string",
+                  "id": 103
+                },
+                "githubLabel": {
+                  "type": "string",
+                  "id": 104
+                },
+                "codeownerGithubTeams": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 105
+                },
+                "docTagPrefix": {
+                  "type": "string",
+                  "id": 106
+                },
+                "organization": {
+                  "type": "ClientLibraryOrganization",
+                  "id": 107
+                },
+                "librarySettings": {
+                  "rule": "repeated",
+                  "type": "ClientLibrarySettings",
+                  "id": 109
+                },
+                "protoReferenceDocumentationUri": {
+                  "type": "string",
+                  "id": 110
+                }
+              }
+            },
+            "JavaSettings": {
+              "fields": {
+                "libraryPackage": {
+                  "type": "string",
+                  "id": 1
+                },
+                "serviceClassNames": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 2
+                },
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 3
+                }
+              }
+            },
+            "CppSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "PhpSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "PythonSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "NodeSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "DotnetSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                },
+                "renamedServices": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 2
+                },
+                "renamedResources": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 3
+                },
+                "ignoredResources": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 4
+                },
+                "forcedNamespaceAliases": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 5
+                },
+                "handwrittenSignatures": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 6
+                }
+              }
+            },
+            "RubySettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "GoSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "MethodSettings": {
+              "fields": {
+                "selector": {
+                  "type": "string",
+                  "id": 1
+                },
+                "longRunning": {
+                  "type": "LongRunning",
+                  "id": 2
+                },
+                "autoPopulatedFields": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 3
+                }
+              },
+              "nested": {
+                "LongRunning": {
+                  "fields": {
+                    "initialPollDelay": {
+                      "type": "google.protobuf.Duration",
+                      "id": 1
+                    },
+                    "pollDelayMultiplier": {
+                      "type": "float",
+                      "id": 2
+                    },
+                    "maxPollDelay": {
+                      "type": "google.protobuf.Duration",
+                      "id": 3
+                    },
+                    "totalPollTimeout": {
+                      "type": "google.protobuf.Duration",
+                      "id": 4
+                    }
+                  }
+                }
+              }
+            },
+            "ClientLibraryOrganization": {
               "values": {
-                "FIELD_BEHAVIOR_UNSPECIFIED": 0,
-                "OPTIONAL": 1,
-                "REQUIRED": 2,
-                "OUTPUT_ONLY": 3,
-                "INPUT_ONLY": 4,
-                "IMMUTABLE": 5,
-                "UNORDERED_LIST": 6,
-                "NON_EMPTY_DEFAULT": 7
+                "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED": 0,
+                "CLOUD": 1,
+                "ADS": 2,
+                "PHOTOS": 3,
+                "STREET_VIEW": 4,
+                "SHOPPING": 5,
+                "GEO": 6,
+                "GENERATIVE_AI": 7
+              }
+            },
+            "ClientLibraryDestination": {
+              "values": {
+                "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED": 0,
+                "GITHUB": 10,
+                "PACKAGE_MANAGER": 20
+              }
+            },
+            "LaunchStage": {
+              "values": {
+                "LAUNCH_STAGE_UNSPECIFIED": 0,
+                "UNIMPLEMENTED": 6,
+                "PRELAUNCH": 7,
+                "EARLY_ACCESS": 1,
+                "ALPHA": 2,
+                "BETA": 3,
+                "GA": 4,
+                "DEPRECATED": 5
               }
             }
           }

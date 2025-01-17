@@ -264,6 +264,94 @@
           }
         }
       }
+    },
+    "DocumentService": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "DocumentServiceClient",
+          "rpcs": {
+            "GetDocument": {
+              "methods": [
+                "getDocument"
+              ]
+            },
+            "GetDatasetSchema": {
+              "methods": [
+                "getDatasetSchema"
+              ]
+            },
+            "UpdateDatasetSchema": {
+              "methods": [
+                "updateDatasetSchema"
+              ]
+            },
+            "UpdateDataset": {
+              "methods": [
+                "updateDataset"
+              ]
+            },
+            "ImportDocuments": {
+              "methods": [
+                "importDocuments"
+              ]
+            },
+            "BatchDeleteDocuments": {
+              "methods": [
+                "batchDeleteDocuments"
+              ]
+            },
+            "ListDocuments": {
+              "methods": [
+                "listDocuments",
+                "listDocumentsStream",
+                "listDocumentsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "DocumentServiceClient",
+          "rpcs": {
+            "GetDocument": {
+              "methods": [
+                "getDocument"
+              ]
+            },
+            "GetDatasetSchema": {
+              "methods": [
+                "getDatasetSchema"
+              ]
+            },
+            "UpdateDatasetSchema": {
+              "methods": [
+                "updateDatasetSchema"
+              ]
+            },
+            "UpdateDataset": {
+              "methods": [
+                "updateDataset"
+              ]
+            },
+            "ImportDocuments": {
+              "methods": [
+                "importDocuments"
+              ]
+            },
+            "BatchDeleteDocuments": {
+              "methods": [
+                "batchDeleteDocuments"
+              ]
+            },
+            "ListDocuments": {
+              "methods": [
+                "listDocuments",
+                "listDocumentsStream",
+                "listDocumentsAsync"
+              ]
+            }
+          }
+        }
+      }
     }
   }
 }

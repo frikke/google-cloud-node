@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ function main(parent, entityValues) {
    *  these are not fully-qualified names, i.e. they don't start with
    *  `projects/<Project ID>`.
    */
-  // const entityValues = 'abc123'
+  // const entityValues = ['abc','def']
   /**
    *  Optional. The language used to access language-specific data.
    *  If not specified, the agent's default language is used.

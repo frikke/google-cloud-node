@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import {
   ClusterControllerClient,
   JobControllerClient,
   NodeGroupControllerClient,
+  SessionControllerClient,
+  SessionTemplateControllerClient,
   WorkflowTemplateServiceClient,
 } from '@google-cloud/dataproc';
 
@@ -42,6 +44,14 @@ function doStuffWithJobControllerClient(client: JobControllerClient) {
 }
 function doStuffWithNodeGroupControllerClient(
   client: NodeGroupControllerClient
+) {
+  client.close();
+}
+function doStuffWithSessionControllerClient(client: SessionControllerClient) {
+  client.close();
+}
+function doStuffWithSessionTemplateControllerClient(
+  client: SessionTemplateControllerClient
 ) {
   client.close();
 }
@@ -67,6 +77,12 @@ function main() {
   // check that the client instance can be created
   const nodeGroupControllerClient = new NodeGroupControllerClient();
   doStuffWithNodeGroupControllerClient(nodeGroupControllerClient);
+  // check that the client instance can be created
+  const sessionControllerClient = new SessionControllerClient();
+  doStuffWithSessionControllerClient(sessionControllerClient);
+  // check that the client instance can be created
+  const sessionTemplateControllerClient = new SessionTemplateControllerClient();
+  doStuffWithSessionTemplateControllerClient(sessionTemplateControllerClient);
   // check that the client instance can be created
   const workflowTemplateServiceClient = new WorkflowTemplateServiceClient();
   doStuffWithWorkflowTemplateServiceClient(workflowTemplateServiceClient);

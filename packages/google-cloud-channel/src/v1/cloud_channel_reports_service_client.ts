@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/cloud_channel_reports_service_client_config.json`.
@@ -43,8 +44,14 @@ const version = require('../../../package.json').version;
  *  CloudChannelReportsService lets Google Cloud resellers and
  *  distributors retrieve and combine a variety of data in Cloud Channel for
  *  multiple products (Google Cloud, Google Voice, and Google Workspace.)
+ *
+ *  Deprecated: This service is being deprecated. Please use [Export Channel
+ *  Services data to
+ *  BigQuery](https://cloud.google.com/channel/docs/rebilling/export-data-to-bigquery)
+ *  instead.
  * @class
  * @memberof v1
+ * @deprecated CloudChannelReportsService is deprecated and may be removed in a future version.
  */
 export class CloudChannelReportsServiceClient {
   private _terminated = false;
@@ -54,6 +61,8 @@ export class CloudChannelReportsServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -95,8 +104,7 @@ export class CloudChannelReportsServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -104,7 +112,7 @@ export class CloudChannelReportsServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CloudChannelReportsServiceClient({fallback: 'rest'}, gax);
+   *     const client = new CloudChannelReportsServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -114,8 +122,27 @@ export class CloudChannelReportsServiceClient {
     // Ensure that options include all the required fields.
     const staticMembers = this
       .constructor as typeof CloudChannelReportsServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'cloudchannel.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -130,7 +157,7 @@ export class CloudChannelReportsServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -155,23 +182,23 @@ export class CloudChannelReportsServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -184,6 +211,9 @@ export class CloudChannelReportsServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      billingAccountPathTemplate: new this._gaxModule.PathTemplate(
+        'accounts/{account}/billingAccounts/{billing_account}'
+      ),
       channelPartnerLinkPathTemplate: new this._gaxModule.PathTemplate(
         'accounts/{account}/channelPartnerLinks/{channel_partner_link}'
       ),
@@ -215,6 +245,9 @@ export class CloudChannelReportsServiceClient {
       skuPathTemplate: new this._gaxModule.PathTemplate(
         'products/{product}/skus/{sku}'
       ),
+      skuGroupPathTemplate: new this._gaxModule.PathTemplate(
+        'accounts/{account}/skuGroups/{sku_group}'
+      ),
     };
 
     // Some of the methods on this service return "paged" results,
@@ -241,7 +274,7 @@ export class CloudChannelReportsServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -312,6 +345,11 @@ export class CloudChannelReportsServiceClient {
   initialize() {
     // If the client stub promise is already initialized, return immediately.
     if (this.cloudChannelReportsServiceStub) {
+      this.warn(
+        'DEP$CloudChannelReportsService',
+        'CloudChannelReportsService is deprecated and may be removed in a future version.',
+        'DeprecationWarning'
+      );
       return this.cloudChannelReportsServiceStub;
     }
 
@@ -364,25 +402,61 @@ export class CloudChannelReportsServiceClient {
 
       this.innerApiCalls[methodName] = apiCall;
     }
+    this.warn(
+      'DEP$CloudChannelReportsService',
+      'CloudChannelReportsService is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
 
     return this.cloudChannelReportsServiceStub;
   }
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudchannel.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudchannel.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -442,12 +516,16 @@ export class CloudChannelReportsServiceClient {
    *
    * To get the results of the operation, call the GetOperation method of
    * CloudChannelOperationsService. The Operation metadata contains an
-   * instance of {@link google.cloud.channel.v1.OperationMetadata|OperationMetadata}.
+   * instance of {@link protos.google.cloud.channel.v1.OperationMetadata|OperationMetadata}.
    *
    * To get the results of report generation, call
-   * {@link google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
+   * {@link protos.google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
    * with the
-   * {@link google.cloud.channel.v1.RunReportJobResponse.report_job|RunReportJobResponse.report_job}.
+   * {@link protos.google.cloud.channel.v1.RunReportJobResponse.report_job|RunReportJobResponse.report_job}.
+   *
+   * Deprecated: Please use [Export Channel Services data to
+   * BigQuery](https://cloud.google.com/channel/docs/rebilling/export-data-to-bigquery)
+   * instead.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -481,11 +559,11 @@ export class CloudChannelReportsServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_channel_reports_service.run_report_job.js</caption>
    * region_tag:cloudchannel_v1_generated_CloudChannelReportsService_RunReportJob_async
+   * @deprecated RunReportJob is deprecated and may be removed in a future version.
    */
   runReportJob(
     request?: protos.google.cloud.channel.v1.IRunReportJobRequest,
@@ -497,7 +575,7 @@ export class CloudChannelReportsServiceClient {
         protos.google.cloud.channel.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runReportJob(
@@ -550,7 +628,7 @@ export class CloudChannelReportsServiceClient {
         protos.google.cloud.channel.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -569,6 +647,11 @@ export class CloudChannelReportsServiceClient {
         name: request.name ?? '',
       });
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$RunReportJob',
+      'RunReportJob is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.innerApiCalls.runReportJob(request, options, callback);
   }
   /**
@@ -577,11 +660,11 @@ export class CloudChannelReportsServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_channel_reports_service.run_report_job.js</caption>
    * region_tag:cloudchannel_v1_generated_CloudChannelReportsService_RunReportJob_async
+   * @deprecated RunReportJob is deprecated and may be removed in a future version.
    */
   async checkRunReportJobProgress(
     name: string
@@ -591,6 +674,11 @@ export class CloudChannelReportsServiceClient {
       protos.google.cloud.channel.v1.OperationMetadata
     >
   > {
+    this.warn(
+      'DEP$CloudChannelReportsService-$checkRunReportJobProgress',
+      'checkRunReportJobProgress is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     const request =
       new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
         {name}
@@ -608,13 +696,17 @@ export class CloudChannelReportsServiceClient {
   }
   /**
    * Retrieves data generated by
-   * {@link google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
+   * {@link protos.google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
+   *
+   * Deprecated: Please use [Export Channel Services data to
+   * BigQuery](https://cloud.google.com/channel/docs/rebilling/export-data-to-bigquery)
+   * instead.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.reportJob
    *   Required. The report job created by
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
    *   Report_job uses the format:
    *   accounts/{account_id}/reportJobs/{report_job_id}
    * @param {number} [request.pageSize]
@@ -627,9 +719,9 @@ export class CloudChannelReportsServiceClient {
    * @param {string} [request.pageToken]
    *   Optional. A token that specifies a page of results beyond the first page.
    *   Obtained through
-   *   {@link google.cloud.channel.v1.FetchReportResultsResponse.next_page_token|FetchReportResultsResponse.next_page_token}
+   *   {@link protos.google.cloud.channel.v1.FetchReportResultsResponse.next_page_token|FetchReportResultsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
    *   call.
    * @param {string[]} [request.partitionKeys]
    *   Optional. List of keys specifying which report partitions to return.
@@ -637,15 +729,15 @@ export class CloudChannelReportsServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.channel.v1.Row | Row}.
+   *   The first element of the array is Array of {@link protos.google.cloud.channel.v1.Row|Row}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `fetchReportResultsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
+   * @deprecated FetchReportResults is deprecated and may be removed in a future version.
    */
   fetchReportResults(
     request?: protos.google.cloud.channel.v1.IFetchReportResultsRequest,
@@ -654,7 +746,7 @@ export class CloudChannelReportsServiceClient {
     [
       protos.google.cloud.channel.v1.IRow[],
       protos.google.cloud.channel.v1.IFetchReportResultsRequest | null,
-      protos.google.cloud.channel.v1.IFetchReportResultsResponse
+      protos.google.cloud.channel.v1.IFetchReportResultsResponse,
     ]
   >;
   fetchReportResults(
@@ -700,7 +792,7 @@ export class CloudChannelReportsServiceClient {
     [
       protos.google.cloud.channel.v1.IRow[],
       protos.google.cloud.channel.v1.IFetchReportResultsRequest | null,
-      protos.google.cloud.channel.v1.IFetchReportResultsResponse
+      protos.google.cloud.channel.v1.IFetchReportResultsResponse,
     ]
   > | void {
     request = request || {};
@@ -719,6 +811,11 @@ export class CloudChannelReportsServiceClient {
         report_job: request.reportJob ?? '',
       });
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$FetchReportResults',
+      'FetchReportResults is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.innerApiCalls.fetchReportResults(request, options, callback);
   }
 
@@ -728,7 +825,7 @@ export class CloudChannelReportsServiceClient {
    *   The request object that will be sent.
    * @param {string} request.reportJob
    *   Required. The report job created by
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
    *   Report_job uses the format:
    *   accounts/{account_id}/reportJobs/{report_job_id}
    * @param {number} [request.pageSize]
@@ -741,9 +838,9 @@ export class CloudChannelReportsServiceClient {
    * @param {string} [request.pageToken]
    *   Optional. A token that specifies a page of results beyond the first page.
    *   Obtained through
-   *   {@link google.cloud.channel.v1.FetchReportResultsResponse.next_page_token|FetchReportResultsResponse.next_page_token}
+   *   {@link protos.google.cloud.channel.v1.FetchReportResultsResponse.next_page_token|FetchReportResultsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
    *   call.
    * @param {string[]} [request.partitionKeys]
    *   Optional. List of keys specifying which report partitions to return.
@@ -751,14 +848,14 @@ export class CloudChannelReportsServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.channel.v1.Row | Row} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.channel.v1.Row|Row} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `fetchReportResultsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
+   * @deprecated FetchReportResults is deprecated and may be removed in a future version.
    */
   fetchReportResultsStream(
     request?: protos.google.cloud.channel.v1.IFetchReportResultsRequest,
@@ -775,6 +872,11 @@ export class CloudChannelReportsServiceClient {
     const defaultCallSettings = this._defaults['fetchReportResults'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$FetchReportResults',
+      'FetchReportResults is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.descriptors.page.fetchReportResults.createStream(
       this.innerApiCalls.fetchReportResults as GaxCall,
       request,
@@ -790,7 +892,7 @@ export class CloudChannelReportsServiceClient {
    *   The request object that will be sent.
    * @param {string} request.reportJob
    *   Required. The report job created by
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.RunReportJob|CloudChannelReportsService.RunReportJob}.
    *   Report_job uses the format:
    *   accounts/{account_id}/reportJobs/{report_job_id}
    * @param {number} [request.pageSize]
@@ -803,9 +905,9 @@ export class CloudChannelReportsServiceClient {
    * @param {string} [request.pageToken]
    *   Optional. A token that specifies a page of results beyond the first page.
    *   Obtained through
-   *   {@link google.cloud.channel.v1.FetchReportResultsResponse.next_page_token|FetchReportResultsResponse.next_page_token}
+   *   {@link protos.google.cloud.channel.v1.FetchReportResultsResponse.next_page_token|FetchReportResultsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.FetchReportResults|CloudChannelReportsService.FetchReportResults}
    *   call.
    * @param {string[]} [request.partitionKeys]
    *   Optional. List of keys specifying which report partitions to return.
@@ -813,15 +915,15 @@ export class CloudChannelReportsServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.channel.v1.Row | Row}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.channel.v1.Row|Row}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_channel_reports_service.fetch_report_results.js</caption>
    * region_tag:cloudchannel_v1_generated_CloudChannelReportsService_FetchReportResults_async
+   * @deprecated FetchReportResults is deprecated and may be removed in a future version.
    */
   fetchReportResultsAsync(
     request?: protos.google.cloud.channel.v1.IFetchReportResultsRequest,
@@ -838,6 +940,11 @@ export class CloudChannelReportsServiceClient {
     const defaultCallSettings = this._defaults['fetchReportResults'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$FetchReportResults',
+      'FetchReportResults is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.descriptors.page.fetchReportResults.asyncIterate(
       this.innerApiCalls['fetchReportResults'] as GaxCall,
       request as {},
@@ -847,6 +954,10 @@ export class CloudChannelReportsServiceClient {
   /**
    * Lists the reports that RunReportJob can run. These reports include an ID,
    * a description, and the list of columns that will be in the result.
+   *
+   * Deprecated: Please use [Export Channel Services data to
+   * BigQuery](https://cloud.google.com/channel/docs/rebilling/export-data-to-bigquery)
+   * instead.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -860,9 +971,9 @@ export class CloudChannelReportsServiceClient {
    * @param {string} [request.pageToken]
    *   Optional. A token that specifies a page of results beyond the first page.
    *   Obtained through
-   *   {@link google.cloud.channel.v1.ListReportsResponse.next_page_token|ListReportsResponse.next_page_token}
+   *   {@link protos.google.cloud.channel.v1.ListReportsResponse.next_page_token|ListReportsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.ListReports|CloudChannelReportsService.ListReports}
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.ListReports|CloudChannelReportsService.ListReports}
    *   call.
    * @param {string} [request.languageCode]
    *   Optional. The BCP-47 language code, such as "en-US".  If specified, the
@@ -872,15 +983,15 @@ export class CloudChannelReportsServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.channel.v1.Report | Report}.
+   *   The first element of the array is Array of {@link protos.google.cloud.channel.v1.Report|Report}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listReportsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
+   * @deprecated ListReports is deprecated and may be removed in a future version.
    */
   listReports(
     request?: protos.google.cloud.channel.v1.IListReportsRequest,
@@ -889,7 +1000,7 @@ export class CloudChannelReportsServiceClient {
     [
       protos.google.cloud.channel.v1.IReport[],
       protos.google.cloud.channel.v1.IListReportsRequest | null,
-      protos.google.cloud.channel.v1.IListReportsResponse
+      protos.google.cloud.channel.v1.IListReportsResponse,
     ]
   >;
   listReports(
@@ -929,7 +1040,7 @@ export class CloudChannelReportsServiceClient {
     [
       protos.google.cloud.channel.v1.IReport[],
       protos.google.cloud.channel.v1.IListReportsRequest | null,
-      protos.google.cloud.channel.v1.IListReportsResponse
+      protos.google.cloud.channel.v1.IListReportsResponse,
     ]
   > | void {
     request = request || {};
@@ -948,6 +1059,11 @@ export class CloudChannelReportsServiceClient {
         parent: request.parent ?? '',
       });
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$ListReports',
+      'ListReports is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.innerApiCalls.listReports(request, options, callback);
   }
 
@@ -965,9 +1081,9 @@ export class CloudChannelReportsServiceClient {
    * @param {string} [request.pageToken]
    *   Optional. A token that specifies a page of results beyond the first page.
    *   Obtained through
-   *   {@link google.cloud.channel.v1.ListReportsResponse.next_page_token|ListReportsResponse.next_page_token}
+   *   {@link protos.google.cloud.channel.v1.ListReportsResponse.next_page_token|ListReportsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.ListReports|CloudChannelReportsService.ListReports}
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.ListReports|CloudChannelReportsService.ListReports}
    *   call.
    * @param {string} [request.languageCode]
    *   Optional. The BCP-47 language code, such as "en-US".  If specified, the
@@ -977,14 +1093,14 @@ export class CloudChannelReportsServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.channel.v1.Report | Report} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.channel.v1.Report|Report} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listReportsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
+   * @deprecated ListReports is deprecated and may be removed in a future version.
    */
   listReportsStream(
     request?: protos.google.cloud.channel.v1.IListReportsRequest,
@@ -1001,6 +1117,11 @@ export class CloudChannelReportsServiceClient {
     const defaultCallSettings = this._defaults['listReports'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$ListReports',
+      'ListReports is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.descriptors.page.listReports.createStream(
       this.innerApiCalls.listReports as GaxCall,
       request,
@@ -1024,9 +1145,9 @@ export class CloudChannelReportsServiceClient {
    * @param {string} [request.pageToken]
    *   Optional. A token that specifies a page of results beyond the first page.
    *   Obtained through
-   *   {@link google.cloud.channel.v1.ListReportsResponse.next_page_token|ListReportsResponse.next_page_token}
+   *   {@link protos.google.cloud.channel.v1.ListReportsResponse.next_page_token|ListReportsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.channel.v1.CloudChannelReportsService.ListReports|CloudChannelReportsService.ListReports}
+   *   {@link protos.google.cloud.channel.v1.CloudChannelReportsService.ListReports|CloudChannelReportsService.ListReports}
    *   call.
    * @param {string} [request.languageCode]
    *   Optional. The BCP-47 language code, such as "en-US".  If specified, the
@@ -1036,15 +1157,15 @@ export class CloudChannelReportsServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.channel.v1.Report | Report}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.channel.v1.Report|Report}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_channel_reports_service.list_reports.js</caption>
    * region_tag:cloudchannel_v1_generated_CloudChannelReportsService_ListReports_async
+   * @deprecated ListReports is deprecated and may be removed in a future version.
    */
   listReportsAsync(
     request?: protos.google.cloud.channel.v1.IListReportsRequest,
@@ -1061,6 +1182,11 @@ export class CloudChannelReportsServiceClient {
     const defaultCallSettings = this._defaults['listReports'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
+    this.warn(
+      'DEP$CloudChannelReportsService-$ListReports',
+      'ListReports is deprecated and may be removed in a future version.',
+      'DeprecationWarning'
+    );
     return this.descriptors.page.listReports.asyncIterate(
       this.innerApiCalls['listReports'] as GaxCall,
       request as {},
@@ -1245,6 +1371,46 @@ export class CloudChannelReportsServiceClient {
   // --------------------
   // -- Path templates --
   // --------------------
+
+  /**
+   * Return a fully-qualified billingAccount resource name string.
+   *
+   * @param {string} account
+   * @param {string} billing_account
+   * @returns {string} Resource name string.
+   */
+  billingAccountPath(account: string, billingAccount: string) {
+    return this.pathTemplates.billingAccountPathTemplate.render({
+      account: account,
+      billing_account: billingAccount,
+    });
+  }
+
+  /**
+   * Parse the account from BillingAccount resource.
+   *
+   * @param {string} billingAccountName
+   *   A fully-qualified path representing BillingAccount resource.
+   * @returns {string} A string representing the account.
+   */
+  matchAccountFromBillingAccountName(billingAccountName: string) {
+    return this.pathTemplates.billingAccountPathTemplate.match(
+      billingAccountName
+    ).account;
+  }
+
+  /**
+   * Parse the billing_account from BillingAccount resource.
+   *
+   * @param {string} billingAccountName
+   *   A fully-qualified path representing BillingAccount resource.
+   * @returns {string} A string representing the billing_account.
+   */
+  matchBillingAccountFromBillingAccountName(billingAccountName: string) {
+    return this.pathTemplates.billingAccountPathTemplate.match(
+      billingAccountName
+    ).billing_account;
+  }
 
   /**
    * Return a fully-qualified channelPartnerLink resource name string.
@@ -1673,6 +1839,43 @@ export class CloudChannelReportsServiceClient {
    */
   matchSkuFromSkuName(skuName: string) {
     return this.pathTemplates.skuPathTemplate.match(skuName).sku;
+  }
+
+  /**
+   * Return a fully-qualified skuGroup resource name string.
+   *
+   * @param {string} account
+   * @param {string} sku_group
+   * @returns {string} Resource name string.
+   */
+  skuGroupPath(account: string, skuGroup: string) {
+    return this.pathTemplates.skuGroupPathTemplate.render({
+      account: account,
+      sku_group: skuGroup,
+    });
+  }
+
+  /**
+   * Parse the account from SkuGroup resource.
+   *
+   * @param {string} skuGroupName
+   *   A fully-qualified path representing SkuGroup resource.
+   * @returns {string} A string representing the account.
+   */
+  matchAccountFromSkuGroupName(skuGroupName: string) {
+    return this.pathTemplates.skuGroupPathTemplate.match(skuGroupName).account;
+  }
+
+  /**
+   * Parse the sku_group from SkuGroup resource.
+   *
+   * @param {string} skuGroupName
+   *   A fully-qualified path representing SkuGroup resource.
+   * @returns {string} A string representing the sku_group.
+   */
+  matchSkuGroupFromSkuGroupName(skuGroupName: string) {
+    return this.pathTemplates.skuGroupPathTemplate.match(skuGroupName)
+      .sku_group;
   }
 
   /**

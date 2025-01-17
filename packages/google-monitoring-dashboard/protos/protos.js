@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1045,6 +1045,7 @@
                          * @property {google.monitoring.dashboard.v1.PickTimeSeriesFilter.Method|null} [rankingMethod] PickTimeSeriesFilter rankingMethod
                          * @property {number|null} [numTimeSeries] PickTimeSeriesFilter numTimeSeries
                          * @property {google.monitoring.dashboard.v1.PickTimeSeriesFilter.Direction|null} [direction] PickTimeSeriesFilter direction
+                         * @property {google.type.IInterval|null} [interval] PickTimeSeriesFilter interval
                          */
     
                         /**
@@ -1087,6 +1088,14 @@
                         PickTimeSeriesFilter.prototype.direction = 0;
     
                         /**
+                         * PickTimeSeriesFilter interval.
+                         * @member {google.type.IInterval|null|undefined} interval
+                         * @memberof google.monitoring.dashboard.v1.PickTimeSeriesFilter
+                         * @instance
+                         */
+                        PickTimeSeriesFilter.prototype.interval = null;
+    
+                        /**
                          * Creates a new PickTimeSeriesFilter instance using the specified properties.
                          * @function create
                          * @memberof google.monitoring.dashboard.v1.PickTimeSeriesFilter
@@ -1116,6 +1125,8 @@
                                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.numTimeSeries);
                             if (message.direction != null && Object.hasOwnProperty.call(message, "direction"))
                                 writer.uint32(/* id 3, wireType 0 =*/24).int32(message.direction);
+                            if (message.interval != null && Object.hasOwnProperty.call(message, "interval"))
+                                $root.google.type.Interval.encode(message.interval, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
                             return writer;
                         };
     
@@ -1160,6 +1171,10 @@
                                     }
                                 case 3: {
                                         message.direction = reader.int32();
+                                        break;
+                                    }
+                                case 4: {
+                                        message.interval = $root.google.type.Interval.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -1221,6 +1236,11 @@
                                 case 2:
                                     break;
                                 }
+                            if (message.interval != null && message.hasOwnProperty("interval")) {
+                                var error = $root.google.type.Interval.verify(message.interval);
+                                if (error)
+                                    return "interval." + error;
+                            }
                             return null;
                         };
     
@@ -1290,6 +1310,11 @@
                                 message.direction = 2;
                                 break;
                             }
+                            if (object.interval != null) {
+                                if (typeof object.interval !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.PickTimeSeriesFilter.interval: object expected");
+                                message.interval = $root.google.type.Interval.fromObject(object.interval);
+                            }
                             return message;
                         };
     
@@ -1310,6 +1335,7 @@
                                 object.rankingMethod = options.enums === String ? "METHOD_UNSPECIFIED" : 0;
                                 object.numTimeSeries = 0;
                                 object.direction = options.enums === String ? "DIRECTION_UNSPECIFIED" : 0;
+                                object.interval = null;
                             }
                             if (message.rankingMethod != null && message.hasOwnProperty("rankingMethod"))
                                 object.rankingMethod = options.enums === String ? $root.google.monitoring.dashboard.v1.PickTimeSeriesFilter.Method[message.rankingMethod] === undefined ? message.rankingMethod : $root.google.monitoring.dashboard.v1.PickTimeSeriesFilter.Method[message.rankingMethod] : message.rankingMethod;
@@ -1317,6 +1343,8 @@
                                 object.numTimeSeries = message.numTimeSeries;
                             if (message.direction != null && message.hasOwnProperty("direction"))
                                 object.direction = options.enums === String ? $root.google.monitoring.dashboard.v1.PickTimeSeriesFilter.Direction[message.direction] === undefined ? message.direction : $root.google.monitoring.dashboard.v1.PickTimeSeriesFilter.Direction[message.direction] : message.direction;
+                            if (message.interval != null && message.hasOwnProperty("interval"))
+                                object.interval = $root.google.type.Interval.toObject(message.interval, options);
                             return object;
                         };
     
@@ -4305,6 +4333,12 @@
                          * @property {google.monitoring.dashboard.v1.ITimeSeriesTable|null} [timeSeriesTable] Widget timeSeriesTable
                          * @property {google.monitoring.dashboard.v1.ICollapsibleGroup|null} [collapsibleGroup] Widget collapsibleGroup
                          * @property {google.monitoring.dashboard.v1.ILogsPanel|null} [logsPanel] Widget logsPanel
+                         * @property {google.monitoring.dashboard.v1.IIncidentList|null} [incidentList] Widget incidentList
+                         * @property {google.monitoring.dashboard.v1.IPieChart|null} [pieChart] Widget pieChart
+                         * @property {google.monitoring.dashboard.v1.IErrorReportingPanel|null} [errorReportingPanel] Widget errorReportingPanel
+                         * @property {google.monitoring.dashboard.v1.ISectionHeader|null} [sectionHeader] Widget sectionHeader
+                         * @property {google.monitoring.dashboard.v1.ISingleViewGroup|null} [singleViewGroup] Widget singleViewGroup
+                         * @property {string|null} [id] Widget id
                          */
     
                         /**
@@ -4394,17 +4428,65 @@
                          */
                         Widget.prototype.logsPanel = null;
     
+                        /**
+                         * Widget incidentList.
+                         * @member {google.monitoring.dashboard.v1.IIncidentList|null|undefined} incidentList
+                         * @memberof google.monitoring.dashboard.v1.Widget
+                         * @instance
+                         */
+                        Widget.prototype.incidentList = null;
+    
+                        /**
+                         * Widget pieChart.
+                         * @member {google.monitoring.dashboard.v1.IPieChart|null|undefined} pieChart
+                         * @memberof google.monitoring.dashboard.v1.Widget
+                         * @instance
+                         */
+                        Widget.prototype.pieChart = null;
+    
+                        /**
+                         * Widget errorReportingPanel.
+                         * @member {google.monitoring.dashboard.v1.IErrorReportingPanel|null|undefined} errorReportingPanel
+                         * @memberof google.monitoring.dashboard.v1.Widget
+                         * @instance
+                         */
+                        Widget.prototype.errorReportingPanel = null;
+    
+                        /**
+                         * Widget sectionHeader.
+                         * @member {google.monitoring.dashboard.v1.ISectionHeader|null|undefined} sectionHeader
+                         * @memberof google.monitoring.dashboard.v1.Widget
+                         * @instance
+                         */
+                        Widget.prototype.sectionHeader = null;
+    
+                        /**
+                         * Widget singleViewGroup.
+                         * @member {google.monitoring.dashboard.v1.ISingleViewGroup|null|undefined} singleViewGroup
+                         * @memberof google.monitoring.dashboard.v1.Widget
+                         * @instance
+                         */
+                        Widget.prototype.singleViewGroup = null;
+    
+                        /**
+                         * Widget id.
+                         * @member {string} id
+                         * @memberof google.monitoring.dashboard.v1.Widget
+                         * @instance
+                         */
+                        Widget.prototype.id = "";
+    
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
     
                         /**
                          * Widget content.
-                         * @member {"xyChart"|"scorecard"|"text"|"blank"|"alertChart"|"timeSeriesTable"|"collapsibleGroup"|"logsPanel"|undefined} content
+                         * @member {"xyChart"|"scorecard"|"text"|"blank"|"alertChart"|"timeSeriesTable"|"collapsibleGroup"|"logsPanel"|"incidentList"|"pieChart"|"errorReportingPanel"|"sectionHeader"|"singleViewGroup"|undefined} content
                          * @memberof google.monitoring.dashboard.v1.Widget
                          * @instance
                          */
                         Object.defineProperty(Widget.prototype, "content", {
-                            get: $util.oneOfGetter($oneOfFields = ["xyChart", "scorecard", "text", "blank", "alertChart", "timeSeriesTable", "collapsibleGroup", "logsPanel"]),
+                            get: $util.oneOfGetter($oneOfFields = ["xyChart", "scorecard", "text", "blank", "alertChart", "timeSeriesTable", "collapsibleGroup", "logsPanel", "incidentList", "pieChart", "errorReportingPanel", "sectionHeader", "singleViewGroup"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
     
@@ -4450,6 +4532,18 @@
                                 $root.google.monitoring.dashboard.v1.CollapsibleGroup.encode(message.collapsibleGroup, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
                             if (message.logsPanel != null && Object.hasOwnProperty.call(message, "logsPanel"))
                                 $root.google.monitoring.dashboard.v1.LogsPanel.encode(message.logsPanel, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                            if (message.incidentList != null && Object.hasOwnProperty.call(message, "incidentList"))
+                                $root.google.monitoring.dashboard.v1.IncidentList.encode(message.incidentList, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                            if (message.pieChart != null && Object.hasOwnProperty.call(message, "pieChart"))
+                                $root.google.monitoring.dashboard.v1.PieChart.encode(message.pieChart, writer.uint32(/* id 14, wireType 2 =*/114).fork()).ldelim();
+                            if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                                writer.uint32(/* id 17, wireType 2 =*/138).string(message.id);
+                            if (message.errorReportingPanel != null && Object.hasOwnProperty.call(message, "errorReportingPanel"))
+                                $root.google.monitoring.dashboard.v1.ErrorReportingPanel.encode(message.errorReportingPanel, writer.uint32(/* id 19, wireType 2 =*/154).fork()).ldelim();
+                            if (message.sectionHeader != null && Object.hasOwnProperty.call(message, "sectionHeader"))
+                                $root.google.monitoring.dashboard.v1.SectionHeader.encode(message.sectionHeader, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                            if (message.singleViewGroup != null && Object.hasOwnProperty.call(message, "singleViewGroup"))
+                                $root.google.monitoring.dashboard.v1.SingleViewGroup.encode(message.singleViewGroup, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
                             return writer;
                         };
     
@@ -4518,6 +4612,30 @@
                                     }
                                 case 10: {
                                         message.logsPanel = $root.google.monitoring.dashboard.v1.LogsPanel.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 12: {
+                                        message.incidentList = $root.google.monitoring.dashboard.v1.IncidentList.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 14: {
+                                        message.pieChart = $root.google.monitoring.dashboard.v1.PieChart.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 19: {
+                                        message.errorReportingPanel = $root.google.monitoring.dashboard.v1.ErrorReportingPanel.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 21: {
+                                        message.sectionHeader = $root.google.monitoring.dashboard.v1.SectionHeader.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 22: {
+                                        message.singleViewGroup = $root.google.monitoring.dashboard.v1.SingleViewGroup.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 17: {
+                                        message.id = reader.string();
                                         break;
                                     }
                                 default:
@@ -4637,6 +4755,59 @@
                                         return "logsPanel." + error;
                                 }
                             }
+                            if (message.incidentList != null && message.hasOwnProperty("incidentList")) {
+                                if (properties.content === 1)
+                                    return "content: multiple values";
+                                properties.content = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.IncidentList.verify(message.incidentList);
+                                    if (error)
+                                        return "incidentList." + error;
+                                }
+                            }
+                            if (message.pieChart != null && message.hasOwnProperty("pieChart")) {
+                                if (properties.content === 1)
+                                    return "content: multiple values";
+                                properties.content = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.PieChart.verify(message.pieChart);
+                                    if (error)
+                                        return "pieChart." + error;
+                                }
+                            }
+                            if (message.errorReportingPanel != null && message.hasOwnProperty("errorReportingPanel")) {
+                                if (properties.content === 1)
+                                    return "content: multiple values";
+                                properties.content = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.ErrorReportingPanel.verify(message.errorReportingPanel);
+                                    if (error)
+                                        return "errorReportingPanel." + error;
+                                }
+                            }
+                            if (message.sectionHeader != null && message.hasOwnProperty("sectionHeader")) {
+                                if (properties.content === 1)
+                                    return "content: multiple values";
+                                properties.content = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.SectionHeader.verify(message.sectionHeader);
+                                    if (error)
+                                        return "sectionHeader." + error;
+                                }
+                            }
+                            if (message.singleViewGroup != null && message.hasOwnProperty("singleViewGroup")) {
+                                if (properties.content === 1)
+                                    return "content: multiple values";
+                                properties.content = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.SingleViewGroup.verify(message.singleViewGroup);
+                                    if (error)
+                                        return "singleViewGroup." + error;
+                                }
+                            }
+                            if (message.id != null && message.hasOwnProperty("id"))
+                                if (!$util.isString(message.id))
+                                    return "id: string expected";
                             return null;
                         };
     
@@ -4694,6 +4865,33 @@
                                     throw TypeError(".google.monitoring.dashboard.v1.Widget.logsPanel: object expected");
                                 message.logsPanel = $root.google.monitoring.dashboard.v1.LogsPanel.fromObject(object.logsPanel);
                             }
+                            if (object.incidentList != null) {
+                                if (typeof object.incidentList !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Widget.incidentList: object expected");
+                                message.incidentList = $root.google.monitoring.dashboard.v1.IncidentList.fromObject(object.incidentList);
+                            }
+                            if (object.pieChart != null) {
+                                if (typeof object.pieChart !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Widget.pieChart: object expected");
+                                message.pieChart = $root.google.monitoring.dashboard.v1.PieChart.fromObject(object.pieChart);
+                            }
+                            if (object.errorReportingPanel != null) {
+                                if (typeof object.errorReportingPanel !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Widget.errorReportingPanel: object expected");
+                                message.errorReportingPanel = $root.google.monitoring.dashboard.v1.ErrorReportingPanel.fromObject(object.errorReportingPanel);
+                            }
+                            if (object.sectionHeader != null) {
+                                if (typeof object.sectionHeader !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Widget.sectionHeader: object expected");
+                                message.sectionHeader = $root.google.monitoring.dashboard.v1.SectionHeader.fromObject(object.sectionHeader);
+                            }
+                            if (object.singleViewGroup != null) {
+                                if (typeof object.singleViewGroup !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Widget.singleViewGroup: object expected");
+                                message.singleViewGroup = $root.google.monitoring.dashboard.v1.SingleViewGroup.fromObject(object.singleViewGroup);
+                            }
+                            if (object.id != null)
+                                message.id = String(object.id);
                             return message;
                         };
     
@@ -4710,8 +4908,10 @@
                             if (!options)
                                 options = {};
                             var object = {};
-                            if (options.defaults)
+                            if (options.defaults) {
                                 object.title = "";
+                                object.id = "";
+                            }
                             if (message.title != null && message.hasOwnProperty("title"))
                                 object.title = message.title;
                             if (message.xyChart != null && message.hasOwnProperty("xyChart")) {
@@ -4754,6 +4954,33 @@
                                 if (options.oneofs)
                                     object.content = "logsPanel";
                             }
+                            if (message.incidentList != null && message.hasOwnProperty("incidentList")) {
+                                object.incidentList = $root.google.monitoring.dashboard.v1.IncidentList.toObject(message.incidentList, options);
+                                if (options.oneofs)
+                                    object.content = "incidentList";
+                            }
+                            if (message.pieChart != null && message.hasOwnProperty("pieChart")) {
+                                object.pieChart = $root.google.monitoring.dashboard.v1.PieChart.toObject(message.pieChart, options);
+                                if (options.oneofs)
+                                    object.content = "pieChart";
+                            }
+                            if (message.id != null && message.hasOwnProperty("id"))
+                                object.id = message.id;
+                            if (message.errorReportingPanel != null && message.hasOwnProperty("errorReportingPanel")) {
+                                object.errorReportingPanel = $root.google.monitoring.dashboard.v1.ErrorReportingPanel.toObject(message.errorReportingPanel, options);
+                                if (options.oneofs)
+                                    object.content = "errorReportingPanel";
+                            }
+                            if (message.sectionHeader != null && message.hasOwnProperty("sectionHeader")) {
+                                object.sectionHeader = $root.google.monitoring.dashboard.v1.SectionHeader.toObject(message.sectionHeader, options);
+                                if (options.oneofs)
+                                    object.content = "sectionHeader";
+                            }
+                            if (message.singleViewGroup != null && message.hasOwnProperty("singleViewGroup")) {
+                                object.singleViewGroup = $root.google.monitoring.dashboard.v1.SingleViewGroup.toObject(message.singleViewGroup, options);
+                                if (options.oneofs)
+                                    object.content = "singleViewGroup";
+                            }
                             return object;
                         };
     
@@ -4784,6 +5011,568 @@
                         };
     
                         return Widget;
+                    })();
+    
+                    v1.ErrorReportingPanel = (function() {
+    
+                        /**
+                         * Properties of an ErrorReportingPanel.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @interface IErrorReportingPanel
+                         * @property {Array.<string>|null} [projectNames] ErrorReportingPanel projectNames
+                         * @property {Array.<string>|null} [services] ErrorReportingPanel services
+                         * @property {Array.<string>|null} [versions] ErrorReportingPanel versions
+                         */
+    
+                        /**
+                         * Constructs a new ErrorReportingPanel.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @classdesc Represents an ErrorReportingPanel.
+                         * @implements IErrorReportingPanel
+                         * @constructor
+                         * @param {google.monitoring.dashboard.v1.IErrorReportingPanel=} [properties] Properties to set
+                         */
+                        function ErrorReportingPanel(properties) {
+                            this.projectNames = [];
+                            this.services = [];
+                            this.versions = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ErrorReportingPanel projectNames.
+                         * @member {Array.<string>} projectNames
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @instance
+                         */
+                        ErrorReportingPanel.prototype.projectNames = $util.emptyArray;
+    
+                        /**
+                         * ErrorReportingPanel services.
+                         * @member {Array.<string>} services
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @instance
+                         */
+                        ErrorReportingPanel.prototype.services = $util.emptyArray;
+    
+                        /**
+                         * ErrorReportingPanel versions.
+                         * @member {Array.<string>} versions
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @instance
+                         */
+                        ErrorReportingPanel.prototype.versions = $util.emptyArray;
+    
+                        /**
+                         * Creates a new ErrorReportingPanel instance using the specified properties.
+                         * @function create
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IErrorReportingPanel=} [properties] Properties to set
+                         * @returns {google.monitoring.dashboard.v1.ErrorReportingPanel} ErrorReportingPanel instance
+                         */
+                        ErrorReportingPanel.create = function create(properties) {
+                            return new ErrorReportingPanel(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ErrorReportingPanel message. Does not implicitly {@link google.monitoring.dashboard.v1.ErrorReportingPanel.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IErrorReportingPanel} message ErrorReportingPanel message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ErrorReportingPanel.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.projectNames != null && message.projectNames.length)
+                                for (var i = 0; i < message.projectNames.length; ++i)
+                                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.projectNames[i]);
+                            if (message.services != null && message.services.length)
+                                for (var i = 0; i < message.services.length; ++i)
+                                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.services[i]);
+                            if (message.versions != null && message.versions.length)
+                                for (var i = 0; i < message.versions.length; ++i)
+                                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.versions[i]);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ErrorReportingPanel message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.ErrorReportingPanel.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IErrorReportingPanel} message ErrorReportingPanel message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ErrorReportingPanel.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes an ErrorReportingPanel message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.monitoring.dashboard.v1.ErrorReportingPanel} ErrorReportingPanel
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ErrorReportingPanel.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.ErrorReportingPanel();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        if (!(message.projectNames && message.projectNames.length))
+                                            message.projectNames = [];
+                                        message.projectNames.push(reader.string());
+                                        break;
+                                    }
+                                case 2: {
+                                        if (!(message.services && message.services.length))
+                                            message.services = [];
+                                        message.services.push(reader.string());
+                                        break;
+                                    }
+                                case 3: {
+                                        if (!(message.versions && message.versions.length))
+                                            message.versions = [];
+                                        message.versions.push(reader.string());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes an ErrorReportingPanel message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.monitoring.dashboard.v1.ErrorReportingPanel} ErrorReportingPanel
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ErrorReportingPanel.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies an ErrorReportingPanel message.
+                         * @function verify
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ErrorReportingPanel.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.projectNames != null && message.hasOwnProperty("projectNames")) {
+                                if (!Array.isArray(message.projectNames))
+                                    return "projectNames: array expected";
+                                for (var i = 0; i < message.projectNames.length; ++i)
+                                    if (!$util.isString(message.projectNames[i]))
+                                        return "projectNames: string[] expected";
+                            }
+                            if (message.services != null && message.hasOwnProperty("services")) {
+                                if (!Array.isArray(message.services))
+                                    return "services: array expected";
+                                for (var i = 0; i < message.services.length; ++i)
+                                    if (!$util.isString(message.services[i]))
+                                        return "services: string[] expected";
+                            }
+                            if (message.versions != null && message.hasOwnProperty("versions")) {
+                                if (!Array.isArray(message.versions))
+                                    return "versions: array expected";
+                                for (var i = 0; i < message.versions.length; ++i)
+                                    if (!$util.isString(message.versions[i]))
+                                        return "versions: string[] expected";
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates an ErrorReportingPanel message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.monitoring.dashboard.v1.ErrorReportingPanel} ErrorReportingPanel
+                         */
+                        ErrorReportingPanel.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.monitoring.dashboard.v1.ErrorReportingPanel)
+                                return object;
+                            var message = new $root.google.monitoring.dashboard.v1.ErrorReportingPanel();
+                            if (object.projectNames) {
+                                if (!Array.isArray(object.projectNames))
+                                    throw TypeError(".google.monitoring.dashboard.v1.ErrorReportingPanel.projectNames: array expected");
+                                message.projectNames = [];
+                                for (var i = 0; i < object.projectNames.length; ++i)
+                                    message.projectNames[i] = String(object.projectNames[i]);
+                            }
+                            if (object.services) {
+                                if (!Array.isArray(object.services))
+                                    throw TypeError(".google.monitoring.dashboard.v1.ErrorReportingPanel.services: array expected");
+                                message.services = [];
+                                for (var i = 0; i < object.services.length; ++i)
+                                    message.services[i] = String(object.services[i]);
+                            }
+                            if (object.versions) {
+                                if (!Array.isArray(object.versions))
+                                    throw TypeError(".google.monitoring.dashboard.v1.ErrorReportingPanel.versions: array expected");
+                                message.versions = [];
+                                for (var i = 0; i < object.versions.length; ++i)
+                                    message.versions[i] = String(object.versions[i]);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from an ErrorReportingPanel message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ErrorReportingPanel} message ErrorReportingPanel
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ErrorReportingPanel.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults) {
+                                object.projectNames = [];
+                                object.services = [];
+                                object.versions = [];
+                            }
+                            if (message.projectNames && message.projectNames.length) {
+                                object.projectNames = [];
+                                for (var j = 0; j < message.projectNames.length; ++j)
+                                    object.projectNames[j] = message.projectNames[j];
+                            }
+                            if (message.services && message.services.length) {
+                                object.services = [];
+                                for (var j = 0; j < message.services.length; ++j)
+                                    object.services[j] = message.services[j];
+                            }
+                            if (message.versions && message.versions.length) {
+                                object.versions = [];
+                                for (var j = 0; j < message.versions.length; ++j)
+                                    object.versions[j] = message.versions[j];
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ErrorReportingPanel to JSON.
+                         * @function toJSON
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ErrorReportingPanel.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ErrorReportingPanel
+                         * @function getTypeUrl
+                         * @memberof google.monitoring.dashboard.v1.ErrorReportingPanel
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ErrorReportingPanel.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.ErrorReportingPanel";
+                        };
+    
+                        return ErrorReportingPanel;
+                    })();
+    
+                    v1.IncidentList = (function() {
+    
+                        /**
+                         * Properties of an IncidentList.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @interface IIncidentList
+                         * @property {Array.<google.api.IMonitoredResource>|null} [monitoredResources] IncidentList monitoredResources
+                         * @property {Array.<string>|null} [policyNames] IncidentList policyNames
+                         */
+    
+                        /**
+                         * Constructs a new IncidentList.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @classdesc Represents an IncidentList.
+                         * @implements IIncidentList
+                         * @constructor
+                         * @param {google.monitoring.dashboard.v1.IIncidentList=} [properties] Properties to set
+                         */
+                        function IncidentList(properties) {
+                            this.monitoredResources = [];
+                            this.policyNames = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * IncidentList monitoredResources.
+                         * @member {Array.<google.api.IMonitoredResource>} monitoredResources
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @instance
+                         */
+                        IncidentList.prototype.monitoredResources = $util.emptyArray;
+    
+                        /**
+                         * IncidentList policyNames.
+                         * @member {Array.<string>} policyNames
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @instance
+                         */
+                        IncidentList.prototype.policyNames = $util.emptyArray;
+    
+                        /**
+                         * Creates a new IncidentList instance using the specified properties.
+                         * @function create
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IIncidentList=} [properties] Properties to set
+                         * @returns {google.monitoring.dashboard.v1.IncidentList} IncidentList instance
+                         */
+                        IncidentList.create = function create(properties) {
+                            return new IncidentList(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified IncidentList message. Does not implicitly {@link google.monitoring.dashboard.v1.IncidentList.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IIncidentList} message IncidentList message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        IncidentList.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.monitoredResources != null && message.monitoredResources.length)
+                                for (var i = 0; i < message.monitoredResources.length; ++i)
+                                    $root.google.api.MonitoredResource.encode(message.monitoredResources[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.policyNames != null && message.policyNames.length)
+                                for (var i = 0; i < message.policyNames.length; ++i)
+                                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.policyNames[i]);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified IncidentList message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.IncidentList.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IIncidentList} message IncidentList message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        IncidentList.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes an IncidentList message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.monitoring.dashboard.v1.IncidentList} IncidentList
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        IncidentList.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.IncidentList();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        if (!(message.monitoredResources && message.monitoredResources.length))
+                                            message.monitoredResources = [];
+                                        message.monitoredResources.push($root.google.api.MonitoredResource.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 2: {
+                                        if (!(message.policyNames && message.policyNames.length))
+                                            message.policyNames = [];
+                                        message.policyNames.push(reader.string());
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes an IncidentList message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.monitoring.dashboard.v1.IncidentList} IncidentList
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        IncidentList.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies an IncidentList message.
+                         * @function verify
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        IncidentList.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.monitoredResources != null && message.hasOwnProperty("monitoredResources")) {
+                                if (!Array.isArray(message.monitoredResources))
+                                    return "monitoredResources: array expected";
+                                for (var i = 0; i < message.monitoredResources.length; ++i) {
+                                    var error = $root.google.api.MonitoredResource.verify(message.monitoredResources[i]);
+                                    if (error)
+                                        return "monitoredResources." + error;
+                                }
+                            }
+                            if (message.policyNames != null && message.hasOwnProperty("policyNames")) {
+                                if (!Array.isArray(message.policyNames))
+                                    return "policyNames: array expected";
+                                for (var i = 0; i < message.policyNames.length; ++i)
+                                    if (!$util.isString(message.policyNames[i]))
+                                        return "policyNames: string[] expected";
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates an IncidentList message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.monitoring.dashboard.v1.IncidentList} IncidentList
+                         */
+                        IncidentList.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.monitoring.dashboard.v1.IncidentList)
+                                return object;
+                            var message = new $root.google.monitoring.dashboard.v1.IncidentList();
+                            if (object.monitoredResources) {
+                                if (!Array.isArray(object.monitoredResources))
+                                    throw TypeError(".google.monitoring.dashboard.v1.IncidentList.monitoredResources: array expected");
+                                message.monitoredResources = [];
+                                for (var i = 0; i < object.monitoredResources.length; ++i) {
+                                    if (typeof object.monitoredResources[i] !== "object")
+                                        throw TypeError(".google.monitoring.dashboard.v1.IncidentList.monitoredResources: object expected");
+                                    message.monitoredResources[i] = $root.google.api.MonitoredResource.fromObject(object.monitoredResources[i]);
+                                }
+                            }
+                            if (object.policyNames) {
+                                if (!Array.isArray(object.policyNames))
+                                    throw TypeError(".google.monitoring.dashboard.v1.IncidentList.policyNames: array expected");
+                                message.policyNames = [];
+                                for (var i = 0; i < object.policyNames.length; ++i)
+                                    message.policyNames[i] = String(object.policyNames[i]);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from an IncidentList message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IncidentList} message IncidentList
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        IncidentList.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults) {
+                                object.monitoredResources = [];
+                                object.policyNames = [];
+                            }
+                            if (message.monitoredResources && message.monitoredResources.length) {
+                                object.monitoredResources = [];
+                                for (var j = 0; j < message.monitoredResources.length; ++j)
+                                    object.monitoredResources[j] = $root.google.api.MonitoredResource.toObject(message.monitoredResources[j], options);
+                            }
+                            if (message.policyNames && message.policyNames.length) {
+                                object.policyNames = [];
+                                for (var j = 0; j < message.policyNames.length; ++j)
+                                    object.policyNames[j] = message.policyNames[j];
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this IncidentList to JSON.
+                         * @function toJSON
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        IncidentList.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for IncidentList
+                         * @function getTypeUrl
+                         * @memberof google.monitoring.dashboard.v1.IncidentList
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        IncidentList.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.IncidentList";
+                        };
+    
+                        return IncidentList;
                     })();
     
                     v1.LogsPanel = (function() {
@@ -5029,28 +5818,27 @@
                         return LogsPanel;
                     })();
     
-                    v1.Scorecard = (function() {
+                    v1.PieChart = (function() {
     
                         /**
-                         * Properties of a Scorecard.
+                         * Properties of a PieChart.
                          * @memberof google.monitoring.dashboard.v1
-                         * @interface IScorecard
-                         * @property {google.monitoring.dashboard.v1.ITimeSeriesQuery|null} [timeSeriesQuery] Scorecard timeSeriesQuery
-                         * @property {google.monitoring.dashboard.v1.Scorecard.IGaugeView|null} [gaugeView] Scorecard gaugeView
-                         * @property {google.monitoring.dashboard.v1.Scorecard.ISparkChartView|null} [sparkChartView] Scorecard sparkChartView
-                         * @property {Array.<google.monitoring.dashboard.v1.IThreshold>|null} [thresholds] Scorecard thresholds
+                         * @interface IPieChart
+                         * @property {Array.<google.monitoring.dashboard.v1.PieChart.IPieChartDataSet>|null} [dataSets] PieChart dataSets
+                         * @property {google.monitoring.dashboard.v1.PieChart.PieChartType|null} [chartType] PieChart chartType
+                         * @property {boolean|null} [showLabels] PieChart showLabels
                          */
     
                         /**
-                         * Constructs a new Scorecard.
+                         * Constructs a new PieChart.
                          * @memberof google.monitoring.dashboard.v1
-                         * @classdesc Represents a Scorecard.
-                         * @implements IScorecard
+                         * @classdesc Represents a PieChart.
+                         * @implements IPieChart
                          * @constructor
-                         * @param {google.monitoring.dashboard.v1.IScorecard=} [properties] Properties to set
+                         * @param {google.monitoring.dashboard.v1.IPieChart=} [properties] Properties to set
                          */
-                        function Scorecard(properties) {
-                            this.thresholds = [];
+                        function PieChart(properties) {
+                            this.dataSets = [];
                             if (properties)
                                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                     if (properties[keys[i]] != null)
@@ -5058,134 +5846,106 @@
                         }
     
                         /**
-                         * Scorecard timeSeriesQuery.
-                         * @member {google.monitoring.dashboard.v1.ITimeSeriesQuery|null|undefined} timeSeriesQuery
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * PieChart dataSets.
+                         * @member {Array.<google.monitoring.dashboard.v1.PieChart.IPieChartDataSet>} dataSets
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @instance
                          */
-                        Scorecard.prototype.timeSeriesQuery = null;
+                        PieChart.prototype.dataSets = $util.emptyArray;
     
                         /**
-                         * Scorecard gaugeView.
-                         * @member {google.monitoring.dashboard.v1.Scorecard.IGaugeView|null|undefined} gaugeView
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * PieChart chartType.
+                         * @member {google.monitoring.dashboard.v1.PieChart.PieChartType} chartType
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @instance
                          */
-                        Scorecard.prototype.gaugeView = null;
+                        PieChart.prototype.chartType = 0;
     
                         /**
-                         * Scorecard sparkChartView.
-                         * @member {google.monitoring.dashboard.v1.Scorecard.ISparkChartView|null|undefined} sparkChartView
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * PieChart showLabels.
+                         * @member {boolean} showLabels
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @instance
                          */
-                        Scorecard.prototype.sparkChartView = null;
+                        PieChart.prototype.showLabels = false;
     
                         /**
-                         * Scorecard thresholds.
-                         * @member {Array.<google.monitoring.dashboard.v1.IThreshold>} thresholds
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
-                         * @instance
-                         */
-                        Scorecard.prototype.thresholds = $util.emptyArray;
-    
-                        // OneOf field names bound to virtual getters and setters
-                        var $oneOfFields;
-    
-                        /**
-                         * Scorecard dataView.
-                         * @member {"gaugeView"|"sparkChartView"|undefined} dataView
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
-                         * @instance
-                         */
-                        Object.defineProperty(Scorecard.prototype, "dataView", {
-                            get: $util.oneOfGetter($oneOfFields = ["gaugeView", "sparkChartView"]),
-                            set: $util.oneOfSetter($oneOfFields)
-                        });
-    
-                        /**
-                         * Creates a new Scorecard instance using the specified properties.
+                         * Creates a new PieChart instance using the specified properties.
                          * @function create
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
-                         * @param {google.monitoring.dashboard.v1.IScorecard=} [properties] Properties to set
-                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard instance
+                         * @param {google.monitoring.dashboard.v1.IPieChart=} [properties] Properties to set
+                         * @returns {google.monitoring.dashboard.v1.PieChart} PieChart instance
                          */
-                        Scorecard.create = function create(properties) {
-                            return new Scorecard(properties);
+                        PieChart.create = function create(properties) {
+                            return new PieChart(properties);
                         };
     
                         /**
-                         * Encodes the specified Scorecard message. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.verify|verify} messages.
+                         * Encodes the specified PieChart message. Does not implicitly {@link google.monitoring.dashboard.v1.PieChart.verify|verify} messages.
                          * @function encode
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
-                         * @param {google.monitoring.dashboard.v1.IScorecard} message Scorecard message or plain object to encode
+                         * @param {google.monitoring.dashboard.v1.IPieChart} message PieChart message or plain object to encode
                          * @param {$protobuf.Writer} [writer] Writer to encode to
                          * @returns {$protobuf.Writer} Writer
                          */
-                        Scorecard.encode = function encode(message, writer) {
+                        PieChart.encode = function encode(message, writer) {
                             if (!writer)
                                 writer = $Writer.create();
-                            if (message.timeSeriesQuery != null && Object.hasOwnProperty.call(message, "timeSeriesQuery"))
-                                $root.google.monitoring.dashboard.v1.TimeSeriesQuery.encode(message.timeSeriesQuery, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
-                            if (message.gaugeView != null && Object.hasOwnProperty.call(message, "gaugeView"))
-                                $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.encode(message.gaugeView, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
-                            if (message.sparkChartView != null && Object.hasOwnProperty.call(message, "sparkChartView"))
-                                $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.encode(message.sparkChartView, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-                            if (message.thresholds != null && message.thresholds.length)
-                                for (var i = 0; i < message.thresholds.length; ++i)
-                                    $root.google.monitoring.dashboard.v1.Threshold.encode(message.thresholds[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                            if (message.dataSets != null && message.dataSets.length)
+                                for (var i = 0; i < message.dataSets.length; ++i)
+                                    $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet.encode(message.dataSets[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.chartType != null && Object.hasOwnProperty.call(message, "chartType"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.chartType);
+                            if (message.showLabels != null && Object.hasOwnProperty.call(message, "showLabels"))
+                                writer.uint32(/* id 4, wireType 0 =*/32).bool(message.showLabels);
                             return writer;
                         };
     
                         /**
-                         * Encodes the specified Scorecard message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.verify|verify} messages.
+                         * Encodes the specified PieChart message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.PieChart.verify|verify} messages.
                          * @function encodeDelimited
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
-                         * @param {google.monitoring.dashboard.v1.IScorecard} message Scorecard message or plain object to encode
+                         * @param {google.monitoring.dashboard.v1.IPieChart} message PieChart message or plain object to encode
                          * @param {$protobuf.Writer} [writer] Writer to encode to
                          * @returns {$protobuf.Writer} Writer
                          */
-                        Scorecard.encodeDelimited = function encodeDelimited(message, writer) {
+                        PieChart.encodeDelimited = function encodeDelimited(message, writer) {
                             return this.encode(message, writer).ldelim();
                         };
     
                         /**
-                         * Decodes a Scorecard message from the specified reader or buffer.
+                         * Decodes a PieChart message from the specified reader or buffer.
                          * @function decode
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
                          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
                          * @param {number} [length] Message length if known beforehand
-                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard
+                         * @returns {google.monitoring.dashboard.v1.PieChart} PieChart
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        Scorecard.decode = function decode(reader, length) {
+                        PieChart.decode = function decode(reader, length) {
                             if (!(reader instanceof $Reader))
                                 reader = $Reader.create(reader);
-                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Scorecard();
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.PieChart();
                             while (reader.pos < end) {
                                 var tag = reader.uint32();
                                 switch (tag >>> 3) {
                                 case 1: {
-                                        message.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.decode(reader, reader.uint32());
+                                        if (!(message.dataSets && message.dataSets.length))
+                                            message.dataSets = [];
+                                        message.dataSets.push($root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                case 2: {
+                                        message.chartType = reader.int32();
                                         break;
                                     }
                                 case 4: {
-                                        message.gaugeView = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.decode(reader, reader.uint32());
-                                        break;
-                                    }
-                                case 5: {
-                                        message.sparkChartView = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.decode(reader, reader.uint32());
-                                        break;
-                                    }
-                                case 6: {
-                                        if (!(message.thresholds && message.thresholds.length))
-                                            message.thresholds = [];
-                                        message.thresholds.push($root.google.monitoring.dashboard.v1.Threshold.decode(reader, reader.uint32()));
+                                        message.showLabels = reader.bool();
                                         break;
                                     }
                                 default:
@@ -5197,190 +5957,180 @@
                         };
     
                         /**
-                         * Decodes a Scorecard message from the specified reader or buffer, length delimited.
+                         * Decodes a PieChart message from the specified reader or buffer, length delimited.
                          * @function decodeDelimited
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
                          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard
+                         * @returns {google.monitoring.dashboard.v1.PieChart} PieChart
                          * @throws {Error} If the payload is not a reader or valid buffer
                          * @throws {$protobuf.util.ProtocolError} If required fields are missing
                          */
-                        Scorecard.decodeDelimited = function decodeDelimited(reader) {
+                        PieChart.decodeDelimited = function decodeDelimited(reader) {
                             if (!(reader instanceof $Reader))
                                 reader = new $Reader(reader);
                             return this.decode(reader, reader.uint32());
                         };
     
                         /**
-                         * Verifies a Scorecard message.
+                         * Verifies a PieChart message.
                          * @function verify
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
                          * @param {Object.<string,*>} message Plain object to verify
                          * @returns {string|null} `null` if valid, otherwise the reason why it is not
                          */
-                        Scorecard.verify = function verify(message) {
+                        PieChart.verify = function verify(message) {
                             if (typeof message !== "object" || message === null)
                                 return "object expected";
-                            var properties = {};
-                            if (message.timeSeriesQuery != null && message.hasOwnProperty("timeSeriesQuery")) {
-                                var error = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.verify(message.timeSeriesQuery);
-                                if (error)
-                                    return "timeSeriesQuery." + error;
-                            }
-                            if (message.gaugeView != null && message.hasOwnProperty("gaugeView")) {
-                                properties.dataView = 1;
-                                {
-                                    var error = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.verify(message.gaugeView);
+                            if (message.dataSets != null && message.hasOwnProperty("dataSets")) {
+                                if (!Array.isArray(message.dataSets))
+                                    return "dataSets: array expected";
+                                for (var i = 0; i < message.dataSets.length; ++i) {
+                                    var error = $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet.verify(message.dataSets[i]);
                                     if (error)
-                                        return "gaugeView." + error;
+                                        return "dataSets." + error;
                                 }
                             }
-                            if (message.sparkChartView != null && message.hasOwnProperty("sparkChartView")) {
-                                if (properties.dataView === 1)
-                                    return "dataView: multiple values";
-                                properties.dataView = 1;
-                                {
-                                    var error = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.verify(message.sparkChartView);
-                                    if (error)
-                                        return "sparkChartView." + error;
+                            if (message.chartType != null && message.hasOwnProperty("chartType"))
+                                switch (message.chartType) {
+                                default:
+                                    return "chartType: enum value expected";
+                                case 0:
+                                case 1:
+                                case 2:
+                                    break;
                                 }
-                            }
-                            if (message.thresholds != null && message.hasOwnProperty("thresholds")) {
-                                if (!Array.isArray(message.thresholds))
-                                    return "thresholds: array expected";
-                                for (var i = 0; i < message.thresholds.length; ++i) {
-                                    var error = $root.google.monitoring.dashboard.v1.Threshold.verify(message.thresholds[i]);
-                                    if (error)
-                                        return "thresholds." + error;
-                                }
-                            }
+                            if (message.showLabels != null && message.hasOwnProperty("showLabels"))
+                                if (typeof message.showLabels !== "boolean")
+                                    return "showLabels: boolean expected";
                             return null;
                         };
     
                         /**
-                         * Creates a Scorecard message from a plain object. Also converts values to their respective internal types.
+                         * Creates a PieChart message from a plain object. Also converts values to their respective internal types.
                          * @function fromObject
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
                          * @param {Object.<string,*>} object Plain object
-                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard
+                         * @returns {google.monitoring.dashboard.v1.PieChart} PieChart
                          */
-                        Scorecard.fromObject = function fromObject(object) {
-                            if (object instanceof $root.google.monitoring.dashboard.v1.Scorecard)
+                        PieChart.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.monitoring.dashboard.v1.PieChart)
                                 return object;
-                            var message = new $root.google.monitoring.dashboard.v1.Scorecard();
-                            if (object.timeSeriesQuery != null) {
-                                if (typeof object.timeSeriesQuery !== "object")
-                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.timeSeriesQuery: object expected");
-                                message.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.fromObject(object.timeSeriesQuery);
-                            }
-                            if (object.gaugeView != null) {
-                                if (typeof object.gaugeView !== "object")
-                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.gaugeView: object expected");
-                                message.gaugeView = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.fromObject(object.gaugeView);
-                            }
-                            if (object.sparkChartView != null) {
-                                if (typeof object.sparkChartView !== "object")
-                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.sparkChartView: object expected");
-                                message.sparkChartView = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.fromObject(object.sparkChartView);
-                            }
-                            if (object.thresholds) {
-                                if (!Array.isArray(object.thresholds))
-                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.thresholds: array expected");
-                                message.thresholds = [];
-                                for (var i = 0; i < object.thresholds.length; ++i) {
-                                    if (typeof object.thresholds[i] !== "object")
-                                        throw TypeError(".google.monitoring.dashboard.v1.Scorecard.thresholds: object expected");
-                                    message.thresholds[i] = $root.google.monitoring.dashboard.v1.Threshold.fromObject(object.thresholds[i]);
+                            var message = new $root.google.monitoring.dashboard.v1.PieChart();
+                            if (object.dataSets) {
+                                if (!Array.isArray(object.dataSets))
+                                    throw TypeError(".google.monitoring.dashboard.v1.PieChart.dataSets: array expected");
+                                message.dataSets = [];
+                                for (var i = 0; i < object.dataSets.length; ++i) {
+                                    if (typeof object.dataSets[i] !== "object")
+                                        throw TypeError(".google.monitoring.dashboard.v1.PieChart.dataSets: object expected");
+                                    message.dataSets[i] = $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet.fromObject(object.dataSets[i]);
                                 }
                             }
+                            switch (object.chartType) {
+                            default:
+                                if (typeof object.chartType === "number") {
+                                    message.chartType = object.chartType;
+                                    break;
+                                }
+                                break;
+                            case "PIE_CHART_TYPE_UNSPECIFIED":
+                            case 0:
+                                message.chartType = 0;
+                                break;
+                            case "PIE":
+                            case 1:
+                                message.chartType = 1;
+                                break;
+                            case "DONUT":
+                            case 2:
+                                message.chartType = 2;
+                                break;
+                            }
+                            if (object.showLabels != null)
+                                message.showLabels = Boolean(object.showLabels);
                             return message;
                         };
     
                         /**
-                         * Creates a plain object from a Scorecard message. Also converts values to other types if specified.
+                         * Creates a plain object from a PieChart message. Also converts values to other types if specified.
                          * @function toObject
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
-                         * @param {google.monitoring.dashboard.v1.Scorecard} message Scorecard
+                         * @param {google.monitoring.dashboard.v1.PieChart} message PieChart
                          * @param {$protobuf.IConversionOptions} [options] Conversion options
                          * @returns {Object.<string,*>} Plain object
                          */
-                        Scorecard.toObject = function toObject(message, options) {
+                        PieChart.toObject = function toObject(message, options) {
                             if (!options)
                                 options = {};
                             var object = {};
                             if (options.arrays || options.defaults)
-                                object.thresholds = [];
-                            if (options.defaults)
-                                object.timeSeriesQuery = null;
-                            if (message.timeSeriesQuery != null && message.hasOwnProperty("timeSeriesQuery"))
-                                object.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.toObject(message.timeSeriesQuery, options);
-                            if (message.gaugeView != null && message.hasOwnProperty("gaugeView")) {
-                                object.gaugeView = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.toObject(message.gaugeView, options);
-                                if (options.oneofs)
-                                    object.dataView = "gaugeView";
+                                object.dataSets = [];
+                            if (options.defaults) {
+                                object.chartType = options.enums === String ? "PIE_CHART_TYPE_UNSPECIFIED" : 0;
+                                object.showLabels = false;
                             }
-                            if (message.sparkChartView != null && message.hasOwnProperty("sparkChartView")) {
-                                object.sparkChartView = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.toObject(message.sparkChartView, options);
-                                if (options.oneofs)
-                                    object.dataView = "sparkChartView";
+                            if (message.dataSets && message.dataSets.length) {
+                                object.dataSets = [];
+                                for (var j = 0; j < message.dataSets.length; ++j)
+                                    object.dataSets[j] = $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet.toObject(message.dataSets[j], options);
                             }
-                            if (message.thresholds && message.thresholds.length) {
-                                object.thresholds = [];
-                                for (var j = 0; j < message.thresholds.length; ++j)
-                                    object.thresholds[j] = $root.google.monitoring.dashboard.v1.Threshold.toObject(message.thresholds[j], options);
-                            }
+                            if (message.chartType != null && message.hasOwnProperty("chartType"))
+                                object.chartType = options.enums === String ? $root.google.monitoring.dashboard.v1.PieChart.PieChartType[message.chartType] === undefined ? message.chartType : $root.google.monitoring.dashboard.v1.PieChart.PieChartType[message.chartType] : message.chartType;
+                            if (message.showLabels != null && message.hasOwnProperty("showLabels"))
+                                object.showLabels = message.showLabels;
                             return object;
                         };
     
                         /**
-                         * Converts this Scorecard to JSON.
+                         * Converts this PieChart to JSON.
                          * @function toJSON
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @instance
                          * @returns {Object.<string,*>} JSON object
                          */
-                        Scorecard.prototype.toJSON = function toJSON() {
+                        PieChart.prototype.toJSON = function toJSON() {
                             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                         };
     
                         /**
-                         * Gets the default type url for Scorecard
+                         * Gets the default type url for PieChart
                          * @function getTypeUrl
-                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @memberof google.monitoring.dashboard.v1.PieChart
                          * @static
                          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                          * @returns {string} The default type url
                          */
-                        Scorecard.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        PieChart.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
                             if (typeUrlPrefix === undefined) {
                                 typeUrlPrefix = "type.googleapis.com";
                             }
-                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.Scorecard";
+                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.PieChart";
                         };
     
-                        Scorecard.GaugeView = (function() {
+                        PieChart.PieChartDataSet = (function() {
     
                             /**
-                             * Properties of a GaugeView.
-                             * @memberof google.monitoring.dashboard.v1.Scorecard
-                             * @interface IGaugeView
-                             * @property {number|null} [lowerBound] GaugeView lowerBound
-                             * @property {number|null} [upperBound] GaugeView upperBound
+                             * Properties of a PieChartDataSet.
+                             * @memberof google.monitoring.dashboard.v1.PieChart
+                             * @interface IPieChartDataSet
+                             * @property {google.monitoring.dashboard.v1.ITimeSeriesQuery|null} [timeSeriesQuery] PieChartDataSet timeSeriesQuery
+                             * @property {string|null} [sliceNameTemplate] PieChartDataSet sliceNameTemplate
+                             * @property {google.protobuf.IDuration|null} [minAlignmentPeriod] PieChartDataSet minAlignmentPeriod
                              */
     
                             /**
-                             * Constructs a new GaugeView.
-                             * @memberof google.monitoring.dashboard.v1.Scorecard
-                             * @classdesc Represents a GaugeView.
-                             * @implements IGaugeView
+                             * Constructs a new PieChartDataSet.
+                             * @memberof google.monitoring.dashboard.v1.PieChart
+                             * @classdesc Represents a PieChartDataSet.
+                             * @implements IPieChartDataSet
                              * @constructor
-                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView=} [properties] Properties to set
+                             * @param {google.monitoring.dashboard.v1.PieChart.IPieChartDataSet=} [properties] Properties to set
                              */
-                            function GaugeView(properties) {
+                            function PieChartDataSet(properties) {
                                 if (properties)
                                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                         if (properties[keys[i]] != null)
@@ -5388,315 +6138,102 @@
                             }
     
                             /**
-                             * GaugeView lowerBound.
-                             * @member {number} lowerBound
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * PieChartDataSet timeSeriesQuery.
+                             * @member {google.monitoring.dashboard.v1.ITimeSeriesQuery|null|undefined} timeSeriesQuery
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @instance
                              */
-                            GaugeView.prototype.lowerBound = 0;
+                            PieChartDataSet.prototype.timeSeriesQuery = null;
     
                             /**
-                             * GaugeView upperBound.
-                             * @member {number} upperBound
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * PieChartDataSet sliceNameTemplate.
+                             * @member {string} sliceNameTemplate
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @instance
                              */
-                            GaugeView.prototype.upperBound = 0;
+                            PieChartDataSet.prototype.sliceNameTemplate = "";
     
                             /**
-                             * Creates a new GaugeView instance using the specified properties.
-                             * @function create
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView=} [properties] Properties to set
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView instance
-                             */
-                            GaugeView.create = function create(properties) {
-                                return new GaugeView(properties);
-                            };
-    
-                            /**
-                             * Encodes the specified GaugeView message. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.GaugeView.verify|verify} messages.
-                             * @function encode
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView} message GaugeView message or plain object to encode
-                             * @param {$protobuf.Writer} [writer] Writer to encode to
-                             * @returns {$protobuf.Writer} Writer
-                             */
-                            GaugeView.encode = function encode(message, writer) {
-                                if (!writer)
-                                    writer = $Writer.create();
-                                if (message.lowerBound != null && Object.hasOwnProperty.call(message, "lowerBound"))
-                                    writer.uint32(/* id 1, wireType 1 =*/9).double(message.lowerBound);
-                                if (message.upperBound != null && Object.hasOwnProperty.call(message, "upperBound"))
-                                    writer.uint32(/* id 2, wireType 1 =*/17).double(message.upperBound);
-                                return writer;
-                            };
-    
-                            /**
-                             * Encodes the specified GaugeView message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.GaugeView.verify|verify} messages.
-                             * @function encodeDelimited
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView} message GaugeView message or plain object to encode
-                             * @param {$protobuf.Writer} [writer] Writer to encode to
-                             * @returns {$protobuf.Writer} Writer
-                             */
-                            GaugeView.encodeDelimited = function encodeDelimited(message, writer) {
-                                return this.encode(message, writer).ldelim();
-                            };
-    
-                            /**
-                             * Decodes a GaugeView message from the specified reader or buffer.
-                             * @function decode
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                             * @param {number} [length] Message length if known beforehand
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView
-                             * @throws {Error} If the payload is not a reader or valid buffer
-                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                             */
-                            GaugeView.decode = function decode(reader, length) {
-                                if (!(reader instanceof $Reader))
-                                    reader = $Reader.create(reader);
-                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Scorecard.GaugeView();
-                                while (reader.pos < end) {
-                                    var tag = reader.uint32();
-                                    switch (tag >>> 3) {
-                                    case 1: {
-                                            message.lowerBound = reader.double();
-                                            break;
-                                        }
-                                    case 2: {
-                                            message.upperBound = reader.double();
-                                            break;
-                                        }
-                                    default:
-                                        reader.skipType(tag & 7);
-                                        break;
-                                    }
-                                }
-                                return message;
-                            };
-    
-                            /**
-                             * Decodes a GaugeView message from the specified reader or buffer, length delimited.
-                             * @function decodeDelimited
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView
-                             * @throws {Error} If the payload is not a reader or valid buffer
-                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-                             */
-                            GaugeView.decodeDelimited = function decodeDelimited(reader) {
-                                if (!(reader instanceof $Reader))
-                                    reader = new $Reader(reader);
-                                return this.decode(reader, reader.uint32());
-                            };
-    
-                            /**
-                             * Verifies a GaugeView message.
-                             * @function verify
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {Object.<string,*>} message Plain object to verify
-                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-                             */
-                            GaugeView.verify = function verify(message) {
-                                if (typeof message !== "object" || message === null)
-                                    return "object expected";
-                                if (message.lowerBound != null && message.hasOwnProperty("lowerBound"))
-                                    if (typeof message.lowerBound !== "number")
-                                        return "lowerBound: number expected";
-                                if (message.upperBound != null && message.hasOwnProperty("upperBound"))
-                                    if (typeof message.upperBound !== "number")
-                                        return "upperBound: number expected";
-                                return null;
-                            };
-    
-                            /**
-                             * Creates a GaugeView message from a plain object. Also converts values to their respective internal types.
-                             * @function fromObject
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {Object.<string,*>} object Plain object
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView
-                             */
-                            GaugeView.fromObject = function fromObject(object) {
-                                if (object instanceof $root.google.monitoring.dashboard.v1.Scorecard.GaugeView)
-                                    return object;
-                                var message = new $root.google.monitoring.dashboard.v1.Scorecard.GaugeView();
-                                if (object.lowerBound != null)
-                                    message.lowerBound = Number(object.lowerBound);
-                                if (object.upperBound != null)
-                                    message.upperBound = Number(object.upperBound);
-                                return message;
-                            };
-    
-                            /**
-                             * Creates a plain object from a GaugeView message. Also converts values to other types if specified.
-                             * @function toObject
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.GaugeView} message GaugeView
-                             * @param {$protobuf.IConversionOptions} [options] Conversion options
-                             * @returns {Object.<string,*>} Plain object
-                             */
-                            GaugeView.toObject = function toObject(message, options) {
-                                if (!options)
-                                    options = {};
-                                var object = {};
-                                if (options.defaults) {
-                                    object.lowerBound = 0;
-                                    object.upperBound = 0;
-                                }
-                                if (message.lowerBound != null && message.hasOwnProperty("lowerBound"))
-                                    object.lowerBound = options.json && !isFinite(message.lowerBound) ? String(message.lowerBound) : message.lowerBound;
-                                if (message.upperBound != null && message.hasOwnProperty("upperBound"))
-                                    object.upperBound = options.json && !isFinite(message.upperBound) ? String(message.upperBound) : message.upperBound;
-                                return object;
-                            };
-    
-                            /**
-                             * Converts this GaugeView to JSON.
-                             * @function toJSON
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @instance
-                             * @returns {Object.<string,*>} JSON object
-                             */
-                            GaugeView.prototype.toJSON = function toJSON() {
-                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-                            };
-    
-                            /**
-                             * Gets the default type url for GaugeView
-                             * @function getTypeUrl
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
-                             * @static
-                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-                             * @returns {string} The default type url
-                             */
-                            GaugeView.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-                                if (typeUrlPrefix === undefined) {
-                                    typeUrlPrefix = "type.googleapis.com";
-                                }
-                                return typeUrlPrefix + "/google.monitoring.dashboard.v1.Scorecard.GaugeView";
-                            };
-    
-                            return GaugeView;
-                        })();
-    
-                        Scorecard.SparkChartView = (function() {
-    
-                            /**
-                             * Properties of a SparkChartView.
-                             * @memberof google.monitoring.dashboard.v1.Scorecard
-                             * @interface ISparkChartView
-                             * @property {google.monitoring.dashboard.v1.SparkChartType|null} [sparkChartType] SparkChartView sparkChartType
-                             * @property {google.protobuf.IDuration|null} [minAlignmentPeriod] SparkChartView minAlignmentPeriod
-                             */
-    
-                            /**
-                             * Constructs a new SparkChartView.
-                             * @memberof google.monitoring.dashboard.v1.Scorecard
-                             * @classdesc Represents a SparkChartView.
-                             * @implements ISparkChartView
-                             * @constructor
-                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView=} [properties] Properties to set
-                             */
-                            function SparkChartView(properties) {
-                                if (properties)
-                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                                        if (properties[keys[i]] != null)
-                                            this[keys[i]] = properties[keys[i]];
-                            }
-    
-                            /**
-                             * SparkChartView sparkChartType.
-                             * @member {google.monitoring.dashboard.v1.SparkChartType} sparkChartType
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
-                             * @instance
-                             */
-                            SparkChartView.prototype.sparkChartType = 0;
-    
-                            /**
-                             * SparkChartView minAlignmentPeriod.
+                             * PieChartDataSet minAlignmentPeriod.
                              * @member {google.protobuf.IDuration|null|undefined} minAlignmentPeriod
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @instance
                              */
-                            SparkChartView.prototype.minAlignmentPeriod = null;
+                            PieChartDataSet.prototype.minAlignmentPeriod = null;
     
                             /**
-                             * Creates a new SparkChartView instance using the specified properties.
+                             * Creates a new PieChartDataSet instance using the specified properties.
                              * @function create
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView=} [properties] Properties to set
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView instance
+                             * @param {google.monitoring.dashboard.v1.PieChart.IPieChartDataSet=} [properties] Properties to set
+                             * @returns {google.monitoring.dashboard.v1.PieChart.PieChartDataSet} PieChartDataSet instance
                              */
-                            SparkChartView.create = function create(properties) {
-                                return new SparkChartView(properties);
+                            PieChartDataSet.create = function create(properties) {
+                                return new PieChartDataSet(properties);
                             };
     
                             /**
-                             * Encodes the specified SparkChartView message. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.SparkChartView.verify|verify} messages.
+                             * Encodes the specified PieChartDataSet message. Does not implicitly {@link google.monitoring.dashboard.v1.PieChart.PieChartDataSet.verify|verify} messages.
                              * @function encode
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView} message SparkChartView message or plain object to encode
+                             * @param {google.monitoring.dashboard.v1.PieChart.IPieChartDataSet} message PieChartDataSet message or plain object to encode
                              * @param {$protobuf.Writer} [writer] Writer to encode to
                              * @returns {$protobuf.Writer} Writer
                              */
-                            SparkChartView.encode = function encode(message, writer) {
+                            PieChartDataSet.encode = function encode(message, writer) {
                                 if (!writer)
                                     writer = $Writer.create();
-                                if (message.sparkChartType != null && Object.hasOwnProperty.call(message, "sparkChartType"))
-                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.sparkChartType);
+                                if (message.timeSeriesQuery != null && Object.hasOwnProperty.call(message, "timeSeriesQuery"))
+                                    $root.google.monitoring.dashboard.v1.TimeSeriesQuery.encode(message.timeSeriesQuery, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.sliceNameTemplate != null && Object.hasOwnProperty.call(message, "sliceNameTemplate"))
+                                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sliceNameTemplate);
                                 if (message.minAlignmentPeriod != null && Object.hasOwnProperty.call(message, "minAlignmentPeriod"))
-                                    $root.google.protobuf.Duration.encode(message.minAlignmentPeriod, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                    $root.google.protobuf.Duration.encode(message.minAlignmentPeriod, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                                 return writer;
                             };
     
                             /**
-                             * Encodes the specified SparkChartView message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.SparkChartView.verify|verify} messages.
+                             * Encodes the specified PieChartDataSet message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.PieChart.PieChartDataSet.verify|verify} messages.
                              * @function encodeDelimited
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView} message SparkChartView message or plain object to encode
+                             * @param {google.monitoring.dashboard.v1.PieChart.IPieChartDataSet} message PieChartDataSet message or plain object to encode
                              * @param {$protobuf.Writer} [writer] Writer to encode to
                              * @returns {$protobuf.Writer} Writer
                              */
-                            SparkChartView.encodeDelimited = function encodeDelimited(message, writer) {
+                            PieChartDataSet.encodeDelimited = function encodeDelimited(message, writer) {
                                 return this.encode(message, writer).ldelim();
                             };
     
                             /**
-                             * Decodes a SparkChartView message from the specified reader or buffer.
+                             * Decodes a PieChartDataSet message from the specified reader or buffer.
                              * @function decode
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
                              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
                              * @param {number} [length] Message length if known beforehand
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView
+                             * @returns {google.monitoring.dashboard.v1.PieChart.PieChartDataSet} PieChartDataSet
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            SparkChartView.decode = function decode(reader, length) {
+                            PieChartDataSet.decode = function decode(reader, length) {
                                 if (!(reader instanceof $Reader))
                                     reader = $Reader.create(reader);
-                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView();
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet();
                                 while (reader.pos < end) {
                                     var tag = reader.uint32();
                                     switch (tag >>> 3) {
                                     case 1: {
-                                            message.sparkChartType = reader.int32();
+                                            message.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.decode(reader, reader.uint32());
                                             break;
                                         }
                                     case 2: {
+                                            message.sliceNameTemplate = reader.string();
+                                            break;
+                                        }
+                                    case 3: {
                                             message.minAlignmentPeriod = $root.google.protobuf.Duration.decode(reader, reader.uint32());
                                             break;
                                         }
@@ -5709,41 +6246,40 @@
                             };
     
                             /**
-                             * Decodes a SparkChartView message from the specified reader or buffer, length delimited.
+                             * Decodes a PieChartDataSet message from the specified reader or buffer, length delimited.
                              * @function decodeDelimited
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
                              * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView
+                             * @returns {google.monitoring.dashboard.v1.PieChart.PieChartDataSet} PieChartDataSet
                              * @throws {Error} If the payload is not a reader or valid buffer
                              * @throws {$protobuf.util.ProtocolError} If required fields are missing
                              */
-                            SparkChartView.decodeDelimited = function decodeDelimited(reader) {
+                            PieChartDataSet.decodeDelimited = function decodeDelimited(reader) {
                                 if (!(reader instanceof $Reader))
                                     reader = new $Reader(reader);
                                 return this.decode(reader, reader.uint32());
                             };
     
                             /**
-                             * Verifies a SparkChartView message.
+                             * Verifies a PieChartDataSet message.
                              * @function verify
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
                              * @param {Object.<string,*>} message Plain object to verify
                              * @returns {string|null} `null` if valid, otherwise the reason why it is not
                              */
-                            SparkChartView.verify = function verify(message) {
+                            PieChartDataSet.verify = function verify(message) {
                                 if (typeof message !== "object" || message === null)
                                     return "object expected";
-                                if (message.sparkChartType != null && message.hasOwnProperty("sparkChartType"))
-                                    switch (message.sparkChartType) {
-                                    default:
-                                        return "sparkChartType: enum value expected";
-                                    case 0:
-                                    case 1:
-                                    case 2:
-                                        break;
-                                    }
+                                if (message.timeSeriesQuery != null && message.hasOwnProperty("timeSeriesQuery")) {
+                                    var error = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.verify(message.timeSeriesQuery);
+                                    if (error)
+                                        return "timeSeriesQuery." + error;
+                                }
+                                if (message.sliceNameTemplate != null && message.hasOwnProperty("sliceNameTemplate"))
+                                    if (!$util.isString(message.sliceNameTemplate))
+                                        return "sliceNameTemplate: string expected";
                                 if (message.minAlignmentPeriod != null && message.hasOwnProperty("minAlignmentPeriod")) {
                                     var error = $root.google.protobuf.Duration.verify(message.minAlignmentPeriod);
                                     if (error)
@@ -5753,99 +6289,105 @@
                             };
     
                             /**
-                             * Creates a SparkChartView message from a plain object. Also converts values to their respective internal types.
+                             * Creates a PieChartDataSet message from a plain object. Also converts values to their respective internal types.
                              * @function fromObject
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
                              * @param {Object.<string,*>} object Plain object
-                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView
+                             * @returns {google.monitoring.dashboard.v1.PieChart.PieChartDataSet} PieChartDataSet
                              */
-                            SparkChartView.fromObject = function fromObject(object) {
-                                if (object instanceof $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView)
+                            PieChartDataSet.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet)
                                     return object;
-                                var message = new $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView();
-                                switch (object.sparkChartType) {
-                                default:
-                                    if (typeof object.sparkChartType === "number") {
-                                        message.sparkChartType = object.sparkChartType;
-                                        break;
-                                    }
-                                    break;
-                                case "SPARK_CHART_TYPE_UNSPECIFIED":
-                                case 0:
-                                    message.sparkChartType = 0;
-                                    break;
-                                case "SPARK_LINE":
-                                case 1:
-                                    message.sparkChartType = 1;
-                                    break;
-                                case "SPARK_BAR":
-                                case 2:
-                                    message.sparkChartType = 2;
-                                    break;
+                                var message = new $root.google.monitoring.dashboard.v1.PieChart.PieChartDataSet();
+                                if (object.timeSeriesQuery != null) {
+                                    if (typeof object.timeSeriesQuery !== "object")
+                                        throw TypeError(".google.monitoring.dashboard.v1.PieChart.PieChartDataSet.timeSeriesQuery: object expected");
+                                    message.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.fromObject(object.timeSeriesQuery);
                                 }
+                                if (object.sliceNameTemplate != null)
+                                    message.sliceNameTemplate = String(object.sliceNameTemplate);
                                 if (object.minAlignmentPeriod != null) {
                                     if (typeof object.minAlignmentPeriod !== "object")
-                                        throw TypeError(".google.monitoring.dashboard.v1.Scorecard.SparkChartView.minAlignmentPeriod: object expected");
+                                        throw TypeError(".google.monitoring.dashboard.v1.PieChart.PieChartDataSet.minAlignmentPeriod: object expected");
                                     message.minAlignmentPeriod = $root.google.protobuf.Duration.fromObject(object.minAlignmentPeriod);
                                 }
                                 return message;
                             };
     
                             /**
-                             * Creates a plain object from a SparkChartView message. Also converts values to other types if specified.
+                             * Creates a plain object from a PieChartDataSet message. Also converts values to other types if specified.
                              * @function toObject
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
-                             * @param {google.monitoring.dashboard.v1.Scorecard.SparkChartView} message SparkChartView
+                             * @param {google.monitoring.dashboard.v1.PieChart.PieChartDataSet} message PieChartDataSet
                              * @param {$protobuf.IConversionOptions} [options] Conversion options
                              * @returns {Object.<string,*>} Plain object
                              */
-                            SparkChartView.toObject = function toObject(message, options) {
+                            PieChartDataSet.toObject = function toObject(message, options) {
                                 if (!options)
                                     options = {};
                                 var object = {};
                                 if (options.defaults) {
-                                    object.sparkChartType = options.enums === String ? "SPARK_CHART_TYPE_UNSPECIFIED" : 0;
+                                    object.timeSeriesQuery = null;
+                                    object.sliceNameTemplate = "";
                                     object.minAlignmentPeriod = null;
                                 }
-                                if (message.sparkChartType != null && message.hasOwnProperty("sparkChartType"))
-                                    object.sparkChartType = options.enums === String ? $root.google.monitoring.dashboard.v1.SparkChartType[message.sparkChartType] === undefined ? message.sparkChartType : $root.google.monitoring.dashboard.v1.SparkChartType[message.sparkChartType] : message.sparkChartType;
+                                if (message.timeSeriesQuery != null && message.hasOwnProperty("timeSeriesQuery"))
+                                    object.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.toObject(message.timeSeriesQuery, options);
+                                if (message.sliceNameTemplate != null && message.hasOwnProperty("sliceNameTemplate"))
+                                    object.sliceNameTemplate = message.sliceNameTemplate;
                                 if (message.minAlignmentPeriod != null && message.hasOwnProperty("minAlignmentPeriod"))
                                     object.minAlignmentPeriod = $root.google.protobuf.Duration.toObject(message.minAlignmentPeriod, options);
                                 return object;
                             };
     
                             /**
-                             * Converts this SparkChartView to JSON.
+                             * Converts this PieChartDataSet to JSON.
                              * @function toJSON
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @instance
                              * @returns {Object.<string,*>} JSON object
                              */
-                            SparkChartView.prototype.toJSON = function toJSON() {
+                            PieChartDataSet.prototype.toJSON = function toJSON() {
                                 return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
                             };
     
                             /**
-                             * Gets the default type url for SparkChartView
+                             * Gets the default type url for PieChartDataSet
                              * @function getTypeUrl
-                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @memberof google.monitoring.dashboard.v1.PieChart.PieChartDataSet
                              * @static
                              * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                              * @returns {string} The default type url
                              */
-                            SparkChartView.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            PieChartDataSet.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
                                 if (typeUrlPrefix === undefined) {
                                     typeUrlPrefix = "type.googleapis.com";
                                 }
-                                return typeUrlPrefix + "/google.monitoring.dashboard.v1.Scorecard.SparkChartView";
+                                return typeUrlPrefix + "/google.monitoring.dashboard.v1.PieChart.PieChartDataSet";
                             };
     
-                            return SparkChartView;
+                            return PieChartDataSet;
                         })();
     
-                        return Scorecard;
+                        /**
+                         * PieChartType enum.
+                         * @name google.monitoring.dashboard.v1.PieChart.PieChartType
+                         * @enum {number}
+                         * @property {number} PIE_CHART_TYPE_UNSPECIFIED=0 PIE_CHART_TYPE_UNSPECIFIED value
+                         * @property {number} PIE=1 PIE value
+                         * @property {number} DONUT=2 DONUT value
+                         */
+                        PieChart.PieChartType = (function() {
+                            var valuesById = {}, values = Object.create(valuesById);
+                            values[valuesById[0] = "PIE_CHART_TYPE_UNSPECIFIED"] = 0;
+                            values[valuesById[1] = "PIE"] = 1;
+                            values[valuesById[2] = "DONUT"] = 2;
+                            return values;
+                        })();
+    
+                        return PieChart;
                     })();
     
                     v1.TimeSeriesQuery = (function() {
@@ -5859,6 +6401,7 @@
                          * @property {string|null} [timeSeriesQueryLanguage] TimeSeriesQuery timeSeriesQueryLanguage
                          * @property {string|null} [prometheusQuery] TimeSeriesQuery prometheusQuery
                          * @property {string|null} [unitOverride] TimeSeriesQuery unitOverride
+                         * @property {boolean|null} [outputFullDuration] TimeSeriesQuery outputFullDuration
                          */
     
                         /**
@@ -5916,6 +6459,14 @@
                          */
                         TimeSeriesQuery.prototype.unitOverride = "";
     
+                        /**
+                         * TimeSeriesQuery outputFullDuration.
+                         * @member {boolean} outputFullDuration
+                         * @memberof google.monitoring.dashboard.v1.TimeSeriesQuery
+                         * @instance
+                         */
+                        TimeSeriesQuery.prototype.outputFullDuration = false;
+    
                         // OneOf field names bound to virtual getters and setters
                         var $oneOfFields;
     
@@ -5964,6 +6515,8 @@
                                 writer.uint32(/* id 5, wireType 2 =*/42).string(message.unitOverride);
                             if (message.prometheusQuery != null && Object.hasOwnProperty.call(message, "prometheusQuery"))
                                 writer.uint32(/* id 6, wireType 2 =*/50).string(message.prometheusQuery);
+                            if (message.outputFullDuration != null && Object.hasOwnProperty.call(message, "outputFullDuration"))
+                                writer.uint32(/* id 7, wireType 0 =*/56).bool(message.outputFullDuration);
                             return writer;
                         };
     
@@ -6016,6 +6569,10 @@
                                     }
                                 case 5: {
                                         message.unitOverride = reader.string();
+                                        break;
+                                    }
+                                case 7: {
+                                        message.outputFullDuration = reader.bool();
                                         break;
                                     }
                                 default:
@@ -6089,6 +6646,9 @@
                             if (message.unitOverride != null && message.hasOwnProperty("unitOverride"))
                                 if (!$util.isString(message.unitOverride))
                                     return "unitOverride: string expected";
+                            if (message.outputFullDuration != null && message.hasOwnProperty("outputFullDuration"))
+                                if (typeof message.outputFullDuration !== "boolean")
+                                    return "outputFullDuration: boolean expected";
                             return null;
                         };
     
@@ -6120,6 +6680,8 @@
                                 message.prometheusQuery = String(object.prometheusQuery);
                             if (object.unitOverride != null)
                                 message.unitOverride = String(object.unitOverride);
+                            if (object.outputFullDuration != null)
+                                message.outputFullDuration = Boolean(object.outputFullDuration);
                             return message;
                         };
     
@@ -6136,8 +6698,10 @@
                             if (!options)
                                 options = {};
                             var object = {};
-                            if (options.defaults)
+                            if (options.defaults) {
                                 object.unitOverride = "";
+                                object.outputFullDuration = false;
+                            }
                             if (message.timeSeriesFilter != null && message.hasOwnProperty("timeSeriesFilter")) {
                                 object.timeSeriesFilter = $root.google.monitoring.dashboard.v1.TimeSeriesFilter.toObject(message.timeSeriesFilter, options);
                                 if (options.oneofs)
@@ -6160,6 +6724,8 @@
                                 if (options.oneofs)
                                     object.source = "prometheusQuery";
                             }
+                            if (message.outputFullDuration != null && message.hasOwnProperty("outputFullDuration"))
+                                object.outputFullDuration = message.outputFullDuration;
                             return object;
                         };
     
@@ -7547,6 +8113,1262 @@
                         return values;
                     })();
     
+                    v1.Scorecard = (function() {
+    
+                        /**
+                         * Properties of a Scorecard.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @interface IScorecard
+                         * @property {google.monitoring.dashboard.v1.ITimeSeriesQuery|null} [timeSeriesQuery] Scorecard timeSeriesQuery
+                         * @property {google.monitoring.dashboard.v1.Scorecard.IGaugeView|null} [gaugeView] Scorecard gaugeView
+                         * @property {google.monitoring.dashboard.v1.Scorecard.ISparkChartView|null} [sparkChartView] Scorecard sparkChartView
+                         * @property {google.protobuf.IEmpty|null} [blankView] Scorecard blankView
+                         * @property {Array.<google.monitoring.dashboard.v1.IThreshold>|null} [thresholds] Scorecard thresholds
+                         */
+    
+                        /**
+                         * Constructs a new Scorecard.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @classdesc Represents a Scorecard.
+                         * @implements IScorecard
+                         * @constructor
+                         * @param {google.monitoring.dashboard.v1.IScorecard=} [properties] Properties to set
+                         */
+                        function Scorecard(properties) {
+                            this.thresholds = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * Scorecard timeSeriesQuery.
+                         * @member {google.monitoring.dashboard.v1.ITimeSeriesQuery|null|undefined} timeSeriesQuery
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         */
+                        Scorecard.prototype.timeSeriesQuery = null;
+    
+                        /**
+                         * Scorecard gaugeView.
+                         * @member {google.monitoring.dashboard.v1.Scorecard.IGaugeView|null|undefined} gaugeView
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         */
+                        Scorecard.prototype.gaugeView = null;
+    
+                        /**
+                         * Scorecard sparkChartView.
+                         * @member {google.monitoring.dashboard.v1.Scorecard.ISparkChartView|null|undefined} sparkChartView
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         */
+                        Scorecard.prototype.sparkChartView = null;
+    
+                        /**
+                         * Scorecard blankView.
+                         * @member {google.protobuf.IEmpty|null|undefined} blankView
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         */
+                        Scorecard.prototype.blankView = null;
+    
+                        /**
+                         * Scorecard thresholds.
+                         * @member {Array.<google.monitoring.dashboard.v1.IThreshold>} thresholds
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         */
+                        Scorecard.prototype.thresholds = $util.emptyArray;
+    
+                        // OneOf field names bound to virtual getters and setters
+                        var $oneOfFields;
+    
+                        /**
+                         * Scorecard dataView.
+                         * @member {"gaugeView"|"sparkChartView"|"blankView"|undefined} dataView
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         */
+                        Object.defineProperty(Scorecard.prototype, "dataView", {
+                            get: $util.oneOfGetter($oneOfFields = ["gaugeView", "sparkChartView", "blankView"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+    
+                        /**
+                         * Creates a new Scorecard instance using the specified properties.
+                         * @function create
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IScorecard=} [properties] Properties to set
+                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard instance
+                         */
+                        Scorecard.create = function create(properties) {
+                            return new Scorecard(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified Scorecard message. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IScorecard} message Scorecard message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        Scorecard.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.timeSeriesQuery != null && Object.hasOwnProperty.call(message, "timeSeriesQuery"))
+                                $root.google.monitoring.dashboard.v1.TimeSeriesQuery.encode(message.timeSeriesQuery, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.gaugeView != null && Object.hasOwnProperty.call(message, "gaugeView"))
+                                $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.encode(message.gaugeView, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                            if (message.sparkChartView != null && Object.hasOwnProperty.call(message, "sparkChartView"))
+                                $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.encode(message.sparkChartView, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                            if (message.thresholds != null && message.thresholds.length)
+                                for (var i = 0; i < message.thresholds.length; ++i)
+                                    $root.google.monitoring.dashboard.v1.Threshold.encode(message.thresholds[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                            if (message.blankView != null && Object.hasOwnProperty.call(message, "blankView"))
+                                $root.google.protobuf.Empty.encode(message.blankView, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified Scorecard message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.IScorecard} message Scorecard message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        Scorecard.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a Scorecard message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        Scorecard.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Scorecard();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 4: {
+                                        message.gaugeView = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 5: {
+                                        message.sparkChartView = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 7: {
+                                        message.blankView = $root.google.protobuf.Empty.decode(reader, reader.uint32());
+                                        break;
+                                    }
+                                case 6: {
+                                        if (!(message.thresholds && message.thresholds.length))
+                                            message.thresholds = [];
+                                        message.thresholds.push($root.google.monitoring.dashboard.v1.Threshold.decode(reader, reader.uint32()));
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a Scorecard message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        Scorecard.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a Scorecard message.
+                         * @function verify
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        Scorecard.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            var properties = {};
+                            if (message.timeSeriesQuery != null && message.hasOwnProperty("timeSeriesQuery")) {
+                                var error = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.verify(message.timeSeriesQuery);
+                                if (error)
+                                    return "timeSeriesQuery." + error;
+                            }
+                            if (message.gaugeView != null && message.hasOwnProperty("gaugeView")) {
+                                properties.dataView = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.verify(message.gaugeView);
+                                    if (error)
+                                        return "gaugeView." + error;
+                                }
+                            }
+                            if (message.sparkChartView != null && message.hasOwnProperty("sparkChartView")) {
+                                if (properties.dataView === 1)
+                                    return "dataView: multiple values";
+                                properties.dataView = 1;
+                                {
+                                    var error = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.verify(message.sparkChartView);
+                                    if (error)
+                                        return "sparkChartView." + error;
+                                }
+                            }
+                            if (message.blankView != null && message.hasOwnProperty("blankView")) {
+                                if (properties.dataView === 1)
+                                    return "dataView: multiple values";
+                                properties.dataView = 1;
+                                {
+                                    var error = $root.google.protobuf.Empty.verify(message.blankView);
+                                    if (error)
+                                        return "blankView." + error;
+                                }
+                            }
+                            if (message.thresholds != null && message.hasOwnProperty("thresholds")) {
+                                if (!Array.isArray(message.thresholds))
+                                    return "thresholds: array expected";
+                                for (var i = 0; i < message.thresholds.length; ++i) {
+                                    var error = $root.google.monitoring.dashboard.v1.Threshold.verify(message.thresholds[i]);
+                                    if (error)
+                                        return "thresholds." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a Scorecard message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.monitoring.dashboard.v1.Scorecard} Scorecard
+                         */
+                        Scorecard.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.monitoring.dashboard.v1.Scorecard)
+                                return object;
+                            var message = new $root.google.monitoring.dashboard.v1.Scorecard();
+                            if (object.timeSeriesQuery != null) {
+                                if (typeof object.timeSeriesQuery !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.timeSeriesQuery: object expected");
+                                message.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.fromObject(object.timeSeriesQuery);
+                            }
+                            if (object.gaugeView != null) {
+                                if (typeof object.gaugeView !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.gaugeView: object expected");
+                                message.gaugeView = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.fromObject(object.gaugeView);
+                            }
+                            if (object.sparkChartView != null) {
+                                if (typeof object.sparkChartView !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.sparkChartView: object expected");
+                                message.sparkChartView = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.fromObject(object.sparkChartView);
+                            }
+                            if (object.blankView != null) {
+                                if (typeof object.blankView !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.blankView: object expected");
+                                message.blankView = $root.google.protobuf.Empty.fromObject(object.blankView);
+                            }
+                            if (object.thresholds) {
+                                if (!Array.isArray(object.thresholds))
+                                    throw TypeError(".google.monitoring.dashboard.v1.Scorecard.thresholds: array expected");
+                                message.thresholds = [];
+                                for (var i = 0; i < object.thresholds.length; ++i) {
+                                    if (typeof object.thresholds[i] !== "object")
+                                        throw TypeError(".google.monitoring.dashboard.v1.Scorecard.thresholds: object expected");
+                                    message.thresholds[i] = $root.google.monitoring.dashboard.v1.Threshold.fromObject(object.thresholds[i]);
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a Scorecard message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.Scorecard} message Scorecard
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        Scorecard.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults)
+                                object.thresholds = [];
+                            if (options.defaults)
+                                object.timeSeriesQuery = null;
+                            if (message.timeSeriesQuery != null && message.hasOwnProperty("timeSeriesQuery"))
+                                object.timeSeriesQuery = $root.google.monitoring.dashboard.v1.TimeSeriesQuery.toObject(message.timeSeriesQuery, options);
+                            if (message.gaugeView != null && message.hasOwnProperty("gaugeView")) {
+                                object.gaugeView = $root.google.monitoring.dashboard.v1.Scorecard.GaugeView.toObject(message.gaugeView, options);
+                                if (options.oneofs)
+                                    object.dataView = "gaugeView";
+                            }
+                            if (message.sparkChartView != null && message.hasOwnProperty("sparkChartView")) {
+                                object.sparkChartView = $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView.toObject(message.sparkChartView, options);
+                                if (options.oneofs)
+                                    object.dataView = "sparkChartView";
+                            }
+                            if (message.thresholds && message.thresholds.length) {
+                                object.thresholds = [];
+                                for (var j = 0; j < message.thresholds.length; ++j)
+                                    object.thresholds[j] = $root.google.monitoring.dashboard.v1.Threshold.toObject(message.thresholds[j], options);
+                            }
+                            if (message.blankView != null && message.hasOwnProperty("blankView")) {
+                                object.blankView = $root.google.protobuf.Empty.toObject(message.blankView, options);
+                                if (options.oneofs)
+                                    object.dataView = "blankView";
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this Scorecard to JSON.
+                         * @function toJSON
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        Scorecard.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for Scorecard
+                         * @function getTypeUrl
+                         * @memberof google.monitoring.dashboard.v1.Scorecard
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        Scorecard.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.Scorecard";
+                        };
+    
+                        Scorecard.GaugeView = (function() {
+    
+                            /**
+                             * Properties of a GaugeView.
+                             * @memberof google.monitoring.dashboard.v1.Scorecard
+                             * @interface IGaugeView
+                             * @property {number|null} [lowerBound] GaugeView lowerBound
+                             * @property {number|null} [upperBound] GaugeView upperBound
+                             */
+    
+                            /**
+                             * Constructs a new GaugeView.
+                             * @memberof google.monitoring.dashboard.v1.Scorecard
+                             * @classdesc Represents a GaugeView.
+                             * @implements IGaugeView
+                             * @constructor
+                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView=} [properties] Properties to set
+                             */
+                            function GaugeView(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * GaugeView lowerBound.
+                             * @member {number} lowerBound
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @instance
+                             */
+                            GaugeView.prototype.lowerBound = 0;
+    
+                            /**
+                             * GaugeView upperBound.
+                             * @member {number} upperBound
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @instance
+                             */
+                            GaugeView.prototype.upperBound = 0;
+    
+                            /**
+                             * Creates a new GaugeView instance using the specified properties.
+                             * @function create
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView=} [properties] Properties to set
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView instance
+                             */
+                            GaugeView.create = function create(properties) {
+                                return new GaugeView(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified GaugeView message. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.GaugeView.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView} message GaugeView message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            GaugeView.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.lowerBound != null && Object.hasOwnProperty.call(message, "lowerBound"))
+                                    writer.uint32(/* id 1, wireType 1 =*/9).double(message.lowerBound);
+                                if (message.upperBound != null && Object.hasOwnProperty.call(message, "upperBound"))
+                                    writer.uint32(/* id 2, wireType 1 =*/17).double(message.upperBound);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified GaugeView message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.GaugeView.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.IGaugeView} message GaugeView message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            GaugeView.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a GaugeView message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            GaugeView.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Scorecard.GaugeView();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.lowerBound = reader.double();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.upperBound = reader.double();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a GaugeView message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            GaugeView.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a GaugeView message.
+                             * @function verify
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            GaugeView.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.lowerBound != null && message.hasOwnProperty("lowerBound"))
+                                    if (typeof message.lowerBound !== "number")
+                                        return "lowerBound: number expected";
+                                if (message.upperBound != null && message.hasOwnProperty("upperBound"))
+                                    if (typeof message.upperBound !== "number")
+                                        return "upperBound: number expected";
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a GaugeView message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.GaugeView} GaugeView
+                             */
+                            GaugeView.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.monitoring.dashboard.v1.Scorecard.GaugeView)
+                                    return object;
+                                var message = new $root.google.monitoring.dashboard.v1.Scorecard.GaugeView();
+                                if (object.lowerBound != null)
+                                    message.lowerBound = Number(object.lowerBound);
+                                if (object.upperBound != null)
+                                    message.upperBound = Number(object.upperBound);
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a GaugeView message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.GaugeView} message GaugeView
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            GaugeView.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.lowerBound = 0;
+                                    object.upperBound = 0;
+                                }
+                                if (message.lowerBound != null && message.hasOwnProperty("lowerBound"))
+                                    object.lowerBound = options.json && !isFinite(message.lowerBound) ? String(message.lowerBound) : message.lowerBound;
+                                if (message.upperBound != null && message.hasOwnProperty("upperBound"))
+                                    object.upperBound = options.json && !isFinite(message.upperBound) ? String(message.upperBound) : message.upperBound;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this GaugeView to JSON.
+                             * @function toJSON
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            GaugeView.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for GaugeView
+                             * @function getTypeUrl
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.GaugeView
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            GaugeView.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.monitoring.dashboard.v1.Scorecard.GaugeView";
+                            };
+    
+                            return GaugeView;
+                        })();
+    
+                        Scorecard.SparkChartView = (function() {
+    
+                            /**
+                             * Properties of a SparkChartView.
+                             * @memberof google.monitoring.dashboard.v1.Scorecard
+                             * @interface ISparkChartView
+                             * @property {google.monitoring.dashboard.v1.SparkChartType|null} [sparkChartType] SparkChartView sparkChartType
+                             * @property {google.protobuf.IDuration|null} [minAlignmentPeriod] SparkChartView minAlignmentPeriod
+                             */
+    
+                            /**
+                             * Constructs a new SparkChartView.
+                             * @memberof google.monitoring.dashboard.v1.Scorecard
+                             * @classdesc Represents a SparkChartView.
+                             * @implements ISparkChartView
+                             * @constructor
+                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView=} [properties] Properties to set
+                             */
+                            function SparkChartView(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * SparkChartView sparkChartType.
+                             * @member {google.monitoring.dashboard.v1.SparkChartType} sparkChartType
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @instance
+                             */
+                            SparkChartView.prototype.sparkChartType = 0;
+    
+                            /**
+                             * SparkChartView minAlignmentPeriod.
+                             * @member {google.protobuf.IDuration|null|undefined} minAlignmentPeriod
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @instance
+                             */
+                            SparkChartView.prototype.minAlignmentPeriod = null;
+    
+                            /**
+                             * Creates a new SparkChartView instance using the specified properties.
+                             * @function create
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView=} [properties] Properties to set
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView instance
+                             */
+                            SparkChartView.create = function create(properties) {
+                                return new SparkChartView(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified SparkChartView message. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.SparkChartView.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView} message SparkChartView message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            SparkChartView.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.sparkChartType != null && Object.hasOwnProperty.call(message, "sparkChartType"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.sparkChartType);
+                                if (message.minAlignmentPeriod != null && Object.hasOwnProperty.call(message, "minAlignmentPeriod"))
+                                    $root.google.protobuf.Duration.encode(message.minAlignmentPeriod, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified SparkChartView message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Scorecard.SparkChartView.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.ISparkChartView} message SparkChartView message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            SparkChartView.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a SparkChartView message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            SparkChartView.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.sparkChartType = reader.int32();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.minAlignmentPeriod = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a SparkChartView message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            SparkChartView.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a SparkChartView message.
+                             * @function verify
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            SparkChartView.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.sparkChartType != null && message.hasOwnProperty("sparkChartType"))
+                                    switch (message.sparkChartType) {
+                                    default:
+                                        return "sparkChartType: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
+                                if (message.minAlignmentPeriod != null && message.hasOwnProperty("minAlignmentPeriod")) {
+                                    var error = $root.google.protobuf.Duration.verify(message.minAlignmentPeriod);
+                                    if (error)
+                                        return "minAlignmentPeriod." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a SparkChartView message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.monitoring.dashboard.v1.Scorecard.SparkChartView} SparkChartView
+                             */
+                            SparkChartView.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView)
+                                    return object;
+                                var message = new $root.google.monitoring.dashboard.v1.Scorecard.SparkChartView();
+                                switch (object.sparkChartType) {
+                                default:
+                                    if (typeof object.sparkChartType === "number") {
+                                        message.sparkChartType = object.sparkChartType;
+                                        break;
+                                    }
+                                    break;
+                                case "SPARK_CHART_TYPE_UNSPECIFIED":
+                                case 0:
+                                    message.sparkChartType = 0;
+                                    break;
+                                case "SPARK_LINE":
+                                case 1:
+                                    message.sparkChartType = 1;
+                                    break;
+                                case "SPARK_BAR":
+                                case 2:
+                                    message.sparkChartType = 2;
+                                    break;
+                                }
+                                if (object.minAlignmentPeriod != null) {
+                                    if (typeof object.minAlignmentPeriod !== "object")
+                                        throw TypeError(".google.monitoring.dashboard.v1.Scorecard.SparkChartView.minAlignmentPeriod: object expected");
+                                    message.minAlignmentPeriod = $root.google.protobuf.Duration.fromObject(object.minAlignmentPeriod);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a SparkChartView message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Scorecard.SparkChartView} message SparkChartView
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            SparkChartView.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.sparkChartType = options.enums === String ? "SPARK_CHART_TYPE_UNSPECIFIED" : 0;
+                                    object.minAlignmentPeriod = null;
+                                }
+                                if (message.sparkChartType != null && message.hasOwnProperty("sparkChartType"))
+                                    object.sparkChartType = options.enums === String ? $root.google.monitoring.dashboard.v1.SparkChartType[message.sparkChartType] === undefined ? message.sparkChartType : $root.google.monitoring.dashboard.v1.SparkChartType[message.sparkChartType] : message.sparkChartType;
+                                if (message.minAlignmentPeriod != null && message.hasOwnProperty("minAlignmentPeriod"))
+                                    object.minAlignmentPeriod = $root.google.protobuf.Duration.toObject(message.minAlignmentPeriod, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this SparkChartView to JSON.
+                             * @function toJSON
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            SparkChartView.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for SparkChartView
+                             * @function getTypeUrl
+                             * @memberof google.monitoring.dashboard.v1.Scorecard.SparkChartView
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            SparkChartView.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.monitoring.dashboard.v1.Scorecard.SparkChartView";
+                            };
+    
+                            return SparkChartView;
+                        })();
+    
+                        return Scorecard;
+                    })();
+    
+                    v1.SectionHeader = (function() {
+    
+                        /**
+                         * Properties of a SectionHeader.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @interface ISectionHeader
+                         * @property {string|null} [subtitle] SectionHeader subtitle
+                         * @property {boolean|null} [dividerBelow] SectionHeader dividerBelow
+                         */
+    
+                        /**
+                         * Constructs a new SectionHeader.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @classdesc Represents a SectionHeader.
+                         * @implements ISectionHeader
+                         * @constructor
+                         * @param {google.monitoring.dashboard.v1.ISectionHeader=} [properties] Properties to set
+                         */
+                        function SectionHeader(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * SectionHeader subtitle.
+                         * @member {string} subtitle
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @instance
+                         */
+                        SectionHeader.prototype.subtitle = "";
+    
+                        /**
+                         * SectionHeader dividerBelow.
+                         * @member {boolean} dividerBelow
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @instance
+                         */
+                        SectionHeader.prototype.dividerBelow = false;
+    
+                        /**
+                         * Creates a new SectionHeader instance using the specified properties.
+                         * @function create
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ISectionHeader=} [properties] Properties to set
+                         * @returns {google.monitoring.dashboard.v1.SectionHeader} SectionHeader instance
+                         */
+                        SectionHeader.create = function create(properties) {
+                            return new SectionHeader(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified SectionHeader message. Does not implicitly {@link google.monitoring.dashboard.v1.SectionHeader.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ISectionHeader} message SectionHeader message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        SectionHeader.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.subtitle != null && Object.hasOwnProperty.call(message, "subtitle"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.subtitle);
+                            if (message.dividerBelow != null && Object.hasOwnProperty.call(message, "dividerBelow"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).bool(message.dividerBelow);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified SectionHeader message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.SectionHeader.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ISectionHeader} message SectionHeader message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        SectionHeader.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a SectionHeader message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.monitoring.dashboard.v1.SectionHeader} SectionHeader
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        SectionHeader.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.SectionHeader();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.subtitle = reader.string();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.dividerBelow = reader.bool();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a SectionHeader message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.monitoring.dashboard.v1.SectionHeader} SectionHeader
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        SectionHeader.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a SectionHeader message.
+                         * @function verify
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        SectionHeader.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (message.subtitle != null && message.hasOwnProperty("subtitle"))
+                                if (!$util.isString(message.subtitle))
+                                    return "subtitle: string expected";
+                            if (message.dividerBelow != null && message.hasOwnProperty("dividerBelow"))
+                                if (typeof message.dividerBelow !== "boolean")
+                                    return "dividerBelow: boolean expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a SectionHeader message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.monitoring.dashboard.v1.SectionHeader} SectionHeader
+                         */
+                        SectionHeader.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.monitoring.dashboard.v1.SectionHeader)
+                                return object;
+                            var message = new $root.google.monitoring.dashboard.v1.SectionHeader();
+                            if (object.subtitle != null)
+                                message.subtitle = String(object.subtitle);
+                            if (object.dividerBelow != null)
+                                message.dividerBelow = Boolean(object.dividerBelow);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a SectionHeader message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.SectionHeader} message SectionHeader
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        SectionHeader.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.subtitle = "";
+                                object.dividerBelow = false;
+                            }
+                            if (message.subtitle != null && message.hasOwnProperty("subtitle"))
+                                object.subtitle = message.subtitle;
+                            if (message.dividerBelow != null && message.hasOwnProperty("dividerBelow"))
+                                object.dividerBelow = message.dividerBelow;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this SectionHeader to JSON.
+                         * @function toJSON
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        SectionHeader.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for SectionHeader
+                         * @function getTypeUrl
+                         * @memberof google.monitoring.dashboard.v1.SectionHeader
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        SectionHeader.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.SectionHeader";
+                        };
+    
+                        return SectionHeader;
+                    })();
+    
+                    v1.SingleViewGroup = (function() {
+    
+                        /**
+                         * Properties of a SingleViewGroup.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @interface ISingleViewGroup
+                         */
+    
+                        /**
+                         * Constructs a new SingleViewGroup.
+                         * @memberof google.monitoring.dashboard.v1
+                         * @classdesc Represents a SingleViewGroup.
+                         * @implements ISingleViewGroup
+                         * @constructor
+                         * @param {google.monitoring.dashboard.v1.ISingleViewGroup=} [properties] Properties to set
+                         */
+                        function SingleViewGroup(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null)
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * Creates a new SingleViewGroup instance using the specified properties.
+                         * @function create
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ISingleViewGroup=} [properties] Properties to set
+                         * @returns {google.monitoring.dashboard.v1.SingleViewGroup} SingleViewGroup instance
+                         */
+                        SingleViewGroup.create = function create(properties) {
+                            return new SingleViewGroup(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified SingleViewGroup message. Does not implicitly {@link google.monitoring.dashboard.v1.SingleViewGroup.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ISingleViewGroup} message SingleViewGroup message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        SingleViewGroup.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified SingleViewGroup message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.SingleViewGroup.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.ISingleViewGroup} message SingleViewGroup message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        SingleViewGroup.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a SingleViewGroup message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.monitoring.dashboard.v1.SingleViewGroup} SingleViewGroup
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        SingleViewGroup.decode = function decode(reader, length) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.SingleViewGroup();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                switch (tag >>> 3) {
+                                default:
+                                    reader.skipType(tag & 7);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a SingleViewGroup message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.monitoring.dashboard.v1.SingleViewGroup} SingleViewGroup
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        SingleViewGroup.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a SingleViewGroup message.
+                         * @function verify
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        SingleViewGroup.verify = function verify(message) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a SingleViewGroup message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.monitoring.dashboard.v1.SingleViewGroup} SingleViewGroup
+                         */
+                        SingleViewGroup.fromObject = function fromObject(object) {
+                            if (object instanceof $root.google.monitoring.dashboard.v1.SingleViewGroup)
+                                return object;
+                            return new $root.google.monitoring.dashboard.v1.SingleViewGroup();
+                        };
+    
+                        /**
+                         * Creates a plain object from a SingleViewGroup message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {google.monitoring.dashboard.v1.SingleViewGroup} message SingleViewGroup
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        SingleViewGroup.toObject = function toObject() {
+                            return {};
+                        };
+    
+                        /**
+                         * Converts this SingleViewGroup to JSON.
+                         * @function toJSON
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        SingleViewGroup.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for SingleViewGroup
+                         * @function getTypeUrl
+                         * @memberof google.monitoring.dashboard.v1.SingleViewGroup
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        SingleViewGroup.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.monitoring.dashboard.v1.SingleViewGroup";
+                        };
+    
+                        return SingleViewGroup;
+                    })();
+    
                     v1.TimeSeriesTable = (function() {
     
                         /**
@@ -8622,6 +10444,7 @@
                          * @interface IText
                          * @property {string|null} [content] Text content
                          * @property {google.monitoring.dashboard.v1.Text.Format|null} [format] Text format
+                         * @property {google.monitoring.dashboard.v1.Text.ITextStyle|null} [style] Text style
                          */
     
                         /**
@@ -8656,6 +10479,14 @@
                         Text.prototype.format = 0;
     
                         /**
+                         * Text style.
+                         * @member {google.monitoring.dashboard.v1.Text.ITextStyle|null|undefined} style
+                         * @memberof google.monitoring.dashboard.v1.Text
+                         * @instance
+                         */
+                        Text.prototype.style = null;
+    
+                        /**
                          * Creates a new Text instance using the specified properties.
                          * @function create
                          * @memberof google.monitoring.dashboard.v1.Text
@@ -8683,6 +10514,8 @@
                                 writer.uint32(/* id 1, wireType 2 =*/10).string(message.content);
                             if (message.format != null && Object.hasOwnProperty.call(message, "format"))
                                 writer.uint32(/* id 2, wireType 0 =*/16).int32(message.format);
+                            if (message.style != null && Object.hasOwnProperty.call(message, "style"))
+                                $root.google.monitoring.dashboard.v1.Text.TextStyle.encode(message.style, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                             return writer;
                         };
     
@@ -8723,6 +10556,10 @@
                                     }
                                 case 2: {
                                         message.format = reader.int32();
+                                        break;
+                                    }
+                                case 3: {
+                                        message.style = $root.google.monitoring.dashboard.v1.Text.TextStyle.decode(reader, reader.uint32());
                                         break;
                                     }
                                 default:
@@ -8772,6 +10609,11 @@
                                 case 2:
                                     break;
                                 }
+                            if (message.style != null && message.hasOwnProperty("style")) {
+                                var error = $root.google.monitoring.dashboard.v1.Text.TextStyle.verify(message.style);
+                                if (error)
+                                    return "style." + error;
+                            }
                             return null;
                         };
     
@@ -8809,6 +10651,11 @@
                                 message.format = 2;
                                 break;
                             }
+                            if (object.style != null) {
+                                if (typeof object.style !== "object")
+                                    throw TypeError(".google.monitoring.dashboard.v1.Text.style: object expected");
+                                message.style = $root.google.monitoring.dashboard.v1.Text.TextStyle.fromObject(object.style);
+                            }
                             return message;
                         };
     
@@ -8828,11 +10675,14 @@
                             if (options.defaults) {
                                 object.content = "";
                                 object.format = options.enums === String ? "FORMAT_UNSPECIFIED" : 0;
+                                object.style = null;
                             }
                             if (message.content != null && message.hasOwnProperty("content"))
                                 object.content = message.content;
                             if (message.format != null && message.hasOwnProperty("format"))
                                 object.format = options.enums === String ? $root.google.monitoring.dashboard.v1.Text.Format[message.format] === undefined ? message.format : $root.google.monitoring.dashboard.v1.Text.Format[message.format] : message.format;
+                            if (message.style != null && message.hasOwnProperty("style"))
+                                object.style = $root.google.monitoring.dashboard.v1.Text.TextStyle.toObject(message.style, options);
                             return object;
                         };
     
@@ -8876,6 +10726,674 @@
                             values[valuesById[1] = "MARKDOWN"] = 1;
                             values[valuesById[2] = "RAW"] = 2;
                             return values;
+                        })();
+    
+                        Text.TextStyle = (function() {
+    
+                            /**
+                             * Properties of a TextStyle.
+                             * @memberof google.monitoring.dashboard.v1.Text
+                             * @interface ITextStyle
+                             * @property {string|null} [backgroundColor] TextStyle backgroundColor
+                             * @property {string|null} [textColor] TextStyle textColor
+                             * @property {google.monitoring.dashboard.v1.Text.TextStyle.HorizontalAlignment|null} [horizontalAlignment] TextStyle horizontalAlignment
+                             * @property {google.monitoring.dashboard.v1.Text.TextStyle.VerticalAlignment|null} [verticalAlignment] TextStyle verticalAlignment
+                             * @property {google.monitoring.dashboard.v1.Text.TextStyle.PaddingSize|null} [padding] TextStyle padding
+                             * @property {google.monitoring.dashboard.v1.Text.TextStyle.FontSize|null} [fontSize] TextStyle fontSize
+                             * @property {google.monitoring.dashboard.v1.Text.TextStyle.PointerLocation|null} [pointerLocation] TextStyle pointerLocation
+                             */
+    
+                            /**
+                             * Constructs a new TextStyle.
+                             * @memberof google.monitoring.dashboard.v1.Text
+                             * @classdesc Represents a TextStyle.
+                             * @implements ITextStyle
+                             * @constructor
+                             * @param {google.monitoring.dashboard.v1.Text.ITextStyle=} [properties] Properties to set
+                             */
+                            function TextStyle(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null)
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * TextStyle backgroundColor.
+                             * @member {string} backgroundColor
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.backgroundColor = "";
+    
+                            /**
+                             * TextStyle textColor.
+                             * @member {string} textColor
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.textColor = "";
+    
+                            /**
+                             * TextStyle horizontalAlignment.
+                             * @member {google.monitoring.dashboard.v1.Text.TextStyle.HorizontalAlignment} horizontalAlignment
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.horizontalAlignment = 0;
+    
+                            /**
+                             * TextStyle verticalAlignment.
+                             * @member {google.monitoring.dashboard.v1.Text.TextStyle.VerticalAlignment} verticalAlignment
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.verticalAlignment = 0;
+    
+                            /**
+                             * TextStyle padding.
+                             * @member {google.monitoring.dashboard.v1.Text.TextStyle.PaddingSize} padding
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.padding = 0;
+    
+                            /**
+                             * TextStyle fontSize.
+                             * @member {google.monitoring.dashboard.v1.Text.TextStyle.FontSize} fontSize
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.fontSize = 0;
+    
+                            /**
+                             * TextStyle pointerLocation.
+                             * @member {google.monitoring.dashboard.v1.Text.TextStyle.PointerLocation} pointerLocation
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             */
+                            TextStyle.prototype.pointerLocation = 0;
+    
+                            /**
+                             * Creates a new TextStyle instance using the specified properties.
+                             * @function create
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Text.ITextStyle=} [properties] Properties to set
+                             * @returns {google.monitoring.dashboard.v1.Text.TextStyle} TextStyle instance
+                             */
+                            TextStyle.create = function create(properties) {
+                                return new TextStyle(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified TextStyle message. Does not implicitly {@link google.monitoring.dashboard.v1.Text.TextStyle.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Text.ITextStyle} message TextStyle message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TextStyle.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.backgroundColor != null && Object.hasOwnProperty.call(message, "backgroundColor"))
+                                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.backgroundColor);
+                                if (message.textColor != null && Object.hasOwnProperty.call(message, "textColor"))
+                                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.textColor);
+                                if (message.horizontalAlignment != null && Object.hasOwnProperty.call(message, "horizontalAlignment"))
+                                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.horizontalAlignment);
+                                if (message.verticalAlignment != null && Object.hasOwnProperty.call(message, "verticalAlignment"))
+                                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.verticalAlignment);
+                                if (message.padding != null && Object.hasOwnProperty.call(message, "padding"))
+                                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.padding);
+                                if (message.fontSize != null && Object.hasOwnProperty.call(message, "fontSize"))
+                                    writer.uint32(/* id 6, wireType 0 =*/48).int32(message.fontSize);
+                                if (message.pointerLocation != null && Object.hasOwnProperty.call(message, "pointerLocation"))
+                                    writer.uint32(/* id 7, wireType 0 =*/56).int32(message.pointerLocation);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified TextStyle message, length delimited. Does not implicitly {@link google.monitoring.dashboard.v1.Text.TextStyle.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Text.ITextStyle} message TextStyle message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            TextStyle.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a TextStyle message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.monitoring.dashboard.v1.Text.TextStyle} TextStyle
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TextStyle.decode = function decode(reader, length) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.monitoring.dashboard.v1.Text.TextStyle();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.backgroundColor = reader.string();
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.textColor = reader.string();
+                                            break;
+                                        }
+                                    case 3: {
+                                            message.horizontalAlignment = reader.int32();
+                                            break;
+                                        }
+                                    case 4: {
+                                            message.verticalAlignment = reader.int32();
+                                            break;
+                                        }
+                                    case 5: {
+                                            message.padding = reader.int32();
+                                            break;
+                                        }
+                                    case 6: {
+                                            message.fontSize = reader.int32();
+                                            break;
+                                        }
+                                    case 7: {
+                                            message.pointerLocation = reader.int32();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a TextStyle message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.monitoring.dashboard.v1.Text.TextStyle} TextStyle
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            TextStyle.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a TextStyle message.
+                             * @function verify
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            TextStyle.verify = function verify(message) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (message.backgroundColor != null && message.hasOwnProperty("backgroundColor"))
+                                    if (!$util.isString(message.backgroundColor))
+                                        return "backgroundColor: string expected";
+                                if (message.textColor != null && message.hasOwnProperty("textColor"))
+                                    if (!$util.isString(message.textColor))
+                                        return "textColor: string expected";
+                                if (message.horizontalAlignment != null && message.hasOwnProperty("horizontalAlignment"))
+                                    switch (message.horizontalAlignment) {
+                                    default:
+                                        return "horizontalAlignment: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                        break;
+                                    }
+                                if (message.verticalAlignment != null && message.hasOwnProperty("verticalAlignment"))
+                                    switch (message.verticalAlignment) {
+                                    default:
+                                        return "verticalAlignment: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                        break;
+                                    }
+                                if (message.padding != null && message.hasOwnProperty("padding"))
+                                    switch (message.padding) {
+                                    default:
+                                        return "padding: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                    case 5:
+                                        break;
+                                    }
+                                if (message.fontSize != null && message.hasOwnProperty("fontSize"))
+                                    switch (message.fontSize) {
+                                    default:
+                                        return "fontSize: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                    case 5:
+                                        break;
+                                    }
+                                if (message.pointerLocation != null && message.hasOwnProperty("pointerLocation"))
+                                    switch (message.pointerLocation) {
+                                    default:
+                                        return "pointerLocation: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                    case 5:
+                                    case 6:
+                                    case 7:
+                                    case 8:
+                                    case 9:
+                                    case 10:
+                                    case 11:
+                                    case 12:
+                                        break;
+                                    }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a TextStyle message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.monitoring.dashboard.v1.Text.TextStyle} TextStyle
+                             */
+                            TextStyle.fromObject = function fromObject(object) {
+                                if (object instanceof $root.google.monitoring.dashboard.v1.Text.TextStyle)
+                                    return object;
+                                var message = new $root.google.monitoring.dashboard.v1.Text.TextStyle();
+                                if (object.backgroundColor != null)
+                                    message.backgroundColor = String(object.backgroundColor);
+                                if (object.textColor != null)
+                                    message.textColor = String(object.textColor);
+                                switch (object.horizontalAlignment) {
+                                default:
+                                    if (typeof object.horizontalAlignment === "number") {
+                                        message.horizontalAlignment = object.horizontalAlignment;
+                                        break;
+                                    }
+                                    break;
+                                case "HORIZONTAL_ALIGNMENT_UNSPECIFIED":
+                                case 0:
+                                    message.horizontalAlignment = 0;
+                                    break;
+                                case "H_LEFT":
+                                case 1:
+                                    message.horizontalAlignment = 1;
+                                    break;
+                                case "H_CENTER":
+                                case 2:
+                                    message.horizontalAlignment = 2;
+                                    break;
+                                case "H_RIGHT":
+                                case 3:
+                                    message.horizontalAlignment = 3;
+                                    break;
+                                }
+                                switch (object.verticalAlignment) {
+                                default:
+                                    if (typeof object.verticalAlignment === "number") {
+                                        message.verticalAlignment = object.verticalAlignment;
+                                        break;
+                                    }
+                                    break;
+                                case "VERTICAL_ALIGNMENT_UNSPECIFIED":
+                                case 0:
+                                    message.verticalAlignment = 0;
+                                    break;
+                                case "V_TOP":
+                                case 1:
+                                    message.verticalAlignment = 1;
+                                    break;
+                                case "V_CENTER":
+                                case 2:
+                                    message.verticalAlignment = 2;
+                                    break;
+                                case "V_BOTTOM":
+                                case 3:
+                                    message.verticalAlignment = 3;
+                                    break;
+                                }
+                                switch (object.padding) {
+                                default:
+                                    if (typeof object.padding === "number") {
+                                        message.padding = object.padding;
+                                        break;
+                                    }
+                                    break;
+                                case "PADDING_SIZE_UNSPECIFIED":
+                                case 0:
+                                    message.padding = 0;
+                                    break;
+                                case "P_EXTRA_SMALL":
+                                case 1:
+                                    message.padding = 1;
+                                    break;
+                                case "P_SMALL":
+                                case 2:
+                                    message.padding = 2;
+                                    break;
+                                case "P_MEDIUM":
+                                case 3:
+                                    message.padding = 3;
+                                    break;
+                                case "P_LARGE":
+                                case 4:
+                                    message.padding = 4;
+                                    break;
+                                case "P_EXTRA_LARGE":
+                                case 5:
+                                    message.padding = 5;
+                                    break;
+                                }
+                                switch (object.fontSize) {
+                                default:
+                                    if (typeof object.fontSize === "number") {
+                                        message.fontSize = object.fontSize;
+                                        break;
+                                    }
+                                    break;
+                                case "FONT_SIZE_UNSPECIFIED":
+                                case 0:
+                                    message.fontSize = 0;
+                                    break;
+                                case "FS_EXTRA_SMALL":
+                                case 1:
+                                    message.fontSize = 1;
+                                    break;
+                                case "FS_SMALL":
+                                case 2:
+                                    message.fontSize = 2;
+                                    break;
+                                case "FS_MEDIUM":
+                                case 3:
+                                    message.fontSize = 3;
+                                    break;
+                                case "FS_LARGE":
+                                case 4:
+                                    message.fontSize = 4;
+                                    break;
+                                case "FS_EXTRA_LARGE":
+                                case 5:
+                                    message.fontSize = 5;
+                                    break;
+                                }
+                                switch (object.pointerLocation) {
+                                default:
+                                    if (typeof object.pointerLocation === "number") {
+                                        message.pointerLocation = object.pointerLocation;
+                                        break;
+                                    }
+                                    break;
+                                case "POINTER_LOCATION_UNSPECIFIED":
+                                case 0:
+                                    message.pointerLocation = 0;
+                                    break;
+                                case "PL_TOP":
+                                case 1:
+                                    message.pointerLocation = 1;
+                                    break;
+                                case "PL_RIGHT":
+                                case 2:
+                                    message.pointerLocation = 2;
+                                    break;
+                                case "PL_BOTTOM":
+                                case 3:
+                                    message.pointerLocation = 3;
+                                    break;
+                                case "PL_LEFT":
+                                case 4:
+                                    message.pointerLocation = 4;
+                                    break;
+                                case "PL_TOP_LEFT":
+                                case 5:
+                                    message.pointerLocation = 5;
+                                    break;
+                                case "PL_TOP_RIGHT":
+                                case 6:
+                                    message.pointerLocation = 6;
+                                    break;
+                                case "PL_RIGHT_TOP":
+                                case 7:
+                                    message.pointerLocation = 7;
+                                    break;
+                                case "PL_RIGHT_BOTTOM":
+                                case 8:
+                                    message.pointerLocation = 8;
+                                    break;
+                                case "PL_BOTTOM_RIGHT":
+                                case 9:
+                                    message.pointerLocation = 9;
+                                    break;
+                                case "PL_BOTTOM_LEFT":
+                                case 10:
+                                    message.pointerLocation = 10;
+                                    break;
+                                case "PL_LEFT_BOTTOM":
+                                case 11:
+                                    message.pointerLocation = 11;
+                                    break;
+                                case "PL_LEFT_TOP":
+                                case 12:
+                                    message.pointerLocation = 12;
+                                    break;
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a TextStyle message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {google.monitoring.dashboard.v1.Text.TextStyle} message TextStyle
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            TextStyle.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults) {
+                                    object.backgroundColor = "";
+                                    object.textColor = "";
+                                    object.horizontalAlignment = options.enums === String ? "HORIZONTAL_ALIGNMENT_UNSPECIFIED" : 0;
+                                    object.verticalAlignment = options.enums === String ? "VERTICAL_ALIGNMENT_UNSPECIFIED" : 0;
+                                    object.padding = options.enums === String ? "PADDING_SIZE_UNSPECIFIED" : 0;
+                                    object.fontSize = options.enums === String ? "FONT_SIZE_UNSPECIFIED" : 0;
+                                    object.pointerLocation = options.enums === String ? "POINTER_LOCATION_UNSPECIFIED" : 0;
+                                }
+                                if (message.backgroundColor != null && message.hasOwnProperty("backgroundColor"))
+                                    object.backgroundColor = message.backgroundColor;
+                                if (message.textColor != null && message.hasOwnProperty("textColor"))
+                                    object.textColor = message.textColor;
+                                if (message.horizontalAlignment != null && message.hasOwnProperty("horizontalAlignment"))
+                                    object.horizontalAlignment = options.enums === String ? $root.google.monitoring.dashboard.v1.Text.TextStyle.HorizontalAlignment[message.horizontalAlignment] === undefined ? message.horizontalAlignment : $root.google.monitoring.dashboard.v1.Text.TextStyle.HorizontalAlignment[message.horizontalAlignment] : message.horizontalAlignment;
+                                if (message.verticalAlignment != null && message.hasOwnProperty("verticalAlignment"))
+                                    object.verticalAlignment = options.enums === String ? $root.google.monitoring.dashboard.v1.Text.TextStyle.VerticalAlignment[message.verticalAlignment] === undefined ? message.verticalAlignment : $root.google.monitoring.dashboard.v1.Text.TextStyle.VerticalAlignment[message.verticalAlignment] : message.verticalAlignment;
+                                if (message.padding != null && message.hasOwnProperty("padding"))
+                                    object.padding = options.enums === String ? $root.google.monitoring.dashboard.v1.Text.TextStyle.PaddingSize[message.padding] === undefined ? message.padding : $root.google.monitoring.dashboard.v1.Text.TextStyle.PaddingSize[message.padding] : message.padding;
+                                if (message.fontSize != null && message.hasOwnProperty("fontSize"))
+                                    object.fontSize = options.enums === String ? $root.google.monitoring.dashboard.v1.Text.TextStyle.FontSize[message.fontSize] === undefined ? message.fontSize : $root.google.monitoring.dashboard.v1.Text.TextStyle.FontSize[message.fontSize] : message.fontSize;
+                                if (message.pointerLocation != null && message.hasOwnProperty("pointerLocation"))
+                                    object.pointerLocation = options.enums === String ? $root.google.monitoring.dashboard.v1.Text.TextStyle.PointerLocation[message.pointerLocation] === undefined ? message.pointerLocation : $root.google.monitoring.dashboard.v1.Text.TextStyle.PointerLocation[message.pointerLocation] : message.pointerLocation;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this TextStyle to JSON.
+                             * @function toJSON
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            TextStyle.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for TextStyle
+                             * @function getTypeUrl
+                             * @memberof google.monitoring.dashboard.v1.Text.TextStyle
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            TextStyle.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.monitoring.dashboard.v1.Text.TextStyle";
+                            };
+    
+                            /**
+                             * HorizontalAlignment enum.
+                             * @name google.monitoring.dashboard.v1.Text.TextStyle.HorizontalAlignment
+                             * @enum {number}
+                             * @property {number} HORIZONTAL_ALIGNMENT_UNSPECIFIED=0 HORIZONTAL_ALIGNMENT_UNSPECIFIED value
+                             * @property {number} H_LEFT=1 H_LEFT value
+                             * @property {number} H_CENTER=2 H_CENTER value
+                             * @property {number} H_RIGHT=3 H_RIGHT value
+                             */
+                            TextStyle.HorizontalAlignment = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "HORIZONTAL_ALIGNMENT_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "H_LEFT"] = 1;
+                                values[valuesById[2] = "H_CENTER"] = 2;
+                                values[valuesById[3] = "H_RIGHT"] = 3;
+                                return values;
+                            })();
+    
+                            /**
+                             * VerticalAlignment enum.
+                             * @name google.monitoring.dashboard.v1.Text.TextStyle.VerticalAlignment
+                             * @enum {number}
+                             * @property {number} VERTICAL_ALIGNMENT_UNSPECIFIED=0 VERTICAL_ALIGNMENT_UNSPECIFIED value
+                             * @property {number} V_TOP=1 V_TOP value
+                             * @property {number} V_CENTER=2 V_CENTER value
+                             * @property {number} V_BOTTOM=3 V_BOTTOM value
+                             */
+                            TextStyle.VerticalAlignment = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "VERTICAL_ALIGNMENT_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "V_TOP"] = 1;
+                                values[valuesById[2] = "V_CENTER"] = 2;
+                                values[valuesById[3] = "V_BOTTOM"] = 3;
+                                return values;
+                            })();
+    
+                            /**
+                             * PaddingSize enum.
+                             * @name google.monitoring.dashboard.v1.Text.TextStyle.PaddingSize
+                             * @enum {number}
+                             * @property {number} PADDING_SIZE_UNSPECIFIED=0 PADDING_SIZE_UNSPECIFIED value
+                             * @property {number} P_EXTRA_SMALL=1 P_EXTRA_SMALL value
+                             * @property {number} P_SMALL=2 P_SMALL value
+                             * @property {number} P_MEDIUM=3 P_MEDIUM value
+                             * @property {number} P_LARGE=4 P_LARGE value
+                             * @property {number} P_EXTRA_LARGE=5 P_EXTRA_LARGE value
+                             */
+                            TextStyle.PaddingSize = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "PADDING_SIZE_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "P_EXTRA_SMALL"] = 1;
+                                values[valuesById[2] = "P_SMALL"] = 2;
+                                values[valuesById[3] = "P_MEDIUM"] = 3;
+                                values[valuesById[4] = "P_LARGE"] = 4;
+                                values[valuesById[5] = "P_EXTRA_LARGE"] = 5;
+                                return values;
+                            })();
+    
+                            /**
+                             * FontSize enum.
+                             * @name google.monitoring.dashboard.v1.Text.TextStyle.FontSize
+                             * @enum {number}
+                             * @property {number} FONT_SIZE_UNSPECIFIED=0 FONT_SIZE_UNSPECIFIED value
+                             * @property {number} FS_EXTRA_SMALL=1 FS_EXTRA_SMALL value
+                             * @property {number} FS_SMALL=2 FS_SMALL value
+                             * @property {number} FS_MEDIUM=3 FS_MEDIUM value
+                             * @property {number} FS_LARGE=4 FS_LARGE value
+                             * @property {number} FS_EXTRA_LARGE=5 FS_EXTRA_LARGE value
+                             */
+                            TextStyle.FontSize = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "FONT_SIZE_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "FS_EXTRA_SMALL"] = 1;
+                                values[valuesById[2] = "FS_SMALL"] = 2;
+                                values[valuesById[3] = "FS_MEDIUM"] = 3;
+                                values[valuesById[4] = "FS_LARGE"] = 4;
+                                values[valuesById[5] = "FS_EXTRA_LARGE"] = 5;
+                                return values;
+                            })();
+    
+                            /**
+                             * PointerLocation enum.
+                             * @name google.monitoring.dashboard.v1.Text.TextStyle.PointerLocation
+                             * @enum {number}
+                             * @property {number} POINTER_LOCATION_UNSPECIFIED=0 POINTER_LOCATION_UNSPECIFIED value
+                             * @property {number} PL_TOP=1 PL_TOP value
+                             * @property {number} PL_RIGHT=2 PL_RIGHT value
+                             * @property {number} PL_BOTTOM=3 PL_BOTTOM value
+                             * @property {number} PL_LEFT=4 PL_LEFT value
+                             * @property {number} PL_TOP_LEFT=5 PL_TOP_LEFT value
+                             * @property {number} PL_TOP_RIGHT=6 PL_TOP_RIGHT value
+                             * @property {number} PL_RIGHT_TOP=7 PL_RIGHT_TOP value
+                             * @property {number} PL_RIGHT_BOTTOM=8 PL_RIGHT_BOTTOM value
+                             * @property {number} PL_BOTTOM_RIGHT=9 PL_BOTTOM_RIGHT value
+                             * @property {number} PL_BOTTOM_LEFT=10 PL_BOTTOM_LEFT value
+                             * @property {number} PL_LEFT_BOTTOM=11 PL_LEFT_BOTTOM value
+                             * @property {number} PL_LEFT_TOP=12 PL_LEFT_TOP value
+                             */
+                            TextStyle.PointerLocation = (function() {
+                                var valuesById = {}, values = Object.create(valuesById);
+                                values[valuesById[0] = "POINTER_LOCATION_UNSPECIFIED"] = 0;
+                                values[valuesById[1] = "PL_TOP"] = 1;
+                                values[valuesById[2] = "PL_RIGHT"] = 2;
+                                values[valuesById[3] = "PL_BOTTOM"] = 3;
+                                values[valuesById[4] = "PL_LEFT"] = 4;
+                                values[valuesById[5] = "PL_TOP_LEFT"] = 5;
+                                values[valuesById[6] = "PL_TOP_RIGHT"] = 6;
+                                values[valuesById[7] = "PL_RIGHT_TOP"] = 7;
+                                values[valuesById[8] = "PL_RIGHT_BOTTOM"] = 8;
+                                values[valuesById[9] = "PL_BOTTOM_RIGHT"] = 9;
+                                values[valuesById[10] = "PL_BOTTOM_LEFT"] = 10;
+                                values[valuesById[11] = "PL_LEFT_BOTTOM"] = 11;
+                                values[valuesById[12] = "PL_LEFT_TOP"] = 12;
+                                return values;
+                            })();
+    
+                            return TextStyle;
                         })();
     
                         return Text;
@@ -11830,6 +14348,7 @@
              * @property {number} IMMUTABLE=5 IMMUTABLE value
              * @property {number} UNORDERED_LIST=6 UNORDERED_LIST value
              * @property {number} NON_EMPTY_DEFAULT=7 NON_EMPTY_DEFAULT value
+             * @property {number} IDENTIFIER=8 IDENTIFIER value
              */
             api.FieldBehavior = (function() {
                 var valuesById = {}, values = Object.create(valuesById);
@@ -11841,6 +14360,7 @@
                 values[valuesById[5] = "IMMUTABLE"] = 5;
                 values[valuesById[6] = "UNORDERED_LIST"] = 6;
                 values[valuesById[7] = "NON_EMPTY_DEFAULT"] = 7;
+                values[valuesById[8] = "IDENTIFIER"] = 8;
                 return values;
             })();
     
@@ -12526,6 +15046,1241 @@
                 };
     
                 return ResourceReference;
+            })();
+    
+            api.MonitoredResourceDescriptor = (function() {
+    
+                /**
+                 * Properties of a MonitoredResourceDescriptor.
+                 * @memberof google.api
+                 * @interface IMonitoredResourceDescriptor
+                 * @property {string|null} [name] MonitoredResourceDescriptor name
+                 * @property {string|null} [type] MonitoredResourceDescriptor type
+                 * @property {string|null} [displayName] MonitoredResourceDescriptor displayName
+                 * @property {string|null} [description] MonitoredResourceDescriptor description
+                 * @property {Array.<google.api.ILabelDescriptor>|null} [labels] MonitoredResourceDescriptor labels
+                 * @property {google.api.LaunchStage|null} [launchStage] MonitoredResourceDescriptor launchStage
+                 */
+    
+                /**
+                 * Constructs a new MonitoredResourceDescriptor.
+                 * @memberof google.api
+                 * @classdesc Represents a MonitoredResourceDescriptor.
+                 * @implements IMonitoredResourceDescriptor
+                 * @constructor
+                 * @param {google.api.IMonitoredResourceDescriptor=} [properties] Properties to set
+                 */
+                function MonitoredResourceDescriptor(properties) {
+                    this.labels = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MonitoredResourceDescriptor name.
+                 * @member {string} name
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 */
+                MonitoredResourceDescriptor.prototype.name = "";
+    
+                /**
+                 * MonitoredResourceDescriptor type.
+                 * @member {string} type
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 */
+                MonitoredResourceDescriptor.prototype.type = "";
+    
+                /**
+                 * MonitoredResourceDescriptor displayName.
+                 * @member {string} displayName
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 */
+                MonitoredResourceDescriptor.prototype.displayName = "";
+    
+                /**
+                 * MonitoredResourceDescriptor description.
+                 * @member {string} description
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 */
+                MonitoredResourceDescriptor.prototype.description = "";
+    
+                /**
+                 * MonitoredResourceDescriptor labels.
+                 * @member {Array.<google.api.ILabelDescriptor>} labels
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 */
+                MonitoredResourceDescriptor.prototype.labels = $util.emptyArray;
+    
+                /**
+                 * MonitoredResourceDescriptor launchStage.
+                 * @member {google.api.LaunchStage} launchStage
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 */
+                MonitoredResourceDescriptor.prototype.launchStage = 0;
+    
+                /**
+                 * Creates a new MonitoredResourceDescriptor instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {google.api.IMonitoredResourceDescriptor=} [properties] Properties to set
+                 * @returns {google.api.MonitoredResourceDescriptor} MonitoredResourceDescriptor instance
+                 */
+                MonitoredResourceDescriptor.create = function create(properties) {
+                    return new MonitoredResourceDescriptor(properties);
+                };
+    
+                /**
+                 * Encodes the specified MonitoredResourceDescriptor message. Does not implicitly {@link google.api.MonitoredResourceDescriptor.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {google.api.IMonitoredResourceDescriptor} message MonitoredResourceDescriptor message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MonitoredResourceDescriptor.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.type);
+                    if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.displayName);
+                    if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.description);
+                    if (message.labels != null && message.labels.length)
+                        for (var i = 0; i < message.labels.length; ++i)
+                            $root.google.api.LabelDescriptor.encode(message.labels[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                    if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                        writer.uint32(/* id 5, wireType 2 =*/42).string(message.name);
+                    if (message.launchStage != null && Object.hasOwnProperty.call(message, "launchStage"))
+                        writer.uint32(/* id 7, wireType 0 =*/56).int32(message.launchStage);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MonitoredResourceDescriptor message, length delimited. Does not implicitly {@link google.api.MonitoredResourceDescriptor.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {google.api.IMonitoredResourceDescriptor} message MonitoredResourceDescriptor message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MonitoredResourceDescriptor.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MonitoredResourceDescriptor message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MonitoredResourceDescriptor} MonitoredResourceDescriptor
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MonitoredResourceDescriptor.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MonitoredResourceDescriptor();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 5: {
+                                message.name = reader.string();
+                                break;
+                            }
+                        case 1: {
+                                message.type = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.displayName = reader.string();
+                                break;
+                            }
+                        case 3: {
+                                message.description = reader.string();
+                                break;
+                            }
+                        case 4: {
+                                if (!(message.labels && message.labels.length))
+                                    message.labels = [];
+                                message.labels.push($root.google.api.LabelDescriptor.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 7: {
+                                message.launchStage = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MonitoredResourceDescriptor message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MonitoredResourceDescriptor} MonitoredResourceDescriptor
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MonitoredResourceDescriptor.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MonitoredResourceDescriptor message.
+                 * @function verify
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MonitoredResourceDescriptor.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.name != null && message.hasOwnProperty("name"))
+                        if (!$util.isString(message.name))
+                            return "name: string expected";
+                    if (message.type != null && message.hasOwnProperty("type"))
+                        if (!$util.isString(message.type))
+                            return "type: string expected";
+                    if (message.displayName != null && message.hasOwnProperty("displayName"))
+                        if (!$util.isString(message.displayName))
+                            return "displayName: string expected";
+                    if (message.description != null && message.hasOwnProperty("description"))
+                        if (!$util.isString(message.description))
+                            return "description: string expected";
+                    if (message.labels != null && message.hasOwnProperty("labels")) {
+                        if (!Array.isArray(message.labels))
+                            return "labels: array expected";
+                        for (var i = 0; i < message.labels.length; ++i) {
+                            var error = $root.google.api.LabelDescriptor.verify(message.labels[i]);
+                            if (error)
+                                return "labels." + error;
+                        }
+                    }
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        switch (message.launchStage) {
+                        default:
+                            return "launchStage: enum value expected";
+                        case 0:
+                        case 6:
+                        case 7:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MonitoredResourceDescriptor message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MonitoredResourceDescriptor} MonitoredResourceDescriptor
+                 */
+                MonitoredResourceDescriptor.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MonitoredResourceDescriptor)
+                        return object;
+                    var message = new $root.google.api.MonitoredResourceDescriptor();
+                    if (object.name != null)
+                        message.name = String(object.name);
+                    if (object.type != null)
+                        message.type = String(object.type);
+                    if (object.displayName != null)
+                        message.displayName = String(object.displayName);
+                    if (object.description != null)
+                        message.description = String(object.description);
+                    if (object.labels) {
+                        if (!Array.isArray(object.labels))
+                            throw TypeError(".google.api.MonitoredResourceDescriptor.labels: array expected");
+                        message.labels = [];
+                        for (var i = 0; i < object.labels.length; ++i) {
+                            if (typeof object.labels[i] !== "object")
+                                throw TypeError(".google.api.MonitoredResourceDescriptor.labels: object expected");
+                            message.labels[i] = $root.google.api.LabelDescriptor.fromObject(object.labels[i]);
+                        }
+                    }
+                    switch (object.launchStage) {
+                    default:
+                        if (typeof object.launchStage === "number") {
+                            message.launchStage = object.launchStage;
+                            break;
+                        }
+                        break;
+                    case "LAUNCH_STAGE_UNSPECIFIED":
+                    case 0:
+                        message.launchStage = 0;
+                        break;
+                    case "UNIMPLEMENTED":
+                    case 6:
+                        message.launchStage = 6;
+                        break;
+                    case "PRELAUNCH":
+                    case 7:
+                        message.launchStage = 7;
+                        break;
+                    case "EARLY_ACCESS":
+                    case 1:
+                        message.launchStage = 1;
+                        break;
+                    case "ALPHA":
+                    case 2:
+                        message.launchStage = 2;
+                        break;
+                    case "BETA":
+                    case 3:
+                        message.launchStage = 3;
+                        break;
+                    case "GA":
+                    case 4:
+                        message.launchStage = 4;
+                        break;
+                    case "DEPRECATED":
+                    case 5:
+                        message.launchStage = 5;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MonitoredResourceDescriptor message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {google.api.MonitoredResourceDescriptor} message MonitoredResourceDescriptor
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MonitoredResourceDescriptor.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.labels = [];
+                    if (options.defaults) {
+                        object.type = "";
+                        object.displayName = "";
+                        object.description = "";
+                        object.name = "";
+                        object.launchStage = options.enums === String ? "LAUNCH_STAGE_UNSPECIFIED" : 0;
+                    }
+                    if (message.type != null && message.hasOwnProperty("type"))
+                        object.type = message.type;
+                    if (message.displayName != null && message.hasOwnProperty("displayName"))
+                        object.displayName = message.displayName;
+                    if (message.description != null && message.hasOwnProperty("description"))
+                        object.description = message.description;
+                    if (message.labels && message.labels.length) {
+                        object.labels = [];
+                        for (var j = 0; j < message.labels.length; ++j)
+                            object.labels[j] = $root.google.api.LabelDescriptor.toObject(message.labels[j], options);
+                    }
+                    if (message.name != null && message.hasOwnProperty("name"))
+                        object.name = message.name;
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        object.launchStage = options.enums === String ? $root.google.api.LaunchStage[message.launchStage] === undefined ? message.launchStage : $root.google.api.LaunchStage[message.launchStage] : message.launchStage;
+                    return object;
+                };
+    
+                /**
+                 * Converts this MonitoredResourceDescriptor to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MonitoredResourceDescriptor.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MonitoredResourceDescriptor
+                 * @function getTypeUrl
+                 * @memberof google.api.MonitoredResourceDescriptor
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MonitoredResourceDescriptor.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MonitoredResourceDescriptor";
+                };
+    
+                return MonitoredResourceDescriptor;
+            })();
+    
+            api.MonitoredResource = (function() {
+    
+                /**
+                 * Properties of a MonitoredResource.
+                 * @memberof google.api
+                 * @interface IMonitoredResource
+                 * @property {string|null} [type] MonitoredResource type
+                 * @property {Object.<string,string>|null} [labels] MonitoredResource labels
+                 */
+    
+                /**
+                 * Constructs a new MonitoredResource.
+                 * @memberof google.api
+                 * @classdesc Represents a MonitoredResource.
+                 * @implements IMonitoredResource
+                 * @constructor
+                 * @param {google.api.IMonitoredResource=} [properties] Properties to set
+                 */
+                function MonitoredResource(properties) {
+                    this.labels = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MonitoredResource type.
+                 * @member {string} type
+                 * @memberof google.api.MonitoredResource
+                 * @instance
+                 */
+                MonitoredResource.prototype.type = "";
+    
+                /**
+                 * MonitoredResource labels.
+                 * @member {Object.<string,string>} labels
+                 * @memberof google.api.MonitoredResource
+                 * @instance
+                 */
+                MonitoredResource.prototype.labels = $util.emptyObject;
+    
+                /**
+                 * Creates a new MonitoredResource instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {google.api.IMonitoredResource=} [properties] Properties to set
+                 * @returns {google.api.MonitoredResource} MonitoredResource instance
+                 */
+                MonitoredResource.create = function create(properties) {
+                    return new MonitoredResource(properties);
+                };
+    
+                /**
+                 * Encodes the specified MonitoredResource message. Does not implicitly {@link google.api.MonitoredResource.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {google.api.IMonitoredResource} message MonitoredResource message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MonitoredResource.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.type);
+                    if (message.labels != null && Object.hasOwnProperty.call(message, "labels"))
+                        for (var keys = Object.keys(message.labels), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.labels[keys[i]]).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MonitoredResource message, length delimited. Does not implicitly {@link google.api.MonitoredResource.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {google.api.IMonitoredResource} message MonitoredResource message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MonitoredResource.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MonitoredResource message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MonitoredResource} MonitoredResource
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MonitoredResource.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MonitoredResource(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.type = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (message.labels === $util.emptyObject)
+                                    message.labels = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.labels[key] = value;
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MonitoredResource message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MonitoredResource} MonitoredResource
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MonitoredResource.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MonitoredResource message.
+                 * @function verify
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MonitoredResource.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.type != null && message.hasOwnProperty("type"))
+                        if (!$util.isString(message.type))
+                            return "type: string expected";
+                    if (message.labels != null && message.hasOwnProperty("labels")) {
+                        if (!$util.isObject(message.labels))
+                            return "labels: object expected";
+                        var key = Object.keys(message.labels);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.labels[key[i]]))
+                                return "labels: string{k:string} expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MonitoredResource message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MonitoredResource} MonitoredResource
+                 */
+                MonitoredResource.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MonitoredResource)
+                        return object;
+                    var message = new $root.google.api.MonitoredResource();
+                    if (object.type != null)
+                        message.type = String(object.type);
+                    if (object.labels) {
+                        if (typeof object.labels !== "object")
+                            throw TypeError(".google.api.MonitoredResource.labels: object expected");
+                        message.labels = {};
+                        for (var keys = Object.keys(object.labels), i = 0; i < keys.length; ++i)
+                            message.labels[keys[i]] = String(object.labels[keys[i]]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MonitoredResource message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {google.api.MonitoredResource} message MonitoredResource
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MonitoredResource.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.labels = {};
+                    if (options.defaults)
+                        object.type = "";
+                    if (message.type != null && message.hasOwnProperty("type"))
+                        object.type = message.type;
+                    var keys2;
+                    if (message.labels && (keys2 = Object.keys(message.labels)).length) {
+                        object.labels = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.labels[keys2[j]] = message.labels[keys2[j]];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this MonitoredResource to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MonitoredResource
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MonitoredResource.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MonitoredResource
+                 * @function getTypeUrl
+                 * @memberof google.api.MonitoredResource
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MonitoredResource.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MonitoredResource";
+                };
+    
+                return MonitoredResource;
+            })();
+    
+            api.MonitoredResourceMetadata = (function() {
+    
+                /**
+                 * Properties of a MonitoredResourceMetadata.
+                 * @memberof google.api
+                 * @interface IMonitoredResourceMetadata
+                 * @property {google.protobuf.IStruct|null} [systemLabels] MonitoredResourceMetadata systemLabels
+                 * @property {Object.<string,string>|null} [userLabels] MonitoredResourceMetadata userLabels
+                 */
+    
+                /**
+                 * Constructs a new MonitoredResourceMetadata.
+                 * @memberof google.api
+                 * @classdesc Represents a MonitoredResourceMetadata.
+                 * @implements IMonitoredResourceMetadata
+                 * @constructor
+                 * @param {google.api.IMonitoredResourceMetadata=} [properties] Properties to set
+                 */
+                function MonitoredResourceMetadata(properties) {
+                    this.userLabels = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MonitoredResourceMetadata systemLabels.
+                 * @member {google.protobuf.IStruct|null|undefined} systemLabels
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @instance
+                 */
+                MonitoredResourceMetadata.prototype.systemLabels = null;
+    
+                /**
+                 * MonitoredResourceMetadata userLabels.
+                 * @member {Object.<string,string>} userLabels
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @instance
+                 */
+                MonitoredResourceMetadata.prototype.userLabels = $util.emptyObject;
+    
+                /**
+                 * Creates a new MonitoredResourceMetadata instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {google.api.IMonitoredResourceMetadata=} [properties] Properties to set
+                 * @returns {google.api.MonitoredResourceMetadata} MonitoredResourceMetadata instance
+                 */
+                MonitoredResourceMetadata.create = function create(properties) {
+                    return new MonitoredResourceMetadata(properties);
+                };
+    
+                /**
+                 * Encodes the specified MonitoredResourceMetadata message. Does not implicitly {@link google.api.MonitoredResourceMetadata.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {google.api.IMonitoredResourceMetadata} message MonitoredResourceMetadata message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MonitoredResourceMetadata.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.systemLabels != null && Object.hasOwnProperty.call(message, "systemLabels"))
+                        $root.google.protobuf.Struct.encode(message.systemLabels, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.userLabels != null && Object.hasOwnProperty.call(message, "userLabels"))
+                        for (var keys = Object.keys(message.userLabels), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.userLabels[keys[i]]).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MonitoredResourceMetadata message, length delimited. Does not implicitly {@link google.api.MonitoredResourceMetadata.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {google.api.IMonitoredResourceMetadata} message MonitoredResourceMetadata message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MonitoredResourceMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MonitoredResourceMetadata message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MonitoredResourceMetadata} MonitoredResourceMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MonitoredResourceMetadata.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MonitoredResourceMetadata(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.systemLabels = $root.google.protobuf.Struct.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 2: {
+                                if (message.userLabels === $util.emptyObject)
+                                    message.userLabels = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.userLabels[key] = value;
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MonitoredResourceMetadata message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MonitoredResourceMetadata} MonitoredResourceMetadata
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MonitoredResourceMetadata.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MonitoredResourceMetadata message.
+                 * @function verify
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MonitoredResourceMetadata.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.systemLabels != null && message.hasOwnProperty("systemLabels")) {
+                        var error = $root.google.protobuf.Struct.verify(message.systemLabels);
+                        if (error)
+                            return "systemLabels." + error;
+                    }
+                    if (message.userLabels != null && message.hasOwnProperty("userLabels")) {
+                        if (!$util.isObject(message.userLabels))
+                            return "userLabels: object expected";
+                        var key = Object.keys(message.userLabels);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.userLabels[key[i]]))
+                                return "userLabels: string{k:string} expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MonitoredResourceMetadata message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MonitoredResourceMetadata} MonitoredResourceMetadata
+                 */
+                MonitoredResourceMetadata.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MonitoredResourceMetadata)
+                        return object;
+                    var message = new $root.google.api.MonitoredResourceMetadata();
+                    if (object.systemLabels != null) {
+                        if (typeof object.systemLabels !== "object")
+                            throw TypeError(".google.api.MonitoredResourceMetadata.systemLabels: object expected");
+                        message.systemLabels = $root.google.protobuf.Struct.fromObject(object.systemLabels);
+                    }
+                    if (object.userLabels) {
+                        if (typeof object.userLabels !== "object")
+                            throw TypeError(".google.api.MonitoredResourceMetadata.userLabels: object expected");
+                        message.userLabels = {};
+                        for (var keys = Object.keys(object.userLabels), i = 0; i < keys.length; ++i)
+                            message.userLabels[keys[i]] = String(object.userLabels[keys[i]]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MonitoredResourceMetadata message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {google.api.MonitoredResourceMetadata} message MonitoredResourceMetadata
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MonitoredResourceMetadata.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.userLabels = {};
+                    if (options.defaults)
+                        object.systemLabels = null;
+                    if (message.systemLabels != null && message.hasOwnProperty("systemLabels"))
+                        object.systemLabels = $root.google.protobuf.Struct.toObject(message.systemLabels, options);
+                    var keys2;
+                    if (message.userLabels && (keys2 = Object.keys(message.userLabels)).length) {
+                        object.userLabels = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.userLabels[keys2[j]] = message.userLabels[keys2[j]];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this MonitoredResourceMetadata to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MonitoredResourceMetadata.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MonitoredResourceMetadata
+                 * @function getTypeUrl
+                 * @memberof google.api.MonitoredResourceMetadata
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MonitoredResourceMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MonitoredResourceMetadata";
+                };
+    
+                return MonitoredResourceMetadata;
+            })();
+    
+            api.LabelDescriptor = (function() {
+    
+                /**
+                 * Properties of a LabelDescriptor.
+                 * @memberof google.api
+                 * @interface ILabelDescriptor
+                 * @property {string|null} [key] LabelDescriptor key
+                 * @property {google.api.LabelDescriptor.ValueType|null} [valueType] LabelDescriptor valueType
+                 * @property {string|null} [description] LabelDescriptor description
+                 */
+    
+                /**
+                 * Constructs a new LabelDescriptor.
+                 * @memberof google.api
+                 * @classdesc Represents a LabelDescriptor.
+                 * @implements ILabelDescriptor
+                 * @constructor
+                 * @param {google.api.ILabelDescriptor=} [properties] Properties to set
+                 */
+                function LabelDescriptor(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * LabelDescriptor key.
+                 * @member {string} key
+                 * @memberof google.api.LabelDescriptor
+                 * @instance
+                 */
+                LabelDescriptor.prototype.key = "";
+    
+                /**
+                 * LabelDescriptor valueType.
+                 * @member {google.api.LabelDescriptor.ValueType} valueType
+                 * @memberof google.api.LabelDescriptor
+                 * @instance
+                 */
+                LabelDescriptor.prototype.valueType = 0;
+    
+                /**
+                 * LabelDescriptor description.
+                 * @member {string} description
+                 * @memberof google.api.LabelDescriptor
+                 * @instance
+                 */
+                LabelDescriptor.prototype.description = "";
+    
+                /**
+                 * Creates a new LabelDescriptor instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {google.api.ILabelDescriptor=} [properties] Properties to set
+                 * @returns {google.api.LabelDescriptor} LabelDescriptor instance
+                 */
+                LabelDescriptor.create = function create(properties) {
+                    return new LabelDescriptor(properties);
+                };
+    
+                /**
+                 * Encodes the specified LabelDescriptor message. Does not implicitly {@link google.api.LabelDescriptor.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {google.api.ILabelDescriptor} message LabelDescriptor message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                LabelDescriptor.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.key != null && Object.hasOwnProperty.call(message, "key"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.key);
+                    if (message.valueType != null && Object.hasOwnProperty.call(message, "valueType"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.valueType);
+                    if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.description);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified LabelDescriptor message, length delimited. Does not implicitly {@link google.api.LabelDescriptor.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {google.api.ILabelDescriptor} message LabelDescriptor message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                LabelDescriptor.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a LabelDescriptor message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.LabelDescriptor} LabelDescriptor
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                LabelDescriptor.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.LabelDescriptor();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.key = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.valueType = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.description = reader.string();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a LabelDescriptor message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.LabelDescriptor} LabelDescriptor
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                LabelDescriptor.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a LabelDescriptor message.
+                 * @function verify
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                LabelDescriptor.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.key != null && message.hasOwnProperty("key"))
+                        if (!$util.isString(message.key))
+                            return "key: string expected";
+                    if (message.valueType != null && message.hasOwnProperty("valueType"))
+                        switch (message.valueType) {
+                        default:
+                            return "valueType: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.description != null && message.hasOwnProperty("description"))
+                        if (!$util.isString(message.description))
+                            return "description: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a LabelDescriptor message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.LabelDescriptor} LabelDescriptor
+                 */
+                LabelDescriptor.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.LabelDescriptor)
+                        return object;
+                    var message = new $root.google.api.LabelDescriptor();
+                    if (object.key != null)
+                        message.key = String(object.key);
+                    switch (object.valueType) {
+                    default:
+                        if (typeof object.valueType === "number") {
+                            message.valueType = object.valueType;
+                            break;
+                        }
+                        break;
+                    case "STRING":
+                    case 0:
+                        message.valueType = 0;
+                        break;
+                    case "BOOL":
+                    case 1:
+                        message.valueType = 1;
+                        break;
+                    case "INT64":
+                    case 2:
+                        message.valueType = 2;
+                        break;
+                    }
+                    if (object.description != null)
+                        message.description = String(object.description);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a LabelDescriptor message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {google.api.LabelDescriptor} message LabelDescriptor
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                LabelDescriptor.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.key = "";
+                        object.valueType = options.enums === String ? "STRING" : 0;
+                        object.description = "";
+                    }
+                    if (message.key != null && message.hasOwnProperty("key"))
+                        object.key = message.key;
+                    if (message.valueType != null && message.hasOwnProperty("valueType"))
+                        object.valueType = options.enums === String ? $root.google.api.LabelDescriptor.ValueType[message.valueType] === undefined ? message.valueType : $root.google.api.LabelDescriptor.ValueType[message.valueType] : message.valueType;
+                    if (message.description != null && message.hasOwnProperty("description"))
+                        object.description = message.description;
+                    return object;
+                };
+    
+                /**
+                 * Converts this LabelDescriptor to JSON.
+                 * @function toJSON
+                 * @memberof google.api.LabelDescriptor
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                LabelDescriptor.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for LabelDescriptor
+                 * @function getTypeUrl
+                 * @memberof google.api.LabelDescriptor
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                LabelDescriptor.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.LabelDescriptor";
+                };
+    
+                /**
+                 * ValueType enum.
+                 * @name google.api.LabelDescriptor.ValueType
+                 * @enum {number}
+                 * @property {number} STRING=0 STRING value
+                 * @property {number} BOOL=1 BOOL value
+                 * @property {number} INT64=2 INT64 value
+                 */
+                LabelDescriptor.ValueType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "STRING"] = 0;
+                    values[valuesById[1] = "BOOL"] = 1;
+                    values[valuesById[2] = "INT64"] = 2;
+                    return values;
+                })();
+    
+                return LabelDescriptor;
+            })();
+    
+            /**
+             * LaunchStage enum.
+             * @name google.api.LaunchStage
+             * @enum {number}
+             * @property {number} LAUNCH_STAGE_UNSPECIFIED=0 LAUNCH_STAGE_UNSPECIFIED value
+             * @property {number} UNIMPLEMENTED=6 UNIMPLEMENTED value
+             * @property {number} PRELAUNCH=7 PRELAUNCH value
+             * @property {number} EARLY_ACCESS=1 EARLY_ACCESS value
+             * @property {number} ALPHA=2 ALPHA value
+             * @property {number} BETA=3 BETA value
+             * @property {number} GA=4 GA value
+             * @property {number} DEPRECATED=5 DEPRECATED value
+             */
+            api.LaunchStage = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "LAUNCH_STAGE_UNSPECIFIED"] = 0;
+                values[valuesById[6] = "UNIMPLEMENTED"] = 6;
+                values[valuesById[7] = "PRELAUNCH"] = 7;
+                values[valuesById[1] = "EARLY_ACCESS"] = 1;
+                values[valuesById[2] = "ALPHA"] = 2;
+                values[valuesById[3] = "BETA"] = 3;
+                values[valuesById[4] = "GA"] = 4;
+                values[valuesById[5] = "DEPRECATED"] = 5;
+                return values;
             })();
     
             api.Http = (function() {
@@ -13491,6 +17246,3909 @@
                 return CustomHttpPattern;
             })();
     
+            api.CommonLanguageSettings = (function() {
+    
+                /**
+                 * Properties of a CommonLanguageSettings.
+                 * @memberof google.api
+                 * @interface ICommonLanguageSettings
+                 * @property {string|null} [referenceDocsUri] CommonLanguageSettings referenceDocsUri
+                 * @property {Array.<google.api.ClientLibraryDestination>|null} [destinations] CommonLanguageSettings destinations
+                 */
+    
+                /**
+                 * Constructs a new CommonLanguageSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CommonLanguageSettings.
+                 * @implements ICommonLanguageSettings
+                 * @constructor
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 */
+                function CommonLanguageSettings(properties) {
+                    this.destinations = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CommonLanguageSettings referenceDocsUri.
+                 * @member {string} referenceDocsUri
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.referenceDocsUri = "";
+    
+                /**
+                 * CommonLanguageSettings destinations.
+                 * @member {Array.<google.api.ClientLibraryDestination>} destinations
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 */
+                CommonLanguageSettings.prototype.destinations = $util.emptyArray;
+    
+                /**
+                 * Creates a new CommonLanguageSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings=} [properties] Properties to set
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings instance
+                 */
+                CommonLanguageSettings.create = function create(properties) {
+                    return new CommonLanguageSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.referenceDocsUri != null && Object.hasOwnProperty.call(message, "referenceDocsUri"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.referenceDocsUri);
+                    if (message.destinations != null && message.destinations.length) {
+                        writer.uint32(/* id 2, wireType 2 =*/18).fork();
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            writer.int32(message.destinations[i]);
+                        writer.ldelim();
+                    }
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.ICommonLanguageSettings} message CommonLanguageSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CommonLanguageSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CommonLanguageSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.referenceDocsUri = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.destinations && message.destinations.length))
+                                    message.destinations = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.destinations.push(reader.int32());
+                                } else
+                                    message.destinations.push(reader.int32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CommonLanguageSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CommonLanguageSettings message.
+                 * @function verify
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CommonLanguageSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        if (!$util.isString(message.referenceDocsUri))
+                            return "referenceDocsUri: string expected";
+                    if (message.destinations != null && message.hasOwnProperty("destinations")) {
+                        if (!Array.isArray(message.destinations))
+                            return "destinations: array expected";
+                        for (var i = 0; i < message.destinations.length; ++i)
+                            switch (message.destinations[i]) {
+                            default:
+                                return "destinations: enum value[] expected";
+                            case 0:
+                            case 10:
+                            case 20:
+                                break;
+                            }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CommonLanguageSettings} CommonLanguageSettings
+                 */
+                CommonLanguageSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CommonLanguageSettings)
+                        return object;
+                    var message = new $root.google.api.CommonLanguageSettings();
+                    if (object.referenceDocsUri != null)
+                        message.referenceDocsUri = String(object.referenceDocsUri);
+                    if (object.destinations) {
+                        if (!Array.isArray(object.destinations))
+                            throw TypeError(".google.api.CommonLanguageSettings.destinations: array expected");
+                        message.destinations = [];
+                        for (var i = 0; i < object.destinations.length; ++i)
+                            switch (object.destinations[i]) {
+                            default:
+                                if (typeof object.destinations[i] === "number") {
+                                    message.destinations[i] = object.destinations[i];
+                                    break;
+                                }
+                            case "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED":
+                            case 0:
+                                message.destinations[i] = 0;
+                                break;
+                            case "GITHUB":
+                            case 10:
+                                message.destinations[i] = 10;
+                                break;
+                            case "PACKAGE_MANAGER":
+                            case 20:
+                                message.destinations[i] = 20;
+                                break;
+                            }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {google.api.CommonLanguageSettings} message CommonLanguageSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CommonLanguageSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.destinations = [];
+                    if (options.defaults)
+                        object.referenceDocsUri = "";
+                    if (message.referenceDocsUri != null && message.hasOwnProperty("referenceDocsUri"))
+                        object.referenceDocsUri = message.referenceDocsUri;
+                    if (message.destinations && message.destinations.length) {
+                        object.destinations = [];
+                        for (var j = 0; j < message.destinations.length; ++j)
+                            object.destinations[j] = options.enums === String ? $root.google.api.ClientLibraryDestination[message.destinations[j]] === undefined ? message.destinations[j] : $root.google.api.ClientLibraryDestination[message.destinations[j]] : message.destinations[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this CommonLanguageSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CommonLanguageSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CommonLanguageSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CommonLanguageSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CommonLanguageSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CommonLanguageSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CommonLanguageSettings";
+                };
+    
+                return CommonLanguageSettings;
+            })();
+    
+            api.ClientLibrarySettings = (function() {
+    
+                /**
+                 * Properties of a ClientLibrarySettings.
+                 * @memberof google.api
+                 * @interface IClientLibrarySettings
+                 * @property {string|null} [version] ClientLibrarySettings version
+                 * @property {google.api.LaunchStage|null} [launchStage] ClientLibrarySettings launchStage
+                 * @property {boolean|null} [restNumericEnums] ClientLibrarySettings restNumericEnums
+                 * @property {google.api.IJavaSettings|null} [javaSettings] ClientLibrarySettings javaSettings
+                 * @property {google.api.ICppSettings|null} [cppSettings] ClientLibrarySettings cppSettings
+                 * @property {google.api.IPhpSettings|null} [phpSettings] ClientLibrarySettings phpSettings
+                 * @property {google.api.IPythonSettings|null} [pythonSettings] ClientLibrarySettings pythonSettings
+                 * @property {google.api.INodeSettings|null} [nodeSettings] ClientLibrarySettings nodeSettings
+                 * @property {google.api.IDotnetSettings|null} [dotnetSettings] ClientLibrarySettings dotnetSettings
+                 * @property {google.api.IRubySettings|null} [rubySettings] ClientLibrarySettings rubySettings
+                 * @property {google.api.IGoSettings|null} [goSettings] ClientLibrarySettings goSettings
+                 */
+    
+                /**
+                 * Constructs a new ClientLibrarySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a ClientLibrarySettings.
+                 * @implements IClientLibrarySettings
+                 * @constructor
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 */
+                function ClientLibrarySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ClientLibrarySettings version.
+                 * @member {string} version
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.version = "";
+    
+                /**
+                 * ClientLibrarySettings launchStage.
+                 * @member {google.api.LaunchStage} launchStage
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.launchStage = 0;
+    
+                /**
+                 * ClientLibrarySettings restNumericEnums.
+                 * @member {boolean} restNumericEnums
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.restNumericEnums = false;
+    
+                /**
+                 * ClientLibrarySettings javaSettings.
+                 * @member {google.api.IJavaSettings|null|undefined} javaSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.javaSettings = null;
+    
+                /**
+                 * ClientLibrarySettings cppSettings.
+                 * @member {google.api.ICppSettings|null|undefined} cppSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.cppSettings = null;
+    
+                /**
+                 * ClientLibrarySettings phpSettings.
+                 * @member {google.api.IPhpSettings|null|undefined} phpSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.phpSettings = null;
+    
+                /**
+                 * ClientLibrarySettings pythonSettings.
+                 * @member {google.api.IPythonSettings|null|undefined} pythonSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.pythonSettings = null;
+    
+                /**
+                 * ClientLibrarySettings nodeSettings.
+                 * @member {google.api.INodeSettings|null|undefined} nodeSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.nodeSettings = null;
+    
+                /**
+                 * ClientLibrarySettings dotnetSettings.
+                 * @member {google.api.IDotnetSettings|null|undefined} dotnetSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.dotnetSettings = null;
+    
+                /**
+                 * ClientLibrarySettings rubySettings.
+                 * @member {google.api.IRubySettings|null|undefined} rubySettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.rubySettings = null;
+    
+                /**
+                 * ClientLibrarySettings goSettings.
+                 * @member {google.api.IGoSettings|null|undefined} goSettings
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 */
+                ClientLibrarySettings.prototype.goSettings = null;
+    
+                /**
+                 * Creates a new ClientLibrarySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings=} [properties] Properties to set
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings instance
+                 */
+                ClientLibrarySettings.create = function create(properties) {
+                    return new ClientLibrarySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.version != null && Object.hasOwnProperty.call(message, "version"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.version);
+                    if (message.launchStage != null && Object.hasOwnProperty.call(message, "launchStage"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.launchStage);
+                    if (message.restNumericEnums != null && Object.hasOwnProperty.call(message, "restNumericEnums"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.restNumericEnums);
+                    if (message.javaSettings != null && Object.hasOwnProperty.call(message, "javaSettings"))
+                        $root.google.api.JavaSettings.encode(message.javaSettings, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
+                    if (message.cppSettings != null && Object.hasOwnProperty.call(message, "cppSettings"))
+                        $root.google.api.CppSettings.encode(message.cppSettings, writer.uint32(/* id 22, wireType 2 =*/178).fork()).ldelim();
+                    if (message.phpSettings != null && Object.hasOwnProperty.call(message, "phpSettings"))
+                        $root.google.api.PhpSettings.encode(message.phpSettings, writer.uint32(/* id 23, wireType 2 =*/186).fork()).ldelim();
+                    if (message.pythonSettings != null && Object.hasOwnProperty.call(message, "pythonSettings"))
+                        $root.google.api.PythonSettings.encode(message.pythonSettings, writer.uint32(/* id 24, wireType 2 =*/194).fork()).ldelim();
+                    if (message.nodeSettings != null && Object.hasOwnProperty.call(message, "nodeSettings"))
+                        $root.google.api.NodeSettings.encode(message.nodeSettings, writer.uint32(/* id 25, wireType 2 =*/202).fork()).ldelim();
+                    if (message.dotnetSettings != null && Object.hasOwnProperty.call(message, "dotnetSettings"))
+                        $root.google.api.DotnetSettings.encode(message.dotnetSettings, writer.uint32(/* id 26, wireType 2 =*/210).fork()).ldelim();
+                    if (message.rubySettings != null && Object.hasOwnProperty.call(message, "rubySettings"))
+                        $root.google.api.RubySettings.encode(message.rubySettings, writer.uint32(/* id 27, wireType 2 =*/218).fork()).ldelim();
+                    if (message.goSettings != null && Object.hasOwnProperty.call(message, "goSettings"))
+                        $root.google.api.GoSettings.encode(message.goSettings, writer.uint32(/* id 28, wireType 2 =*/226).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.IClientLibrarySettings} message ClientLibrarySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ClientLibrarySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.ClientLibrarySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.version = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.launchStage = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.restNumericEnums = reader.bool();
+                                break;
+                            }
+                        case 21: {
+                                message.javaSettings = $root.google.api.JavaSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 22: {
+                                message.cppSettings = $root.google.api.CppSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 23: {
+                                message.phpSettings = $root.google.api.PhpSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 24: {
+                                message.pythonSettings = $root.google.api.PythonSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 25: {
+                                message.nodeSettings = $root.google.api.NodeSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 26: {
+                                message.dotnetSettings = $root.google.api.DotnetSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 27: {
+                                message.rubySettings = $root.google.api.RubySettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 28: {
+                                message.goSettings = $root.google.api.GoSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ClientLibrarySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a ClientLibrarySettings message.
+                 * @function verify
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ClientLibrarySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        if (!$util.isString(message.version))
+                            return "version: string expected";
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        switch (message.launchStage) {
+                        default:
+                            return "launchStage: enum value expected";
+                        case 0:
+                        case 6:
+                        case 7:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            break;
+                        }
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        if (typeof message.restNumericEnums !== "boolean")
+                            return "restNumericEnums: boolean expected";
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings")) {
+                        var error = $root.google.api.JavaSettings.verify(message.javaSettings);
+                        if (error)
+                            return "javaSettings." + error;
+                    }
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings")) {
+                        var error = $root.google.api.CppSettings.verify(message.cppSettings);
+                        if (error)
+                            return "cppSettings." + error;
+                    }
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings")) {
+                        var error = $root.google.api.PhpSettings.verify(message.phpSettings);
+                        if (error)
+                            return "phpSettings." + error;
+                    }
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings")) {
+                        var error = $root.google.api.PythonSettings.verify(message.pythonSettings);
+                        if (error)
+                            return "pythonSettings." + error;
+                    }
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings")) {
+                        var error = $root.google.api.NodeSettings.verify(message.nodeSettings);
+                        if (error)
+                            return "nodeSettings." + error;
+                    }
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings")) {
+                        var error = $root.google.api.DotnetSettings.verify(message.dotnetSettings);
+                        if (error)
+                            return "dotnetSettings." + error;
+                    }
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings")) {
+                        var error = $root.google.api.RubySettings.verify(message.rubySettings);
+                        if (error)
+                            return "rubySettings." + error;
+                    }
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings")) {
+                        var error = $root.google.api.GoSettings.verify(message.goSettings);
+                        if (error)
+                            return "goSettings." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.ClientLibrarySettings} ClientLibrarySettings
+                 */
+                ClientLibrarySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.ClientLibrarySettings)
+                        return object;
+                    var message = new $root.google.api.ClientLibrarySettings();
+                    if (object.version != null)
+                        message.version = String(object.version);
+                    switch (object.launchStage) {
+                    default:
+                        if (typeof object.launchStage === "number") {
+                            message.launchStage = object.launchStage;
+                            break;
+                        }
+                        break;
+                    case "LAUNCH_STAGE_UNSPECIFIED":
+                    case 0:
+                        message.launchStage = 0;
+                        break;
+                    case "UNIMPLEMENTED":
+                    case 6:
+                        message.launchStage = 6;
+                        break;
+                    case "PRELAUNCH":
+                    case 7:
+                        message.launchStage = 7;
+                        break;
+                    case "EARLY_ACCESS":
+                    case 1:
+                        message.launchStage = 1;
+                        break;
+                    case "ALPHA":
+                    case 2:
+                        message.launchStage = 2;
+                        break;
+                    case "BETA":
+                    case 3:
+                        message.launchStage = 3;
+                        break;
+                    case "GA":
+                    case 4:
+                        message.launchStage = 4;
+                        break;
+                    case "DEPRECATED":
+                    case 5:
+                        message.launchStage = 5;
+                        break;
+                    }
+                    if (object.restNumericEnums != null)
+                        message.restNumericEnums = Boolean(object.restNumericEnums);
+                    if (object.javaSettings != null) {
+                        if (typeof object.javaSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.javaSettings: object expected");
+                        message.javaSettings = $root.google.api.JavaSettings.fromObject(object.javaSettings);
+                    }
+                    if (object.cppSettings != null) {
+                        if (typeof object.cppSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.cppSettings: object expected");
+                        message.cppSettings = $root.google.api.CppSettings.fromObject(object.cppSettings);
+                    }
+                    if (object.phpSettings != null) {
+                        if (typeof object.phpSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.phpSettings: object expected");
+                        message.phpSettings = $root.google.api.PhpSettings.fromObject(object.phpSettings);
+                    }
+                    if (object.pythonSettings != null) {
+                        if (typeof object.pythonSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.pythonSettings: object expected");
+                        message.pythonSettings = $root.google.api.PythonSettings.fromObject(object.pythonSettings);
+                    }
+                    if (object.nodeSettings != null) {
+                        if (typeof object.nodeSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.nodeSettings: object expected");
+                        message.nodeSettings = $root.google.api.NodeSettings.fromObject(object.nodeSettings);
+                    }
+                    if (object.dotnetSettings != null) {
+                        if (typeof object.dotnetSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.dotnetSettings: object expected");
+                        message.dotnetSettings = $root.google.api.DotnetSettings.fromObject(object.dotnetSettings);
+                    }
+                    if (object.rubySettings != null) {
+                        if (typeof object.rubySettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.rubySettings: object expected");
+                        message.rubySettings = $root.google.api.RubySettings.fromObject(object.rubySettings);
+                    }
+                    if (object.goSettings != null) {
+                        if (typeof object.goSettings !== "object")
+                            throw TypeError(".google.api.ClientLibrarySettings.goSettings: object expected");
+                        message.goSettings = $root.google.api.GoSettings.fromObject(object.goSettings);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {google.api.ClientLibrarySettings} message ClientLibrarySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ClientLibrarySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.version = "";
+                        object.launchStage = options.enums === String ? "LAUNCH_STAGE_UNSPECIFIED" : 0;
+                        object.restNumericEnums = false;
+                        object.javaSettings = null;
+                        object.cppSettings = null;
+                        object.phpSettings = null;
+                        object.pythonSettings = null;
+                        object.nodeSettings = null;
+                        object.dotnetSettings = null;
+                        object.rubySettings = null;
+                        object.goSettings = null;
+                    }
+                    if (message.version != null && message.hasOwnProperty("version"))
+                        object.version = message.version;
+                    if (message.launchStage != null && message.hasOwnProperty("launchStage"))
+                        object.launchStage = options.enums === String ? $root.google.api.LaunchStage[message.launchStage] === undefined ? message.launchStage : $root.google.api.LaunchStage[message.launchStage] : message.launchStage;
+                    if (message.restNumericEnums != null && message.hasOwnProperty("restNumericEnums"))
+                        object.restNumericEnums = message.restNumericEnums;
+                    if (message.javaSettings != null && message.hasOwnProperty("javaSettings"))
+                        object.javaSettings = $root.google.api.JavaSettings.toObject(message.javaSettings, options);
+                    if (message.cppSettings != null && message.hasOwnProperty("cppSettings"))
+                        object.cppSettings = $root.google.api.CppSettings.toObject(message.cppSettings, options);
+                    if (message.phpSettings != null && message.hasOwnProperty("phpSettings"))
+                        object.phpSettings = $root.google.api.PhpSettings.toObject(message.phpSettings, options);
+                    if (message.pythonSettings != null && message.hasOwnProperty("pythonSettings"))
+                        object.pythonSettings = $root.google.api.PythonSettings.toObject(message.pythonSettings, options);
+                    if (message.nodeSettings != null && message.hasOwnProperty("nodeSettings"))
+                        object.nodeSettings = $root.google.api.NodeSettings.toObject(message.nodeSettings, options);
+                    if (message.dotnetSettings != null && message.hasOwnProperty("dotnetSettings"))
+                        object.dotnetSettings = $root.google.api.DotnetSettings.toObject(message.dotnetSettings, options);
+                    if (message.rubySettings != null && message.hasOwnProperty("rubySettings"))
+                        object.rubySettings = $root.google.api.RubySettings.toObject(message.rubySettings, options);
+                    if (message.goSettings != null && message.hasOwnProperty("goSettings"))
+                        object.goSettings = $root.google.api.GoSettings.toObject(message.goSettings, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this ClientLibrarySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.ClientLibrarySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ClientLibrarySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for ClientLibrarySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.ClientLibrarySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                ClientLibrarySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.ClientLibrarySettings";
+                };
+    
+                return ClientLibrarySettings;
+            })();
+    
+            api.Publishing = (function() {
+    
+                /**
+                 * Properties of a Publishing.
+                 * @memberof google.api
+                 * @interface IPublishing
+                 * @property {Array.<google.api.IMethodSettings>|null} [methodSettings] Publishing methodSettings
+                 * @property {string|null} [newIssueUri] Publishing newIssueUri
+                 * @property {string|null} [documentationUri] Publishing documentationUri
+                 * @property {string|null} [apiShortName] Publishing apiShortName
+                 * @property {string|null} [githubLabel] Publishing githubLabel
+                 * @property {Array.<string>|null} [codeownerGithubTeams] Publishing codeownerGithubTeams
+                 * @property {string|null} [docTagPrefix] Publishing docTagPrefix
+                 * @property {google.api.ClientLibraryOrganization|null} [organization] Publishing organization
+                 * @property {Array.<google.api.IClientLibrarySettings>|null} [librarySettings] Publishing librarySettings
+                 * @property {string|null} [protoReferenceDocumentationUri] Publishing protoReferenceDocumentationUri
+                 */
+    
+                /**
+                 * Constructs a new Publishing.
+                 * @memberof google.api
+                 * @classdesc Represents a Publishing.
+                 * @implements IPublishing
+                 * @constructor
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 */
+                function Publishing(properties) {
+                    this.methodSettings = [];
+                    this.codeownerGithubTeams = [];
+                    this.librarySettings = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Publishing methodSettings.
+                 * @member {Array.<google.api.IMethodSettings>} methodSettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.methodSettings = $util.emptyArray;
+    
+                /**
+                 * Publishing newIssueUri.
+                 * @member {string} newIssueUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.newIssueUri = "";
+    
+                /**
+                 * Publishing documentationUri.
+                 * @member {string} documentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.documentationUri = "";
+    
+                /**
+                 * Publishing apiShortName.
+                 * @member {string} apiShortName
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.apiShortName = "";
+    
+                /**
+                 * Publishing githubLabel.
+                 * @member {string} githubLabel
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.githubLabel = "";
+    
+                /**
+                 * Publishing codeownerGithubTeams.
+                 * @member {Array.<string>} codeownerGithubTeams
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.codeownerGithubTeams = $util.emptyArray;
+    
+                /**
+                 * Publishing docTagPrefix.
+                 * @member {string} docTagPrefix
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.docTagPrefix = "";
+    
+                /**
+                 * Publishing organization.
+                 * @member {google.api.ClientLibraryOrganization} organization
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.organization = 0;
+    
+                /**
+                 * Publishing librarySettings.
+                 * @member {Array.<google.api.IClientLibrarySettings>} librarySettings
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.librarySettings = $util.emptyArray;
+    
+                /**
+                 * Publishing protoReferenceDocumentationUri.
+                 * @member {string} protoReferenceDocumentationUri
+                 * @memberof google.api.Publishing
+                 * @instance
+                 */
+                Publishing.prototype.protoReferenceDocumentationUri = "";
+    
+                /**
+                 * Creates a new Publishing instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing=} [properties] Properties to set
+                 * @returns {google.api.Publishing} Publishing instance
+                 */
+                Publishing.create = function create(properties) {
+                    return new Publishing(properties);
+                };
+    
+                /**
+                 * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.methodSettings != null && message.methodSettings.length)
+                        for (var i = 0; i < message.methodSettings.length; ++i)
+                            $root.google.api.MethodSettings.encode(message.methodSettings[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.newIssueUri != null && Object.hasOwnProperty.call(message, "newIssueUri"))
+                        writer.uint32(/* id 101, wireType 2 =*/810).string(message.newIssueUri);
+                    if (message.documentationUri != null && Object.hasOwnProperty.call(message, "documentationUri"))
+                        writer.uint32(/* id 102, wireType 2 =*/818).string(message.documentationUri);
+                    if (message.apiShortName != null && Object.hasOwnProperty.call(message, "apiShortName"))
+                        writer.uint32(/* id 103, wireType 2 =*/826).string(message.apiShortName);
+                    if (message.githubLabel != null && Object.hasOwnProperty.call(message, "githubLabel"))
+                        writer.uint32(/* id 104, wireType 2 =*/834).string(message.githubLabel);
+                    if (message.codeownerGithubTeams != null && message.codeownerGithubTeams.length)
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            writer.uint32(/* id 105, wireType 2 =*/842).string(message.codeownerGithubTeams[i]);
+                    if (message.docTagPrefix != null && Object.hasOwnProperty.call(message, "docTagPrefix"))
+                        writer.uint32(/* id 106, wireType 2 =*/850).string(message.docTagPrefix);
+                    if (message.organization != null && Object.hasOwnProperty.call(message, "organization"))
+                        writer.uint32(/* id 107, wireType 0 =*/856).int32(message.organization);
+                    if (message.librarySettings != null && message.librarySettings.length)
+                        for (var i = 0; i < message.librarySettings.length; ++i)
+                            $root.google.api.ClientLibrarySettings.encode(message.librarySettings[i], writer.uint32(/* id 109, wireType 2 =*/874).fork()).ldelim();
+                    if (message.protoReferenceDocumentationUri != null && Object.hasOwnProperty.call(message, "protoReferenceDocumentationUri"))
+                        writer.uint32(/* id 110, wireType 2 =*/882).string(message.protoReferenceDocumentationUri);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.IPublishing} message Publishing message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Publishing.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.Publishing();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 2: {
+                                if (!(message.methodSettings && message.methodSettings.length))
+                                    message.methodSettings = [];
+                                message.methodSettings.push($root.google.api.MethodSettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 101: {
+                                message.newIssueUri = reader.string();
+                                break;
+                            }
+                        case 102: {
+                                message.documentationUri = reader.string();
+                                break;
+                            }
+                        case 103: {
+                                message.apiShortName = reader.string();
+                                break;
+                            }
+                        case 104: {
+                                message.githubLabel = reader.string();
+                                break;
+                            }
+                        case 105: {
+                                if (!(message.codeownerGithubTeams && message.codeownerGithubTeams.length))
+                                    message.codeownerGithubTeams = [];
+                                message.codeownerGithubTeams.push(reader.string());
+                                break;
+                            }
+                        case 106: {
+                                message.docTagPrefix = reader.string();
+                                break;
+                            }
+                        case 107: {
+                                message.organization = reader.int32();
+                                break;
+                            }
+                        case 109: {
+                                if (!(message.librarySettings && message.librarySettings.length))
+                                    message.librarySettings = [];
+                                message.librarySettings.push($root.google.api.ClientLibrarySettings.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 110: {
+                                message.protoReferenceDocumentationUri = reader.string();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Publishing message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.Publishing} Publishing
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Publishing.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Publishing message.
+                 * @function verify
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Publishing.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.methodSettings != null && message.hasOwnProperty("methodSettings")) {
+                        if (!Array.isArray(message.methodSettings))
+                            return "methodSettings: array expected";
+                        for (var i = 0; i < message.methodSettings.length; ++i) {
+                            var error = $root.google.api.MethodSettings.verify(message.methodSettings[i]);
+                            if (error)
+                                return "methodSettings." + error;
+                        }
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        if (!$util.isString(message.newIssueUri))
+                            return "newIssueUri: string expected";
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        if (!$util.isString(message.documentationUri))
+                            return "documentationUri: string expected";
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        if (!$util.isString(message.apiShortName))
+                            return "apiShortName: string expected";
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        if (!$util.isString(message.githubLabel))
+                            return "githubLabel: string expected";
+                    if (message.codeownerGithubTeams != null && message.hasOwnProperty("codeownerGithubTeams")) {
+                        if (!Array.isArray(message.codeownerGithubTeams))
+                            return "codeownerGithubTeams: array expected";
+                        for (var i = 0; i < message.codeownerGithubTeams.length; ++i)
+                            if (!$util.isString(message.codeownerGithubTeams[i]))
+                                return "codeownerGithubTeams: string[] expected";
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        if (!$util.isString(message.docTagPrefix))
+                            return "docTagPrefix: string expected";
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        switch (message.organization) {
+                        default:
+                            return "organization: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                            break;
+                        }
+                    if (message.librarySettings != null && message.hasOwnProperty("librarySettings")) {
+                        if (!Array.isArray(message.librarySettings))
+                            return "librarySettings: array expected";
+                        for (var i = 0; i < message.librarySettings.length; ++i) {
+                            var error = $root.google.api.ClientLibrarySettings.verify(message.librarySettings[i]);
+                            if (error)
+                                return "librarySettings." + error;
+                        }
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        if (!$util.isString(message.protoReferenceDocumentationUri))
+                            return "protoReferenceDocumentationUri: string expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.Publishing} Publishing
+                 */
+                Publishing.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.Publishing)
+                        return object;
+                    var message = new $root.google.api.Publishing();
+                    if (object.methodSettings) {
+                        if (!Array.isArray(object.methodSettings))
+                            throw TypeError(".google.api.Publishing.methodSettings: array expected");
+                        message.methodSettings = [];
+                        for (var i = 0; i < object.methodSettings.length; ++i) {
+                            if (typeof object.methodSettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.methodSettings: object expected");
+                            message.methodSettings[i] = $root.google.api.MethodSettings.fromObject(object.methodSettings[i]);
+                        }
+                    }
+                    if (object.newIssueUri != null)
+                        message.newIssueUri = String(object.newIssueUri);
+                    if (object.documentationUri != null)
+                        message.documentationUri = String(object.documentationUri);
+                    if (object.apiShortName != null)
+                        message.apiShortName = String(object.apiShortName);
+                    if (object.githubLabel != null)
+                        message.githubLabel = String(object.githubLabel);
+                    if (object.codeownerGithubTeams) {
+                        if (!Array.isArray(object.codeownerGithubTeams))
+                            throw TypeError(".google.api.Publishing.codeownerGithubTeams: array expected");
+                        message.codeownerGithubTeams = [];
+                        for (var i = 0; i < object.codeownerGithubTeams.length; ++i)
+                            message.codeownerGithubTeams[i] = String(object.codeownerGithubTeams[i]);
+                    }
+                    if (object.docTagPrefix != null)
+                        message.docTagPrefix = String(object.docTagPrefix);
+                    switch (object.organization) {
+                    default:
+                        if (typeof object.organization === "number") {
+                            message.organization = object.organization;
+                            break;
+                        }
+                        break;
+                    case "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED":
+                    case 0:
+                        message.organization = 0;
+                        break;
+                    case "CLOUD":
+                    case 1:
+                        message.organization = 1;
+                        break;
+                    case "ADS":
+                    case 2:
+                        message.organization = 2;
+                        break;
+                    case "PHOTOS":
+                    case 3:
+                        message.organization = 3;
+                        break;
+                    case "STREET_VIEW":
+                    case 4:
+                        message.organization = 4;
+                        break;
+                    case "SHOPPING":
+                    case 5:
+                        message.organization = 5;
+                        break;
+                    case "GEO":
+                    case 6:
+                        message.organization = 6;
+                        break;
+                    case "GENERATIVE_AI":
+                    case 7:
+                        message.organization = 7;
+                        break;
+                    }
+                    if (object.librarySettings) {
+                        if (!Array.isArray(object.librarySettings))
+                            throw TypeError(".google.api.Publishing.librarySettings: array expected");
+                        message.librarySettings = [];
+                        for (var i = 0; i < object.librarySettings.length; ++i) {
+                            if (typeof object.librarySettings[i] !== "object")
+                                throw TypeError(".google.api.Publishing.librarySettings: object expected");
+                            message.librarySettings[i] = $root.google.api.ClientLibrarySettings.fromObject(object.librarySettings[i]);
+                        }
+                    }
+                    if (object.protoReferenceDocumentationUri != null)
+                        message.protoReferenceDocumentationUri = String(object.protoReferenceDocumentationUri);
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {google.api.Publishing} message Publishing
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Publishing.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.methodSettings = [];
+                        object.codeownerGithubTeams = [];
+                        object.librarySettings = [];
+                    }
+                    if (options.defaults) {
+                        object.newIssueUri = "";
+                        object.documentationUri = "";
+                        object.apiShortName = "";
+                        object.githubLabel = "";
+                        object.docTagPrefix = "";
+                        object.organization = options.enums === String ? "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED" : 0;
+                        object.protoReferenceDocumentationUri = "";
+                    }
+                    if (message.methodSettings && message.methodSettings.length) {
+                        object.methodSettings = [];
+                        for (var j = 0; j < message.methodSettings.length; ++j)
+                            object.methodSettings[j] = $root.google.api.MethodSettings.toObject(message.methodSettings[j], options);
+                    }
+                    if (message.newIssueUri != null && message.hasOwnProperty("newIssueUri"))
+                        object.newIssueUri = message.newIssueUri;
+                    if (message.documentationUri != null && message.hasOwnProperty("documentationUri"))
+                        object.documentationUri = message.documentationUri;
+                    if (message.apiShortName != null && message.hasOwnProperty("apiShortName"))
+                        object.apiShortName = message.apiShortName;
+                    if (message.githubLabel != null && message.hasOwnProperty("githubLabel"))
+                        object.githubLabel = message.githubLabel;
+                    if (message.codeownerGithubTeams && message.codeownerGithubTeams.length) {
+                        object.codeownerGithubTeams = [];
+                        for (var j = 0; j < message.codeownerGithubTeams.length; ++j)
+                            object.codeownerGithubTeams[j] = message.codeownerGithubTeams[j];
+                    }
+                    if (message.docTagPrefix != null && message.hasOwnProperty("docTagPrefix"))
+                        object.docTagPrefix = message.docTagPrefix;
+                    if (message.organization != null && message.hasOwnProperty("organization"))
+                        object.organization = options.enums === String ? $root.google.api.ClientLibraryOrganization[message.organization] === undefined ? message.organization : $root.google.api.ClientLibraryOrganization[message.organization] : message.organization;
+                    if (message.librarySettings && message.librarySettings.length) {
+                        object.librarySettings = [];
+                        for (var j = 0; j < message.librarySettings.length; ++j)
+                            object.librarySettings[j] = $root.google.api.ClientLibrarySettings.toObject(message.librarySettings[j], options);
+                    }
+                    if (message.protoReferenceDocumentationUri != null && message.hasOwnProperty("protoReferenceDocumentationUri"))
+                        object.protoReferenceDocumentationUri = message.protoReferenceDocumentationUri;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Publishing to JSON.
+                 * @function toJSON
+                 * @memberof google.api.Publishing
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Publishing.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Publishing
+                 * @function getTypeUrl
+                 * @memberof google.api.Publishing
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Publishing.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.Publishing";
+                };
+    
+                return Publishing;
+            })();
+    
+            api.JavaSettings = (function() {
+    
+                /**
+                 * Properties of a JavaSettings.
+                 * @memberof google.api
+                 * @interface IJavaSettings
+                 * @property {string|null} [libraryPackage] JavaSettings libraryPackage
+                 * @property {Object.<string,string>|null} [serviceClassNames] JavaSettings serviceClassNames
+                 * @property {google.api.ICommonLanguageSettings|null} [common] JavaSettings common
+                 */
+    
+                /**
+                 * Constructs a new JavaSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a JavaSettings.
+                 * @implements IJavaSettings
+                 * @constructor
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 */
+                function JavaSettings(properties) {
+                    this.serviceClassNames = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * JavaSettings libraryPackage.
+                 * @member {string} libraryPackage
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.libraryPackage = "";
+    
+                /**
+                 * JavaSettings serviceClassNames.
+                 * @member {Object.<string,string>} serviceClassNames
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.serviceClassNames = $util.emptyObject;
+    
+                /**
+                 * JavaSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 */
+                JavaSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new JavaSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings=} [properties] Properties to set
+                 * @returns {google.api.JavaSettings} JavaSettings instance
+                 */
+                JavaSettings.create = function create(properties) {
+                    return new JavaSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.libraryPackage != null && Object.hasOwnProperty.call(message, "libraryPackage"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.libraryPackage);
+                    if (message.serviceClassNames != null && Object.hasOwnProperty.call(message, "serviceClassNames"))
+                        for (var keys = Object.keys(message.serviceClassNames), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.serviceClassNames[keys[i]]).ldelim();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.IJavaSettings} message JavaSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                JavaSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.JavaSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.libraryPackage = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                if (message.serviceClassNames === $util.emptyObject)
+                                    message.serviceClassNames = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.serviceClassNames[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                JavaSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a JavaSettings message.
+                 * @function verify
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                JavaSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        if (!$util.isString(message.libraryPackage))
+                            return "libraryPackage: string expected";
+                    if (message.serviceClassNames != null && message.hasOwnProperty("serviceClassNames")) {
+                        if (!$util.isObject(message.serviceClassNames))
+                            return "serviceClassNames: object expected";
+                        var key = Object.keys(message.serviceClassNames);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.serviceClassNames[key[i]]))
+                                return "serviceClassNames: string{k:string} expected";
+                    }
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.JavaSettings} JavaSettings
+                 */
+                JavaSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.JavaSettings)
+                        return object;
+                    var message = new $root.google.api.JavaSettings();
+                    if (object.libraryPackage != null)
+                        message.libraryPackage = String(object.libraryPackage);
+                    if (object.serviceClassNames) {
+                        if (typeof object.serviceClassNames !== "object")
+                            throw TypeError(".google.api.JavaSettings.serviceClassNames: object expected");
+                        message.serviceClassNames = {};
+                        for (var keys = Object.keys(object.serviceClassNames), i = 0; i < keys.length; ++i)
+                            message.serviceClassNames[keys[i]] = String(object.serviceClassNames[keys[i]]);
+                    }
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.JavaSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {google.api.JavaSettings} message JavaSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                JavaSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.serviceClassNames = {};
+                    if (options.defaults) {
+                        object.libraryPackage = "";
+                        object.common = null;
+                    }
+                    if (message.libraryPackage != null && message.hasOwnProperty("libraryPackage"))
+                        object.libraryPackage = message.libraryPackage;
+                    var keys2;
+                    if (message.serviceClassNames && (keys2 = Object.keys(message.serviceClassNames)).length) {
+                        object.serviceClassNames = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.serviceClassNames[keys2[j]] = message.serviceClassNames[keys2[j]];
+                    }
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this JavaSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.JavaSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                JavaSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for JavaSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.JavaSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                JavaSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.JavaSettings";
+                };
+    
+                return JavaSettings;
+            })();
+    
+            api.CppSettings = (function() {
+    
+                /**
+                 * Properties of a CppSettings.
+                 * @memberof google.api
+                 * @interface ICppSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] CppSettings common
+                 */
+    
+                /**
+                 * Constructs a new CppSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a CppSettings.
+                 * @implements ICppSettings
+                 * @constructor
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 */
+                function CppSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * CppSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 */
+                CppSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new CppSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings=} [properties] Properties to set
+                 * @returns {google.api.CppSettings} CppSettings instance
+                 */
+                CppSettings.create = function create(properties) {
+                    return new CppSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.ICppSettings} message CppSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                CppSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.CppSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.CppSettings} CppSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                CppSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a CppSettings message.
+                 * @function verify
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                CppSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.CppSettings} CppSettings
+                 */
+                CppSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.CppSettings)
+                        return object;
+                    var message = new $root.google.api.CppSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.CppSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {google.api.CppSettings} message CppSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                CppSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this CppSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.CppSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                CppSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for CppSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.CppSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                CppSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.CppSettings";
+                };
+    
+                return CppSettings;
+            })();
+    
+            api.PhpSettings = (function() {
+    
+                /**
+                 * Properties of a PhpSettings.
+                 * @memberof google.api
+                 * @interface IPhpSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PhpSettings common
+                 */
+    
+                /**
+                 * Constructs a new PhpSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PhpSettings.
+                 * @implements IPhpSettings
+                 * @constructor
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 */
+                function PhpSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PhpSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 */
+                PhpSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PhpSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings=} [properties] Properties to set
+                 * @returns {google.api.PhpSettings} PhpSettings instance
+                 */
+                PhpSettings.create = function create(properties) {
+                    return new PhpSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.IPhpSettings} message PhpSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PhpSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PhpSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PhpSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PhpSettings message.
+                 * @function verify
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PhpSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PhpSettings} PhpSettings
+                 */
+                PhpSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PhpSettings)
+                        return object;
+                    var message = new $root.google.api.PhpSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PhpSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {google.api.PhpSettings} message PhpSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PhpSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PhpSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PhpSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PhpSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PhpSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PhpSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PhpSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PhpSettings";
+                };
+    
+                return PhpSettings;
+            })();
+    
+            api.PythonSettings = (function() {
+    
+                /**
+                 * Properties of a PythonSettings.
+                 * @memberof google.api
+                 * @interface IPythonSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] PythonSettings common
+                 */
+    
+                /**
+                 * Constructs a new PythonSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a PythonSettings.
+                 * @implements IPythonSettings
+                 * @constructor
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 */
+                function PythonSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * PythonSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 */
+                PythonSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new PythonSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings=} [properties] Properties to set
+                 * @returns {google.api.PythonSettings} PythonSettings instance
+                 */
+                PythonSettings.create = function create(properties) {
+                    return new PythonSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.IPythonSettings} message PythonSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                PythonSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.PythonSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                PythonSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a PythonSettings message.
+                 * @function verify
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                PythonSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.PythonSettings} PythonSettings
+                 */
+                PythonSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.PythonSettings)
+                        return object;
+                    var message = new $root.google.api.PythonSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.PythonSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {google.api.PythonSettings} message PythonSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                PythonSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this PythonSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.PythonSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                PythonSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for PythonSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.PythonSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                PythonSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.PythonSettings";
+                };
+    
+                return PythonSettings;
+            })();
+    
+            api.NodeSettings = (function() {
+    
+                /**
+                 * Properties of a NodeSettings.
+                 * @memberof google.api
+                 * @interface INodeSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] NodeSettings common
+                 */
+    
+                /**
+                 * Constructs a new NodeSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a NodeSettings.
+                 * @implements INodeSettings
+                 * @constructor
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 */
+                function NodeSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * NodeSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 */
+                NodeSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new NodeSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings=} [properties] Properties to set
+                 * @returns {google.api.NodeSettings} NodeSettings instance
+                 */
+                NodeSettings.create = function create(properties) {
+                    return new NodeSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.INodeSettings} message NodeSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                NodeSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.NodeSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                NodeSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a NodeSettings message.
+                 * @function verify
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                NodeSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.NodeSettings} NodeSettings
+                 */
+                NodeSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.NodeSettings)
+                        return object;
+                    var message = new $root.google.api.NodeSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.NodeSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {google.api.NodeSettings} message NodeSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                NodeSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this NodeSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.NodeSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                NodeSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for NodeSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.NodeSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                NodeSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.NodeSettings";
+                };
+    
+                return NodeSettings;
+            })();
+    
+            api.DotnetSettings = (function() {
+    
+                /**
+                 * Properties of a DotnetSettings.
+                 * @memberof google.api
+                 * @interface IDotnetSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] DotnetSettings common
+                 * @property {Object.<string,string>|null} [renamedServices] DotnetSettings renamedServices
+                 * @property {Object.<string,string>|null} [renamedResources] DotnetSettings renamedResources
+                 * @property {Array.<string>|null} [ignoredResources] DotnetSettings ignoredResources
+                 * @property {Array.<string>|null} [forcedNamespaceAliases] DotnetSettings forcedNamespaceAliases
+                 * @property {Array.<string>|null} [handwrittenSignatures] DotnetSettings handwrittenSignatures
+                 */
+    
+                /**
+                 * Constructs a new DotnetSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a DotnetSettings.
+                 * @implements IDotnetSettings
+                 * @constructor
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 */
+                function DotnetSettings(properties) {
+                    this.renamedServices = {};
+                    this.renamedResources = {};
+                    this.ignoredResources = [];
+                    this.forcedNamespaceAliases = [];
+                    this.handwrittenSignatures = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * DotnetSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.common = null;
+    
+                /**
+                 * DotnetSettings renamedServices.
+                 * @member {Object.<string,string>} renamedServices
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedServices = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings renamedResources.
+                 * @member {Object.<string,string>} renamedResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.renamedResources = $util.emptyObject;
+    
+                /**
+                 * DotnetSettings ignoredResources.
+                 * @member {Array.<string>} ignoredResources
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.ignoredResources = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings forcedNamespaceAliases.
+                 * @member {Array.<string>} forcedNamespaceAliases
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.forcedNamespaceAliases = $util.emptyArray;
+    
+                /**
+                 * DotnetSettings handwrittenSignatures.
+                 * @member {Array.<string>} handwrittenSignatures
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 */
+                DotnetSettings.prototype.handwrittenSignatures = $util.emptyArray;
+    
+                /**
+                 * Creates a new DotnetSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings=} [properties] Properties to set
+                 * @returns {google.api.DotnetSettings} DotnetSettings instance
+                 */
+                DotnetSettings.create = function create(properties) {
+                    return new DotnetSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.renamedServices != null && Object.hasOwnProperty.call(message, "renamedServices"))
+                        for (var keys = Object.keys(message.renamedServices), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 2, wireType 2 =*/18).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedServices[keys[i]]).ldelim();
+                    if (message.renamedResources != null && Object.hasOwnProperty.call(message, "renamedResources"))
+                        for (var keys = Object.keys(message.renamedResources), i = 0; i < keys.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.renamedResources[keys[i]]).ldelim();
+                    if (message.ignoredResources != null && message.ignoredResources.length)
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            writer.uint32(/* id 4, wireType 2 =*/34).string(message.ignoredResources[i]);
+                    if (message.forcedNamespaceAliases != null && message.forcedNamespaceAliases.length)
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            writer.uint32(/* id 5, wireType 2 =*/42).string(message.forcedNamespaceAliases[i]);
+                    if (message.handwrittenSignatures != null && message.handwrittenSignatures.length)
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            writer.uint32(/* id 6, wireType 2 =*/50).string(message.handwrittenSignatures[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.IDotnetSettings} message DotnetSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                DotnetSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.DotnetSettings(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 2: {
+                                if (message.renamedServices === $util.emptyObject)
+                                    message.renamedServices = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedServices[key] = value;
+                                break;
+                            }
+                        case 3: {
+                                if (message.renamedResources === $util.emptyObject)
+                                    message.renamedResources = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = "";
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = reader.string();
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.renamedResources[key] = value;
+                                break;
+                            }
+                        case 4: {
+                                if (!(message.ignoredResources && message.ignoredResources.length))
+                                    message.ignoredResources = [];
+                                message.ignoredResources.push(reader.string());
+                                break;
+                            }
+                        case 5: {
+                                if (!(message.forcedNamespaceAliases && message.forcedNamespaceAliases.length))
+                                    message.forcedNamespaceAliases = [];
+                                message.forcedNamespaceAliases.push(reader.string());
+                                break;
+                            }
+                        case 6: {
+                                if (!(message.handwrittenSignatures && message.handwrittenSignatures.length))
+                                    message.handwrittenSignatures = [];
+                                message.handwrittenSignatures.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                DotnetSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a DotnetSettings message.
+                 * @function verify
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                DotnetSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    if (message.renamedServices != null && message.hasOwnProperty("renamedServices")) {
+                        if (!$util.isObject(message.renamedServices))
+                            return "renamedServices: object expected";
+                        var key = Object.keys(message.renamedServices);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedServices[key[i]]))
+                                return "renamedServices: string{k:string} expected";
+                    }
+                    if (message.renamedResources != null && message.hasOwnProperty("renamedResources")) {
+                        if (!$util.isObject(message.renamedResources))
+                            return "renamedResources: object expected";
+                        var key = Object.keys(message.renamedResources);
+                        for (var i = 0; i < key.length; ++i)
+                            if (!$util.isString(message.renamedResources[key[i]]))
+                                return "renamedResources: string{k:string} expected";
+                    }
+                    if (message.ignoredResources != null && message.hasOwnProperty("ignoredResources")) {
+                        if (!Array.isArray(message.ignoredResources))
+                            return "ignoredResources: array expected";
+                        for (var i = 0; i < message.ignoredResources.length; ++i)
+                            if (!$util.isString(message.ignoredResources[i]))
+                                return "ignoredResources: string[] expected";
+                    }
+                    if (message.forcedNamespaceAliases != null && message.hasOwnProperty("forcedNamespaceAliases")) {
+                        if (!Array.isArray(message.forcedNamespaceAliases))
+                            return "forcedNamespaceAliases: array expected";
+                        for (var i = 0; i < message.forcedNamespaceAliases.length; ++i)
+                            if (!$util.isString(message.forcedNamespaceAliases[i]))
+                                return "forcedNamespaceAliases: string[] expected";
+                    }
+                    if (message.handwrittenSignatures != null && message.hasOwnProperty("handwrittenSignatures")) {
+                        if (!Array.isArray(message.handwrittenSignatures))
+                            return "handwrittenSignatures: array expected";
+                        for (var i = 0; i < message.handwrittenSignatures.length; ++i)
+                            if (!$util.isString(message.handwrittenSignatures[i]))
+                                return "handwrittenSignatures: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.DotnetSettings} DotnetSettings
+                 */
+                DotnetSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.DotnetSettings)
+                        return object;
+                    var message = new $root.google.api.DotnetSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.DotnetSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    if (object.renamedServices) {
+                        if (typeof object.renamedServices !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedServices: object expected");
+                        message.renamedServices = {};
+                        for (var keys = Object.keys(object.renamedServices), i = 0; i < keys.length; ++i)
+                            message.renamedServices[keys[i]] = String(object.renamedServices[keys[i]]);
+                    }
+                    if (object.renamedResources) {
+                        if (typeof object.renamedResources !== "object")
+                            throw TypeError(".google.api.DotnetSettings.renamedResources: object expected");
+                        message.renamedResources = {};
+                        for (var keys = Object.keys(object.renamedResources), i = 0; i < keys.length; ++i)
+                            message.renamedResources[keys[i]] = String(object.renamedResources[keys[i]]);
+                    }
+                    if (object.ignoredResources) {
+                        if (!Array.isArray(object.ignoredResources))
+                            throw TypeError(".google.api.DotnetSettings.ignoredResources: array expected");
+                        message.ignoredResources = [];
+                        for (var i = 0; i < object.ignoredResources.length; ++i)
+                            message.ignoredResources[i] = String(object.ignoredResources[i]);
+                    }
+                    if (object.forcedNamespaceAliases) {
+                        if (!Array.isArray(object.forcedNamespaceAliases))
+                            throw TypeError(".google.api.DotnetSettings.forcedNamespaceAliases: array expected");
+                        message.forcedNamespaceAliases = [];
+                        for (var i = 0; i < object.forcedNamespaceAliases.length; ++i)
+                            message.forcedNamespaceAliases[i] = String(object.forcedNamespaceAliases[i]);
+                    }
+                    if (object.handwrittenSignatures) {
+                        if (!Array.isArray(object.handwrittenSignatures))
+                            throw TypeError(".google.api.DotnetSettings.handwrittenSignatures: array expected");
+                        message.handwrittenSignatures = [];
+                        for (var i = 0; i < object.handwrittenSignatures.length; ++i)
+                            message.handwrittenSignatures[i] = String(object.handwrittenSignatures[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {google.api.DotnetSettings} message DotnetSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                DotnetSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults) {
+                        object.ignoredResources = [];
+                        object.forcedNamespaceAliases = [];
+                        object.handwrittenSignatures = [];
+                    }
+                    if (options.objects || options.defaults) {
+                        object.renamedServices = {};
+                        object.renamedResources = {};
+                    }
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    var keys2;
+                    if (message.renamedServices && (keys2 = Object.keys(message.renamedServices)).length) {
+                        object.renamedServices = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedServices[keys2[j]] = message.renamedServices[keys2[j]];
+                    }
+                    if (message.renamedResources && (keys2 = Object.keys(message.renamedResources)).length) {
+                        object.renamedResources = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.renamedResources[keys2[j]] = message.renamedResources[keys2[j]];
+                    }
+                    if (message.ignoredResources && message.ignoredResources.length) {
+                        object.ignoredResources = [];
+                        for (var j = 0; j < message.ignoredResources.length; ++j)
+                            object.ignoredResources[j] = message.ignoredResources[j];
+                    }
+                    if (message.forcedNamespaceAliases && message.forcedNamespaceAliases.length) {
+                        object.forcedNamespaceAliases = [];
+                        for (var j = 0; j < message.forcedNamespaceAliases.length; ++j)
+                            object.forcedNamespaceAliases[j] = message.forcedNamespaceAliases[j];
+                    }
+                    if (message.handwrittenSignatures && message.handwrittenSignatures.length) {
+                        object.handwrittenSignatures = [];
+                        for (var j = 0; j < message.handwrittenSignatures.length; ++j)
+                            object.handwrittenSignatures[j] = message.handwrittenSignatures[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this DotnetSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.DotnetSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                DotnetSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for DotnetSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.DotnetSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                DotnetSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.DotnetSettings";
+                };
+    
+                return DotnetSettings;
+            })();
+    
+            api.RubySettings = (function() {
+    
+                /**
+                 * Properties of a RubySettings.
+                 * @memberof google.api
+                 * @interface IRubySettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] RubySettings common
+                 */
+    
+                /**
+                 * Constructs a new RubySettings.
+                 * @memberof google.api
+                 * @classdesc Represents a RubySettings.
+                 * @implements IRubySettings
+                 * @constructor
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 */
+                function RubySettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * RubySettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 */
+                RubySettings.prototype.common = null;
+    
+                /**
+                 * Creates a new RubySettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings=} [properties] Properties to set
+                 * @returns {google.api.RubySettings} RubySettings instance
+                 */
+                RubySettings.create = function create(properties) {
+                    return new RubySettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.IRubySettings} message RubySettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                RubySettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.RubySettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.RubySettings} RubySettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                RubySettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a RubySettings message.
+                 * @function verify
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                RubySettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.RubySettings} RubySettings
+                 */
+                RubySettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.RubySettings)
+                        return object;
+                    var message = new $root.google.api.RubySettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.RubySettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {google.api.RubySettings} message RubySettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                RubySettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this RubySettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.RubySettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                RubySettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for RubySettings
+                 * @function getTypeUrl
+                 * @memberof google.api.RubySettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                RubySettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.RubySettings";
+                };
+    
+                return RubySettings;
+            })();
+    
+            api.GoSettings = (function() {
+    
+                /**
+                 * Properties of a GoSettings.
+                 * @memberof google.api
+                 * @interface IGoSettings
+                 * @property {google.api.ICommonLanguageSettings|null} [common] GoSettings common
+                 */
+    
+                /**
+                 * Constructs a new GoSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a GoSettings.
+                 * @implements IGoSettings
+                 * @constructor
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 */
+                function GoSettings(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * GoSettings common.
+                 * @member {google.api.ICommonLanguageSettings|null|undefined} common
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 */
+                GoSettings.prototype.common = null;
+    
+                /**
+                 * Creates a new GoSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings=} [properties] Properties to set
+                 * @returns {google.api.GoSettings} GoSettings instance
+                 */
+                GoSettings.create = function create(properties) {
+                    return new GoSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.common != null && Object.hasOwnProperty.call(message, "common"))
+                        $root.google.api.CommonLanguageSettings.encode(message.common, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.IGoSettings} message GoSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                GoSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.GoSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.common = $root.google.api.CommonLanguageSettings.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.GoSettings} GoSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                GoSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a GoSettings message.
+                 * @function verify
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                GoSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.common != null && message.hasOwnProperty("common")) {
+                        var error = $root.google.api.CommonLanguageSettings.verify(message.common);
+                        if (error)
+                            return "common." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.GoSettings} GoSettings
+                 */
+                GoSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.GoSettings)
+                        return object;
+                    var message = new $root.google.api.GoSettings();
+                    if (object.common != null) {
+                        if (typeof object.common !== "object")
+                            throw TypeError(".google.api.GoSettings.common: object expected");
+                        message.common = $root.google.api.CommonLanguageSettings.fromObject(object.common);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {google.api.GoSettings} message GoSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                GoSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults)
+                        object.common = null;
+                    if (message.common != null && message.hasOwnProperty("common"))
+                        object.common = $root.google.api.CommonLanguageSettings.toObject(message.common, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this GoSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.GoSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                GoSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for GoSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.GoSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                GoSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.GoSettings";
+                };
+    
+                return GoSettings;
+            })();
+    
+            api.MethodSettings = (function() {
+    
+                /**
+                 * Properties of a MethodSettings.
+                 * @memberof google.api
+                 * @interface IMethodSettings
+                 * @property {string|null} [selector] MethodSettings selector
+                 * @property {google.api.MethodSettings.ILongRunning|null} [longRunning] MethodSettings longRunning
+                 * @property {Array.<string>|null} [autoPopulatedFields] MethodSettings autoPopulatedFields
+                 */
+    
+                /**
+                 * Constructs a new MethodSettings.
+                 * @memberof google.api
+                 * @classdesc Represents a MethodSettings.
+                 * @implements IMethodSettings
+                 * @constructor
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 */
+                function MethodSettings(properties) {
+                    this.autoPopulatedFields = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * MethodSettings selector.
+                 * @member {string} selector
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.selector = "";
+    
+                /**
+                 * MethodSettings longRunning.
+                 * @member {google.api.MethodSettings.ILongRunning|null|undefined} longRunning
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.longRunning = null;
+    
+                /**
+                 * MethodSettings autoPopulatedFields.
+                 * @member {Array.<string>} autoPopulatedFields
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 */
+                MethodSettings.prototype.autoPopulatedFields = $util.emptyArray;
+    
+                /**
+                 * Creates a new MethodSettings instance using the specified properties.
+                 * @function create
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings=} [properties] Properties to set
+                 * @returns {google.api.MethodSettings} MethodSettings instance
+                 */
+                MethodSettings.create = function create(properties) {
+                    return new MethodSettings(properties);
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.selector != null && Object.hasOwnProperty.call(message, "selector"))
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.selector);
+                    if (message.longRunning != null && Object.hasOwnProperty.call(message, "longRunning"))
+                        $root.google.api.MethodSettings.LongRunning.encode(message.longRunning, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.autoPopulatedFields != null && message.autoPopulatedFields.length)
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.autoPopulatedFields[i]);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.IMethodSettings} message MethodSettings message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                MethodSettings.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.selector = reader.string();
+                                break;
+                            }
+                        case 2: {
+                                message.longRunning = $root.google.api.MethodSettings.LongRunning.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                if (!(message.autoPopulatedFields && message.autoPopulatedFields.length))
+                                    message.autoPopulatedFields = [];
+                                message.autoPopulatedFields.push(reader.string());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                MethodSettings.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a MethodSettings message.
+                 * @function verify
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                MethodSettings.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        if (!$util.isString(message.selector))
+                            return "selector: string expected";
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning")) {
+                        var error = $root.google.api.MethodSettings.LongRunning.verify(message.longRunning);
+                        if (error)
+                            return "longRunning." + error;
+                    }
+                    if (message.autoPopulatedFields != null && message.hasOwnProperty("autoPopulatedFields")) {
+                        if (!Array.isArray(message.autoPopulatedFields))
+                            return "autoPopulatedFields: array expected";
+                        for (var i = 0; i < message.autoPopulatedFields.length; ++i)
+                            if (!$util.isString(message.autoPopulatedFields[i]))
+                                return "autoPopulatedFields: string[] expected";
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.api.MethodSettings} MethodSettings
+                 */
+                MethodSettings.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.api.MethodSettings)
+                        return object;
+                    var message = new $root.google.api.MethodSettings();
+                    if (object.selector != null)
+                        message.selector = String(object.selector);
+                    if (object.longRunning != null) {
+                        if (typeof object.longRunning !== "object")
+                            throw TypeError(".google.api.MethodSettings.longRunning: object expected");
+                        message.longRunning = $root.google.api.MethodSettings.LongRunning.fromObject(object.longRunning);
+                    }
+                    if (object.autoPopulatedFields) {
+                        if (!Array.isArray(object.autoPopulatedFields))
+                            throw TypeError(".google.api.MethodSettings.autoPopulatedFields: array expected");
+                        message.autoPopulatedFields = [];
+                        for (var i = 0; i < object.autoPopulatedFields.length; ++i)
+                            message.autoPopulatedFields[i] = String(object.autoPopulatedFields[i]);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {google.api.MethodSettings} message MethodSettings
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                MethodSettings.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.autoPopulatedFields = [];
+                    if (options.defaults) {
+                        object.selector = "";
+                        object.longRunning = null;
+                    }
+                    if (message.selector != null && message.hasOwnProperty("selector"))
+                        object.selector = message.selector;
+                    if (message.longRunning != null && message.hasOwnProperty("longRunning"))
+                        object.longRunning = $root.google.api.MethodSettings.LongRunning.toObject(message.longRunning, options);
+                    if (message.autoPopulatedFields && message.autoPopulatedFields.length) {
+                        object.autoPopulatedFields = [];
+                        for (var j = 0; j < message.autoPopulatedFields.length; ++j)
+                            object.autoPopulatedFields[j] = message.autoPopulatedFields[j];
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this MethodSettings to JSON.
+                 * @function toJSON
+                 * @memberof google.api.MethodSettings
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                MethodSettings.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for MethodSettings
+                 * @function getTypeUrl
+                 * @memberof google.api.MethodSettings
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                MethodSettings.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.api.MethodSettings";
+                };
+    
+                MethodSettings.LongRunning = (function() {
+    
+                    /**
+                     * Properties of a LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @interface ILongRunning
+                     * @property {google.protobuf.IDuration|null} [initialPollDelay] LongRunning initialPollDelay
+                     * @property {number|null} [pollDelayMultiplier] LongRunning pollDelayMultiplier
+                     * @property {google.protobuf.IDuration|null} [maxPollDelay] LongRunning maxPollDelay
+                     * @property {google.protobuf.IDuration|null} [totalPollTimeout] LongRunning totalPollTimeout
+                     */
+    
+                    /**
+                     * Constructs a new LongRunning.
+                     * @memberof google.api.MethodSettings
+                     * @classdesc Represents a LongRunning.
+                     * @implements ILongRunning
+                     * @constructor
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     */
+                    function LongRunning(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * LongRunning initialPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} initialPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.initialPollDelay = null;
+    
+                    /**
+                     * LongRunning pollDelayMultiplier.
+                     * @member {number} pollDelayMultiplier
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.pollDelayMultiplier = 0;
+    
+                    /**
+                     * LongRunning maxPollDelay.
+                     * @member {google.protobuf.IDuration|null|undefined} maxPollDelay
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.maxPollDelay = null;
+    
+                    /**
+                     * LongRunning totalPollTimeout.
+                     * @member {google.protobuf.IDuration|null|undefined} totalPollTimeout
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     */
+                    LongRunning.prototype.totalPollTimeout = null;
+    
+                    /**
+                     * Creates a new LongRunning instance using the specified properties.
+                     * @function create
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning=} [properties] Properties to set
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning instance
+                     */
+                    LongRunning.create = function create(properties) {
+                        return new LongRunning(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.initialPollDelay != null && Object.hasOwnProperty.call(message, "initialPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.initialPollDelay, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                        if (message.pollDelayMultiplier != null && Object.hasOwnProperty.call(message, "pollDelayMultiplier"))
+                            writer.uint32(/* id 2, wireType 5 =*/21).float(message.pollDelayMultiplier);
+                        if (message.maxPollDelay != null && Object.hasOwnProperty.call(message, "maxPollDelay"))
+                            $root.google.protobuf.Duration.encode(message.maxPollDelay, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                        if (message.totalPollTimeout != null && Object.hasOwnProperty.call(message, "totalPollTimeout"))
+                            $root.google.protobuf.Duration.encode(message.totalPollTimeout, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.ILongRunning} message LongRunning message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    LongRunning.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.api.MethodSettings.LongRunning();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.initialPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 2: {
+                                    message.pollDelayMultiplier = reader.float();
+                                    break;
+                                }
+                            case 3: {
+                                    message.maxPollDelay = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            case 4: {
+                                    message.totalPollTimeout = $root.google.protobuf.Duration.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    LongRunning.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a LongRunning message.
+                     * @function verify
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    LongRunning.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.initialPollDelay);
+                            if (error)
+                                return "initialPollDelay." + error;
+                        }
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            if (typeof message.pollDelayMultiplier !== "number")
+                                return "pollDelayMultiplier: number expected";
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay")) {
+                            var error = $root.google.protobuf.Duration.verify(message.maxPollDelay);
+                            if (error)
+                                return "maxPollDelay." + error;
+                        }
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout")) {
+                            var error = $root.google.protobuf.Duration.verify(message.totalPollTimeout);
+                            if (error)
+                                return "totalPollTimeout." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.api.MethodSettings.LongRunning} LongRunning
+                     */
+                    LongRunning.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.api.MethodSettings.LongRunning)
+                            return object;
+                        var message = new $root.google.api.MethodSettings.LongRunning();
+                        if (object.initialPollDelay != null) {
+                            if (typeof object.initialPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.initialPollDelay: object expected");
+                            message.initialPollDelay = $root.google.protobuf.Duration.fromObject(object.initialPollDelay);
+                        }
+                        if (object.pollDelayMultiplier != null)
+                            message.pollDelayMultiplier = Number(object.pollDelayMultiplier);
+                        if (object.maxPollDelay != null) {
+                            if (typeof object.maxPollDelay !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.maxPollDelay: object expected");
+                            message.maxPollDelay = $root.google.protobuf.Duration.fromObject(object.maxPollDelay);
+                        }
+                        if (object.totalPollTimeout != null) {
+                            if (typeof object.totalPollTimeout !== "object")
+                                throw TypeError(".google.api.MethodSettings.LongRunning.totalPollTimeout: object expected");
+                            message.totalPollTimeout = $root.google.protobuf.Duration.fromObject(object.totalPollTimeout);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {google.api.MethodSettings.LongRunning} message LongRunning
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    LongRunning.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.initialPollDelay = null;
+                            object.pollDelayMultiplier = 0;
+                            object.maxPollDelay = null;
+                            object.totalPollTimeout = null;
+                        }
+                        if (message.initialPollDelay != null && message.hasOwnProperty("initialPollDelay"))
+                            object.initialPollDelay = $root.google.protobuf.Duration.toObject(message.initialPollDelay, options);
+                        if (message.pollDelayMultiplier != null && message.hasOwnProperty("pollDelayMultiplier"))
+                            object.pollDelayMultiplier = options.json && !isFinite(message.pollDelayMultiplier) ? String(message.pollDelayMultiplier) : message.pollDelayMultiplier;
+                        if (message.maxPollDelay != null && message.hasOwnProperty("maxPollDelay"))
+                            object.maxPollDelay = $root.google.protobuf.Duration.toObject(message.maxPollDelay, options);
+                        if (message.totalPollTimeout != null && message.hasOwnProperty("totalPollTimeout"))
+                            object.totalPollTimeout = $root.google.protobuf.Duration.toObject(message.totalPollTimeout, options);
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this LongRunning to JSON.
+                     * @function toJSON
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    LongRunning.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for LongRunning
+                     * @function getTypeUrl
+                     * @memberof google.api.MethodSettings.LongRunning
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    LongRunning.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.api.MethodSettings.LongRunning";
+                    };
+    
+                    return LongRunning;
+                })();
+    
+                return MethodSettings;
+            })();
+    
+            /**
+             * ClientLibraryOrganization enum.
+             * @name google.api.ClientLibraryOrganization
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED=0 CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED value
+             * @property {number} CLOUD=1 CLOUD value
+             * @property {number} ADS=2 ADS value
+             * @property {number} PHOTOS=3 PHOTOS value
+             * @property {number} STREET_VIEW=4 STREET_VIEW value
+             * @property {number} SHOPPING=5 SHOPPING value
+             * @property {number} GEO=6 GEO value
+             * @property {number} GENERATIVE_AI=7 GENERATIVE_AI value
+             */
+            api.ClientLibraryOrganization = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED"] = 0;
+                values[valuesById[1] = "CLOUD"] = 1;
+                values[valuesById[2] = "ADS"] = 2;
+                values[valuesById[3] = "PHOTOS"] = 3;
+                values[valuesById[4] = "STREET_VIEW"] = 4;
+                values[valuesById[5] = "SHOPPING"] = 5;
+                values[valuesById[6] = "GEO"] = 6;
+                values[valuesById[7] = "GENERATIVE_AI"] = 7;
+                return values;
+            })();
+    
+            /**
+             * ClientLibraryDestination enum.
+             * @name google.api.ClientLibraryDestination
+             * @enum {number}
+             * @property {number} CLIENT_LIBRARY_DESTINATION_UNSPECIFIED=0 CLIENT_LIBRARY_DESTINATION_UNSPECIFIED value
+             * @property {number} GITHUB=10 GITHUB value
+             * @property {number} PACKAGE_MANAGER=20 PACKAGE_MANAGER value
+             */
+            api.ClientLibraryDestination = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED"] = 0;
+                values[valuesById[10] = "GITHUB"] = 10;
+                values[valuesById[20] = "PACKAGE_MANAGER"] = 20;
+                return values;
+            })();
+    
             return api;
         })();
     
@@ -13727,6 +21385,38 @@
                 return FileDescriptorSet;
             })();
     
+            /**
+             * Edition enum.
+             * @name google.protobuf.Edition
+             * @enum {number}
+             * @property {number} EDITION_UNKNOWN=0 EDITION_UNKNOWN value
+             * @property {number} EDITION_PROTO2=998 EDITION_PROTO2 value
+             * @property {number} EDITION_PROTO3=999 EDITION_PROTO3 value
+             * @property {number} EDITION_2023=1000 EDITION_2023 value
+             * @property {number} EDITION_2024=1001 EDITION_2024 value
+             * @property {number} EDITION_1_TEST_ONLY=1 EDITION_1_TEST_ONLY value
+             * @property {number} EDITION_2_TEST_ONLY=2 EDITION_2_TEST_ONLY value
+             * @property {number} EDITION_99997_TEST_ONLY=99997 EDITION_99997_TEST_ONLY value
+             * @property {number} EDITION_99998_TEST_ONLY=99998 EDITION_99998_TEST_ONLY value
+             * @property {number} EDITION_99999_TEST_ONLY=99999 EDITION_99999_TEST_ONLY value
+             * @property {number} EDITION_MAX=2147483647 EDITION_MAX value
+             */
+            protobuf.Edition = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "EDITION_UNKNOWN"] = 0;
+                values[valuesById[998] = "EDITION_PROTO2"] = 998;
+                values[valuesById[999] = "EDITION_PROTO3"] = 999;
+                values[valuesById[1000] = "EDITION_2023"] = 1000;
+                values[valuesById[1001] = "EDITION_2024"] = 1001;
+                values[valuesById[1] = "EDITION_1_TEST_ONLY"] = 1;
+                values[valuesById[2] = "EDITION_2_TEST_ONLY"] = 2;
+                values[valuesById[99997] = "EDITION_99997_TEST_ONLY"] = 99997;
+                values[valuesById[99998] = "EDITION_99998_TEST_ONLY"] = 99998;
+                values[valuesById[99999] = "EDITION_99999_TEST_ONLY"] = 99999;
+                values[valuesById[2147483647] = "EDITION_MAX"] = 2147483647;
+                return values;
+            })();
+    
             protobuf.FileDescriptorProto = (function() {
     
                 /**
@@ -13745,7 +21435,7 @@
                  * @property {google.protobuf.IFileOptions|null} [options] FileDescriptorProto options
                  * @property {google.protobuf.ISourceCodeInfo|null} [sourceCodeInfo] FileDescriptorProto sourceCodeInfo
                  * @property {string|null} [syntax] FileDescriptorProto syntax
-                 * @property {string|null} [edition] FileDescriptorProto edition
+                 * @property {google.protobuf.Edition|null} [edition] FileDescriptorProto edition
                  */
     
                 /**
@@ -13868,11 +21558,11 @@
     
                 /**
                  * FileDescriptorProto edition.
-                 * @member {string} edition
+                 * @member {google.protobuf.Edition} edition
                  * @memberof google.protobuf.FileDescriptorProto
                  * @instance
                  */
-                FileDescriptorProto.prototype.edition = "";
+                FileDescriptorProto.prototype.edition = 0;
     
                 /**
                  * Creates a new FileDescriptorProto instance using the specified properties.
@@ -13930,7 +21620,7 @@
                     if (message.syntax != null && Object.hasOwnProperty.call(message, "syntax"))
                         writer.uint32(/* id 12, wireType 2 =*/98).string(message.syntax);
                     if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
-                        writer.uint32(/* id 13, wireType 2 =*/106).string(message.edition);
+                        writer.uint32(/* id 14, wireType 0 =*/112).int32(message.edition);
                     return writer;
                 };
     
@@ -14037,8 +21727,8 @@
                                 message.syntax = reader.string();
                                 break;
                             }
-                        case 13: {
-                                message.edition = reader.string();
+                        case 14: {
+                                message.edition = reader.int32();
                                 break;
                             }
                         default:
@@ -14153,8 +21843,22 @@
                         if (!$util.isString(message.syntax))
                             return "syntax: string expected";
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        if (!$util.isString(message.edition))
-                            return "edition: string expected";
+                        switch (message.edition) {
+                        default:
+                            return "edition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
                     return null;
                 };
     
@@ -14247,8 +21951,58 @@
                     }
                     if (object.syntax != null)
                         message.syntax = String(object.syntax);
-                    if (object.edition != null)
-                        message.edition = String(object.edition);
+                    switch (object.edition) {
+                    default:
+                        if (typeof object.edition === "number") {
+                            message.edition = object.edition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.edition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.edition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.edition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.edition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.edition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.edition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.edition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.edition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.edition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.edition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.edition = 2147483647;
+                        break;
+                    }
                     return message;
                 };
     
@@ -14280,7 +22034,7 @@
                         object.options = null;
                         object.sourceCodeInfo = null;
                         object.syntax = "";
-                        object.edition = "";
+                        object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
                     }
                     if (message.name != null && message.hasOwnProperty("name"))
                         object.name = message.name;
@@ -14328,7 +22082,7 @@
                     if (message.syntax != null && message.hasOwnProperty("syntax"))
                         object.syntax = message.syntax;
                     if (message.edition != null && message.hasOwnProperty("edition"))
-                        object.edition = message.edition;
+                        object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
                     return object;
                 };
     
@@ -15431,6 +23185,9 @@
                  * @memberof google.protobuf
                  * @interface IExtensionRangeOptions
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ExtensionRangeOptions uninterpretedOption
+                 * @property {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>|null} [declaration] ExtensionRangeOptions declaration
+                 * @property {google.protobuf.IFeatureSet|null} [features] ExtensionRangeOptions features
+                 * @property {google.protobuf.ExtensionRangeOptions.VerificationState|null} [verification] ExtensionRangeOptions verification
                  */
     
                 /**
@@ -15443,6 +23200,7 @@
                  */
                 function ExtensionRangeOptions(properties) {
                     this.uninterpretedOption = [];
+                    this.declaration = [];
                     if (properties)
                         for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                             if (properties[keys[i]] != null)
@@ -15456,6 +23214,30 @@
                  * @instance
                  */
                 ExtensionRangeOptions.prototype.uninterpretedOption = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions declaration.
+                 * @member {Array.<google.protobuf.ExtensionRangeOptions.IDeclaration>} declaration
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.declaration = $util.emptyArray;
+    
+                /**
+                 * ExtensionRangeOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.features = null;
+    
+                /**
+                 * ExtensionRangeOptions verification.
+                 * @member {google.protobuf.ExtensionRangeOptions.VerificationState} verification
+                 * @memberof google.protobuf.ExtensionRangeOptions
+                 * @instance
+                 */
+                ExtensionRangeOptions.prototype.verification = 1;
     
                 /**
                  * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -15481,6 +23263,13 @@
                 ExtensionRangeOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.declaration != null && message.declaration.length)
+                        for (var i = 0; i < message.declaration.length; ++i)
+                            $root.google.protobuf.ExtensionRangeOptions.Declaration.encode(message.declaration[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.verification != null && Object.hasOwnProperty.call(message, "verification"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.verification);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -15522,6 +23311,20 @@
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
                                 message.uninterpretedOption.push($root.google.protobuf.UninterpretedOption.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 2: {
+                                if (!(message.declaration && message.declaration.length))
+                                    message.declaration = [];
+                                message.declaration.push($root.google.protobuf.ExtensionRangeOptions.Declaration.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.verification = reader.int32();
                                 break;
                             }
                         default:
@@ -15568,6 +23371,28 @@
                                 return "uninterpretedOption." + error;
                         }
                     }
+                    if (message.declaration != null && message.hasOwnProperty("declaration")) {
+                        if (!Array.isArray(message.declaration))
+                            return "declaration: array expected";
+                        for (var i = 0; i < message.declaration.length; ++i) {
+                            var error = $root.google.protobuf.ExtensionRangeOptions.Declaration.verify(message.declaration[i]);
+                            if (error)
+                                return "declaration." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        switch (message.verification) {
+                        default:
+                            return "verification: enum value expected";
+                        case 0:
+                        case 1:
+                            break;
+                        }
                     return null;
                 };
     
@@ -15593,6 +23418,37 @@
                             message.uninterpretedOption[i] = $root.google.protobuf.UninterpretedOption.fromObject(object.uninterpretedOption[i]);
                         }
                     }
+                    if (object.declaration) {
+                        if (!Array.isArray(object.declaration))
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: array expected");
+                        message.declaration = [];
+                        for (var i = 0; i < object.declaration.length; ++i) {
+                            if (typeof object.declaration[i] !== "object")
+                                throw TypeError(".google.protobuf.ExtensionRangeOptions.declaration: object expected");
+                            message.declaration[i] = $root.google.protobuf.ExtensionRangeOptions.Declaration.fromObject(object.declaration[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ExtensionRangeOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    switch (object.verification) {
+                    case "DECLARATION":
+                    case 0:
+                        message.verification = 0;
+                        break;
+                    default:
+                        if (typeof object.verification === "number") {
+                            message.verification = object.verification;
+                            break;
+                        }
+                        break;
+                    case "UNVERIFIED":
+                    case 1:
+                        message.verification = 1;
+                        break;
+                    }
                     return message;
                 };
     
@@ -15609,8 +23465,23 @@
                     if (!options)
                         options = {};
                     var object = {};
-                    if (options.arrays || options.defaults)
+                    if (options.arrays || options.defaults) {
+                        object.declaration = [];
                         object.uninterpretedOption = [];
+                    }
+                    if (options.defaults) {
+                        object.verification = options.enums === String ? "UNVERIFIED" : 1;
+                        object.features = null;
+                    }
+                    if (message.declaration && message.declaration.length) {
+                        object.declaration = [];
+                        for (var j = 0; j < message.declaration.length; ++j)
+                            object.declaration[j] = $root.google.protobuf.ExtensionRangeOptions.Declaration.toObject(message.declaration[j], options);
+                    }
+                    if (message.verification != null && message.hasOwnProperty("verification"))
+                        object.verification = options.enums === String ? $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] === undefined ? message.verification : $root.google.protobuf.ExtensionRangeOptions.VerificationState[message.verification] : message.verification;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -15644,6 +23515,316 @@
                     }
                     return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions";
                 };
+    
+                ExtensionRangeOptions.Declaration = (function() {
+    
+                    /**
+                     * Properties of a Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @interface IDeclaration
+                     * @property {number|null} [number] Declaration number
+                     * @property {string|null} [fullName] Declaration fullName
+                     * @property {string|null} [type] Declaration type
+                     * @property {boolean|null} [reserved] Declaration reserved
+                     * @property {boolean|null} [repeated] Declaration repeated
+                     */
+    
+                    /**
+                     * Constructs a new Declaration.
+                     * @memberof google.protobuf.ExtensionRangeOptions
+                     * @classdesc Represents a Declaration.
+                     * @implements IDeclaration
+                     * @constructor
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     */
+                    function Declaration(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * Declaration number.
+                     * @member {number} number
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.number = 0;
+    
+                    /**
+                     * Declaration fullName.
+                     * @member {string} fullName
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.fullName = "";
+    
+                    /**
+                     * Declaration type.
+                     * @member {string} type
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.type = "";
+    
+                    /**
+                     * Declaration reserved.
+                     * @member {boolean} reserved
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.reserved = false;
+    
+                    /**
+                     * Declaration repeated.
+                     * @member {boolean} repeated
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     */
+                    Declaration.prototype.repeated = false;
+    
+                    /**
+                     * Creates a new Declaration instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration=} [properties] Properties to set
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration instance
+                     */
+                    Declaration.create = function create(properties) {
+                        return new Declaration(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.number != null && Object.hasOwnProperty.call(message, "number"))
+                            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.number);
+                        if (message.fullName != null && Object.hasOwnProperty.call(message, "fullName"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.fullName);
+                        if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                            writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
+                        if (message.reserved != null && Object.hasOwnProperty.call(message, "reserved"))
+                            writer.uint32(/* id 5, wireType 0 =*/40).bool(message.reserved);
+                        if (message.repeated != null && Object.hasOwnProperty.call(message, "repeated"))
+                            writer.uint32(/* id 6, wireType 0 =*/48).bool(message.repeated);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.IDeclaration} message Declaration message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    Declaration.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 1: {
+                                    message.number = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.fullName = reader.string();
+                                    break;
+                                }
+                            case 3: {
+                                    message.type = reader.string();
+                                    break;
+                                }
+                            case 5: {
+                                    message.reserved = reader.bool();
+                                    break;
+                                }
+                            case 6: {
+                                    message.repeated = reader.bool();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    Declaration.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a Declaration message.
+                     * @function verify
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    Declaration.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            if (!$util.isInteger(message.number))
+                                return "number: integer expected";
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            if (!$util.isString(message.fullName))
+                                return "fullName: string expected";
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            if (!$util.isString(message.type))
+                                return "type: string expected";
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            if (typeof message.reserved !== "boolean")
+                                return "reserved: boolean expected";
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            if (typeof message.repeated !== "boolean")
+                                return "repeated: boolean expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.ExtensionRangeOptions.Declaration} Declaration
+                     */
+                    Declaration.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.ExtensionRangeOptions.Declaration)
+                            return object;
+                        var message = new $root.google.protobuf.ExtensionRangeOptions.Declaration();
+                        if (object.number != null)
+                            message.number = object.number | 0;
+                        if (object.fullName != null)
+                            message.fullName = String(object.fullName);
+                        if (object.type != null)
+                            message.type = String(object.type);
+                        if (object.reserved != null)
+                            message.reserved = Boolean(object.reserved);
+                        if (object.repeated != null)
+                            message.repeated = Boolean(object.repeated);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {google.protobuf.ExtensionRangeOptions.Declaration} message Declaration
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    Declaration.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.number = 0;
+                            object.fullName = "";
+                            object.type = "";
+                            object.reserved = false;
+                            object.repeated = false;
+                        }
+                        if (message.number != null && message.hasOwnProperty("number"))
+                            object.number = message.number;
+                        if (message.fullName != null && message.hasOwnProperty("fullName"))
+                            object.fullName = message.fullName;
+                        if (message.type != null && message.hasOwnProperty("type"))
+                            object.type = message.type;
+                        if (message.reserved != null && message.hasOwnProperty("reserved"))
+                            object.reserved = message.reserved;
+                        if (message.repeated != null && message.hasOwnProperty("repeated"))
+                            object.repeated = message.repeated;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this Declaration to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    Declaration.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for Declaration
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.ExtensionRangeOptions.Declaration
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    Declaration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.ExtensionRangeOptions.Declaration";
+                    };
+    
+                    return Declaration;
+                })();
+    
+                /**
+                 * VerificationState enum.
+                 * @name google.protobuf.ExtensionRangeOptions.VerificationState
+                 * @enum {number}
+                 * @property {number} DECLARATION=0 DECLARATION value
+                 * @property {number} UNVERIFIED=1 UNVERIFIED value
+                 */
+                ExtensionRangeOptions.VerificationState = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "DECLARATION"] = 0;
+                    values[valuesById[1] = "UNVERIFIED"] = 1;
+                    return values;
+                })();
     
                 return ExtensionRangeOptions;
             })();
@@ -15940,8 +24121,8 @@
                         default:
                             return "label: enum value expected";
                         case 1:
-                        case 2:
                         case 3:
+                        case 2:
                             break;
                         }
                     if (message.type != null && message.hasOwnProperty("type"))
@@ -16021,13 +24202,13 @@
                     case 1:
                         message.label = 1;
                         break;
-                    case "LABEL_REQUIRED":
-                    case 2:
-                        message.label = 2;
-                        break;
                     case "LABEL_REPEATED":
                     case 3:
                         message.label = 3;
+                        break;
+                    case "LABEL_REQUIRED":
+                    case 2:
+                        message.label = 2;
                         break;
                     }
                     switch (object.type) {
@@ -16258,14 +24439,14 @@
                  * @name google.protobuf.FieldDescriptorProto.Label
                  * @enum {number}
                  * @property {number} LABEL_OPTIONAL=1 LABEL_OPTIONAL value
-                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  * @property {number} LABEL_REPEATED=3 LABEL_REPEATED value
+                 * @property {number} LABEL_REQUIRED=2 LABEL_REQUIRED value
                  */
                 FieldDescriptorProto.Label = (function() {
                     var valuesById = {}, values = Object.create(valuesById);
                     values[valuesById[1] = "LABEL_OPTIONAL"] = 1;
-                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     values[valuesById[3] = "LABEL_REPEATED"] = 3;
+                    values[valuesById[2] = "LABEL_REQUIRED"] = 2;
                     return values;
                 })();
     
@@ -17964,7 +26145,6 @@
                  * @property {boolean|null} [ccGenericServices] FileOptions ccGenericServices
                  * @property {boolean|null} [javaGenericServices] FileOptions javaGenericServices
                  * @property {boolean|null} [pyGenericServices] FileOptions pyGenericServices
-                 * @property {boolean|null} [phpGenericServices] FileOptions phpGenericServices
                  * @property {boolean|null} [deprecated] FileOptions deprecated
                  * @property {boolean|null} [ccEnableArenas] FileOptions ccEnableArenas
                  * @property {string|null} [objcClassPrefix] FileOptions objcClassPrefix
@@ -17974,6 +26154,7 @@
                  * @property {string|null} [phpNamespace] FileOptions phpNamespace
                  * @property {string|null} [phpMetadataNamespace] FileOptions phpMetadataNamespace
                  * @property {string|null} [rubyPackage] FileOptions rubyPackage
+                 * @property {google.protobuf.IFeatureSet|null} [features] FileOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FileOptions uninterpretedOption
                  * @property {Array.<google.api.IResourceDescriptor>|null} [".google.api.resourceDefinition"] FileOptions .google.api.resourceDefinition
                  */
@@ -18076,14 +26257,6 @@
                 FileOptions.prototype.pyGenericServices = false;
     
                 /**
-                 * FileOptions phpGenericServices.
-                 * @member {boolean} phpGenericServices
-                 * @memberof google.protobuf.FileOptions
-                 * @instance
-                 */
-                FileOptions.prototype.phpGenericServices = false;
-    
-                /**
                  * FileOptions deprecated.
                  * @member {boolean} deprecated
                  * @memberof google.protobuf.FileOptions
@@ -18154,6 +26327,14 @@
                  * @instance
                  */
                 FileOptions.prototype.rubyPackage = "";
+    
+                /**
+                 * FileOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FileOptions
+                 * @instance
+                 */
+                FileOptions.prototype.features = null;
     
                 /**
                  * FileOptions uninterpretedOption.
@@ -18229,12 +26410,12 @@
                         writer.uint32(/* id 40, wireType 2 =*/322).string(message.phpClassPrefix);
                     if (message.phpNamespace != null && Object.hasOwnProperty.call(message, "phpNamespace"))
                         writer.uint32(/* id 41, wireType 2 =*/330).string(message.phpNamespace);
-                    if (message.phpGenericServices != null && Object.hasOwnProperty.call(message, "phpGenericServices"))
-                        writer.uint32(/* id 42, wireType 0 =*/336).bool(message.phpGenericServices);
                     if (message.phpMetadataNamespace != null && Object.hasOwnProperty.call(message, "phpMetadataNamespace"))
                         writer.uint32(/* id 44, wireType 2 =*/354).string(message.phpMetadataNamespace);
                     if (message.rubyPackage != null && Object.hasOwnProperty.call(message, "rubyPackage"))
                         writer.uint32(/* id 45, wireType 2 =*/362).string(message.rubyPackage);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 50, wireType 2 =*/402).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -18315,10 +26496,6 @@
                                 message.pyGenericServices = reader.bool();
                                 break;
                             }
-                        case 42: {
-                                message.phpGenericServices = reader.bool();
-                                break;
-                            }
                         case 23: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -18353,6 +26530,10 @@
                             }
                         case 45: {
                                 message.rubyPackage = reader.string();
+                                break;
+                            }
+                        case 50: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -18438,9 +26619,6 @@
                     if (message.pyGenericServices != null && message.hasOwnProperty("pyGenericServices"))
                         if (typeof message.pyGenericServices !== "boolean")
                             return "pyGenericServices: boolean expected";
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        if (typeof message.phpGenericServices !== "boolean")
-                            return "phpGenericServices: boolean expected";
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -18468,6 +26646,11 @@
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         if (!$util.isString(message.rubyPackage))
                             return "rubyPackage: string expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -18539,8 +26722,6 @@
                         message.javaGenericServices = Boolean(object.javaGenericServices);
                     if (object.pyGenericServices != null)
                         message.pyGenericServices = Boolean(object.pyGenericServices);
-                    if (object.phpGenericServices != null)
-                        message.phpGenericServices = Boolean(object.phpGenericServices);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.ccEnableArenas != null)
@@ -18559,6 +26740,11 @@
                         message.phpMetadataNamespace = String(object.phpMetadataNamespace);
                     if (object.rubyPackage != null)
                         message.rubyPackage = String(object.rubyPackage);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FileOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FileOptions.uninterpretedOption: array expected");
@@ -18617,9 +26803,9 @@
                         object.swiftPrefix = "";
                         object.phpClassPrefix = "";
                         object.phpNamespace = "";
-                        object.phpGenericServices = false;
                         object.phpMetadataNamespace = "";
                         object.rubyPackage = "";
+                        object.features = null;
                     }
                     if (message.javaPackage != null && message.hasOwnProperty("javaPackage"))
                         object.javaPackage = message.javaPackage;
@@ -18655,12 +26841,12 @@
                         object.phpClassPrefix = message.phpClassPrefix;
                     if (message.phpNamespace != null && message.hasOwnProperty("phpNamespace"))
                         object.phpNamespace = message.phpNamespace;
-                    if (message.phpGenericServices != null && message.hasOwnProperty("phpGenericServices"))
-                        object.phpGenericServices = message.phpGenericServices;
                     if (message.phpMetadataNamespace != null && message.hasOwnProperty("phpMetadataNamespace"))
                         object.phpMetadataNamespace = message.phpMetadataNamespace;
                     if (message.rubyPackage != null && message.hasOwnProperty("rubyPackage"))
                         object.rubyPackage = message.rubyPackage;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -18729,6 +26915,8 @@
                  * @property {boolean|null} [noStandardDescriptorAccessor] MessageOptions noStandardDescriptorAccessor
                  * @property {boolean|null} [deprecated] MessageOptions deprecated
                  * @property {boolean|null} [mapEntry] MessageOptions mapEntry
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] MessageOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] MessageOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MessageOptions uninterpretedOption
                  * @property {google.api.IResourceDescriptor|null} [".google.api.resource"] MessageOptions .google.api.resource
                  */
@@ -18782,6 +26970,22 @@
                 MessageOptions.prototype.mapEntry = false;
     
                 /**
+                 * MessageOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * MessageOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MessageOptions
+                 * @instance
+                 */
+                MessageOptions.prototype.features = null;
+    
+                /**
                  * MessageOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.MessageOptions
@@ -18829,6 +27033,10 @@
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
                     if (message.mapEntry != null && Object.hasOwnProperty.call(message, "mapEntry"))
                         writer.uint32(/* id 7, wireType 0 =*/56).bool(message.mapEntry);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 11, wireType 0 =*/88).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -18882,6 +27090,14 @@
                             }
                         case 7: {
                                 message.mapEntry = reader.bool();
+                                break;
+                            }
+                        case 11: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 12: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -18941,6 +27157,14 @@
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         if (typeof message.mapEntry !== "boolean")
                             return "mapEntry: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -18978,6 +27202,13 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.mapEntry != null)
                         message.mapEntry = Boolean(object.mapEntry);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MessageOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MessageOptions.uninterpretedOption: array expected");
@@ -19016,6 +27247,8 @@
                         object.noStandardDescriptorAccessor = false;
                         object.deprecated = false;
                         object.mapEntry = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                         object[".google.api.resource"] = null;
                     }
                     if (message.messageSetWireFormat != null && message.hasOwnProperty("messageSetWireFormat"))
@@ -19026,6 +27259,10 @@
                         object.deprecated = message.deprecated;
                     if (message.mapEntry != null && message.hasOwnProperty("mapEntry"))
                         object.mapEntry = message.mapEntry;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -19078,6 +27315,11 @@
                  * @property {boolean|null} [unverifiedLazy] FieldOptions unverifiedLazy
                  * @property {boolean|null} [deprecated] FieldOptions deprecated
                  * @property {boolean|null} [weak] FieldOptions weak
+                 * @property {boolean|null} [debugRedact] FieldOptions debugRedact
+                 * @property {google.protobuf.FieldOptions.OptionRetention|null} [retention] FieldOptions retention
+                 * @property {Array.<google.protobuf.FieldOptions.OptionTargetType>|null} [targets] FieldOptions targets
+                 * @property {Array.<google.protobuf.FieldOptions.IEditionDefault>|null} [editionDefaults] FieldOptions editionDefaults
+                 * @property {google.protobuf.IFeatureSet|null} [features] FieldOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] FieldOptions uninterpretedOption
                  * @property {Array.<google.api.FieldBehavior>|null} [".google.api.fieldBehavior"] FieldOptions .google.api.fieldBehavior
                  * @property {google.api.IResourceReference|null} [".google.api.resourceReference"] FieldOptions .google.api.resourceReference
@@ -19092,6 +27334,8 @@
                  * @param {google.protobuf.IFieldOptions=} [properties] Properties to set
                  */
                 function FieldOptions(properties) {
+                    this.targets = [];
+                    this.editionDefaults = [];
                     this.uninterpretedOption = [];
                     this[".google.api.fieldBehavior"] = [];
                     if (properties)
@@ -19157,6 +27401,46 @@
                 FieldOptions.prototype.weak = false;
     
                 /**
+                 * FieldOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.debugRedact = false;
+    
+                /**
+                 * FieldOptions retention.
+                 * @member {google.protobuf.FieldOptions.OptionRetention} retention
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.retention = 0;
+    
+                /**
+                 * FieldOptions targets.
+                 * @member {Array.<google.protobuf.FieldOptions.OptionTargetType>} targets
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.targets = $util.emptyArray;
+    
+                /**
+                 * FieldOptions editionDefaults.
+                 * @member {Array.<google.protobuf.FieldOptions.IEditionDefault>} editionDefaults
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.editionDefaults = $util.emptyArray;
+    
+                /**
+                 * FieldOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.FieldOptions
+                 * @instance
+                 */
+                FieldOptions.prototype.features = null;
+    
+                /**
                  * FieldOptions uninterpretedOption.
                  * @member {Array.<google.protobuf.IUninterpretedOption>} uninterpretedOption
                  * @memberof google.protobuf.FieldOptions
@@ -19218,6 +27502,18 @@
                         writer.uint32(/* id 10, wireType 0 =*/80).bool(message.weak);
                     if (message.unverifiedLazy != null && Object.hasOwnProperty.call(message, "unverifiedLazy"))
                         writer.uint32(/* id 15, wireType 0 =*/120).bool(message.unverifiedLazy);
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 16, wireType 0 =*/128).bool(message.debugRedact);
+                    if (message.retention != null && Object.hasOwnProperty.call(message, "retention"))
+                        writer.uint32(/* id 17, wireType 0 =*/136).int32(message.retention);
+                    if (message.targets != null && message.targets.length)
+                        for (var i = 0; i < message.targets.length; ++i)
+                            writer.uint32(/* id 19, wireType 0 =*/152).int32(message.targets[i]);
+                    if (message.editionDefaults != null && message.editionDefaults.length)
+                        for (var i = 0; i < message.editionDefaults.length; ++i)
+                            $root.google.protobuf.FieldOptions.EditionDefault.encode(message.editionDefaults[i], writer.uint32(/* id 20, wireType 2 =*/162).fork()).ldelim();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 21, wireType 2 =*/170).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -19289,6 +27585,35 @@
                             }
                         case 10: {
                                 message.weak = reader.bool();
+                                break;
+                            }
+                        case 16: {
+                                message.debugRedact = reader.bool();
+                                break;
+                            }
+                        case 17: {
+                                message.retention = reader.int32();
+                                break;
+                            }
+                        case 19: {
+                                if (!(message.targets && message.targets.length))
+                                    message.targets = [];
+                                if ((tag & 7) === 2) {
+                                    var end2 = reader.uint32() + reader.pos;
+                                    while (reader.pos < end2)
+                                        message.targets.push(reader.int32());
+                                } else
+                                    message.targets.push(reader.int32());
+                                break;
+                            }
+                        case 20: {
+                                if (!(message.editionDefaults && message.editionDefaults.length))
+                                    message.editionDefaults = [];
+                                message.editionDefaults.push($root.google.protobuf.FieldOptions.EditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 21: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -19380,6 +27705,52 @@
                     if (message.weak != null && message.hasOwnProperty("weak"))
                         if (typeof message.weak !== "boolean")
                             return "weak: boolean expected";
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        switch (message.retention) {
+                        default:
+                            return "retention: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.targets != null && message.hasOwnProperty("targets")) {
+                        if (!Array.isArray(message.targets))
+                            return "targets: array expected";
+                        for (var i = 0; i < message.targets.length; ++i)
+                            switch (message.targets[i]) {
+                            default:
+                                return "targets: enum value[] expected";
+                            case 0:
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6:
+                            case 7:
+                            case 8:
+                            case 9:
+                                break;
+                            }
+                    }
+                    if (message.editionDefaults != null && message.hasOwnProperty("editionDefaults")) {
+                        if (!Array.isArray(message.editionDefaults))
+                            return "editionDefaults: array expected";
+                        for (var i = 0; i < message.editionDefaults.length; ++i) {
+                            var error = $root.google.protobuf.FieldOptions.EditionDefault.verify(message.editionDefaults[i]);
+                            if (error)
+                                return "editionDefaults." + error;
+                        }
+                    }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -19404,6 +27775,7 @@
                             case 5:
                             case 6:
                             case 7:
+                            case 8:
                                 break;
                             }
                     }
@@ -19477,6 +27849,96 @@
                         message.deprecated = Boolean(object.deprecated);
                     if (object.weak != null)
                         message.weak = Boolean(object.weak);
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
+                    switch (object.retention) {
+                    default:
+                        if (typeof object.retention === "number") {
+                            message.retention = object.retention;
+                            break;
+                        }
+                        break;
+                    case "RETENTION_UNKNOWN":
+                    case 0:
+                        message.retention = 0;
+                        break;
+                    case "RETENTION_RUNTIME":
+                    case 1:
+                        message.retention = 1;
+                        break;
+                    case "RETENTION_SOURCE":
+                    case 2:
+                        message.retention = 2;
+                        break;
+                    }
+                    if (object.targets) {
+                        if (!Array.isArray(object.targets))
+                            throw TypeError(".google.protobuf.FieldOptions.targets: array expected");
+                        message.targets = [];
+                        for (var i = 0; i < object.targets.length; ++i)
+                            switch (object.targets[i]) {
+                            default:
+                                if (typeof object.targets[i] === "number") {
+                                    message.targets[i] = object.targets[i];
+                                    break;
+                                }
+                            case "TARGET_TYPE_UNKNOWN":
+                            case 0:
+                                message.targets[i] = 0;
+                                break;
+                            case "TARGET_TYPE_FILE":
+                            case 1:
+                                message.targets[i] = 1;
+                                break;
+                            case "TARGET_TYPE_EXTENSION_RANGE":
+                            case 2:
+                                message.targets[i] = 2;
+                                break;
+                            case "TARGET_TYPE_MESSAGE":
+                            case 3:
+                                message.targets[i] = 3;
+                                break;
+                            case "TARGET_TYPE_FIELD":
+                            case 4:
+                                message.targets[i] = 4;
+                                break;
+                            case "TARGET_TYPE_ONEOF":
+                            case 5:
+                                message.targets[i] = 5;
+                                break;
+                            case "TARGET_TYPE_ENUM":
+                            case 6:
+                                message.targets[i] = 6;
+                                break;
+                            case "TARGET_TYPE_ENUM_ENTRY":
+                            case 7:
+                                message.targets[i] = 7;
+                                break;
+                            case "TARGET_TYPE_SERVICE":
+                            case 8:
+                                message.targets[i] = 8;
+                                break;
+                            case "TARGET_TYPE_METHOD":
+                            case 9:
+                                message.targets[i] = 9;
+                                break;
+                            }
+                    }
+                    if (object.editionDefaults) {
+                        if (!Array.isArray(object.editionDefaults))
+                            throw TypeError(".google.protobuf.FieldOptions.editionDefaults: array expected");
+                        message.editionDefaults = [];
+                        for (var i = 0; i < object.editionDefaults.length; ++i) {
+                            if (typeof object.editionDefaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FieldOptions.editionDefaults: object expected");
+                            message.editionDefaults[i] = $root.google.protobuf.FieldOptions.EditionDefault.fromObject(object.editionDefaults[i]);
+                        }
+                    }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.FieldOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.FieldOptions.uninterpretedOption: array expected");
@@ -19530,6 +27992,10 @@
                             case 7:
                                 message[".google.api.fieldBehavior"][i] = 7;
                                 break;
+                            case "IDENTIFIER":
+                            case 8:
+                                message[".google.api.fieldBehavior"][i] = 8;
+                                break;
                             }
                     }
                     if (object[".google.api.resourceReference"] != null) {
@@ -19554,6 +28020,8 @@
                         options = {};
                     var object = {};
                     if (options.arrays || options.defaults) {
+                        object.targets = [];
+                        object.editionDefaults = [];
                         object.uninterpretedOption = [];
                         object[".google.api.fieldBehavior"] = [];
                     }
@@ -19565,6 +28033,9 @@
                         object.jstype = options.enums === String ? "JS_NORMAL" : 0;
                         object.weak = false;
                         object.unverifiedLazy = false;
+                        object.debugRedact = false;
+                        object.retention = options.enums === String ? "RETENTION_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.api.resourceReference"] = null;
                     }
                     if (message.ctype != null && message.hasOwnProperty("ctype"))
@@ -19581,6 +28052,22 @@
                         object.weak = message.weak;
                     if (message.unverifiedLazy != null && message.hasOwnProperty("unverifiedLazy"))
                         object.unverifiedLazy = message.unverifiedLazy;
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
+                    if (message.retention != null && message.hasOwnProperty("retention"))
+                        object.retention = options.enums === String ? $root.google.protobuf.FieldOptions.OptionRetention[message.retention] === undefined ? message.retention : $root.google.protobuf.FieldOptions.OptionRetention[message.retention] : message.retention;
+                    if (message.targets && message.targets.length) {
+                        object.targets = [];
+                        for (var j = 0; j < message.targets.length; ++j)
+                            object.targets[j] = options.enums === String ? $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] === undefined ? message.targets[j] : $root.google.protobuf.FieldOptions.OptionTargetType[message.targets[j]] : message.targets[j];
+                    }
+                    if (message.editionDefaults && message.editionDefaults.length) {
+                        object.editionDefaults = [];
+                        for (var j = 0; j < message.editionDefaults.length; ++j)
+                            object.editionDefaults[j] = $root.google.protobuf.FieldOptions.EditionDefault.toObject(message.editionDefaults[j], options);
+                    }
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -19654,6 +28141,343 @@
                     return values;
                 })();
     
+                /**
+                 * OptionRetention enum.
+                 * @name google.protobuf.FieldOptions.OptionRetention
+                 * @enum {number}
+                 * @property {number} RETENTION_UNKNOWN=0 RETENTION_UNKNOWN value
+                 * @property {number} RETENTION_RUNTIME=1 RETENTION_RUNTIME value
+                 * @property {number} RETENTION_SOURCE=2 RETENTION_SOURCE value
+                 */
+                FieldOptions.OptionRetention = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "RETENTION_UNKNOWN"] = 0;
+                    values[valuesById[1] = "RETENTION_RUNTIME"] = 1;
+                    values[valuesById[2] = "RETENTION_SOURCE"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * OptionTargetType enum.
+                 * @name google.protobuf.FieldOptions.OptionTargetType
+                 * @enum {number}
+                 * @property {number} TARGET_TYPE_UNKNOWN=0 TARGET_TYPE_UNKNOWN value
+                 * @property {number} TARGET_TYPE_FILE=1 TARGET_TYPE_FILE value
+                 * @property {number} TARGET_TYPE_EXTENSION_RANGE=2 TARGET_TYPE_EXTENSION_RANGE value
+                 * @property {number} TARGET_TYPE_MESSAGE=3 TARGET_TYPE_MESSAGE value
+                 * @property {number} TARGET_TYPE_FIELD=4 TARGET_TYPE_FIELD value
+                 * @property {number} TARGET_TYPE_ONEOF=5 TARGET_TYPE_ONEOF value
+                 * @property {number} TARGET_TYPE_ENUM=6 TARGET_TYPE_ENUM value
+                 * @property {number} TARGET_TYPE_ENUM_ENTRY=7 TARGET_TYPE_ENUM_ENTRY value
+                 * @property {number} TARGET_TYPE_SERVICE=8 TARGET_TYPE_SERVICE value
+                 * @property {number} TARGET_TYPE_METHOD=9 TARGET_TYPE_METHOD value
+                 */
+                FieldOptions.OptionTargetType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "TARGET_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "TARGET_TYPE_FILE"] = 1;
+                    values[valuesById[2] = "TARGET_TYPE_EXTENSION_RANGE"] = 2;
+                    values[valuesById[3] = "TARGET_TYPE_MESSAGE"] = 3;
+                    values[valuesById[4] = "TARGET_TYPE_FIELD"] = 4;
+                    values[valuesById[5] = "TARGET_TYPE_ONEOF"] = 5;
+                    values[valuesById[6] = "TARGET_TYPE_ENUM"] = 6;
+                    values[valuesById[7] = "TARGET_TYPE_ENUM_ENTRY"] = 7;
+                    values[valuesById[8] = "TARGET_TYPE_SERVICE"] = 8;
+                    values[valuesById[9] = "TARGET_TYPE_METHOD"] = 9;
+                    return values;
+                })();
+    
+                FieldOptions.EditionDefault = (function() {
+    
+                    /**
+                     * Properties of an EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @interface IEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] EditionDefault edition
+                     * @property {string|null} [value] EditionDefault value
+                     */
+    
+                    /**
+                     * Constructs a new EditionDefault.
+                     * @memberof google.protobuf.FieldOptions
+                     * @classdesc Represents an EditionDefault.
+                     * @implements IEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     */
+                    function EditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * EditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * EditionDefault value.
+                     * @member {string} value
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     */
+                    EditionDefault.prototype.value = "";
+    
+                    /**
+                     * Creates a new EditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault instance
+                     */
+                    EditionDefault.create = function create(properties) {
+                        return new EditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.value);
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.IEditionDefault} message EditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    EditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.value = reader.string();
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    EditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies an EditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    EditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            if (!$util.isString(message.value))
+                                return "value: string expected";
+                        return null;
+                    };
+    
+                    /**
+                     * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FieldOptions.EditionDefault} EditionDefault
+                     */
+                    EditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FieldOptions.EditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FieldOptions.EditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.value != null)
+                            message.value = String(object.value);
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {google.protobuf.FieldOptions.EditionDefault} message EditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    EditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.value = "";
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.value != null && message.hasOwnProperty("value"))
+                            object.value = message.value;
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this EditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    EditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for EditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FieldOptions.EditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    EditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FieldOptions.EditionDefault";
+                    };
+    
+                    return EditionDefault;
+                })();
+    
                 return FieldOptions;
             })();
     
@@ -19663,6 +28487,7 @@
                  * Properties of an OneofOptions.
                  * @memberof google.protobuf
                  * @interface IOneofOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] OneofOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] OneofOptions uninterpretedOption
                  */
     
@@ -19681,6 +28506,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * OneofOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.OneofOptions
+                 * @instance
+                 */
+                OneofOptions.prototype.features = null;
     
                 /**
                  * OneofOptions uninterpretedOption.
@@ -19714,6 +28547,8 @@
                 OneofOptions.encode = function encode(message, writer) {
                     if (!writer)
                         writer = $Writer.create();
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -19751,6 +28586,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 1: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 999: {
                                 if (!(message.uninterpretedOption && message.uninterpretedOption.length))
                                     message.uninterpretedOption = [];
@@ -19792,6 +28631,11 @@
                 OneofOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -19816,6 +28660,11 @@
                     if (object instanceof $root.google.protobuf.OneofOptions)
                         return object;
                     var message = new $root.google.protobuf.OneofOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.OneofOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.OneofOptions.uninterpretedOption: array expected");
@@ -19844,6 +28693,10 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
+                    if (options.defaults)
+                        object.features = null;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -19889,6 +28742,8 @@
                  * @interface IEnumOptions
                  * @property {boolean|null} [allowAlias] EnumOptions allowAlias
                  * @property {boolean|null} [deprecated] EnumOptions deprecated
+                 * @property {boolean|null} [deprecatedLegacyJsonFieldConflicts] EnumOptions deprecatedLegacyJsonFieldConflicts
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumOptions uninterpretedOption
                  */
     
@@ -19923,6 +28778,22 @@
                  * @instance
                  */
                 EnumOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumOptions deprecatedLegacyJsonFieldConflicts.
+                 * @member {boolean} deprecatedLegacyJsonFieldConflicts
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.deprecatedLegacyJsonFieldConflicts = false;
+    
+                /**
+                 * EnumOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumOptions
+                 * @instance
+                 */
+                EnumOptions.prototype.features = null;
     
                 /**
                  * EnumOptions uninterpretedOption.
@@ -19960,6 +28831,10 @@
                         writer.uint32(/* id 2, wireType 0 =*/16).bool(message.allowAlias);
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 3, wireType 0 =*/24).bool(message.deprecated);
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && Object.hasOwnProperty.call(message, "deprecatedLegacyJsonFieldConflicts"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).bool(message.deprecatedLegacyJsonFieldConflicts);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -20003,6 +28878,14 @@
                             }
                         case 3: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 6: {
+                                message.deprecatedLegacyJsonFieldConflicts = reader.bool();
+                                break;
+                            }
+                        case 7: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -20052,6 +28935,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        if (typeof message.deprecatedLegacyJsonFieldConflicts !== "boolean")
+                            return "deprecatedLegacyJsonFieldConflicts: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -20080,6 +28971,13 @@
                         message.allowAlias = Boolean(object.allowAlias);
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.deprecatedLegacyJsonFieldConflicts != null)
+                        message.deprecatedLegacyJsonFieldConflicts = Boolean(object.deprecatedLegacyJsonFieldConflicts);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumOptions.uninterpretedOption: array expected");
@@ -20111,11 +29009,17 @@
                     if (options.defaults) {
                         object.allowAlias = false;
                         object.deprecated = false;
+                        object.deprecatedLegacyJsonFieldConflicts = false;
+                        object.features = null;
                     }
                     if (message.allowAlias != null && message.hasOwnProperty("allowAlias"))
                         object.allowAlias = message.allowAlias;
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.deprecatedLegacyJsonFieldConflicts != null && message.hasOwnProperty("deprecatedLegacyJsonFieldConflicts"))
+                        object.deprecatedLegacyJsonFieldConflicts = message.deprecatedLegacyJsonFieldConflicts;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -20160,6 +29064,8 @@
                  * @memberof google.protobuf
                  * @interface IEnumValueOptions
                  * @property {boolean|null} [deprecated] EnumValueOptions deprecated
+                 * @property {google.protobuf.IFeatureSet|null} [features] EnumValueOptions features
+                 * @property {boolean|null} [debugRedact] EnumValueOptions debugRedact
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] EnumValueOptions uninterpretedOption
                  */
     
@@ -20186,6 +29092,22 @@
                  * @instance
                  */
                 EnumValueOptions.prototype.deprecated = false;
+    
+                /**
+                 * EnumValueOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.features = null;
+    
+                /**
+                 * EnumValueOptions debugRedact.
+                 * @member {boolean} debugRedact
+                 * @memberof google.protobuf.EnumValueOptions
+                 * @instance
+                 */
+                EnumValueOptions.prototype.debugRedact = false;
     
                 /**
                  * EnumValueOptions uninterpretedOption.
@@ -20221,6 +29143,10 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 1, wireType 0 =*/8).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    if (message.debugRedact != null && Object.hasOwnProperty.call(message, "debugRedact"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).bool(message.debugRedact);
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -20260,6 +29186,14 @@
                         switch (tag >>> 3) {
                         case 1: {
                                 message.deprecated = reader.bool();
+                                break;
+                            }
+                        case 2: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 3: {
+                                message.debugRedact = reader.bool();
                                 break;
                             }
                         case 999: {
@@ -20306,6 +29240,14 @@
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        if (typeof message.debugRedact !== "boolean")
+                            return "debugRedact: boolean expected";
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -20332,6 +29274,13 @@
                     var message = new $root.google.protobuf.EnumValueOptions();
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.EnumValueOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
+                    if (object.debugRedact != null)
+                        message.debugRedact = Boolean(object.debugRedact);
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.EnumValueOptions.uninterpretedOption: array expected");
@@ -20360,10 +29309,17 @@
                     var object = {};
                     if (options.arrays || options.defaults)
                         object.uninterpretedOption = [];
-                    if (options.defaults)
+                    if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
+                        object.debugRedact = false;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                    if (message.debugRedact != null && message.hasOwnProperty("debugRedact"))
+                        object.debugRedact = message.debugRedact;
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -20407,6 +29363,7 @@
                  * Properties of a ServiceOptions.
                  * @memberof google.protobuf
                  * @interface IServiceOptions
+                 * @property {google.protobuf.IFeatureSet|null} [features] ServiceOptions features
                  * @property {boolean|null} [deprecated] ServiceOptions deprecated
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] ServiceOptions uninterpretedOption
                  * @property {string|null} [".google.api.defaultHost"] ServiceOptions .google.api.defaultHost
@@ -20428,6 +29385,14 @@
                             if (properties[keys[i]] != null)
                                 this[keys[i]] = properties[keys[i]];
                 }
+    
+                /**
+                 * ServiceOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.ServiceOptions
+                 * @instance
+                 */
+                ServiceOptions.prototype.features = null;
     
                 /**
                  * ServiceOptions deprecated.
@@ -20487,6 +29452,8 @@
                         writer = $Writer.create();
                     if (message.deprecated != null && Object.hasOwnProperty.call(message, "deprecated"))
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 34, wireType 2 =*/274).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -20528,6 +29495,10 @@
                     while (reader.pos < end) {
                         var tag = reader.uint32();
                         switch (tag >>> 3) {
+                        case 34: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                break;
+                            }
                         case 33: {
                                 message.deprecated = reader.bool();
                                 break;
@@ -20581,6 +29552,11 @@
                 ServiceOptions.verify = function verify(message) {
                     if (typeof message !== "object" || message === null)
                         return "object expected";
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         if (typeof message.deprecated !== "boolean")
                             return "deprecated: boolean expected";
@@ -20614,6 +29590,11 @@
                     if (object instanceof $root.google.protobuf.ServiceOptions)
                         return object;
                     var message = new $root.google.protobuf.ServiceOptions();
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.ServiceOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.deprecated != null)
                         message.deprecated = Boolean(object.deprecated);
                     if (object.uninterpretedOption) {
@@ -20650,11 +29631,14 @@
                         object.uninterpretedOption = [];
                     if (options.defaults) {
                         object.deprecated = false;
+                        object.features = null;
                         object[".google.api.defaultHost"] = "";
                         object[".google.api.oauthScopes"] = "";
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -20704,6 +29688,7 @@
                  * @interface IMethodOptions
                  * @property {boolean|null} [deprecated] MethodOptions deprecated
                  * @property {google.protobuf.MethodOptions.IdempotencyLevel|null} [idempotencyLevel] MethodOptions idempotencyLevel
+                 * @property {google.protobuf.IFeatureSet|null} [features] MethodOptions features
                  * @property {Array.<google.protobuf.IUninterpretedOption>|null} [uninterpretedOption] MethodOptions uninterpretedOption
                  * @property {google.api.IHttpRule|null} [".google.api.http"] MethodOptions .google.api.http
                  * @property {Array.<string>|null} [".google.api.methodSignature"] MethodOptions .google.api.methodSignature
@@ -20741,6 +29726,14 @@
                  * @instance
                  */
                 MethodOptions.prototype.idempotencyLevel = 0;
+    
+                /**
+                 * MethodOptions features.
+                 * @member {google.protobuf.IFeatureSet|null|undefined} features
+                 * @memberof google.protobuf.MethodOptions
+                 * @instance
+                 */
+                MethodOptions.prototype.features = null;
     
                 /**
                  * MethodOptions uninterpretedOption.
@@ -20794,6 +29787,8 @@
                         writer.uint32(/* id 33, wireType 0 =*/264).bool(message.deprecated);
                     if (message.idempotencyLevel != null && Object.hasOwnProperty.call(message, "idempotencyLevel"))
                         writer.uint32(/* id 34, wireType 0 =*/272).int32(message.idempotencyLevel);
+                    if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                        $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 35, wireType 2 =*/282).fork()).ldelim();
                     if (message.uninterpretedOption != null && message.uninterpretedOption.length)
                         for (var i = 0; i < message.uninterpretedOption.length; ++i)
                             $root.google.protobuf.UninterpretedOption.encode(message.uninterpretedOption[i], writer.uint32(/* id 999, wireType 2 =*/7994).fork()).ldelim();
@@ -20842,6 +29837,10 @@
                             }
                         case 34: {
                                 message.idempotencyLevel = reader.int32();
+                                break;
+                            }
+                        case 35: {
+                                message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
                                 break;
                             }
                         case 999: {
@@ -20907,6 +29906,11 @@
                         case 2:
                             break;
                         }
+                    if (message.features != null && message.hasOwnProperty("features")) {
+                        var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                        if (error)
+                            return "features." + error;
+                    }
                     if (message.uninterpretedOption != null && message.hasOwnProperty("uninterpretedOption")) {
                         if (!Array.isArray(message.uninterpretedOption))
                             return "uninterpretedOption: array expected";
@@ -20965,6 +29969,11 @@
                         message.idempotencyLevel = 2;
                         break;
                     }
+                    if (object.features != null) {
+                        if (typeof object.features !== "object")
+                            throw TypeError(".google.protobuf.MethodOptions.features: object expected");
+                        message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                    }
                     if (object.uninterpretedOption) {
                         if (!Array.isArray(object.uninterpretedOption))
                             throw TypeError(".google.protobuf.MethodOptions.uninterpretedOption: array expected");
@@ -21010,12 +30019,15 @@
                     if (options.defaults) {
                         object.deprecated = false;
                         object.idempotencyLevel = options.enums === String ? "IDEMPOTENCY_UNKNOWN" : 0;
+                        object.features = null;
                         object[".google.api.http"] = null;
                     }
                     if (message.deprecated != null && message.hasOwnProperty("deprecated"))
                         object.deprecated = message.deprecated;
                     if (message.idempotencyLevel != null && message.hasOwnProperty("idempotencyLevel"))
                         object.idempotencyLevel = options.enums === String ? $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] === undefined ? message.idempotencyLevel : $root.google.protobuf.MethodOptions.IdempotencyLevel[message.idempotencyLevel] : message.idempotencyLevel;
+                    if (message.features != null && message.hasOwnProperty("features"))
+                        object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
                     if (message.uninterpretedOption && message.uninterpretedOption.length) {
                         object.uninterpretedOption = [];
                         for (var j = 0; j < message.uninterpretedOption.length; ++j)
@@ -21702,6 +30714,1268 @@
                 })();
     
                 return UninterpretedOption;
+            })();
+    
+            protobuf.FeatureSet = (function() {
+    
+                /**
+                 * Properties of a FeatureSet.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSet
+                 * @property {google.protobuf.FeatureSet.FieldPresence|null} [fieldPresence] FeatureSet fieldPresence
+                 * @property {google.protobuf.FeatureSet.EnumType|null} [enumType] FeatureSet enumType
+                 * @property {google.protobuf.FeatureSet.RepeatedFieldEncoding|null} [repeatedFieldEncoding] FeatureSet repeatedFieldEncoding
+                 * @property {google.protobuf.FeatureSet.Utf8Validation|null} [utf8Validation] FeatureSet utf8Validation
+                 * @property {google.protobuf.FeatureSet.MessageEncoding|null} [messageEncoding] FeatureSet messageEncoding
+                 * @property {google.protobuf.FeatureSet.JsonFormat|null} [jsonFormat] FeatureSet jsonFormat
+                 */
+    
+                /**
+                 * Constructs a new FeatureSet.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSet.
+                 * @implements IFeatureSet
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 */
+                function FeatureSet(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSet fieldPresence.
+                 * @member {google.protobuf.FeatureSet.FieldPresence} fieldPresence
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.fieldPresence = 0;
+    
+                /**
+                 * FeatureSet enumType.
+                 * @member {google.protobuf.FeatureSet.EnumType} enumType
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.enumType = 0;
+    
+                /**
+                 * FeatureSet repeatedFieldEncoding.
+                 * @member {google.protobuf.FeatureSet.RepeatedFieldEncoding} repeatedFieldEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.repeatedFieldEncoding = 0;
+    
+                /**
+                 * FeatureSet utf8Validation.
+                 * @member {google.protobuf.FeatureSet.Utf8Validation} utf8Validation
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.utf8Validation = 0;
+    
+                /**
+                 * FeatureSet messageEncoding.
+                 * @member {google.protobuf.FeatureSet.MessageEncoding} messageEncoding
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.messageEncoding = 0;
+    
+                /**
+                 * FeatureSet jsonFormat.
+                 * @member {google.protobuf.FeatureSet.JsonFormat} jsonFormat
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 */
+                FeatureSet.prototype.jsonFormat = 0;
+    
+                /**
+                 * Creates a new FeatureSet instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSet} FeatureSet instance
+                 */
+                FeatureSet.create = function create(properties) {
+                    return new FeatureSet(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.fieldPresence != null && Object.hasOwnProperty.call(message, "fieldPresence"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.fieldPresence);
+                    if (message.enumType != null && Object.hasOwnProperty.call(message, "enumType"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.enumType);
+                    if (message.repeatedFieldEncoding != null && Object.hasOwnProperty.call(message, "repeatedFieldEncoding"))
+                        writer.uint32(/* id 3, wireType 0 =*/24).int32(message.repeatedFieldEncoding);
+                    if (message.utf8Validation != null && Object.hasOwnProperty.call(message, "utf8Validation"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.utf8Validation);
+                    if (message.messageEncoding != null && Object.hasOwnProperty.call(message, "messageEncoding"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.messageEncoding);
+                    if (message.jsonFormat != null && Object.hasOwnProperty.call(message, "jsonFormat"))
+                        writer.uint32(/* id 6, wireType 0 =*/48).int32(message.jsonFormat);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.IFeatureSet} message FeatureSet message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSet.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSet();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.fieldPresence = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.enumType = reader.int32();
+                                break;
+                            }
+                        case 3: {
+                                message.repeatedFieldEncoding = reader.int32();
+                                break;
+                            }
+                        case 4: {
+                                message.utf8Validation = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.messageEncoding = reader.int32();
+                                break;
+                            }
+                        case 6: {
+                                message.jsonFormat = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSet.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSet message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSet.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        switch (message.fieldPresence) {
+                        default:
+                            return "fieldPresence: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        switch (message.enumType) {
+                        default:
+                            return "enumType: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        switch (message.repeatedFieldEncoding) {
+                        default:
+                            return "repeatedFieldEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        switch (message.utf8Validation) {
+                        default:
+                            return "utf8Validation: enum value expected";
+                        case 0:
+                        case 2:
+                        case 3:
+                            break;
+                        }
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        switch (message.messageEncoding) {
+                        default:
+                            return "messageEncoding: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        switch (message.jsonFormat) {
+                        default:
+                            return "jsonFormat: enum value expected";
+                        case 0:
+                        case 1:
+                        case 2:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSet} FeatureSet
+                 */
+                FeatureSet.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSet)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSet();
+                    switch (object.fieldPresence) {
+                    default:
+                        if (typeof object.fieldPresence === "number") {
+                            message.fieldPresence = object.fieldPresence;
+                            break;
+                        }
+                        break;
+                    case "FIELD_PRESENCE_UNKNOWN":
+                    case 0:
+                        message.fieldPresence = 0;
+                        break;
+                    case "EXPLICIT":
+                    case 1:
+                        message.fieldPresence = 1;
+                        break;
+                    case "IMPLICIT":
+                    case 2:
+                        message.fieldPresence = 2;
+                        break;
+                    case "LEGACY_REQUIRED":
+                    case 3:
+                        message.fieldPresence = 3;
+                        break;
+                    }
+                    switch (object.enumType) {
+                    default:
+                        if (typeof object.enumType === "number") {
+                            message.enumType = object.enumType;
+                            break;
+                        }
+                        break;
+                    case "ENUM_TYPE_UNKNOWN":
+                    case 0:
+                        message.enumType = 0;
+                        break;
+                    case "OPEN":
+                    case 1:
+                        message.enumType = 1;
+                        break;
+                    case "CLOSED":
+                    case 2:
+                        message.enumType = 2;
+                        break;
+                    }
+                    switch (object.repeatedFieldEncoding) {
+                    default:
+                        if (typeof object.repeatedFieldEncoding === "number") {
+                            message.repeatedFieldEncoding = object.repeatedFieldEncoding;
+                            break;
+                        }
+                        break;
+                    case "REPEATED_FIELD_ENCODING_UNKNOWN":
+                    case 0:
+                        message.repeatedFieldEncoding = 0;
+                        break;
+                    case "PACKED":
+                    case 1:
+                        message.repeatedFieldEncoding = 1;
+                        break;
+                    case "EXPANDED":
+                    case 2:
+                        message.repeatedFieldEncoding = 2;
+                        break;
+                    }
+                    switch (object.utf8Validation) {
+                    default:
+                        if (typeof object.utf8Validation === "number") {
+                            message.utf8Validation = object.utf8Validation;
+                            break;
+                        }
+                        break;
+                    case "UTF8_VALIDATION_UNKNOWN":
+                    case 0:
+                        message.utf8Validation = 0;
+                        break;
+                    case "VERIFY":
+                    case 2:
+                        message.utf8Validation = 2;
+                        break;
+                    case "NONE":
+                    case 3:
+                        message.utf8Validation = 3;
+                        break;
+                    }
+                    switch (object.messageEncoding) {
+                    default:
+                        if (typeof object.messageEncoding === "number") {
+                            message.messageEncoding = object.messageEncoding;
+                            break;
+                        }
+                        break;
+                    case "MESSAGE_ENCODING_UNKNOWN":
+                    case 0:
+                        message.messageEncoding = 0;
+                        break;
+                    case "LENGTH_PREFIXED":
+                    case 1:
+                        message.messageEncoding = 1;
+                        break;
+                    case "DELIMITED":
+                    case 2:
+                        message.messageEncoding = 2;
+                        break;
+                    }
+                    switch (object.jsonFormat) {
+                    default:
+                        if (typeof object.jsonFormat === "number") {
+                            message.jsonFormat = object.jsonFormat;
+                            break;
+                        }
+                        break;
+                    case "JSON_FORMAT_UNKNOWN":
+                    case 0:
+                        message.jsonFormat = 0;
+                        break;
+                    case "ALLOW":
+                    case 1:
+                        message.jsonFormat = 1;
+                        break;
+                    case "LEGACY_BEST_EFFORT":
+                    case 2:
+                        message.jsonFormat = 2;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {google.protobuf.FeatureSet} message FeatureSet
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSet.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.fieldPresence = options.enums === String ? "FIELD_PRESENCE_UNKNOWN" : 0;
+                        object.enumType = options.enums === String ? "ENUM_TYPE_UNKNOWN" : 0;
+                        object.repeatedFieldEncoding = options.enums === String ? "REPEATED_FIELD_ENCODING_UNKNOWN" : 0;
+                        object.utf8Validation = options.enums === String ? "UTF8_VALIDATION_UNKNOWN" : 0;
+                        object.messageEncoding = options.enums === String ? "MESSAGE_ENCODING_UNKNOWN" : 0;
+                        object.jsonFormat = options.enums === String ? "JSON_FORMAT_UNKNOWN" : 0;
+                    }
+                    if (message.fieldPresence != null && message.hasOwnProperty("fieldPresence"))
+                        object.fieldPresence = options.enums === String ? $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] === undefined ? message.fieldPresence : $root.google.protobuf.FeatureSet.FieldPresence[message.fieldPresence] : message.fieldPresence;
+                    if (message.enumType != null && message.hasOwnProperty("enumType"))
+                        object.enumType = options.enums === String ? $root.google.protobuf.FeatureSet.EnumType[message.enumType] === undefined ? message.enumType : $root.google.protobuf.FeatureSet.EnumType[message.enumType] : message.enumType;
+                    if (message.repeatedFieldEncoding != null && message.hasOwnProperty("repeatedFieldEncoding"))
+                        object.repeatedFieldEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] === undefined ? message.repeatedFieldEncoding : $root.google.protobuf.FeatureSet.RepeatedFieldEncoding[message.repeatedFieldEncoding] : message.repeatedFieldEncoding;
+                    if (message.utf8Validation != null && message.hasOwnProperty("utf8Validation"))
+                        object.utf8Validation = options.enums === String ? $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] === undefined ? message.utf8Validation : $root.google.protobuf.FeatureSet.Utf8Validation[message.utf8Validation] : message.utf8Validation;
+                    if (message.messageEncoding != null && message.hasOwnProperty("messageEncoding"))
+                        object.messageEncoding = options.enums === String ? $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] === undefined ? message.messageEncoding : $root.google.protobuf.FeatureSet.MessageEncoding[message.messageEncoding] : message.messageEncoding;
+                    if (message.jsonFormat != null && message.hasOwnProperty("jsonFormat"))
+                        object.jsonFormat = options.enums === String ? $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] === undefined ? message.jsonFormat : $root.google.protobuf.FeatureSet.JsonFormat[message.jsonFormat] : message.jsonFormat;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSet to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSet
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSet.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSet
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSet
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSet.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSet";
+                };
+    
+                /**
+                 * FieldPresence enum.
+                 * @name google.protobuf.FeatureSet.FieldPresence
+                 * @enum {number}
+                 * @property {number} FIELD_PRESENCE_UNKNOWN=0 FIELD_PRESENCE_UNKNOWN value
+                 * @property {number} EXPLICIT=1 EXPLICIT value
+                 * @property {number} IMPLICIT=2 IMPLICIT value
+                 * @property {number} LEGACY_REQUIRED=3 LEGACY_REQUIRED value
+                 */
+                FeatureSet.FieldPresence = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "FIELD_PRESENCE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "EXPLICIT"] = 1;
+                    values[valuesById[2] = "IMPLICIT"] = 2;
+                    values[valuesById[3] = "LEGACY_REQUIRED"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * EnumType enum.
+                 * @name google.protobuf.FeatureSet.EnumType
+                 * @enum {number}
+                 * @property {number} ENUM_TYPE_UNKNOWN=0 ENUM_TYPE_UNKNOWN value
+                 * @property {number} OPEN=1 OPEN value
+                 * @property {number} CLOSED=2 CLOSED value
+                 */
+                FeatureSet.EnumType = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "ENUM_TYPE_UNKNOWN"] = 0;
+                    values[valuesById[1] = "OPEN"] = 1;
+                    values[valuesById[2] = "CLOSED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * RepeatedFieldEncoding enum.
+                 * @name google.protobuf.FeatureSet.RepeatedFieldEncoding
+                 * @enum {number}
+                 * @property {number} REPEATED_FIELD_ENCODING_UNKNOWN=0 REPEATED_FIELD_ENCODING_UNKNOWN value
+                 * @property {number} PACKED=1 PACKED value
+                 * @property {number} EXPANDED=2 EXPANDED value
+                 */
+                FeatureSet.RepeatedFieldEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "REPEATED_FIELD_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "PACKED"] = 1;
+                    values[valuesById[2] = "EXPANDED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * Utf8Validation enum.
+                 * @name google.protobuf.FeatureSet.Utf8Validation
+                 * @enum {number}
+                 * @property {number} UTF8_VALIDATION_UNKNOWN=0 UTF8_VALIDATION_UNKNOWN value
+                 * @property {number} VERIFY=2 VERIFY value
+                 * @property {number} NONE=3 NONE value
+                 */
+                FeatureSet.Utf8Validation = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "UTF8_VALIDATION_UNKNOWN"] = 0;
+                    values[valuesById[2] = "VERIFY"] = 2;
+                    values[valuesById[3] = "NONE"] = 3;
+                    return values;
+                })();
+    
+                /**
+                 * MessageEncoding enum.
+                 * @name google.protobuf.FeatureSet.MessageEncoding
+                 * @enum {number}
+                 * @property {number} MESSAGE_ENCODING_UNKNOWN=0 MESSAGE_ENCODING_UNKNOWN value
+                 * @property {number} LENGTH_PREFIXED=1 LENGTH_PREFIXED value
+                 * @property {number} DELIMITED=2 DELIMITED value
+                 */
+                FeatureSet.MessageEncoding = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "MESSAGE_ENCODING_UNKNOWN"] = 0;
+                    values[valuesById[1] = "LENGTH_PREFIXED"] = 1;
+                    values[valuesById[2] = "DELIMITED"] = 2;
+                    return values;
+                })();
+    
+                /**
+                 * JsonFormat enum.
+                 * @name google.protobuf.FeatureSet.JsonFormat
+                 * @enum {number}
+                 * @property {number} JSON_FORMAT_UNKNOWN=0 JSON_FORMAT_UNKNOWN value
+                 * @property {number} ALLOW=1 ALLOW value
+                 * @property {number} LEGACY_BEST_EFFORT=2 LEGACY_BEST_EFFORT value
+                 */
+                FeatureSet.JsonFormat = (function() {
+                    var valuesById = {}, values = Object.create(valuesById);
+                    values[valuesById[0] = "JSON_FORMAT_UNKNOWN"] = 0;
+                    values[valuesById[1] = "ALLOW"] = 1;
+                    values[valuesById[2] = "LEGACY_BEST_EFFORT"] = 2;
+                    return values;
+                })();
+    
+                return FeatureSet;
+            })();
+    
+            protobuf.FeatureSetDefaults = (function() {
+    
+                /**
+                 * Properties of a FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @interface IFeatureSetDefaults
+                 * @property {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>|null} [defaults] FeatureSetDefaults defaults
+                 * @property {google.protobuf.Edition|null} [minimumEdition] FeatureSetDefaults minimumEdition
+                 * @property {google.protobuf.Edition|null} [maximumEdition] FeatureSetDefaults maximumEdition
+                 */
+    
+                /**
+                 * Constructs a new FeatureSetDefaults.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a FeatureSetDefaults.
+                 * @implements IFeatureSetDefaults
+                 * @constructor
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 */
+                function FeatureSetDefaults(properties) {
+                    this.defaults = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * FeatureSetDefaults defaults.
+                 * @member {Array.<google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault>} defaults
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.defaults = $util.emptyArray;
+    
+                /**
+                 * FeatureSetDefaults minimumEdition.
+                 * @member {google.protobuf.Edition} minimumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.minimumEdition = 0;
+    
+                /**
+                 * FeatureSetDefaults maximumEdition.
+                 * @member {google.protobuf.Edition} maximumEdition
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 */
+                FeatureSetDefaults.prototype.maximumEdition = 0;
+    
+                /**
+                 * Creates a new FeatureSetDefaults instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults=} [properties] Properties to set
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults instance
+                 */
+                FeatureSetDefaults.create = function create(properties) {
+                    return new FeatureSetDefaults(properties);
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.defaults != null && message.defaults.length)
+                        for (var i = 0; i < message.defaults.length; ++i)
+                            $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.encode(message.defaults[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.minimumEdition != null && Object.hasOwnProperty.call(message, "minimumEdition"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).int32(message.minimumEdition);
+                    if (message.maximumEdition != null && Object.hasOwnProperty.call(message, "maximumEdition"))
+                        writer.uint32(/* id 5, wireType 0 =*/40).int32(message.maximumEdition);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.IFeatureSetDefaults} message FeatureSetDefaults message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                FeatureSetDefaults.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                if (!(message.defaults && message.defaults.length))
+                                    message.defaults = [];
+                                message.defaults.push($root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        case 4: {
+                                message.minimumEdition = reader.int32();
+                                break;
+                            }
+                        case 5: {
+                                message.maximumEdition = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                FeatureSetDefaults.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a FeatureSetDefaults message.
+                 * @function verify
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                FeatureSetDefaults.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.defaults != null && message.hasOwnProperty("defaults")) {
+                        if (!Array.isArray(message.defaults))
+                            return "defaults: array expected";
+                        for (var i = 0; i < message.defaults.length; ++i) {
+                            var error = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify(message.defaults[i]);
+                            if (error)
+                                return "defaults." + error;
+                        }
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        switch (message.minimumEdition) {
+                        default:
+                            return "minimumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        switch (message.maximumEdition) {
+                        default:
+                            return "maximumEdition: enum value expected";
+                        case 0:
+                        case 998:
+                        case 999:
+                        case 1000:
+                        case 1001:
+                        case 1:
+                        case 2:
+                        case 99997:
+                        case 99998:
+                        case 99999:
+                        case 2147483647:
+                            break;
+                        }
+                    return null;
+                };
+    
+                /**
+                 * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.FeatureSetDefaults} FeatureSetDefaults
+                 */
+                FeatureSetDefaults.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.FeatureSetDefaults)
+                        return object;
+                    var message = new $root.google.protobuf.FeatureSetDefaults();
+                    if (object.defaults) {
+                        if (!Array.isArray(object.defaults))
+                            throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: array expected");
+                        message.defaults = [];
+                        for (var i = 0; i < object.defaults.length; ++i) {
+                            if (typeof object.defaults[i] !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.defaults: object expected");
+                            message.defaults[i] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.fromObject(object.defaults[i]);
+                        }
+                    }
+                    switch (object.minimumEdition) {
+                    default:
+                        if (typeof object.minimumEdition === "number") {
+                            message.minimumEdition = object.minimumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.minimumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.minimumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.minimumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.minimumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.minimumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.minimumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.minimumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.minimumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.minimumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.minimumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.minimumEdition = 2147483647;
+                        break;
+                    }
+                    switch (object.maximumEdition) {
+                    default:
+                        if (typeof object.maximumEdition === "number") {
+                            message.maximumEdition = object.maximumEdition;
+                            break;
+                        }
+                        break;
+                    case "EDITION_UNKNOWN":
+                    case 0:
+                        message.maximumEdition = 0;
+                        break;
+                    case "EDITION_PROTO2":
+                    case 998:
+                        message.maximumEdition = 998;
+                        break;
+                    case "EDITION_PROTO3":
+                    case 999:
+                        message.maximumEdition = 999;
+                        break;
+                    case "EDITION_2023":
+                    case 1000:
+                        message.maximumEdition = 1000;
+                        break;
+                    case "EDITION_2024":
+                    case 1001:
+                        message.maximumEdition = 1001;
+                        break;
+                    case "EDITION_1_TEST_ONLY":
+                    case 1:
+                        message.maximumEdition = 1;
+                        break;
+                    case "EDITION_2_TEST_ONLY":
+                    case 2:
+                        message.maximumEdition = 2;
+                        break;
+                    case "EDITION_99997_TEST_ONLY":
+                    case 99997:
+                        message.maximumEdition = 99997;
+                        break;
+                    case "EDITION_99998_TEST_ONLY":
+                    case 99998:
+                        message.maximumEdition = 99998;
+                        break;
+                    case "EDITION_99999_TEST_ONLY":
+                    case 99999:
+                        message.maximumEdition = 99999;
+                        break;
+                    case "EDITION_MAX":
+                    case 2147483647:
+                        message.maximumEdition = 2147483647;
+                        break;
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {google.protobuf.FeatureSetDefaults} message FeatureSetDefaults
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                FeatureSetDefaults.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.defaults = [];
+                    if (options.defaults) {
+                        object.minimumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        object.maximumEdition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                    }
+                    if (message.defaults && message.defaults.length) {
+                        object.defaults = [];
+                        for (var j = 0; j < message.defaults.length; ++j)
+                            object.defaults[j] = $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.toObject(message.defaults[j], options);
+                    }
+                    if (message.minimumEdition != null && message.hasOwnProperty("minimumEdition"))
+                        object.minimumEdition = options.enums === String ? $root.google.protobuf.Edition[message.minimumEdition] === undefined ? message.minimumEdition : $root.google.protobuf.Edition[message.minimumEdition] : message.minimumEdition;
+                    if (message.maximumEdition != null && message.hasOwnProperty("maximumEdition"))
+                        object.maximumEdition = options.enums === String ? $root.google.protobuf.Edition[message.maximumEdition] === undefined ? message.maximumEdition : $root.google.protobuf.Edition[message.maximumEdition] : message.maximumEdition;
+                    return object;
+                };
+    
+                /**
+                 * Converts this FeatureSetDefaults to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                FeatureSetDefaults.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for FeatureSetDefaults
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.FeatureSetDefaults
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                FeatureSetDefaults.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults";
+                };
+    
+                FeatureSetDefaults.FeatureSetEditionDefault = (function() {
+    
+                    /**
+                     * Properties of a FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @interface IFeatureSetEditionDefault
+                     * @property {google.protobuf.Edition|null} [edition] FeatureSetEditionDefault edition
+                     * @property {google.protobuf.IFeatureSet|null} [features] FeatureSetEditionDefault features
+                     */
+    
+                    /**
+                     * Constructs a new FeatureSetEditionDefault.
+                     * @memberof google.protobuf.FeatureSetDefaults
+                     * @classdesc Represents a FeatureSetEditionDefault.
+                     * @implements IFeatureSetEditionDefault
+                     * @constructor
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     */
+                    function FeatureSetEditionDefault(properties) {
+                        if (properties)
+                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                if (properties[keys[i]] != null)
+                                    this[keys[i]] = properties[keys[i]];
+                    }
+    
+                    /**
+                     * FeatureSetEditionDefault edition.
+                     * @member {google.protobuf.Edition} edition
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.edition = 0;
+    
+                    /**
+                     * FeatureSetEditionDefault features.
+                     * @member {google.protobuf.IFeatureSet|null|undefined} features
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     */
+                    FeatureSetEditionDefault.prototype.features = null;
+    
+                    /**
+                     * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                     * @function create
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault=} [properties] Properties to set
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault instance
+                     */
+                    FeatureSetEditionDefault.create = function create(properties) {
+                        return new FeatureSetEditionDefault(properties);
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encode = function encode(message, writer) {
+                        if (!writer)
+                            writer = $Writer.create();
+                        if (message.features != null && Object.hasOwnProperty.call(message, "features"))
+                            $root.google.protobuf.FeatureSet.encode(message.features, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                        if (message.edition != null && Object.hasOwnProperty.call(message, "edition"))
+                            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.edition);
+                        return writer;
+                    };
+    
+                    /**
+                     * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                     * @function encodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault} message FeatureSetEditionDefault message or plain object to encode
+                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                     * @returns {$protobuf.Writer} Writer
+                     */
+                    FeatureSetEditionDefault.encodeDelimited = function encodeDelimited(message, writer) {
+                        return this.encode(message, writer).ldelim();
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                     * @function decode
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @param {number} [length] Message length if known beforehand
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decode = function decode(reader, length) {
+                        if (!(reader instanceof $Reader))
+                            reader = $Reader.create(reader);
+                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        while (reader.pos < end) {
+                            var tag = reader.uint32();
+                            switch (tag >>> 3) {
+                            case 3: {
+                                    message.edition = reader.int32();
+                                    break;
+                                }
+                            case 2: {
+                                    message.features = $root.google.protobuf.FeatureSet.decode(reader, reader.uint32());
+                                    break;
+                                }
+                            default:
+                                reader.skipType(tag & 7);
+                                break;
+                            }
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                     * @function decodeDelimited
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    FeatureSetEditionDefault.decodeDelimited = function decodeDelimited(reader) {
+                        if (!(reader instanceof $Reader))
+                            reader = new $Reader(reader);
+                        return this.decode(reader, reader.uint32());
+                    };
+    
+                    /**
+                     * Verifies a FeatureSetEditionDefault message.
+                     * @function verify
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} message Plain object to verify
+                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                     */
+                    FeatureSetEditionDefault.verify = function verify(message) {
+                        if (typeof message !== "object" || message === null)
+                            return "object expected";
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            switch (message.edition) {
+                            default:
+                                return "edition: enum value expected";
+                            case 0:
+                            case 998:
+                            case 999:
+                            case 1000:
+                            case 1001:
+                            case 1:
+                            case 2:
+                            case 99997:
+                            case 99998:
+                            case 99999:
+                            case 2147483647:
+                                break;
+                            }
+                        if (message.features != null && message.hasOwnProperty("features")) {
+                            var error = $root.google.protobuf.FeatureSet.verify(message.features);
+                            if (error)
+                                return "features." + error;
+                        }
+                        return null;
+                    };
+    
+                    /**
+                     * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                     * @function fromObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {Object.<string,*>} object Plain object
+                     * @returns {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} FeatureSetEditionDefault
+                     */
+                    FeatureSetEditionDefault.fromObject = function fromObject(object) {
+                        if (object instanceof $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault)
+                            return object;
+                        var message = new $root.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault();
+                        switch (object.edition) {
+                        default:
+                            if (typeof object.edition === "number") {
+                                message.edition = object.edition;
+                                break;
+                            }
+                            break;
+                        case "EDITION_UNKNOWN":
+                        case 0:
+                            message.edition = 0;
+                            break;
+                        case "EDITION_PROTO2":
+                        case 998:
+                            message.edition = 998;
+                            break;
+                        case "EDITION_PROTO3":
+                        case 999:
+                            message.edition = 999;
+                            break;
+                        case "EDITION_2023":
+                        case 1000:
+                            message.edition = 1000;
+                            break;
+                        case "EDITION_2024":
+                        case 1001:
+                            message.edition = 1001;
+                            break;
+                        case "EDITION_1_TEST_ONLY":
+                        case 1:
+                            message.edition = 1;
+                            break;
+                        case "EDITION_2_TEST_ONLY":
+                        case 2:
+                            message.edition = 2;
+                            break;
+                        case "EDITION_99997_TEST_ONLY":
+                        case 99997:
+                            message.edition = 99997;
+                            break;
+                        case "EDITION_99998_TEST_ONLY":
+                        case 99998:
+                            message.edition = 99998;
+                            break;
+                        case "EDITION_99999_TEST_ONLY":
+                        case 99999:
+                            message.edition = 99999;
+                            break;
+                        case "EDITION_MAX":
+                        case 2147483647:
+                            message.edition = 2147483647;
+                            break;
+                        }
+                        if (object.features != null) {
+                            if (typeof object.features !== "object")
+                                throw TypeError(".google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.features: object expected");
+                            message.features = $root.google.protobuf.FeatureSet.fromObject(object.features);
+                        }
+                        return message;
+                    };
+    
+                    /**
+                     * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                     * @function toObject
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault} message FeatureSetEditionDefault
+                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                     * @returns {Object.<string,*>} Plain object
+                     */
+                    FeatureSetEditionDefault.toObject = function toObject(message, options) {
+                        if (!options)
+                            options = {};
+                        var object = {};
+                        if (options.defaults) {
+                            object.features = null;
+                            object.edition = options.enums === String ? "EDITION_UNKNOWN" : 0;
+                        }
+                        if (message.features != null && message.hasOwnProperty("features"))
+                            object.features = $root.google.protobuf.FeatureSet.toObject(message.features, options);
+                        if (message.edition != null && message.hasOwnProperty("edition"))
+                            object.edition = options.enums === String ? $root.google.protobuf.Edition[message.edition] === undefined ? message.edition : $root.google.protobuf.Edition[message.edition] : message.edition;
+                        return object;
+                    };
+    
+                    /**
+                     * Converts this FeatureSetEditionDefault to JSON.
+                     * @function toJSON
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @instance
+                     * @returns {Object.<string,*>} JSON object
+                     */
+                    FeatureSetEditionDefault.prototype.toJSON = function toJSON() {
+                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                    };
+    
+                    /**
+                     * Gets the default type url for FeatureSetEditionDefault
+                     * @function getTypeUrl
+                     * @memberof google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault
+                     * @static
+                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns {string} The default type url
+                     */
+                    FeatureSetEditionDefault.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                        if (typeUrlPrefix === undefined) {
+                            typeUrlPrefix = "type.googleapis.com";
+                        }
+                        return typeUrlPrefix + "/google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault";
+                    };
+    
+                    return FeatureSetEditionDefault;
+                })();
+    
+                return FeatureSetDefaults;
             })();
     
             protobuf.SourceCodeInfo = (function() {
@@ -23116,6 +33390,1120 @@
                 return Duration;
             })();
     
+            protobuf.Timestamp = (function() {
+    
+                /**
+                 * Properties of a Timestamp.
+                 * @memberof google.protobuf
+                 * @interface ITimestamp
+                 * @property {number|Long|null} [seconds] Timestamp seconds
+                 * @property {number|null} [nanos] Timestamp nanos
+                 */
+    
+                /**
+                 * Constructs a new Timestamp.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a Timestamp.
+                 * @implements ITimestamp
+                 * @constructor
+                 * @param {google.protobuf.ITimestamp=} [properties] Properties to set
+                 */
+                function Timestamp(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Timestamp seconds.
+                 * @member {number|Long} seconds
+                 * @memberof google.protobuf.Timestamp
+                 * @instance
+                 */
+                Timestamp.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                /**
+                 * Timestamp nanos.
+                 * @member {number} nanos
+                 * @memberof google.protobuf.Timestamp
+                 * @instance
+                 */
+                Timestamp.prototype.nanos = 0;
+    
+                /**
+                 * Creates a new Timestamp instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {google.protobuf.ITimestamp=} [properties] Properties to set
+                 * @returns {google.protobuf.Timestamp} Timestamp instance
+                 */
+                Timestamp.create = function create(properties) {
+                    return new Timestamp(properties);
+                };
+    
+                /**
+                 * Encodes the specified Timestamp message. Does not implicitly {@link google.protobuf.Timestamp.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {google.protobuf.ITimestamp} message Timestamp message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Timestamp.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int64(message.seconds);
+                    if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos"))
+                        writer.uint32(/* id 2, wireType 0 =*/16).int32(message.nanos);
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Timestamp message, length delimited. Does not implicitly {@link google.protobuf.Timestamp.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {google.protobuf.ITimestamp} message Timestamp message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Timestamp.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Timestamp message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.Timestamp} Timestamp
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Timestamp.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Timestamp();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.seconds = reader.int64();
+                                break;
+                            }
+                        case 2: {
+                                message.nanos = reader.int32();
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Timestamp message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.Timestamp} Timestamp
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Timestamp.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Timestamp message.
+                 * @function verify
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Timestamp.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.seconds != null && message.hasOwnProperty("seconds"))
+                        if (!$util.isInteger(message.seconds) && !(message.seconds && $util.isInteger(message.seconds.low) && $util.isInteger(message.seconds.high)))
+                            return "seconds: integer|Long expected";
+                    if (message.nanos != null && message.hasOwnProperty("nanos"))
+                        if (!$util.isInteger(message.nanos))
+                            return "nanos: integer expected";
+                    return null;
+                };
+    
+                /**
+                 * Creates a Timestamp message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.Timestamp} Timestamp
+                 */
+                Timestamp.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.Timestamp)
+                        return object;
+                    var message = new $root.google.protobuf.Timestamp();
+                    if (object.seconds != null)
+                        if ($util.Long)
+                            (message.seconds = $util.Long.fromValue(object.seconds)).unsigned = false;
+                        else if (typeof object.seconds === "string")
+                            message.seconds = parseInt(object.seconds, 10);
+                        else if (typeof object.seconds === "number")
+                            message.seconds = object.seconds;
+                        else if (typeof object.seconds === "object")
+                            message.seconds = new $util.LongBits(object.seconds.low >>> 0, object.seconds.high >>> 0).toNumber();
+                    if (object.nanos != null)
+                        message.nanos = object.nanos | 0;
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Timestamp message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {google.protobuf.Timestamp} message Timestamp
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Timestamp.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        if ($util.Long) {
+                            var long = new $util.Long(0, 0, false);
+                            object.seconds = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                        } else
+                            object.seconds = options.longs === String ? "0" : 0;
+                        object.nanos = 0;
+                    }
+                    if (message.seconds != null && message.hasOwnProperty("seconds"))
+                        if (typeof message.seconds === "number")
+                            object.seconds = options.longs === String ? String(message.seconds) : message.seconds;
+                        else
+                            object.seconds = options.longs === String ? $util.Long.prototype.toString.call(message.seconds) : options.longs === Number ? new $util.LongBits(message.seconds.low >>> 0, message.seconds.high >>> 0).toNumber() : message.seconds;
+                    if (message.nanos != null && message.hasOwnProperty("nanos"))
+                        object.nanos = message.nanos;
+                    return object;
+                };
+    
+                /**
+                 * Converts this Timestamp to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.Timestamp
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Timestamp.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Timestamp
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.Timestamp
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Timestamp.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.Timestamp";
+                };
+    
+                return Timestamp;
+            })();
+    
+            protobuf.Struct = (function() {
+    
+                /**
+                 * Properties of a Struct.
+                 * @memberof google.protobuf
+                 * @interface IStruct
+                 * @property {Object.<string,google.protobuf.IValue>|null} [fields] Struct fields
+                 */
+    
+                /**
+                 * Constructs a new Struct.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a Struct.
+                 * @implements IStruct
+                 * @constructor
+                 * @param {google.protobuf.IStruct=} [properties] Properties to set
+                 */
+                function Struct(properties) {
+                    this.fields = {};
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Struct fields.
+                 * @member {Object.<string,google.protobuf.IValue>} fields
+                 * @memberof google.protobuf.Struct
+                 * @instance
+                 */
+                Struct.prototype.fields = $util.emptyObject;
+    
+                /**
+                 * Creates a new Struct instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {google.protobuf.IStruct=} [properties] Properties to set
+                 * @returns {google.protobuf.Struct} Struct instance
+                 */
+                Struct.create = function create(properties) {
+                    return new Struct(properties);
+                };
+    
+                /**
+                 * Encodes the specified Struct message. Does not implicitly {@link google.protobuf.Struct.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {google.protobuf.IStruct} message Struct message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Struct.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.fields != null && Object.hasOwnProperty.call(message, "fields"))
+                        for (var keys = Object.keys(message.fields), i = 0; i < keys.length; ++i) {
+                            writer.uint32(/* id 1, wireType 2 =*/10).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
+                            $root.google.protobuf.Value.encode(message.fields[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+                        }
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Struct message, length delimited. Does not implicitly {@link google.protobuf.Struct.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {google.protobuf.IStruct} message Struct message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Struct.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Struct message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.Struct} Struct
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Struct.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Struct(), key, value;
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                if (message.fields === $util.emptyObject)
+                                    message.fields = {};
+                                var end2 = reader.uint32() + reader.pos;
+                                key = "";
+                                value = null;
+                                while (reader.pos < end2) {
+                                    var tag2 = reader.uint32();
+                                    switch (tag2 >>> 3) {
+                                    case 1:
+                                        key = reader.string();
+                                        break;
+                                    case 2:
+                                        value = $root.google.protobuf.Value.decode(reader, reader.uint32());
+                                        break;
+                                    default:
+                                        reader.skipType(tag2 & 7);
+                                        break;
+                                    }
+                                }
+                                message.fields[key] = value;
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Struct message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.Struct} Struct
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Struct.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Struct message.
+                 * @function verify
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Struct.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.fields != null && message.hasOwnProperty("fields")) {
+                        if (!$util.isObject(message.fields))
+                            return "fields: object expected";
+                        var key = Object.keys(message.fields);
+                        for (var i = 0; i < key.length; ++i) {
+                            var error = $root.google.protobuf.Value.verify(message.fields[key[i]]);
+                            if (error)
+                                return "fields." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a Struct message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.Struct} Struct
+                 */
+                Struct.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.Struct)
+                        return object;
+                    var message = new $root.google.protobuf.Struct();
+                    if (object.fields) {
+                        if (typeof object.fields !== "object")
+                            throw TypeError(".google.protobuf.Struct.fields: object expected");
+                        message.fields = {};
+                        for (var keys = Object.keys(object.fields), i = 0; i < keys.length; ++i) {
+                            if (typeof object.fields[keys[i]] !== "object")
+                                throw TypeError(".google.protobuf.Struct.fields: object expected");
+                            message.fields[keys[i]] = $root.google.protobuf.Value.fromObject(object.fields[keys[i]]);
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Struct message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {google.protobuf.Struct} message Struct
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Struct.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.objects || options.defaults)
+                        object.fields = {};
+                    var keys2;
+                    if (message.fields && (keys2 = Object.keys(message.fields)).length) {
+                        object.fields = {};
+                        for (var j = 0; j < keys2.length; ++j)
+                            object.fields[keys2[j]] = $root.google.protobuf.Value.toObject(message.fields[keys2[j]], options);
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this Struct to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.Struct
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Struct.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Struct
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.Struct
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Struct.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.Struct";
+                };
+    
+                return Struct;
+            })();
+    
+            protobuf.Value = (function() {
+    
+                /**
+                 * Properties of a Value.
+                 * @memberof google.protobuf
+                 * @interface IValue
+                 * @property {google.protobuf.NullValue|null} [nullValue] Value nullValue
+                 * @property {number|null} [numberValue] Value numberValue
+                 * @property {string|null} [stringValue] Value stringValue
+                 * @property {boolean|null} [boolValue] Value boolValue
+                 * @property {google.protobuf.IStruct|null} [structValue] Value structValue
+                 * @property {google.protobuf.IListValue|null} [listValue] Value listValue
+                 */
+    
+                /**
+                 * Constructs a new Value.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a Value.
+                 * @implements IValue
+                 * @constructor
+                 * @param {google.protobuf.IValue=} [properties] Properties to set
+                 */
+                function Value(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Value nullValue.
+                 * @member {google.protobuf.NullValue|null|undefined} nullValue
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Value.prototype.nullValue = null;
+    
+                /**
+                 * Value numberValue.
+                 * @member {number|null|undefined} numberValue
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Value.prototype.numberValue = null;
+    
+                /**
+                 * Value stringValue.
+                 * @member {string|null|undefined} stringValue
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Value.prototype.stringValue = null;
+    
+                /**
+                 * Value boolValue.
+                 * @member {boolean|null|undefined} boolValue
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Value.prototype.boolValue = null;
+    
+                /**
+                 * Value structValue.
+                 * @member {google.protobuf.IStruct|null|undefined} structValue
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Value.prototype.structValue = null;
+    
+                /**
+                 * Value listValue.
+                 * @member {google.protobuf.IListValue|null|undefined} listValue
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Value.prototype.listValue = null;
+    
+                // OneOf field names bound to virtual getters and setters
+                var $oneOfFields;
+    
+                /**
+                 * Value kind.
+                 * @member {"nullValue"|"numberValue"|"stringValue"|"boolValue"|"structValue"|"listValue"|undefined} kind
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 */
+                Object.defineProperty(Value.prototype, "kind", {
+                    get: $util.oneOfGetter($oneOfFields = ["nullValue", "numberValue", "stringValue", "boolValue", "structValue", "listValue"]),
+                    set: $util.oneOfSetter($oneOfFields)
+                });
+    
+                /**
+                 * Creates a new Value instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {google.protobuf.IValue=} [properties] Properties to set
+                 * @returns {google.protobuf.Value} Value instance
+                 */
+                Value.create = function create(properties) {
+                    return new Value(properties);
+                };
+    
+                /**
+                 * Encodes the specified Value message. Does not implicitly {@link google.protobuf.Value.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {google.protobuf.IValue} message Value message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Value.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.nullValue != null && Object.hasOwnProperty.call(message, "nullValue"))
+                        writer.uint32(/* id 1, wireType 0 =*/8).int32(message.nullValue);
+                    if (message.numberValue != null && Object.hasOwnProperty.call(message, "numberValue"))
+                        writer.uint32(/* id 2, wireType 1 =*/17).double(message.numberValue);
+                    if (message.stringValue != null && Object.hasOwnProperty.call(message, "stringValue"))
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.stringValue);
+                    if (message.boolValue != null && Object.hasOwnProperty.call(message, "boolValue"))
+                        writer.uint32(/* id 4, wireType 0 =*/32).bool(message.boolValue);
+                    if (message.structValue != null && Object.hasOwnProperty.call(message, "structValue"))
+                        $root.google.protobuf.Struct.encode(message.structValue, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                    if (message.listValue != null && Object.hasOwnProperty.call(message, "listValue"))
+                        $root.google.protobuf.ListValue.encode(message.listValue, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Value message, length delimited. Does not implicitly {@link google.protobuf.Value.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {google.protobuf.IValue} message Value message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Value.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a Value message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.Value} Value
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Value.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Value();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.nullValue = reader.int32();
+                                break;
+                            }
+                        case 2: {
+                                message.numberValue = reader.double();
+                                break;
+                            }
+                        case 3: {
+                                message.stringValue = reader.string();
+                                break;
+                            }
+                        case 4: {
+                                message.boolValue = reader.bool();
+                                break;
+                            }
+                        case 5: {
+                                message.structValue = $root.google.protobuf.Struct.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 6: {
+                                message.listValue = $root.google.protobuf.ListValue.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a Value message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.Value} Value
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Value.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a Value message.
+                 * @function verify
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Value.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    var properties = {};
+                    if (message.nullValue != null && message.hasOwnProperty("nullValue")) {
+                        properties.kind = 1;
+                        switch (message.nullValue) {
+                        default:
+                            return "nullValue: enum value expected";
+                        case 0:
+                            break;
+                        }
+                    }
+                    if (message.numberValue != null && message.hasOwnProperty("numberValue")) {
+                        if (properties.kind === 1)
+                            return "kind: multiple values";
+                        properties.kind = 1;
+                        if (typeof message.numberValue !== "number")
+                            return "numberValue: number expected";
+                    }
+                    if (message.stringValue != null && message.hasOwnProperty("stringValue")) {
+                        if (properties.kind === 1)
+                            return "kind: multiple values";
+                        properties.kind = 1;
+                        if (!$util.isString(message.stringValue))
+                            return "stringValue: string expected";
+                    }
+                    if (message.boolValue != null && message.hasOwnProperty("boolValue")) {
+                        if (properties.kind === 1)
+                            return "kind: multiple values";
+                        properties.kind = 1;
+                        if (typeof message.boolValue !== "boolean")
+                            return "boolValue: boolean expected";
+                    }
+                    if (message.structValue != null && message.hasOwnProperty("structValue")) {
+                        if (properties.kind === 1)
+                            return "kind: multiple values";
+                        properties.kind = 1;
+                        {
+                            var error = $root.google.protobuf.Struct.verify(message.structValue);
+                            if (error)
+                                return "structValue." + error;
+                        }
+                    }
+                    if (message.listValue != null && message.hasOwnProperty("listValue")) {
+                        if (properties.kind === 1)
+                            return "kind: multiple values";
+                        properties.kind = 1;
+                        {
+                            var error = $root.google.protobuf.ListValue.verify(message.listValue);
+                            if (error)
+                                return "listValue." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a Value message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.Value} Value
+                 */
+                Value.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.Value)
+                        return object;
+                    var message = new $root.google.protobuf.Value();
+                    switch (object.nullValue) {
+                    default:
+                        if (typeof object.nullValue === "number") {
+                            message.nullValue = object.nullValue;
+                            break;
+                        }
+                        break;
+                    case "NULL_VALUE":
+                    case 0:
+                        message.nullValue = 0;
+                        break;
+                    }
+                    if (object.numberValue != null)
+                        message.numberValue = Number(object.numberValue);
+                    if (object.stringValue != null)
+                        message.stringValue = String(object.stringValue);
+                    if (object.boolValue != null)
+                        message.boolValue = Boolean(object.boolValue);
+                    if (object.structValue != null) {
+                        if (typeof object.structValue !== "object")
+                            throw TypeError(".google.protobuf.Value.structValue: object expected");
+                        message.structValue = $root.google.protobuf.Struct.fromObject(object.structValue);
+                    }
+                    if (object.listValue != null) {
+                        if (typeof object.listValue !== "object")
+                            throw TypeError(".google.protobuf.Value.listValue: object expected");
+                        message.listValue = $root.google.protobuf.ListValue.fromObject(object.listValue);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a Value message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {google.protobuf.Value} message Value
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Value.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (message.nullValue != null && message.hasOwnProperty("nullValue")) {
+                        object.nullValue = options.enums === String ? $root.google.protobuf.NullValue[message.nullValue] === undefined ? message.nullValue : $root.google.protobuf.NullValue[message.nullValue] : message.nullValue;
+                        if (options.oneofs)
+                            object.kind = "nullValue";
+                    }
+                    if (message.numberValue != null && message.hasOwnProperty("numberValue")) {
+                        object.numberValue = options.json && !isFinite(message.numberValue) ? String(message.numberValue) : message.numberValue;
+                        if (options.oneofs)
+                            object.kind = "numberValue";
+                    }
+                    if (message.stringValue != null && message.hasOwnProperty("stringValue")) {
+                        object.stringValue = message.stringValue;
+                        if (options.oneofs)
+                            object.kind = "stringValue";
+                    }
+                    if (message.boolValue != null && message.hasOwnProperty("boolValue")) {
+                        object.boolValue = message.boolValue;
+                        if (options.oneofs)
+                            object.kind = "boolValue";
+                    }
+                    if (message.structValue != null && message.hasOwnProperty("structValue")) {
+                        object.structValue = $root.google.protobuf.Struct.toObject(message.structValue, options);
+                        if (options.oneofs)
+                            object.kind = "structValue";
+                    }
+                    if (message.listValue != null && message.hasOwnProperty("listValue")) {
+                        object.listValue = $root.google.protobuf.ListValue.toObject(message.listValue, options);
+                        if (options.oneofs)
+                            object.kind = "listValue";
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this Value to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.Value
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Value.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Value
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.Value
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Value.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.Value";
+                };
+    
+                return Value;
+            })();
+    
+            /**
+             * NullValue enum.
+             * @name google.protobuf.NullValue
+             * @enum {number}
+             * @property {number} NULL_VALUE=0 NULL_VALUE value
+             */
+            protobuf.NullValue = (function() {
+                var valuesById = {}, values = Object.create(valuesById);
+                values[valuesById[0] = "NULL_VALUE"] = 0;
+                return values;
+            })();
+    
+            protobuf.ListValue = (function() {
+    
+                /**
+                 * Properties of a ListValue.
+                 * @memberof google.protobuf
+                 * @interface IListValue
+                 * @property {Array.<google.protobuf.IValue>|null} [values] ListValue values
+                 */
+    
+                /**
+                 * Constructs a new ListValue.
+                 * @memberof google.protobuf
+                 * @classdesc Represents a ListValue.
+                 * @implements IListValue
+                 * @constructor
+                 * @param {google.protobuf.IListValue=} [properties] Properties to set
+                 */
+                function ListValue(properties) {
+                    this.values = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * ListValue values.
+                 * @member {Array.<google.protobuf.IValue>} values
+                 * @memberof google.protobuf.ListValue
+                 * @instance
+                 */
+                ListValue.prototype.values = $util.emptyArray;
+    
+                /**
+                 * Creates a new ListValue instance using the specified properties.
+                 * @function create
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {google.protobuf.IListValue=} [properties] Properties to set
+                 * @returns {google.protobuf.ListValue} ListValue instance
+                 */
+                ListValue.create = function create(properties) {
+                    return new ListValue(properties);
+                };
+    
+                /**
+                 * Encodes the specified ListValue message. Does not implicitly {@link google.protobuf.ListValue.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {google.protobuf.IListValue} message ListValue message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ListValue.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.values != null && message.values.length)
+                        for (var i = 0; i < message.values.length; ++i)
+                            $root.google.protobuf.Value.encode(message.values[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified ListValue message, length delimited. Does not implicitly {@link google.protobuf.ListValue.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {google.protobuf.IListValue} message ListValue message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                ListValue.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes a ListValue message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.protobuf.ListValue} ListValue
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ListValue.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.ListValue();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                if (!(message.values && message.values.length))
+                                    message.values = [];
+                                message.values.push($root.google.protobuf.Value.decode(reader, reader.uint32()));
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes a ListValue message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.protobuf.ListValue} ListValue
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                ListValue.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies a ListValue message.
+                 * @function verify
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                ListValue.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.values != null && message.hasOwnProperty("values")) {
+                        if (!Array.isArray(message.values))
+                            return "values: array expected";
+                        for (var i = 0; i < message.values.length; ++i) {
+                            var error = $root.google.protobuf.Value.verify(message.values[i]);
+                            if (error)
+                                return "values." + error;
+                        }
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates a ListValue message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.protobuf.ListValue} ListValue
+                 */
+                ListValue.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.protobuf.ListValue)
+                        return object;
+                    var message = new $root.google.protobuf.ListValue();
+                    if (object.values) {
+                        if (!Array.isArray(object.values))
+                            throw TypeError(".google.protobuf.ListValue.values: array expected");
+                        message.values = [];
+                        for (var i = 0; i < object.values.length; ++i) {
+                            if (typeof object.values[i] !== "object")
+                                throw TypeError(".google.protobuf.ListValue.values: object expected");
+                            message.values[i] = $root.google.protobuf.Value.fromObject(object.values[i]);
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from a ListValue message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {google.protobuf.ListValue} message ListValue
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                ListValue.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.values = [];
+                    if (message.values && message.values.length) {
+                        object.values = [];
+                        for (var j = 0; j < message.values.length; ++j)
+                            object.values[j] = $root.google.protobuf.Value.toObject(message.values[j], options);
+                    }
+                    return object;
+                };
+    
+                /**
+                 * Converts this ListValue to JSON.
+                 * @function toJSON
+                 * @memberof google.protobuf.ListValue
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                ListValue.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for ListValue
+                 * @function getTypeUrl
+                 * @memberof google.protobuf.ListValue
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                ListValue.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.protobuf.ListValue";
+                };
+    
+                return ListValue;
+            })();
+    
             protobuf.Empty = (function() {
     
                 /**
@@ -23292,6 +34680,255 @@
             })();
     
             return protobuf;
+        })();
+    
+        google.type = (function() {
+    
+            /**
+             * Namespace type.
+             * @memberof google
+             * @namespace
+             */
+            var type = {};
+    
+            type.Interval = (function() {
+    
+                /**
+                 * Properties of an Interval.
+                 * @memberof google.type
+                 * @interface IInterval
+                 * @property {google.protobuf.ITimestamp|null} [startTime] Interval startTime
+                 * @property {google.protobuf.ITimestamp|null} [endTime] Interval endTime
+                 */
+    
+                /**
+                 * Constructs a new Interval.
+                 * @memberof google.type
+                 * @classdesc Represents an Interval.
+                 * @implements IInterval
+                 * @constructor
+                 * @param {google.type.IInterval=} [properties] Properties to set
+                 */
+                function Interval(properties) {
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+    
+                /**
+                 * Interval startTime.
+                 * @member {google.protobuf.ITimestamp|null|undefined} startTime
+                 * @memberof google.type.Interval
+                 * @instance
+                 */
+                Interval.prototype.startTime = null;
+    
+                /**
+                 * Interval endTime.
+                 * @member {google.protobuf.ITimestamp|null|undefined} endTime
+                 * @memberof google.type.Interval
+                 * @instance
+                 */
+                Interval.prototype.endTime = null;
+    
+                /**
+                 * Creates a new Interval instance using the specified properties.
+                 * @function create
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {google.type.IInterval=} [properties] Properties to set
+                 * @returns {google.type.Interval} Interval instance
+                 */
+                Interval.create = function create(properties) {
+                    return new Interval(properties);
+                };
+    
+                /**
+                 * Encodes the specified Interval message. Does not implicitly {@link google.type.Interval.verify|verify} messages.
+                 * @function encode
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {google.type.IInterval} message Interval message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Interval.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.startTime != null && Object.hasOwnProperty.call(message, "startTime"))
+                        $root.google.protobuf.Timestamp.encode(message.startTime, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.endTime != null && Object.hasOwnProperty.call(message, "endTime"))
+                        $root.google.protobuf.Timestamp.encode(message.endTime, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    return writer;
+                };
+    
+                /**
+                 * Encodes the specified Interval message, length delimited. Does not implicitly {@link google.type.Interval.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {google.type.IInterval} message Interval message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                Interval.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+    
+                /**
+                 * Decodes an Interval message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {google.type.Interval} Interval
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Interval.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.type.Interval();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1: {
+                                message.startTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                break;
+                            }
+                        case 2: {
+                                message.endTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                                break;
+                            }
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Decodes an Interval message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {google.type.Interval} Interval
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                Interval.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+    
+                /**
+                 * Verifies an Interval message.
+                 * @function verify
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                Interval.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.startTime != null && message.hasOwnProperty("startTime")) {
+                        var error = $root.google.protobuf.Timestamp.verify(message.startTime);
+                        if (error)
+                            return "startTime." + error;
+                    }
+                    if (message.endTime != null && message.hasOwnProperty("endTime")) {
+                        var error = $root.google.protobuf.Timestamp.verify(message.endTime);
+                        if (error)
+                            return "endTime." + error;
+                    }
+                    return null;
+                };
+    
+                /**
+                 * Creates an Interval message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {google.type.Interval} Interval
+                 */
+                Interval.fromObject = function fromObject(object) {
+                    if (object instanceof $root.google.type.Interval)
+                        return object;
+                    var message = new $root.google.type.Interval();
+                    if (object.startTime != null) {
+                        if (typeof object.startTime !== "object")
+                            throw TypeError(".google.type.Interval.startTime: object expected");
+                        message.startTime = $root.google.protobuf.Timestamp.fromObject(object.startTime);
+                    }
+                    if (object.endTime != null) {
+                        if (typeof object.endTime !== "object")
+                            throw TypeError(".google.type.Interval.endTime: object expected");
+                        message.endTime = $root.google.protobuf.Timestamp.fromObject(object.endTime);
+                    }
+                    return message;
+                };
+    
+                /**
+                 * Creates a plain object from an Interval message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {google.type.Interval} message Interval
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                Interval.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.defaults) {
+                        object.startTime = null;
+                        object.endTime = null;
+                    }
+                    if (message.startTime != null && message.hasOwnProperty("startTime"))
+                        object.startTime = $root.google.protobuf.Timestamp.toObject(message.startTime, options);
+                    if (message.endTime != null && message.hasOwnProperty("endTime"))
+                        object.endTime = $root.google.protobuf.Timestamp.toObject(message.endTime, options);
+                    return object;
+                };
+    
+                /**
+                 * Converts this Interval to JSON.
+                 * @function toJSON
+                 * @memberof google.type.Interval
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                Interval.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+    
+                /**
+                 * Gets the default type url for Interval
+                 * @function getTypeUrl
+                 * @memberof google.type.Interval
+                 * @static
+                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns {string} The default type url
+                 */
+                Interval.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                    if (typeUrlPrefix === undefined) {
+                        typeUrlPrefix = "type.googleapis.com";
+                    }
+                    return typeUrlPrefix + "/google.type.Interval";
+                };
+    
+                return Interval;
+            })();
+    
+            return type;
         })();
     
         return google;

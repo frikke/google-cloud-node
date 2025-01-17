@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ function main(parent, documentTemplate) {
    */
   // const parent = 'abc123'
   /**
-   *  The Google Cloud Storage location for the documents.
+   *  Optional. The Google Cloud Storage location for the documents.
    *  The path can include a wildcard.
    *  These URIs may have the forms
    *  `gs://<bucket-name>/<object-name>`.

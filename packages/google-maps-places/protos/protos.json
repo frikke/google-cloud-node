@@ -1,4 +1,7 @@
 {
+  "options": {
+    "syntax": "proto3"
+  },
   "nested": {
     "google": {
       "nested": {
@@ -32,9 +35,9 @@
         "type": {
           "options": {
             "cc_enable_arenas": true,
-            "go_package": "google.golang.org/genproto/googleapis/type/localized_text;localized_text",
+            "go_package": "google.golang.org/genproto/googleapis/type/date;date",
             "java_multiple_files": true,
-            "java_outer_classname": "LocalizedTextProto",
+            "java_outer_classname": "DateProto",
             "java_package": "com.google.type",
             "objc_class_prefix": "GTP"
           },
@@ -48,6 +51,34 @@
                 "longitude": {
                   "type": "double",
                   "id": 2
+                }
+              }
+            },
+            "LocalizedText": {
+              "fields": {
+                "text": {
+                  "type": "string",
+                  "id": 1
+                },
+                "languageCode": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "Money": {
+              "fields": {
+                "currencyCode": {
+                  "type": "string",
+                  "id": 1
+                },
+                "units": {
+                  "type": "int64",
+                  "id": 2
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 3
                 }
               }
             },
@@ -66,18 +97,6 @@
                   "id": 3
                 }
               }
-            },
-            "LocalizedText": {
-              "fields": {
-                "text": {
-                  "type": "string",
-                  "id": 1
-                },
-                "languageCode": {
-                  "type": "string",
-                  "id": 2
-                }
-              }
             }
           }
         },
@@ -87,16 +106,359 @@
               "nested": {
                 "v1": {
                   "options": {
-                    "cc_enable_arenas": true,
                     "csharp_namespace": "Google.Maps.Places.V1",
                     "go_package": "cloud.google.com/go/maps/places/apiv1/placespb;placespb",
                     "java_multiple_files": true,
-                    "java_outer_classname": "PlacesServiceProto",
+                    "java_outer_classname": "TravelModeProto",
                     "java_package": "com.google.maps.places.v1",
                     "objc_class_prefix": "GMPSV1",
                     "php_namespace": "Google\\Maps\\Places\\V1"
                   },
                   "nested": {
+                    "AuthorAttribution": {
+                      "fields": {
+                        "displayName": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "uri": {
+                          "type": "string",
+                          "id": 2
+                        },
+                        "photoUri": {
+                          "type": "string",
+                          "id": 3
+                        }
+                      }
+                    },
+                    "ContentBlock": {
+                      "fields": {
+                        "topic": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "content": {
+                          "type": "google.type.LocalizedText",
+                          "id": 2
+                        },
+                        "references": {
+                          "type": "References",
+                          "id": 3
+                        }
+                      }
+                    },
+                    "References": {
+                      "fields": {
+                        "reviews": {
+                          "rule": "repeated",
+                          "type": "Review",
+                          "id": 1
+                        },
+                        "places": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 2,
+                          "options": {
+                            "(google.api.resource_reference).type": "places.googleapis.com/Place"
+                          }
+                        }
+                      }
+                    },
+                    "Review": {
+                      "options": {
+                        "(google.api.resource).type": "places.googleapis.com/Review",
+                        "(google.api.resource).pattern": "places/{place}/reviews/{review}",
+                        "(google.api.resource).plural": "reviews",
+                        "(google.api.resource).singular": "review"
+                      },
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "relativePublishTimeDescription": {
+                          "type": "string",
+                          "id": 2
+                        },
+                        "text": {
+                          "type": "google.type.LocalizedText",
+                          "id": 9
+                        },
+                        "originalText": {
+                          "type": "google.type.LocalizedText",
+                          "id": 12
+                        },
+                        "rating": {
+                          "type": "double",
+                          "id": 7
+                        },
+                        "authorAttribution": {
+                          "type": "AuthorAttribution",
+                          "id": 13
+                        },
+                        "publishTime": {
+                          "type": "google.protobuf.Timestamp",
+                          "id": 14
+                        }
+                      }
+                    },
+                    "ContextualContent": {
+                      "fields": {
+                        "reviews": {
+                          "rule": "repeated",
+                          "type": "Review",
+                          "id": 1
+                        },
+                        "photos": {
+                          "rule": "repeated",
+                          "type": "Photo",
+                          "id": 2
+                        },
+                        "justifications": {
+                          "rule": "repeated",
+                          "type": "Justification",
+                          "id": 3
+                        }
+                      },
+                      "nested": {
+                        "Justification": {
+                          "oneofs": {
+                            "justification": {
+                              "oneof": [
+                                "reviewJustification",
+                                "businessAvailabilityAttributesJustification"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "reviewJustification": {
+                              "type": "ReviewJustification",
+                              "id": 1
+                            },
+                            "businessAvailabilityAttributesJustification": {
+                              "type": "BusinessAvailabilityAttributesJustification",
+                              "id": 2
+                            }
+                          },
+                          "nested": {
+                            "ReviewJustification": {
+                              "fields": {
+                                "highlightedText": {
+                                  "type": "HighlightedText",
+                                  "id": 1
+                                },
+                                "review": {
+                                  "type": "Review",
+                                  "id": 2
+                                }
+                              },
+                              "nested": {
+                                "HighlightedText": {
+                                  "fields": {
+                                    "text": {
+                                      "type": "string",
+                                      "id": 1
+                                    },
+                                    "highlightedTextRanges": {
+                                      "rule": "repeated",
+                                      "type": "HighlightedTextRange",
+                                      "id": 2
+                                    }
+                                  },
+                                  "nested": {
+                                    "HighlightedTextRange": {
+                                      "fields": {
+                                        "startIndex": {
+                                          "type": "int32",
+                                          "id": 1
+                                        },
+                                        "endIndex": {
+                                          "type": "int32",
+                                          "id": 2
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "BusinessAvailabilityAttributesJustification": {
+                              "fields": {
+                                "takeout": {
+                                  "type": "bool",
+                                  "id": 1
+                                },
+                                "delivery": {
+                                  "type": "bool",
+                                  "id": 2
+                                },
+                                "dineIn": {
+                                  "type": "bool",
+                                  "id": 3
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Photo": {
+                      "options": {
+                        "(google.api.resource).type": "places.googleapis.com/Photo",
+                        "(google.api.resource).pattern": "places/{place}/photos/{photo}",
+                        "(google.api.resource).plural": "photos",
+                        "(google.api.resource).singular": "photo"
+                      },
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1,
+                          "options": {
+                            "(google.api.field_behavior)": "IDENTIFIER"
+                          }
+                        },
+                        "widthPx": {
+                          "type": "int32",
+                          "id": 2
+                        },
+                        "heightPx": {
+                          "type": "int32",
+                          "id": 3
+                        },
+                        "authorAttributions": {
+                          "rule": "repeated",
+                          "type": "AuthorAttribution",
+                          "id": 4
+                        }
+                      }
+                    },
+                    "EVChargeOptions": {
+                      "fields": {
+                        "connectorCount": {
+                          "type": "int32",
+                          "id": 1
+                        },
+                        "connectorAggregation": {
+                          "rule": "repeated",
+                          "type": "ConnectorAggregation",
+                          "id": 2
+                        }
+                      },
+                      "nested": {
+                        "ConnectorAggregation": {
+                          "oneofs": {
+                            "_availableCount": {
+                              "oneof": [
+                                "availableCount"
+                              ]
+                            },
+                            "_outOfServiceCount": {
+                              "oneof": [
+                                "outOfServiceCount"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "type": {
+                              "type": "EVConnectorType",
+                              "id": 1
+                            },
+                            "maxChargeRateKw": {
+                              "type": "double",
+                              "id": 2
+                            },
+                            "count": {
+                              "type": "int32",
+                              "id": 3
+                            },
+                            "availableCount": {
+                              "type": "int32",
+                              "id": 4,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "outOfServiceCount": {
+                              "type": "int32",
+                              "id": 5,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "availabilityLastUpdateTime": {
+                              "type": "google.protobuf.Timestamp",
+                              "id": 6
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "EVConnectorType": {
+                      "values": {
+                        "EV_CONNECTOR_TYPE_UNSPECIFIED": 0,
+                        "EV_CONNECTOR_TYPE_OTHER": 1,
+                        "EV_CONNECTOR_TYPE_J1772": 2,
+                        "EV_CONNECTOR_TYPE_TYPE_2": 3,
+                        "EV_CONNECTOR_TYPE_CHADEMO": 4,
+                        "EV_CONNECTOR_TYPE_CCS_COMBO_1": 5,
+                        "EV_CONNECTOR_TYPE_CCS_COMBO_2": 6,
+                        "EV_CONNECTOR_TYPE_TESLA": 7,
+                        "EV_CONNECTOR_TYPE_UNSPECIFIED_GB_T": 8,
+                        "EV_CONNECTOR_TYPE_UNSPECIFIED_WALL_OUTLET": 9
+                      }
+                    },
+                    "FuelOptions": {
+                      "fields": {
+                        "fuelPrices": {
+                          "rule": "repeated",
+                          "type": "FuelPrice",
+                          "id": 1
+                        }
+                      },
+                      "nested": {
+                        "FuelPrice": {
+                          "fields": {
+                            "type": {
+                              "type": "FuelType",
+                              "id": 1
+                            },
+                            "price": {
+                              "type": "google.type.Money",
+                              "id": 2
+                            },
+                            "updateTime": {
+                              "type": "google.protobuf.Timestamp",
+                              "id": 3
+                            }
+                          },
+                          "nested": {
+                            "FuelType": {
+                              "values": {
+                                "FUEL_TYPE_UNSPECIFIED": 0,
+                                "DIESEL": 1,
+                                "REGULAR_UNLEADED": 2,
+                                "MIDGRADE": 3,
+                                "PREMIUM": 4,
+                                "SP91": 5,
+                                "SP91_E10": 6,
+                                "SP92": 7,
+                                "SP95": 8,
+                                "SP95_E10": 9,
+                                "SP98": 10,
+                                "SP99": 11,
+                                "SP100": 12,
+                                "LPG": 13,
+                                "E80": 14,
+                                "E85": 15,
+                                "METHANE": 16,
+                                "BIO_DIESEL": 17,
+                                "TRUCK_DIESEL": 18
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
                     "Circle": {
                       "fields": {
                         "center": {
@@ -116,7 +478,23 @@
                       }
                     },
                     "Place": {
+                      "options": {
+                        "(google.api.resource).type": "places.googleapis.com/Place",
+                        "(google.api.resource).pattern": "places/{place_id}",
+                        "(google.api.resource).plural": "places",
+                        "(google.api.resource).singular": "place"
+                      },
                       "oneofs": {
+                        "_utcOffsetMinutes": {
+                          "oneof": [
+                            "utcOffsetMinutes"
+                          ]
+                        },
+                        "_userRatingCount": {
+                          "oneof": [
+                            "userRatingCount"
+                          ]
+                        },
                         "_takeout": {
                           "oneof": [
                             "takeout"
@@ -135,11 +513,6 @@
                         "_curbsidePickup": {
                           "oneof": [
                             "curbsidePickup"
-                          ]
-                        },
-                        "_wheelchairAccessibleEntrance": {
-                          "oneof": [
-                            "wheelchairAccessibleEntrance"
                           ]
                         },
                         "_reservable": {
@@ -181,15 +554,81 @@
                           "oneof": [
                             "servesVegetarianFood"
                           ]
+                        },
+                        "_outdoorSeating": {
+                          "oneof": [
+                            "outdoorSeating"
+                          ]
+                        },
+                        "_liveMusic": {
+                          "oneof": [
+                            "liveMusic"
+                          ]
+                        },
+                        "_menuForChildren": {
+                          "oneof": [
+                            "menuForChildren"
+                          ]
+                        },
+                        "_servesCocktails": {
+                          "oneof": [
+                            "servesCocktails"
+                          ]
+                        },
+                        "_servesDessert": {
+                          "oneof": [
+                            "servesDessert"
+                          ]
+                        },
+                        "_servesCoffee": {
+                          "oneof": [
+                            "servesCoffee"
+                          ]
+                        },
+                        "_goodForChildren": {
+                          "oneof": [
+                            "goodForChildren"
+                          ]
+                        },
+                        "_allowsDogs": {
+                          "oneof": [
+                            "allowsDogs"
+                          ]
+                        },
+                        "_restroom": {
+                          "oneof": [
+                            "restroom"
+                          ]
+                        },
+                        "_goodForGroups": {
+                          "oneof": [
+                            "goodForGroups"
+                          ]
+                        },
+                        "_goodForWatchingSports": {
+                          "oneof": [
+                            "goodForWatchingSports"
+                          ]
+                        },
+                        "_accessibilityOptions": {
+                          "oneof": [
+                            "accessibilityOptions"
+                          ]
+                        },
+                        "_pureServiceAreaBusiness": {
+                          "oneof": [
+                            "pureServiceAreaBusiness"
+                          ]
                         }
                       },
                       "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1
+                        },
                         "id": {
                           "type": "string",
-                          "id": 2,
-                          "options": {
-                            "(google.api.field_behavior)": "REQUIRED"
-                          }
+                          "id": 2
                         },
                         "displayName": {
                           "type": "google.type.LocalizedText",
@@ -199,6 +638,14 @@
                           "rule": "repeated",
                           "type": "string",
                           "id": 5
+                        },
+                        "primaryType": {
+                          "type": "string",
+                          "id": 50
+                        },
+                        "primaryTypeDisplayName": {
+                          "type": "google.type.LocalizedText",
+                          "id": 32
                         },
                         "nationalPhoneNumber": {
                           "type": "string",
@@ -211,6 +658,10 @@
                         "formattedAddress": {
                           "type": "string",
                           "id": 9
+                        },
+                        "shortFormattedAddress": {
+                          "type": "string",
+                          "id": 51
                         },
                         "addressComponents": {
                           "rule": "repeated",
@@ -244,15 +695,23 @@
                         "reviews": {
                           "rule": "repeated",
                           "type": "Review",
-                          "id": 20
+                          "id": 53
                         },
-                        "openingHours": {
+                        "regularOpeningHours": {
                           "type": "OpeningHours",
                           "id": 21
                         },
                         "utcOffsetMinutes": {
                           "type": "int32",
-                          "id": 22
+                          "id": 22,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "photos": {
+                          "rule": "repeated",
+                          "type": "Photo",
+                          "id": 54
                         },
                         "adrFormatAddress": {
                           "type": "string",
@@ -273,7 +732,10 @@
                         },
                         "userRatingCount": {
                           "type": "int32",
-                          "id": 28
+                          "id": 28,
+                          "options": {
+                            "proto3_optional": true
+                          }
                         },
                         "iconMaskBaseUri": {
                           "type": "string",
@@ -307,13 +769,6 @@
                         "curbsidePickup": {
                           "type": "bool",
                           "id": 36,
-                          "options": {
-                            "proto3_optional": true
-                          }
-                        },
-                        "wheelchairAccessibleEntrance": {
-                          "type": "bool",
-                          "id": 37,
                           "options": {
                             "proto3_optional": true
                           }
@@ -383,14 +838,143 @@
                           "type": "OpeningHours",
                           "id": 47
                         },
-                        "secondaryOpeningHours": {
+                        "regularSecondaryOpeningHours": {
                           "rule": "repeated",
                           "type": "OpeningHours",
                           "id": 49
                         },
                         "editorialSummary": {
-                          "type": "EditorialSummary",
-                          "id": 48
+                          "type": "google.type.LocalizedText",
+                          "id": 52
+                        },
+                        "outdoorSeating": {
+                          "type": "bool",
+                          "id": 55,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "liveMusic": {
+                          "type": "bool",
+                          "id": 56,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "menuForChildren": {
+                          "type": "bool",
+                          "id": 57,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "servesCocktails": {
+                          "type": "bool",
+                          "id": 58,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "servesDessert": {
+                          "type": "bool",
+                          "id": 59,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "servesCoffee": {
+                          "type": "bool",
+                          "id": 60,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "goodForChildren": {
+                          "type": "bool",
+                          "id": 62,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "allowsDogs": {
+                          "type": "bool",
+                          "id": 63,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "restroom": {
+                          "type": "bool",
+                          "id": 64,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "goodForGroups": {
+                          "type": "bool",
+                          "id": 65,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "goodForWatchingSports": {
+                          "type": "bool",
+                          "id": 66,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "paymentOptions": {
+                          "type": "PaymentOptions",
+                          "id": 67
+                        },
+                        "parkingOptions": {
+                          "type": "ParkingOptions",
+                          "id": 70
+                        },
+                        "subDestinations": {
+                          "rule": "repeated",
+                          "type": "SubDestination",
+                          "id": 71
+                        },
+                        "accessibilityOptions": {
+                          "type": "AccessibilityOptions",
+                          "id": 72,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "fuelOptions": {
+                          "type": "FuelOptions",
+                          "id": 78
+                        },
+                        "evChargeOptions": {
+                          "type": "EVChargeOptions",
+                          "id": 79
+                        },
+                        "generativeSummary": {
+                          "type": "GenerativeSummary",
+                          "id": 80
+                        },
+                        "areaSummary": {
+                          "type": "AreaSummary",
+                          "id": 81
+                        },
+                        "containingPlaces": {
+                          "rule": "repeated",
+                          "type": "ContainingPlace",
+                          "id": 82
+                        },
+                        "pureServiceAreaBusiness": {
+                          "type": "bool",
+                          "id": 83,
+                          "options": {
+                            "proto3_optional": true
+                          }
+                        },
+                        "priceRange": {
+                          "type": "PriceRange",
+                          "id": 86
                         }
                       },
                       "nested": {
@@ -427,55 +1011,25 @@
                             }
                           }
                         },
-                        "Review": {
-                          "fields": {
-                            "publishTime": {
-                              "type": "google.protobuf.Timestamp",
-                              "id": 1
-                            },
-                            "relativePublishTimeDescription": {
-                              "type": "string",
-                              "id": 2
-                            },
-                            "text": {
-                              "type": "google.type.LocalizedText",
-                              "id": 9
-                            },
-                            "author": {
-                              "type": "string",
-                              "id": 4
-                            },
-                            "authorUri": {
-                              "type": "string",
-                              "id": 5
-                            },
-                            "authorPhotoUri": {
-                              "type": "string",
-                              "id": 6
-                            },
-                            "rating": {
-                              "type": "double",
-                              "id": 7
-                            },
-                            "originalLanguageCode": {
-                              "type": "string",
-                              "id": 10
-                            },
-                            "translated": {
-                              "type": "bool",
-                              "id": 11
-                            }
-                          }
-                        },
                         "OpeningHours": {
+                          "oneofs": {
+                            "_openNow": {
+                              "oneof": [
+                                "openNow"
+                              ]
+                            }
+                          },
                           "fields": {
                             "openNow": {
                               "type": "bool",
-                              "id": 1
+                              "id": 1,
+                              "options": {
+                                "proto3_optional": true
+                              }
                             },
                             "periods": {
                               "rule": "repeated",
-                              "type": "OpeningHoursPeriod",
+                              "type": "Period",
                               "id": 2
                             },
                             "weekdayDescriptions": {
@@ -483,30 +1037,38 @@
                               "type": "string",
                               "id": 3
                             },
-                            "secondaryHourType": {
-                              "type": "SecondaryHourType",
+                            "secondaryHoursType": {
+                              "type": "SecondaryHoursType",
                               "id": 4
                             },
                             "specialDays": {
                               "rule": "repeated",
                               "type": "SpecialDay",
                               "id": 5
+                            },
+                            "nextOpenTime": {
+                              "type": "google.protobuf.Timestamp",
+                              "id": 6
+                            },
+                            "nextCloseTime": {
+                              "type": "google.protobuf.Timestamp",
+                              "id": 7
                             }
                           },
                           "nested": {
-                            "OpeningHoursPeriod": {
+                            "Period": {
                               "fields": {
                                 "open": {
-                                  "type": "OpeningHoursPoint",
+                                  "type": "Point",
                                   "id": 1
                                 },
                                 "close": {
-                                  "type": "OpeningHoursPoint",
+                                  "type": "Point",
                                   "id": 2
                                 }
                               },
                               "nested": {
-                                "OpeningHoursPoint": {
+                                "Point": {
                                   "oneofs": {
                                     "_day": {
                                       "oneof": [
@@ -546,13 +1108,6 @@
                                         "proto3_optional": true
                                       }
                                     },
-                                    "dateDeprecated": {
-                                      "type": "string",
-                                      "id": 4,
-                                      "options": {
-                                        "deprecated": true
-                                      }
-                                    },
                                     "date": {
                                       "type": "google.type.Date",
                                       "id": 6
@@ -565,9 +1120,9 @@
                                 }
                               }
                             },
-                            "SecondaryHourType": {
+                            "SecondaryHoursType": {
                               "values": {
-                                "SECONDARY_HOUR_TYPE_UNSPECIFIED": 0,
+                                "SECONDARY_HOURS_TYPE_UNSPECIFIED": 0,
                                 "DRIVE_THROUGH": 1,
                                 "HAPPY_HOUR": 2,
                                 "DELIVERY": 3,
@@ -613,11 +1168,256 @@
                             }
                           }
                         },
-                        "EditorialSummary": {
+                        "PaymentOptions": {
+                          "oneofs": {
+                            "_acceptsCreditCards": {
+                              "oneof": [
+                                "acceptsCreditCards"
+                              ]
+                            },
+                            "_acceptsDebitCards": {
+                              "oneof": [
+                                "acceptsDebitCards"
+                              ]
+                            },
+                            "_acceptsCashOnly": {
+                              "oneof": [
+                                "acceptsCashOnly"
+                              ]
+                            },
+                            "_acceptsNfc": {
+                              "oneof": [
+                                "acceptsNfc"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "acceptsCreditCards": {
+                              "type": "bool",
+                              "id": 1,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "acceptsDebitCards": {
+                              "type": "bool",
+                              "id": 2,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "acceptsCashOnly": {
+                              "type": "bool",
+                              "id": 3,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "acceptsNfc": {
+                              "type": "bool",
+                              "id": 4,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            }
+                          }
+                        },
+                        "ParkingOptions": {
+                          "oneofs": {
+                            "_freeParkingLot": {
+                              "oneof": [
+                                "freeParkingLot"
+                              ]
+                            },
+                            "_paidParkingLot": {
+                              "oneof": [
+                                "paidParkingLot"
+                              ]
+                            },
+                            "_freeStreetParking": {
+                              "oneof": [
+                                "freeStreetParking"
+                              ]
+                            },
+                            "_paidStreetParking": {
+                              "oneof": [
+                                "paidStreetParking"
+                              ]
+                            },
+                            "_valetParking": {
+                              "oneof": [
+                                "valetParking"
+                              ]
+                            },
+                            "_freeGarageParking": {
+                              "oneof": [
+                                "freeGarageParking"
+                              ]
+                            },
+                            "_paidGarageParking": {
+                              "oneof": [
+                                "paidGarageParking"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "freeParkingLot": {
+                              "type": "bool",
+                              "id": 1,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "paidParkingLot": {
+                              "type": "bool",
+                              "id": 2,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "freeStreetParking": {
+                              "type": "bool",
+                              "id": 3,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "paidStreetParking": {
+                              "type": "bool",
+                              "id": 4,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "valetParking": {
+                              "type": "bool",
+                              "id": 5,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "freeGarageParking": {
+                              "type": "bool",
+                              "id": 6,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "paidGarageParking": {
+                              "type": "bool",
+                              "id": 7,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            }
+                          }
+                        },
+                        "SubDestination": {
+                          "fields": {
+                            "name": {
+                              "type": "string",
+                              "id": 1,
+                              "options": {
+                                "(google.api.resource_reference).type": "places.googleapis.com/Place"
+                              }
+                            },
+                            "id": {
+                              "type": "string",
+                              "id": 2
+                            }
+                          }
+                        },
+                        "AccessibilityOptions": {
+                          "oneofs": {
+                            "_wheelchairAccessibleParking": {
+                              "oneof": [
+                                "wheelchairAccessibleParking"
+                              ]
+                            },
+                            "_wheelchairAccessibleEntrance": {
+                              "oneof": [
+                                "wheelchairAccessibleEntrance"
+                              ]
+                            },
+                            "_wheelchairAccessibleRestroom": {
+                              "oneof": [
+                                "wheelchairAccessibleRestroom"
+                              ]
+                            },
+                            "_wheelchairAccessibleSeating": {
+                              "oneof": [
+                                "wheelchairAccessibleSeating"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "wheelchairAccessibleParking": {
+                              "type": "bool",
+                              "id": 1,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "wheelchairAccessibleEntrance": {
+                              "type": "bool",
+                              "id": 2,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "wheelchairAccessibleRestroom": {
+                              "type": "bool",
+                              "id": 3,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            },
+                            "wheelchairAccessibleSeating": {
+                              "type": "bool",
+                              "id": 4,
+                              "options": {
+                                "proto3_optional": true
+                              }
+                            }
+                          }
+                        },
+                        "GenerativeSummary": {
                           "fields": {
                             "overview": {
                               "type": "google.type.LocalizedText",
                               "id": 1
+                            },
+                            "description": {
+                              "type": "google.type.LocalizedText",
+                              "id": 2
+                            },
+                            "references": {
+                              "type": "References",
+                              "id": 3
+                            }
+                          }
+                        },
+                        "AreaSummary": {
+                          "fields": {
+                            "contentBlocks": {
+                              "rule": "repeated",
+                              "type": "ContentBlock",
+                              "id": 4
+                            }
+                          }
+                        },
+                        "ContainingPlace": {
+                          "fields": {
+                            "name": {
+                              "type": "string",
+                              "id": 1,
+                              "options": {
+                                "(google.api.resource_reference).type": "places.googleapis.com/Place"
+                              }
+                            },
+                            "id": {
+                              "type": "string",
+                              "id": 2
                             }
                           }
                         }
@@ -626,11 +1426,23 @@
                     "PriceLevel": {
                       "values": {
                         "PRICE_LEVEL_UNSPECIFIED": 0,
-                        "FREE": 1,
-                        "INEXPENSIVE": 2,
-                        "MODERATE": 3,
-                        "EXPENSIVE": 4,
-                        "VERY_EXPENSIVE": 5
+                        "PRICE_LEVEL_FREE": 1,
+                        "PRICE_LEVEL_INEXPENSIVE": 2,
+                        "PRICE_LEVEL_MODERATE": 3,
+                        "PRICE_LEVEL_EXPENSIVE": 4,
+                        "PRICE_LEVEL_VERY_EXPENSIVE": 5
+                      }
+                    },
+                    "PriceRange": {
+                      "fields": {
+                        "startPrice": {
+                          "type": "google.type.Money",
+                          "id": 1
+                        },
+                        "endPrice": {
+                          "type": "google.type.Money",
+                          "id": 2
+                        }
                       }
                     },
                     "Places": {
@@ -638,17 +1450,85 @@
                         "(google.api.default_host)": "places.googleapis.com"
                       },
                       "methods": {
-                        "SearchText": {
-                          "requestType": "SearchTextRequest",
-                          "responseType": "SearchTextResponse",
+                        "SearchNearby": {
+                          "requestType": "SearchNearbyRequest",
+                          "responseType": "SearchNearbyResponse",
                           "options": {
-                            "(google.api.http).post": "/v1/Text:search",
+                            "(google.api.http).post": "/v1/places:searchNearby",
                             "(google.api.http).body": "*"
                           },
                           "parsedOptions": [
                             {
                               "(google.api.http)": {
-                                "post": "/v1/Text:search",
+                                "post": "/v1/places:searchNearby",
+                                "body": "*"
+                              }
+                            }
+                          ]
+                        },
+                        "SearchText": {
+                          "requestType": "SearchTextRequest",
+                          "responseType": "SearchTextResponse",
+                          "options": {
+                            "(google.api.http).post": "/v1/places:searchText",
+                            "(google.api.http).body": "*"
+                          },
+                          "parsedOptions": [
+                            {
+                              "(google.api.http)": {
+                                "post": "/v1/places:searchText",
+                                "body": "*"
+                              }
+                            }
+                          ]
+                        },
+                        "GetPhotoMedia": {
+                          "requestType": "GetPhotoMediaRequest",
+                          "responseType": "PhotoMedia",
+                          "options": {
+                            "(google.api.http).get": "/v1/{name=places/*/photos/*/media}",
+                            "(google.api.method_signature)": "name"
+                          },
+                          "parsedOptions": [
+                            {
+                              "(google.api.http)": {
+                                "get": "/v1/{name=places/*/photos/*/media}"
+                              }
+                            },
+                            {
+                              "(google.api.method_signature)": "name"
+                            }
+                          ]
+                        },
+                        "GetPlace": {
+                          "requestType": "GetPlaceRequest",
+                          "responseType": "Place",
+                          "options": {
+                            "(google.api.http).get": "/v1/{name=places/*}",
+                            "(google.api.method_signature)": "name"
+                          },
+                          "parsedOptions": [
+                            {
+                              "(google.api.http)": {
+                                "get": "/v1/{name=places/*}"
+                              }
+                            },
+                            {
+                              "(google.api.method_signature)": "name"
+                            }
+                          ]
+                        },
+                        "AutocompletePlaces": {
+                          "requestType": "AutocompletePlacesRequest",
+                          "responseType": "AutocompletePlacesResponse",
+                          "options": {
+                            "(google.api.http).post": "/v1/places:autocomplete",
+                            "(google.api.http).body": "*"
+                          },
+                          "parsedOptions": [
+                            {
+                              "(google.api.http)": {
+                                "post": "/v1/places:autocomplete",
                                 "body": "*"
                               }
                             }
@@ -656,33 +1536,127 @@
                         }
                       }
                     },
-                    "Int32Range": {
-                      "oneofs": {
-                        "_min": {
-                          "oneof": [
-                            "min"
-                          ]
-                        },
-                        "_max": {
-                          "oneof": [
-                            "max"
-                          ]
-                        }
-                      },
+                    "RoutingParameters": {
                       "fields": {
-                        "min": {
-                          "type": "int32",
+                        "origin": {
+                          "type": "google.type.LatLng",
                           "id": 1,
                           "options": {
-                            "proto3_optional": true
+                            "(google.api.field_behavior)": "OPTIONAL"
                           }
                         },
-                        "max": {
-                          "type": "int32",
+                        "travelMode": {
+                          "type": "TravelMode",
                           "id": 2,
                           "options": {
-                            "proto3_optional": true
+                            "(google.api.field_behavior)": "OPTIONAL"
                           }
+                        },
+                        "routeModifiers": {
+                          "type": "RouteModifiers",
+                          "id": 3,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "routingPreference": {
+                          "type": "RoutingPreference",
+                          "id": 4,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        }
+                      }
+                    },
+                    "SearchNearbyRequest": {
+                      "fields": {
+                        "languageCode": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "regionCode": {
+                          "type": "string",
+                          "id": 2
+                        },
+                        "includedTypes": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 3
+                        },
+                        "excludedTypes": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 4
+                        },
+                        "includedPrimaryTypes": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 5
+                        },
+                        "excludedPrimaryTypes": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 6
+                        },
+                        "maxResultCount": {
+                          "type": "int32",
+                          "id": 7
+                        },
+                        "locationRestriction": {
+                          "type": "LocationRestriction",
+                          "id": 8,
+                          "options": {
+                            "(google.api.field_behavior)": "REQUIRED"
+                          }
+                        },
+                        "rankPreference": {
+                          "type": "RankPreference",
+                          "id": 9
+                        },
+                        "routingParameters": {
+                          "type": "RoutingParameters",
+                          "id": 10,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        }
+                      },
+                      "nested": {
+                        "LocationRestriction": {
+                          "oneofs": {
+                            "type": {
+                              "oneof": [
+                                "circle"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "circle": {
+                              "type": "Circle",
+                              "id": 2
+                            }
+                          }
+                        },
+                        "RankPreference": {
+                          "values": {
+                            "RANK_PREFERENCE_UNSPECIFIED": 0,
+                            "DISTANCE": 1,
+                            "POPULARITY": 2
+                          }
+                        }
+                      }
+                    },
+                    "SearchNearbyResponse": {
+                      "fields": {
+                        "places": {
+                          "rule": "repeated",
+                          "type": "Place",
+                          "id": 1
+                        },
+                        "routingSummaries": {
+                          "rule": "repeated",
+                          "type": "RoutingSummary",
+                          "id": 2
                         }
                       }
                     },
@@ -707,13 +1681,6 @@
                           "type": "RankPreference",
                           "id": 4
                         },
-                        "location": {
-                          "type": "Location",
-                          "id": 5,
-                          "options": {
-                            "deprecated": true
-                          }
-                        },
                         "includedType": {
                           "type": "string",
                           "id": 6
@@ -721,13 +1688,6 @@
                         "openNow": {
                           "type": "bool",
                           "id": 7
-                        },
-                        "priceRange": {
-                          "type": "Int32Range",
-                          "id": 8,
-                          "options": {
-                            "deprecated": true
-                          }
                         },
                         "minRating": {
                           "type": "double",
@@ -753,6 +1713,34 @@
                         "locationRestriction": {
                           "type": "LocationRestriction",
                           "id": 14
+                        },
+                        "evOptions": {
+                          "type": "EVOptions",
+                          "id": 15,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "routingParameters": {
+                          "type": "RoutingParameters",
+                          "id": 16,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "searchAlongRouteParameters": {
+                          "type": "SearchAlongRouteParameters",
+                          "id": 17,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "includePureServiceAreaBusinesses": {
+                          "type": "bool",
+                          "id": 20,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
                         }
                       },
                       "nested": {
@@ -761,25 +1749,6 @@
                             "RANK_PREFERENCE_UNSPECIFIED": 0,
                             "DISTANCE": 1,
                             "RELEVANCE": 2
-                          }
-                        },
-                        "Location": {
-                          "oneofs": {
-                            "type": {
-                              "oneof": [
-                                "rectangle"
-                              ]
-                            }
-                          },
-                          "fields": {
-                            "rectangle": {
-                              "type": "google.geo.type.Viewport",
-                              "id": 1
-                            },
-                            "strictRestriction": {
-                              "type": "bool",
-                              "id": 2
-                            }
                           }
                         },
                         "LocationBias": {
@@ -816,6 +1785,36 @@
                               "id": 1
                             }
                           }
+                        },
+                        "EVOptions": {
+                          "fields": {
+                            "minimumChargingRateKw": {
+                              "type": "double",
+                              "id": 1,
+                              "options": {
+                                "(google.api.field_behavior)": "OPTIONAL"
+                              }
+                            },
+                            "connectorTypes": {
+                              "rule": "repeated",
+                              "type": "EVConnectorType",
+                              "id": 2,
+                              "options": {
+                                "(google.api.field_behavior)": "OPTIONAL"
+                              }
+                            }
+                          }
+                        },
+                        "SearchAlongRouteParameters": {
+                          "fields": {
+                            "polyline": {
+                              "type": "Polyline",
+                              "id": 1,
+                              "options": {
+                                "(google.api.field_behavior)": "REQUIRED"
+                              }
+                            }
+                          }
                         }
                       }
                     },
@@ -825,7 +1824,438 @@
                           "rule": "repeated",
                           "type": "Place",
                           "id": 1
+                        },
+                        "routingSummaries": {
+                          "rule": "repeated",
+                          "type": "RoutingSummary",
+                          "id": 2
+                        },
+                        "contextualContents": {
+                          "rule": "repeated",
+                          "type": "ContextualContent",
+                          "id": 3
                         }
+                      }
+                    },
+                    "GetPhotoMediaRequest": {
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1,
+                          "options": {
+                            "(google.api.field_behavior)": "REQUIRED",
+                            "(google.api.resource_reference).type": "places.googleapis.com/PhotoMedia"
+                          }
+                        },
+                        "maxWidthPx": {
+                          "type": "int32",
+                          "id": 2,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "maxHeightPx": {
+                          "type": "int32",
+                          "id": 3,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "skipHttpRedirect": {
+                          "type": "bool",
+                          "id": 4,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        }
+                      }
+                    },
+                    "PhotoMedia": {
+                      "options": {
+                        "(google.api.resource).type": "places.googleapis.com/PhotoMedia",
+                        "(google.api.resource).pattern": "places/{place_id}/photos/{photo_reference}/media",
+                        "(google.api.resource).plural": "photoMedias",
+                        "(google.api.resource).singular": "photoMedia"
+                      },
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1
+                        },
+                        "photoUri": {
+                          "type": "string",
+                          "id": 2
+                        }
+                      }
+                    },
+                    "GetPlaceRequest": {
+                      "fields": {
+                        "name": {
+                          "type": "string",
+                          "id": 1,
+                          "options": {
+                            "(google.api.field_behavior)": "REQUIRED",
+                            "(google.api.resource_reference).type": "places.googleapis.com/Place"
+                          }
+                        },
+                        "languageCode": {
+                          "type": "string",
+                          "id": 2,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "regionCode": {
+                          "type": "string",
+                          "id": 3,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "sessionToken": {
+                          "type": "string",
+                          "id": 4,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        }
+                      }
+                    },
+                    "AutocompletePlacesRequest": {
+                      "fields": {
+                        "input": {
+                          "type": "string",
+                          "id": 1,
+                          "options": {
+                            "(google.api.field_behavior)": "REQUIRED"
+                          }
+                        },
+                        "locationBias": {
+                          "type": "LocationBias",
+                          "id": 2,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "locationRestriction": {
+                          "type": "LocationRestriction",
+                          "id": 3,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "includedPrimaryTypes": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 4,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "includedRegionCodes": {
+                          "rule": "repeated",
+                          "type": "string",
+                          "id": 5,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "languageCode": {
+                          "type": "string",
+                          "id": 6,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "regionCode": {
+                          "type": "string",
+                          "id": 7,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "origin": {
+                          "type": "google.type.LatLng",
+                          "id": 8,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "inputOffset": {
+                          "type": "int32",
+                          "id": 9,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "includeQueryPredictions": {
+                          "type": "bool",
+                          "id": 10,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "sessionToken": {
+                          "type": "string",
+                          "id": 11,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "includePureServiceAreaBusinesses": {
+                          "type": "bool",
+                          "id": 12,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        }
+                      },
+                      "nested": {
+                        "LocationBias": {
+                          "oneofs": {
+                            "type": {
+                              "oneof": [
+                                "rectangle",
+                                "circle"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "rectangle": {
+                              "type": "google.geo.type.Viewport",
+                              "id": 1
+                            },
+                            "circle": {
+                              "type": "Circle",
+                              "id": 2
+                            }
+                          }
+                        },
+                        "LocationRestriction": {
+                          "oneofs": {
+                            "type": {
+                              "oneof": [
+                                "rectangle",
+                                "circle"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "rectangle": {
+                              "type": "google.geo.type.Viewport",
+                              "id": 1
+                            },
+                            "circle": {
+                              "type": "Circle",
+                              "id": 2
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "AutocompletePlacesResponse": {
+                      "fields": {
+                        "suggestions": {
+                          "rule": "repeated",
+                          "type": "Suggestion",
+                          "id": 1
+                        }
+                      },
+                      "nested": {
+                        "Suggestion": {
+                          "oneofs": {
+                            "kind": {
+                              "oneof": [
+                                "placePrediction",
+                                "queryPrediction"
+                              ]
+                            }
+                          },
+                          "fields": {
+                            "placePrediction": {
+                              "type": "PlacePrediction",
+                              "id": 1
+                            },
+                            "queryPrediction": {
+                              "type": "QueryPrediction",
+                              "id": 2
+                            }
+                          },
+                          "nested": {
+                            "StringRange": {
+                              "fields": {
+                                "startOffset": {
+                                  "type": "int32",
+                                  "id": 1
+                                },
+                                "endOffset": {
+                                  "type": "int32",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "FormattableText": {
+                              "fields": {
+                                "text": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "matches": {
+                                  "rule": "repeated",
+                                  "type": "StringRange",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "StructuredFormat": {
+                              "fields": {
+                                "mainText": {
+                                  "type": "FormattableText",
+                                  "id": 1
+                                },
+                                "secondaryText": {
+                                  "type": "FormattableText",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "PlacePrediction": {
+                              "fields": {
+                                "place": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.resource_reference).type": "places.googleapis.com/Place"
+                                  }
+                                },
+                                "placeId": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "text": {
+                                  "type": "FormattableText",
+                                  "id": 3
+                                },
+                                "structuredFormat": {
+                                  "type": "StructuredFormat",
+                                  "id": 4
+                                },
+                                "types": {
+                                  "rule": "repeated",
+                                  "type": "string",
+                                  "id": 5
+                                },
+                                "distanceMeters": {
+                                  "type": "int32",
+                                  "id": 6
+                                }
+                              }
+                            },
+                            "QueryPrediction": {
+                              "fields": {
+                                "text": {
+                                  "type": "FormattableText",
+                                  "id": 1
+                                },
+                                "structuredFormat": {
+                                  "type": "StructuredFormat",
+                                  "id": 2
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "Polyline": {
+                      "oneofs": {
+                        "polylineType": {
+                          "oneof": [
+                            "encodedPolyline"
+                          ]
+                        }
+                      },
+                      "fields": {
+                        "encodedPolyline": {
+                          "type": "string",
+                          "id": 1
+                        }
+                      }
+                    },
+                    "RouteModifiers": {
+                      "fields": {
+                        "avoidTolls": {
+                          "type": "bool",
+                          "id": 1,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "avoidHighways": {
+                          "type": "bool",
+                          "id": 2,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "avoidFerries": {
+                          "type": "bool",
+                          "id": 3,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        },
+                        "avoidIndoor": {
+                          "type": "bool",
+                          "id": 4,
+                          "options": {
+                            "(google.api.field_behavior)": "OPTIONAL"
+                          }
+                        }
+                      }
+                    },
+                    "RoutingPreference": {
+                      "values": {
+                        "ROUTING_PREFERENCE_UNSPECIFIED": 0,
+                        "TRAFFIC_UNAWARE": 1,
+                        "TRAFFIC_AWARE": 2,
+                        "TRAFFIC_AWARE_OPTIMAL": 3
+                      }
+                    },
+                    "RoutingSummary": {
+                      "fields": {
+                        "legs": {
+                          "rule": "repeated",
+                          "type": "Leg",
+                          "id": 1
+                        },
+                        "directionsUri": {
+                          "type": "string",
+                          "id": 2
+                        }
+                      },
+                      "nested": {
+                        "Leg": {
+                          "fields": {
+                            "duration": {
+                              "type": "google.protobuf.Duration",
+                              "id": 1
+                            },
+                            "distanceMeters": {
+                              "type": "int32",
+                              "id": 2
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "TravelMode": {
+                      "values": {
+                        "TRAVEL_MODE_UNSPECIFIED": 0,
+                        "DRIVE": 1,
+                        "BICYCLE": 2,
+                        "WALK": 3,
+                        "TWO_WHEELER": 4
                       }
                     }
                   }
@@ -836,14 +2266,91 @@
         },
         "api": {
           "options": {
-            "go_package": "google.golang.org/genproto/googleapis/api/annotations;annotations",
+            "cc_enable_arenas": true,
+            "go_package": "google.golang.org/genproto/googleapis/api;api",
             "java_multiple_files": true,
-            "java_outer_classname": "ClientProto",
+            "java_outer_classname": "LaunchStageProto",
             "java_package": "com.google.api",
-            "objc_class_prefix": "GAPI",
-            "cc_enable_arenas": true
+            "objc_class_prefix": "GAPI"
           },
           "nested": {
+            "resourceReference": {
+              "type": "google.api.ResourceReference",
+              "id": 1055,
+              "extend": "google.protobuf.FieldOptions"
+            },
+            "resourceDefinition": {
+              "rule": "repeated",
+              "type": "google.api.ResourceDescriptor",
+              "id": 1053,
+              "extend": "google.protobuf.FileOptions"
+            },
+            "resource": {
+              "type": "google.api.ResourceDescriptor",
+              "id": 1053,
+              "extend": "google.protobuf.MessageOptions"
+            },
+            "ResourceDescriptor": {
+              "fields": {
+                "type": {
+                  "type": "string",
+                  "id": 1
+                },
+                "pattern": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 2
+                },
+                "nameField": {
+                  "type": "string",
+                  "id": 3
+                },
+                "history": {
+                  "type": "History",
+                  "id": 4
+                },
+                "plural": {
+                  "type": "string",
+                  "id": 5
+                },
+                "singular": {
+                  "type": "string",
+                  "id": 6
+                },
+                "style": {
+                  "rule": "repeated",
+                  "type": "Style",
+                  "id": 10
+                }
+              },
+              "nested": {
+                "History": {
+                  "values": {
+                    "HISTORY_UNSPECIFIED": 0,
+                    "ORIGINALLY_SINGLE_PATTERN": 1,
+                    "FUTURE_MULTI_PATTERN": 2
+                  }
+                },
+                "Style": {
+                  "values": {
+                    "STYLE_UNSPECIFIED": 0,
+                    "DECLARATIVE_FRIENDLY": 1
+                  }
+                }
+              }
+            },
+            "ResourceReference": {
+              "fields": {
+                "type": {
+                  "type": "string",
+                  "id": 1
+                },
+                "childType": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
             "fieldBehavior": {
               "rule": "repeated",
               "type": "google.api.FieldBehavior",
@@ -859,7 +2366,8 @@
                 "INPUT_ONLY": 4,
                 "IMMUTABLE": 5,
                 "UNORDERED_LIST": 6,
-                "NON_EMPTY_DEFAULT": 7
+                "NON_EMPTY_DEFAULT": 7,
+                "IDENTIFIER": 8
               }
             },
             "http": {
@@ -964,6 +2472,285 @@
               "type": "string",
               "id": 1050,
               "extend": "google.protobuf.ServiceOptions"
+            },
+            "CommonLanguageSettings": {
+              "fields": {
+                "referenceDocsUri": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "destinations": {
+                  "rule": "repeated",
+                  "type": "ClientLibraryDestination",
+                  "id": 2
+                }
+              }
+            },
+            "ClientLibrarySettings": {
+              "fields": {
+                "version": {
+                  "type": "string",
+                  "id": 1
+                },
+                "launchStage": {
+                  "type": "LaunchStage",
+                  "id": 2
+                },
+                "restNumericEnums": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "javaSettings": {
+                  "type": "JavaSettings",
+                  "id": 21
+                },
+                "cppSettings": {
+                  "type": "CppSettings",
+                  "id": 22
+                },
+                "phpSettings": {
+                  "type": "PhpSettings",
+                  "id": 23
+                },
+                "pythonSettings": {
+                  "type": "PythonSettings",
+                  "id": 24
+                },
+                "nodeSettings": {
+                  "type": "NodeSettings",
+                  "id": 25
+                },
+                "dotnetSettings": {
+                  "type": "DotnetSettings",
+                  "id": 26
+                },
+                "rubySettings": {
+                  "type": "RubySettings",
+                  "id": 27
+                },
+                "goSettings": {
+                  "type": "GoSettings",
+                  "id": 28
+                }
+              }
+            },
+            "Publishing": {
+              "fields": {
+                "methodSettings": {
+                  "rule": "repeated",
+                  "type": "MethodSettings",
+                  "id": 2
+                },
+                "newIssueUri": {
+                  "type": "string",
+                  "id": 101
+                },
+                "documentationUri": {
+                  "type": "string",
+                  "id": 102
+                },
+                "apiShortName": {
+                  "type": "string",
+                  "id": 103
+                },
+                "githubLabel": {
+                  "type": "string",
+                  "id": 104
+                },
+                "codeownerGithubTeams": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 105
+                },
+                "docTagPrefix": {
+                  "type": "string",
+                  "id": 106
+                },
+                "organization": {
+                  "type": "ClientLibraryOrganization",
+                  "id": 107
+                },
+                "librarySettings": {
+                  "rule": "repeated",
+                  "type": "ClientLibrarySettings",
+                  "id": 109
+                },
+                "protoReferenceDocumentationUri": {
+                  "type": "string",
+                  "id": 110
+                }
+              }
+            },
+            "JavaSettings": {
+              "fields": {
+                "libraryPackage": {
+                  "type": "string",
+                  "id": 1
+                },
+                "serviceClassNames": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 2
+                },
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 3
+                }
+              }
+            },
+            "CppSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "PhpSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "PythonSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "NodeSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "DotnetSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                },
+                "renamedServices": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 2
+                },
+                "renamedResources": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 3
+                },
+                "ignoredResources": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 4
+                },
+                "forcedNamespaceAliases": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 5
+                },
+                "handwrittenSignatures": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 6
+                }
+              }
+            },
+            "RubySettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "GoSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "MethodSettings": {
+              "fields": {
+                "selector": {
+                  "type": "string",
+                  "id": 1
+                },
+                "longRunning": {
+                  "type": "LongRunning",
+                  "id": 2
+                },
+                "autoPopulatedFields": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 3
+                }
+              },
+              "nested": {
+                "LongRunning": {
+                  "fields": {
+                    "initialPollDelay": {
+                      "type": "google.protobuf.Duration",
+                      "id": 1
+                    },
+                    "pollDelayMultiplier": {
+                      "type": "float",
+                      "id": 2
+                    },
+                    "maxPollDelay": {
+                      "type": "google.protobuf.Duration",
+                      "id": 3
+                    },
+                    "totalPollTimeout": {
+                      "type": "google.protobuf.Duration",
+                      "id": 4
+                    }
+                  }
+                }
+              }
+            },
+            "ClientLibraryOrganization": {
+              "values": {
+                "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED": 0,
+                "CLOUD": 1,
+                "ADS": 2,
+                "PHOTOS": 3,
+                "STREET_VIEW": 4,
+                "SHOPPING": 5,
+                "GEO": 6,
+                "GENERATIVE_AI": 7
+              }
+            },
+            "ClientLibraryDestination": {
+              "values": {
+                "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED": 0,
+                "GITHUB": 10,
+                "PACKAGE_MANAGER": 20
+              }
+            },
+            "LaunchStage": {
+              "values": {
+                "LAUNCH_STAGE_UNSPECIFIED": 0,
+                "UNIMPLEMENTED": 6,
+                "PRELAUNCH": 7,
+                "EARLY_ACCESS": 1,
+                "ALPHA": 2,
+                "BETA": 3,
+                "GA": 4,
+                "DEPRECATED": 5
+              }
             }
           }
         },
@@ -985,6 +2772,21 @@
                   "type": "FileDescriptorProto",
                   "id": 1
                 }
+              }
+            },
+            "Edition": {
+              "values": {
+                "EDITION_UNKNOWN": 0,
+                "EDITION_PROTO2": 998,
+                "EDITION_PROTO3": 999,
+                "EDITION_2023": 1000,
+                "EDITION_2024": 1001,
+                "EDITION_1_TEST_ONLY": 1,
+                "EDITION_2_TEST_ONLY": 2,
+                "EDITION_99997_TEST_ONLY": 99997,
+                "EDITION_99998_TEST_ONLY": 99998,
+                "EDITION_99999_TEST_ONLY": 99999,
+                "EDITION_MAX": 2147483647
               }
             },
             "FileDescriptorProto": {
@@ -1051,8 +2853,8 @@
                   "id": 12
                 },
                 "edition": {
-                  "type": "string",
-                  "id": 13
+                  "type": "Edition",
+                  "id": 14
                 }
               }
             },
@@ -1144,6 +2946,26 @@
                   "rule": "repeated",
                   "type": "UninterpretedOption",
                   "id": 999
+                },
+                "declaration": {
+                  "rule": "repeated",
+                  "type": "Declaration",
+                  "id": 2,
+                  "options": {
+                    "retention": "RETENTION_SOURCE"
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 50
+                },
+                "verification": {
+                  "type": "VerificationState",
+                  "id": 3,
+                  "options": {
+                    "default": "UNVERIFIED",
+                    "retention": "RETENTION_SOURCE"
+                  }
                 }
               },
               "extensions": [
@@ -1151,7 +2973,45 @@
                   1000,
                   536870911
                 ]
-              ]
+              ],
+              "nested": {
+                "Declaration": {
+                  "fields": {
+                    "number": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "fullName": {
+                      "type": "string",
+                      "id": 2
+                    },
+                    "type": {
+                      "type": "string",
+                      "id": 3
+                    },
+                    "reserved": {
+                      "type": "bool",
+                      "id": 5
+                    },
+                    "repeated": {
+                      "type": "bool",
+                      "id": 6
+                    }
+                  },
+                  "reserved": [
+                    [
+                      4,
+                      4
+                    ]
+                  ]
+                },
+                "VerificationState": {
+                  "values": {
+                    "DECLARATION": 0,
+                    "UNVERIFIED": 1
+                  }
+                }
+              }
             },
             "FieldDescriptorProto": {
               "fields": {
@@ -1226,8 +3086,8 @@
                 "Label": {
                   "values": {
                     "LABEL_OPTIONAL": 1,
-                    "LABEL_REQUIRED": 2,
-                    "LABEL_REPEATED": 3
+                    "LABEL_REPEATED": 3,
+                    "LABEL_REQUIRED": 2
                   }
                 }
               }
@@ -1415,13 +3275,6 @@
                     "default": false
                   }
                 },
-                "phpGenericServices": {
-                  "type": "bool",
-                  "id": 42,
-                  "options": {
-                    "default": false
-                  }
-                },
                 "deprecated": {
                   "type": "bool",
                   "id": 23,
@@ -1464,6 +3317,10 @@
                   "type": "string",
                   "id": 45
                 },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 50
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -1477,6 +3334,10 @@
                 ]
               ],
               "reserved": [
+                [
+                  42,
+                  42
+                ],
                 [
                   38,
                   38
@@ -1518,6 +3379,17 @@
                 "mapEntry": {
                   "type": "bool",
                   "id": 7
+                },
+                "deprecatedLegacyJsonFieldConflicts": {
+                  "type": "bool",
+                  "id": 11,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 12
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -1602,6 +3474,34 @@
                     "default": false
                   }
                 },
+                "debugRedact": {
+                  "type": "bool",
+                  "id": 16,
+                  "options": {
+                    "default": false
+                  }
+                },
+                "retention": {
+                  "type": "OptionRetention",
+                  "id": 17
+                },
+                "targets": {
+                  "rule": "repeated",
+                  "type": "OptionTargetType",
+                  "id": 19,
+                  "options": {
+                    "packed": false
+                  }
+                },
+                "editionDefaults": {
+                  "rule": "repeated",
+                  "type": "EditionDefault",
+                  "id": 20
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 21
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -1618,6 +3518,10 @@
                 [
                   4,
                   4
+                ],
+                [
+                  18,
+                  18
                 ]
               ],
               "nested": {
@@ -1634,11 +3538,48 @@
                     "JS_STRING": 1,
                     "JS_NUMBER": 2
                   }
+                },
+                "OptionRetention": {
+                  "values": {
+                    "RETENTION_UNKNOWN": 0,
+                    "RETENTION_RUNTIME": 1,
+                    "RETENTION_SOURCE": 2
+                  }
+                },
+                "OptionTargetType": {
+                  "values": {
+                    "TARGET_TYPE_UNKNOWN": 0,
+                    "TARGET_TYPE_FILE": 1,
+                    "TARGET_TYPE_EXTENSION_RANGE": 2,
+                    "TARGET_TYPE_MESSAGE": 3,
+                    "TARGET_TYPE_FIELD": 4,
+                    "TARGET_TYPE_ONEOF": 5,
+                    "TARGET_TYPE_ENUM": 6,
+                    "TARGET_TYPE_ENUM_ENTRY": 7,
+                    "TARGET_TYPE_SERVICE": 8,
+                    "TARGET_TYPE_METHOD": 9
+                  }
+                },
+                "EditionDefault": {
+                  "fields": {
+                    "edition": {
+                      "type": "Edition",
+                      "id": 3
+                    },
+                    "value": {
+                      "type": "string",
+                      "id": 2
+                    }
+                  }
                 }
               }
             },
             "OneofOptions": {
               "fields": {
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 1
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -1664,6 +3605,17 @@
                   "options": {
                     "default": false
                   }
+                },
+                "deprecatedLegacyJsonFieldConflicts": {
+                  "type": "bool",
+                  "id": 6,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 7
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -1693,6 +3645,17 @@
                     "default": false
                   }
                 },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 2
+                },
+                "debugRedact": {
+                  "type": "bool",
+                  "id": 3,
+                  "options": {
+                    "default": false
+                  }
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -1708,6 +3671,10 @@
             },
             "ServiceOptions": {
               "fields": {
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 34
+                },
                 "deprecated": {
                   "type": "bool",
                   "id": 33,
@@ -1743,6 +3710,10 @@
                   "options": {
                     "default": "IDEMPOTENCY_UNKNOWN"
                   }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 35
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -1809,6 +3780,166 @@
                     "isExtension": {
                       "rule": "required",
                       "type": "bool",
+                      "id": 2
+                    }
+                  }
+                }
+              }
+            },
+            "FeatureSet": {
+              "fields": {
+                "fieldPresence": {
+                  "type": "FieldPresence",
+                  "id": 1,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_2023",
+                    "edition_defaults.value": "EXPLICIT"
+                  }
+                },
+                "enumType": {
+                  "type": "EnumType",
+                  "id": 2,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "OPEN"
+                  }
+                },
+                "repeatedFieldEncoding": {
+                  "type": "RepeatedFieldEncoding",
+                  "id": 3,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "PACKED"
+                  }
+                },
+                "utf8Validation": {
+                  "type": "Utf8Validation",
+                  "id": 4,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "VERIFY"
+                  }
+                },
+                "messageEncoding": {
+                  "type": "MessageEncoding",
+                  "id": 5,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO2",
+                    "edition_defaults.value": "LENGTH_PREFIXED"
+                  }
+                },
+                "jsonFormat": {
+                  "type": "JsonFormat",
+                  "id": 6,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "ALLOW"
+                  }
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  1000
+                ],
+                [
+                  1001,
+                  1001
+                ],
+                [
+                  9995,
+                  9999
+                ]
+              ],
+              "reserved": [
+                [
+                  999,
+                  999
+                ]
+              ],
+              "nested": {
+                "FieldPresence": {
+                  "values": {
+                    "FIELD_PRESENCE_UNKNOWN": 0,
+                    "EXPLICIT": 1,
+                    "IMPLICIT": 2,
+                    "LEGACY_REQUIRED": 3
+                  }
+                },
+                "EnumType": {
+                  "values": {
+                    "ENUM_TYPE_UNKNOWN": 0,
+                    "OPEN": 1,
+                    "CLOSED": 2
+                  }
+                },
+                "RepeatedFieldEncoding": {
+                  "values": {
+                    "REPEATED_FIELD_ENCODING_UNKNOWN": 0,
+                    "PACKED": 1,
+                    "EXPANDED": 2
+                  }
+                },
+                "Utf8Validation": {
+                  "values": {
+                    "UTF8_VALIDATION_UNKNOWN": 0,
+                    "VERIFY": 2,
+                    "NONE": 3
+                  }
+                },
+                "MessageEncoding": {
+                  "values": {
+                    "MESSAGE_ENCODING_UNKNOWN": 0,
+                    "LENGTH_PREFIXED": 1,
+                    "DELIMITED": 2
+                  }
+                },
+                "JsonFormat": {
+                  "values": {
+                    "JSON_FORMAT_UNKNOWN": 0,
+                    "ALLOW": 1,
+                    "LEGACY_BEST_EFFORT": 2
+                  }
+                }
+              }
+            },
+            "FeatureSetDefaults": {
+              "fields": {
+                "defaults": {
+                  "rule": "repeated",
+                  "type": "FeatureSetEditionDefault",
+                  "id": 1
+                },
+                "minimumEdition": {
+                  "type": "Edition",
+                  "id": 4
+                },
+                "maximumEdition": {
+                  "type": "Edition",
+                  "id": 5
+                }
+              },
+              "nested": {
+                "FeatureSetEditionDefault": {
+                  "fields": {
+                    "edition": {
+                      "type": "Edition",
+                      "id": 3
+                    },
+                    "features": {
+                      "type": "FeatureSet",
                       "id": 2
                     }
                   }
@@ -1899,6 +4030,18 @@
               }
             },
             "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            },
+            "Duration": {
               "fields": {
                 "seconds": {
                   "type": "int64",

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,21 +21,36 @@ const aiplatform = require('@google-cloud/aiplatform');
 
 function main() {
   const datasetServiceClient = new aiplatform.DatasetServiceClient();
+  const deploymentResourcePoolServiceClient =
+    new aiplatform.DeploymentResourcePoolServiceClient();
   const endpointServiceClient = new aiplatform.EndpointServiceClient();
+  const evaluationServiceClient = new aiplatform.EvaluationServiceClient();
+  const featureOnlineStoreAdminServiceClient =
+    new aiplatform.FeatureOnlineStoreAdminServiceClient();
+  const featureOnlineStoreServiceClient =
+    new aiplatform.FeatureOnlineStoreServiceClient();
+  const featureRegistryServiceClient =
+    new aiplatform.FeatureRegistryServiceClient();
   const featurestoreOnlineServingServiceClient =
     new aiplatform.FeaturestoreOnlineServingServiceClient();
   const featurestoreServiceClient = new aiplatform.FeaturestoreServiceClient();
+  const genAiTuningServiceClient = new aiplatform.GenAiTuningServiceClient();
   const indexEndpointServiceClient =
     new aiplatform.IndexEndpointServiceClient();
   const indexServiceClient = new aiplatform.IndexServiceClient();
   const jobServiceClient = new aiplatform.JobServiceClient();
+  const llmUtilityServiceClient = new aiplatform.LlmUtilityServiceClient();
   const matchServiceClient = new aiplatform.MatchServiceClient();
   const metadataServiceClient = new aiplatform.MetadataServiceClient();
   const migrationServiceClient = new aiplatform.MigrationServiceClient();
   const modelGardenServiceClient = new aiplatform.ModelGardenServiceClient();
   const modelServiceClient = new aiplatform.ModelServiceClient();
+  const notebookServiceClient = new aiplatform.NotebookServiceClient();
+  const persistentResourceServiceClient =
+    new aiplatform.PersistentResourceServiceClient();
   const pipelineServiceClient = new aiplatform.PipelineServiceClient();
   const predictionServiceClient = new aiplatform.PredictionServiceClient();
+  const scheduleServiceClient = new aiplatform.ScheduleServiceClient();
   const specialistPoolServiceClient =
     new aiplatform.SpecialistPoolServiceClient();
   const tensorboardServiceClient = new aiplatform.TensorboardServiceClient();

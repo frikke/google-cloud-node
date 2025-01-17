@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,6 +44,11 @@ function main(name) {
    *  resource. May be used to detect modification conflict during updates.
    */
   // const etag = 'abc123'
+  /**
+   *  Overrides specification for a given execution of a job. If provided,
+   *  overrides will be applied to update the execution or task spec.
+   */
+  // const overrides = {}
 
   // Imports the Run library
   const {JobsClient} = require('@google-cloud/run').v2;

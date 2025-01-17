@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ function main() {
    *  represented as an AttributeContext, and contains all attributes around an
    *  API access.
    */
-  // const operations = 1234
+  // const operations = [1,2,3,4]
 
   // Imports the Servicecontrol library
   const {ServiceControllerClient} = require('@google-cloud/servicecontrol').v2;

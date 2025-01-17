@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,8 +21,15 @@ import * as v1alpha1 from './v1alpha1';
 
 const HubServiceClient = v1.HubServiceClient;
 type HubServiceClient = v1.HubServiceClient;
+const PolicyBasedRoutingServiceClient = v1.PolicyBasedRoutingServiceClient;
+type PolicyBasedRoutingServiceClient = v1.PolicyBasedRoutingServiceClient;
 
-export {v1, v1alpha1, HubServiceClient};
-export default {v1, v1alpha1, HubServiceClient};
+export {v1, v1alpha1, HubServiceClient, PolicyBasedRoutingServiceClient};
+export default {
+  v1,
+  v1alpha1,
+  HubServiceClient,
+  PolicyBasedRoutingServiceClient,
+};
 import * as protos from '../protos/protos';
 export {protos};

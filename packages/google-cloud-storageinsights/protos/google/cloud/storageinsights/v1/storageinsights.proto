@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -445,6 +445,9 @@ message ObjectMetadataReportOptions {
 
 // Message describing ReportConfig object. ReportConfig is the configuration to
 // generate reports.
+// See
+// https://cloud.google.com/storage/docs/insights/using-inventory-reports#create-config-rest
+// for more details on how to set various fields.
 // Next ID: 12
 message ReportConfig {
   option (google.api.resource) = {

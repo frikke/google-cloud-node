@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,13 @@ function main(billingAccount) {
    *  account.
    */
   // const billingAccount = {}
+  /**
+   *  Optional. The parent to create a billing account from.
+   *  Format:
+   *    - `billingAccounts/{billing_account_id}`, for example,
+   *       `billingAccounts/012345-567890-ABCDEF`
+   */
+  // const parent = 'abc123'
 
   // Imports the Billing library
   const {CloudBillingClient} = require('@google-cloud/billing').v1;

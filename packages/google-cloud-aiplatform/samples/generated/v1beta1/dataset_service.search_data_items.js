@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -83,7 +83,7 @@ function main(dataset) {
    *  Must specify `saved_query_id=` - saved query id that annotations should
    *  belong to.
    */
-  // const annotationFilters = 'abc123'
+  // const annotationFilters = ['abc','def']
   /**
    *  Mask specifying which fields of
    *  DataItemView google.cloud.aiplatform.v1beta1.DataItemView  to read.
@@ -128,7 +128,7 @@ function main(dataset) {
     };
 
     // Run request
-    const iterable = await aiplatformClient.searchDataItemsAsync(request);
+    const iterable = aiplatformClient.searchDataItemsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

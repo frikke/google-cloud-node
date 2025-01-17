@@ -15,9 +15,19 @@
                 "getDeliveryPipeline"
               ]
             },
+            "RollbackTarget": {
+              "methods": [
+                "rollbackTarget"
+              ]
+            },
             "GetTarget": {
               "methods": [
                 "getTarget"
+              ]
+            },
+            "GetCustomTargetType": {
+              "methods": [
+                "getCustomTargetType"
               ]
             },
             "GetRelease": {
@@ -28,6 +38,11 @@
             "AbandonRelease": {
               "methods": [
                 "abandonRelease"
+              ]
+            },
+            "GetDeployPolicy": {
+              "methods": [
+                "getDeployPolicy"
               ]
             },
             "ApproveRollout": {
@@ -75,6 +90,21 @@
                 "getConfig"
               ]
             },
+            "GetAutomation": {
+              "methods": [
+                "getAutomation"
+              ]
+            },
+            "GetAutomationRun": {
+              "methods": [
+                "getAutomationRun"
+              ]
+            },
+            "CancelAutomationRun": {
+              "methods": [
+                "cancelAutomationRun"
+              ]
+            },
             "CreateDeliveryPipeline": {
               "methods": [
                 "createDeliveryPipeline"
@@ -105,14 +135,59 @@
                 "deleteTarget"
               ]
             },
+            "CreateCustomTargetType": {
+              "methods": [
+                "createCustomTargetType"
+              ]
+            },
+            "UpdateCustomTargetType": {
+              "methods": [
+                "updateCustomTargetType"
+              ]
+            },
+            "DeleteCustomTargetType": {
+              "methods": [
+                "deleteCustomTargetType"
+              ]
+            },
             "CreateRelease": {
               "methods": [
                 "createRelease"
               ]
             },
+            "CreateDeployPolicy": {
+              "methods": [
+                "createDeployPolicy"
+              ]
+            },
+            "UpdateDeployPolicy": {
+              "methods": [
+                "updateDeployPolicy"
+              ]
+            },
+            "DeleteDeployPolicy": {
+              "methods": [
+                "deleteDeployPolicy"
+              ]
+            },
             "CreateRollout": {
               "methods": [
                 "createRollout"
+              ]
+            },
+            "CreateAutomation": {
+              "methods": [
+                "createAutomation"
+              ]
+            },
+            "UpdateAutomation": {
+              "methods": [
+                "updateAutomation"
+              ]
+            },
+            "DeleteAutomation": {
+              "methods": [
+                "deleteAutomation"
               ]
             },
             "ListDeliveryPipelines": {
@@ -129,11 +204,25 @@
                 "listTargetsAsync"
               ]
             },
+            "ListCustomTargetTypes": {
+              "methods": [
+                "listCustomTargetTypes",
+                "listCustomTargetTypesStream",
+                "listCustomTargetTypesAsync"
+              ]
+            },
             "ListReleases": {
               "methods": [
                 "listReleases",
                 "listReleasesStream",
                 "listReleasesAsync"
+              ]
+            },
+            "ListDeployPolicies": {
+              "methods": [
+                "listDeployPolicies",
+                "listDeployPoliciesStream",
+                "listDeployPoliciesAsync"
               ]
             },
             "ListRollouts": {
@@ -148,6 +237,20 @@
                 "listJobRuns",
                 "listJobRunsStream",
                 "listJobRunsAsync"
+              ]
+            },
+            "ListAutomations": {
+              "methods": [
+                "listAutomations",
+                "listAutomationsStream",
+                "listAutomationsAsync"
+              ]
+            },
+            "ListAutomationRuns": {
+              "methods": [
+                "listAutomationRuns",
+                "listAutomationRunsStream",
+                "listAutomationRunsAsync"
               ]
             }
           }
@@ -160,9 +263,19 @@
                 "getDeliveryPipeline"
               ]
             },
+            "RollbackTarget": {
+              "methods": [
+                "rollbackTarget"
+              ]
+            },
             "GetTarget": {
               "methods": [
                 "getTarget"
+              ]
+            },
+            "GetCustomTargetType": {
+              "methods": [
+                "getCustomTargetType"
               ]
             },
             "GetRelease": {
@@ -173,6 +286,11 @@
             "AbandonRelease": {
               "methods": [
                 "abandonRelease"
+              ]
+            },
+            "GetDeployPolicy": {
+              "methods": [
+                "getDeployPolicy"
               ]
             },
             "ApproveRollout": {
@@ -220,6 +338,21 @@
                 "getConfig"
               ]
             },
+            "GetAutomation": {
+              "methods": [
+                "getAutomation"
+              ]
+            },
+            "GetAutomationRun": {
+              "methods": [
+                "getAutomationRun"
+              ]
+            },
+            "CancelAutomationRun": {
+              "methods": [
+                "cancelAutomationRun"
+              ]
+            },
             "CreateDeliveryPipeline": {
               "methods": [
                 "createDeliveryPipeline"
@@ -250,14 +383,59 @@
                 "deleteTarget"
               ]
             },
+            "CreateCustomTargetType": {
+              "methods": [
+                "createCustomTargetType"
+              ]
+            },
+            "UpdateCustomTargetType": {
+              "methods": [
+                "updateCustomTargetType"
+              ]
+            },
+            "DeleteCustomTargetType": {
+              "methods": [
+                "deleteCustomTargetType"
+              ]
+            },
             "CreateRelease": {
               "methods": [
                 "createRelease"
               ]
             },
+            "CreateDeployPolicy": {
+              "methods": [
+                "createDeployPolicy"
+              ]
+            },
+            "UpdateDeployPolicy": {
+              "methods": [
+                "updateDeployPolicy"
+              ]
+            },
+            "DeleteDeployPolicy": {
+              "methods": [
+                "deleteDeployPolicy"
+              ]
+            },
             "CreateRollout": {
               "methods": [
                 "createRollout"
+              ]
+            },
+            "CreateAutomation": {
+              "methods": [
+                "createAutomation"
+              ]
+            },
+            "UpdateAutomation": {
+              "methods": [
+                "updateAutomation"
+              ]
+            },
+            "DeleteAutomation": {
+              "methods": [
+                "deleteAutomation"
               ]
             },
             "ListDeliveryPipelines": {
@@ -274,11 +452,25 @@
                 "listTargetsAsync"
               ]
             },
+            "ListCustomTargetTypes": {
+              "methods": [
+                "listCustomTargetTypes",
+                "listCustomTargetTypesStream",
+                "listCustomTargetTypesAsync"
+              ]
+            },
             "ListReleases": {
               "methods": [
                 "listReleases",
                 "listReleasesStream",
                 "listReleasesAsync"
+              ]
+            },
+            "ListDeployPolicies": {
+              "methods": [
+                "listDeployPolicies",
+                "listDeployPoliciesStream",
+                "listDeployPoliciesAsync"
               ]
             },
             "ListRollouts": {
@@ -293,6 +485,20 @@
                 "listJobRuns",
                 "listJobRunsStream",
                 "listJobRunsAsync"
+              ]
+            },
+            "ListAutomations": {
+              "methods": [
+                "listAutomations",
+                "listAutomationsStream",
+                "listAutomationsAsync"
+              ]
+            },
+            "ListAutomationRuns": {
+              "methods": [
+                "listAutomationRuns",
+                "listAutomationRunsStream",
+                "listAutomationRunsAsync"
               ]
             }
           }

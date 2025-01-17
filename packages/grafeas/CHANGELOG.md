@@ -4,6 +4,65 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/grafeas?activeTab=versions
 
+## [5.5.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v5.4.0...grafeas-v5.5.0) (2024-08-19)
+
+
+### Features
+
+* [grafeas] A new field `version` is added to message `.grafeas.v1.ComplianceOccurrence` ([#5585](https://github.com/googleapis/google-cloud-node/issues/5585)) ([f9cfc54](https://github.com/googleapis/google-cloud-node/commit/f9cfc5463b02af3296df3e647633597730122ae8))
+
+## [5.4.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v5.3.0...grafeas-v5.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v5.2.0...grafeas-v5.3.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5193](https://github.com/googleapis/google-cloud-node/issues/5193)) ([333b409](https://github.com/googleapis/google-cloud-node/commit/333b40951a255ecfab249bd6e7ace5877270ec85))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v5.1.0...grafeas-v5.2.0) (2024-03-23)
+
+
+### Features
+
+* [grafeas] A new field `in_toto_slsa_provenance_v1` is added to message `BuildOccurrence` ([#5133](https://github.com/googleapis/google-cloud-node/issues/5133)) ([31c36a8](https://github.com/googleapis/google-cloud-node/commit/31c36a88987e2dd68c70fb6220b5bf1311239d2d))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v5.0.1...grafeas-v5.1.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5029](https://github.com/googleapis/google-cloud-node/issues/5029)) ([09e59ad](https://github.com/googleapis/google-cloud-node/commit/09e59ad6e34001a33d01894ccd5a0643f1a84883))
+
+## [5.0.1](https://github.com/googleapis/google-cloud-node/compare/grafeas-v5.0.0...grafeas-v5.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [storagetransfer,grafeas] simplify logic for HTTP/1.1 REST fallback option ([#4590](https://github.com/googleapis/google-cloud-node/issues/4590)) ([14fffdf](https://github.com/googleapis/google-cloud-node/commit/14fffdf46568466e9ae02d5585da9721aa9ad83c))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v4.5.0...grafeas-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4466](https://github.com/googleapis/google-cloud-node/issues/4466)) ([fa1520c](https://github.com/googleapis/google-cloud-node/commit/fa1520c3eb526efd3523d9cea349ed31683d5889))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [4.5.0](https://github.com/googleapis/google-cloud-node/compare/grafeas-v4.4.1...grafeas-v4.5.0) (2023-04-24)
 
 

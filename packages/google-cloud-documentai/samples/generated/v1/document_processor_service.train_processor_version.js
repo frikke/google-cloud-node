@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,14 @@ function main(parent, processorVersion) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
+   *  Options to control Custom Document Extraction (CDE) Processor.
+   */
+  // const customDocumentExtractionOptions = {}
+  /**
+   *  Options to control foundation model tuning of a processor.
+   */
+  // const foundationModelTuningOptions = {}
+  /**
    *  Required. The parent (project, location and processor) to create the new
    *  version for. Format:
    *  `projects/{project}/locations/{location}/processors/{processor}`.
@@ -43,7 +51,8 @@ function main(parent, processorVersion) {
    */
   // const documentSchema = {}
   /**
-   *  Optional. The input data used to train the `ProcessorVersion`.
+   *  Optional. The input data used to train the
+   *  ProcessorVersion google.cloud.documentai.v1.ProcessorVersion.
    */
   // const inputData = {}
   /**

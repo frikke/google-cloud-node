@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ function main(name) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. Resource name of the policy. See `Policy` for naming
-   *  requirements.
+   *  Required. Resource name of the policy. See
+   *  Policy google.cloud.orgpolicy.v2.Policy  for naming requirements.
    */
   // const name = 'abc123'
 

@@ -50,9 +50,19 @@
                 "getVersion"
               ]
             },
+            "UpdateVersion": {
+              "methods": [
+                "updateVersion"
+              ]
+            },
             "GetFile": {
               "methods": [
                 "getFile"
+              ]
+            },
+            "UpdateFile": {
+              "methods": [
+                "updateFile"
               ]
             },
             "GetTag": {
@@ -73,6 +83,26 @@
             "DeleteTag": {
               "methods": [
                 "deleteTag"
+              ]
+            },
+            "CreateRule": {
+              "methods": [
+                "createRule"
+              ]
+            },
+            "GetRule": {
+              "methods": [
+                "getRule"
+              ]
+            },
+            "UpdateRule": {
+              "methods": [
+                "updateRule"
+              ]
+            },
+            "DeleteRule": {
+              "methods": [
+                "deleteRule"
               ]
             },
             "SetIamPolicy": {
@@ -110,6 +140,16 @@
                 "updateVPCSCConfig"
               ]
             },
+            "UpdatePackage": {
+              "methods": [
+                "updatePackage"
+              ]
+            },
+            "GetAttachment": {
+              "methods": [
+                "getAttachment"
+              ]
+            },
             "ImportAptArtifacts": {
               "methods": [
                 "importAptArtifacts"
@@ -138,6 +178,26 @@
             "DeleteVersion": {
               "methods": [
                 "deleteVersion"
+              ]
+            },
+            "BatchDeleteVersions": {
+              "methods": [
+                "batchDeleteVersions"
+              ]
+            },
+            "DeleteFile": {
+              "methods": [
+                "deleteFile"
+              ]
+            },
+            "CreateAttachment": {
+              "methods": [
+                "createAttachment"
+              ]
+            },
+            "DeleteAttachment": {
+              "methods": [
+                "deleteAttachment"
               ]
             },
             "ListDockerImages": {
@@ -201,6 +261,20 @@
                 "listTags",
                 "listTagsStream",
                 "listTagsAsync"
+              ]
+            },
+            "ListRules": {
+              "methods": [
+                "listRules",
+                "listRulesStream",
+                "listRulesAsync"
+              ]
+            },
+            "ListAttachments": {
+              "methods": [
+                "listAttachments",
+                "listAttachmentsStream",
+                "listAttachmentsAsync"
               ]
             }
           }
@@ -248,9 +322,19 @@
                 "getVersion"
               ]
             },
+            "UpdateVersion": {
+              "methods": [
+                "updateVersion"
+              ]
+            },
             "GetFile": {
               "methods": [
                 "getFile"
+              ]
+            },
+            "UpdateFile": {
+              "methods": [
+                "updateFile"
               ]
             },
             "GetTag": {
@@ -271,6 +355,26 @@
             "DeleteTag": {
               "methods": [
                 "deleteTag"
+              ]
+            },
+            "CreateRule": {
+              "methods": [
+                "createRule"
+              ]
+            },
+            "GetRule": {
+              "methods": [
+                "getRule"
+              ]
+            },
+            "UpdateRule": {
+              "methods": [
+                "updateRule"
+              ]
+            },
+            "DeleteRule": {
+              "methods": [
+                "deleteRule"
               ]
             },
             "SetIamPolicy": {
@@ -308,6 +412,16 @@
                 "updateVPCSCConfig"
               ]
             },
+            "UpdatePackage": {
+              "methods": [
+                "updatePackage"
+              ]
+            },
+            "GetAttachment": {
+              "methods": [
+                "getAttachment"
+              ]
+            },
             "ImportAptArtifacts": {
               "methods": [
                 "importAptArtifacts"
@@ -336,6 +450,26 @@
             "DeleteVersion": {
               "methods": [
                 "deleteVersion"
+              ]
+            },
+            "BatchDeleteVersions": {
+              "methods": [
+                "batchDeleteVersions"
+              ]
+            },
+            "DeleteFile": {
+              "methods": [
+                "deleteFile"
+              ]
+            },
+            "CreateAttachment": {
+              "methods": [
+                "createAttachment"
+              ]
+            },
+            "DeleteAttachment": {
+              "methods": [
+                "deleteAttachment"
               ]
             },
             "ListDockerImages": {
@@ -399,6 +533,20 @@
                 "listTags",
                 "listTagsStream",
                 "listTagsAsync"
+              ]
+            },
+            "ListRules": {
+              "methods": [
+                "listRules",
+                "listRulesStream",
+                "listRulesAsync"
+              ]
+            },
+            "ListAttachments": {
+              "methods": [
+                "listAttachments",
+                "listAttachmentsStream",
+                "listAttachmentsAsync"
               ]
             }
           }

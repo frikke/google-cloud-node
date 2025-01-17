@@ -1,5 +1,102 @@
 # Changelog
 
+## [7.6.0](https://github.com/googleapis/google-cloud-node/compare/admin-v7.5.0...admin-v7.6.0) (2024-08-09)
+
+
+### Features
+
+* [analytics-admin] add `GetKeyEvent`, `CreateKeyEvent`, `ListKeyEvents`, `UpdateKeyEvent`, and `DeleteKeyEvent` methods ([#5597](https://github.com/googleapis/google-cloud-node/issues/5597)) ([178789b](https://github.com/googleapis/google-cloud-node/commit/178789bd72d0303fc369c823bdbd9a6f2fcd723b))
+
+## [7.5.0](https://github.com/googleapis/google-cloud-node/compare/admin-v7.4.0...admin-v7.5.0) (2024-07-22)
+
+
+### Features
+
+* [analytics-admin] add `GetKeyEvent`, `CreateKeyEvent`, `ListKeyEvents`, `UpdateKeyEvent`, `DeleteKeyEvent` methods to the Admin API v1beta ([#5556](https://github.com/googleapis/google-cloud-node/issues/5556)) ([f0403d5](https://github.com/googleapis/google-cloud-node/commit/f0403d546bbc3775b9d4b7dd15df74b6809084e7))
+
+## [7.4.0](https://github.com/googleapis/google-cloud-node/compare/admin-v7.3.0...admin-v7.4.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5350](https://github.com/googleapis/google-cloud-node/issues/5350)) ([6c03873](https://github.com/googleapis/google-cloud-node/commit/6c038731de1f36456042e6b4ecf2a9686be662c7))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [7.3.0](https://github.com/googleapis/google-cloud-node/compare/admin-v7.2.0...admin-v7.3.0) (2024-04-16)
+
+
+### Features
+
+* [Many APIs] support GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable ([#5185](https://github.com/googleapis/google-cloud-node/issues/5185)) ([cc54e98](https://github.com/googleapis/google-cloud-node/commit/cc54e98f7f51598e88277ac50310b07b778acbc7))
+
+## [7.2.0](https://github.com/googleapis/google-cloud-node/compare/admin-v7.1.0...admin-v7.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5022](https://github.com/googleapis/google-cloud-node/issues/5022)) ([b6498d8](https://github.com/googleapis/google-cloud-node/commit/b6498d8580d056817981dedbaa0ea5d82e9dccc2))
+
+## [7.1.0](https://github.com/googleapis/google-cloud-node/compare/admin-v7.0.1...admin-v7.1.0) (2024-02-07)
+
+
+### Features
+
+* [analytics-admin] add `GetCalculatedMetric`, `CreateCalculatedMetric`, `ListCalculatedMetrics`, `UpdateCalculatedMetric`, `DeleteCalculatedMetric` methods to the Admin API v1alpha ([#4984](https://github.com/googleapis/google-cloud-node/issues/4984)) ([0a90c23](https://github.com/googleapis/google-cloud-node/commit/0a90c23568b82d79654e6819039178eee97c4499))
+
+## [7.0.1](https://github.com/googleapis/google-cloud-node/compare/admin-v7.0.0...admin-v7.0.1) (2024-01-05)
+
+
+### Bug Fixes
+
+* [analytics-admin] correct long audio synthesis HTTP binding ([#4888](https://github.com/googleapis/google-cloud-node/issues/4888)) ([60a26a1](https://github.com/googleapis/google-cloud-node/commit/60a26a1e60d46295a2688a6b123a092993698ee8))
+
+## [7.0.0](https://github.com/googleapis/google-cloud-node/compare/admin-v6.0.0...admin-v7.0.0) (2023-10-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* [analytics-admin] delete `BatchDeleteUserLinks`, `DeleteUserLink`, `BatchUpdateUserLinks`, `UpdateUserLink`, `BatchCreateUserLinks`, `CreateUserLink`, `AuditUserLinks`, `ListUserLinks`, `BatchGetUserLinks`, `GetUserLink` from the Admin API v1 alp... ([#4751](https://github.com/googleapis/google-cloud-node/issues/4751))
+
+### Bug Fixes
+
+* [analytics-admin] delete `BatchDeleteUserLinks`, `DeleteUserLink`, `BatchUpdateUserLinks`, `UpdateUserLink`, `BatchCreateUserLinks`, `CreateUserLink`, `AuditUserLinks`, `ListUserLinks`, `BatchGetUserLinks`, `GetUserLink` from the Admin API v1 alp... ([#4751](https://github.com/googleapis/google-cloud-node/issues/4751)) ([e61a513](https://github.com/googleapis/google-cloud-node/commit/e61a513a706e87d0ef03668875d3583d3aca29a4))
+
+## [6.0.0](https://github.com/googleapis/google-cloud-node/compare/admin-v5.0.0...admin-v6.0.0) (2023-09-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* [analytics-admin] rename the `enterprise_daily_export_enabled` field to `fresh_daily_export_enabled` in the `BigQueryLink` resource ([#4600](https://github.com/googleapis/google-cloud-node/issues/4600))
+
+### Features
+
+* [analytics-admin] add `UpdateConversionEvent` method to the Admin API v1 beta ([#4580](https://github.com/googleapis/google-cloud-node/issues/4580)) ([6d66eee](https://github.com/googleapis/google-cloud-node/commit/6d66eeea059099ac95ed2d880a70062f13f59c45))
+
+
+### Bug Fixes
+
+* [analytics-admin] rename the `enterprise_daily_export_enabled` field to `fresh_daily_export_enabled` in the `BigQueryLink` resource ([#4600](https://github.com/googleapis/google-cloud-node/issues/4600)) ([7fdbeb3](https://github.com/googleapis/google-cloud-node/commit/7fdbeb3454702e6b567827d11f2dd659a9a576e9))
+* [analytics-admin] rename the `intraday_export_enabled` field to `enterprise_export_enabled`  in the `BigQueryLink` resource ([#4530](https://github.com/googleapis/google-cloud-node/issues/4530)) ([d08dad1](https://github.com/googleapis/google-cloud-node/commit/d08dad15797114ac462da437ffc3e9253af3527b))
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4583](https://github.com/googleapis/google-cloud-node/issues/4583)) ([c3ddba8](https://github.com/googleapis/google-cloud-node/commit/c3ddba8df9fee6185e36a4e99f7c67b0319f1242))
+* **deps:** Update dependency google-auth-library to v9 ([#4560](https://github.com/googleapis/google-cloud-node/issues/4560)) ([e5099b7](https://github.com/googleapis/google-cloud-node/commit/e5099b7a475e0cfaf0d25aa8d6755cd7bc43cbe0))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/admin-v4.9.0...admin-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [analytics-admin] fix typings for IAM methods ([#4455](https://github.com/googleapis/google-cloud-node/issues/4455)) ([5aa181c](https://github.com/googleapis/google-cloud-node/commit/5aa181c54065a6920a63cce8324deed7d7a5ce09))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [4.9.0](https://github.com/googleapis/google-cloud-node/compare/admin-v4.8.0...admin-v4.9.0) (2023-05-20)
 
 

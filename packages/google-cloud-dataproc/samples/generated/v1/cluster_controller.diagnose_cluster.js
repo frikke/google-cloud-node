@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,6 +41,32 @@ function main(projectId, region, clusterName) {
    *  Required. The cluster name.
    */
   // const clusterName = 'abc123'
+  /**
+   *  Optional. (Optional) The output Cloud Storage directory for the diagnostic
+   *  tarball. If not specified, a task-specific directory in the cluster's
+   *  staging bucket will be used.
+   */
+  // const tarballGcsDir = 'abc123'
+  /**
+   *  Optional. (Optional) The access type to the diagnostic tarball. If not
+   *  specified, falls back to default access of the bucket
+   */
+  // const tarballAccess = {}
+  /**
+   *  Optional. Time interval in which diagnosis should be carried out on the
+   *  cluster.
+   */
+  // const diagnosisInterval = {}
+  /**
+   *  Optional. Specifies a list of jobs on which diagnosis is to be performed.
+   *  Format: projects/{project}/regions/{region}/jobs/{job}
+   */
+  // const jobs = ['abc','def']
+  /**
+   *  Optional. Specifies a list of yarn applications on which diagnosis is to be
+   *  performed.
+   */
+  // const yarnApplicationIds = ['abc','def']
 
   // Imports the Dataproc library
   const {ClusterControllerClient} = require('@google-cloud/dataproc').v1;

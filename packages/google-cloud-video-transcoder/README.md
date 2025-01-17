@@ -2,7 +2,7 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
-# [Transcoder API: Node.js Client](https://github.com/googleapis/google-cloud-node)
+# [Transcoder API: Node.js Client](https://github.com/googleapis/google-cloud-node/tree/main/packages/google-cloud-video-transcoder)
 
 [![release level](https://img.shields.io/badge/release%20level-stable-brightgreen.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
 [![npm version](https://img.shields.io/npm/v/@google-cloud/video-transcoder.svg)](https://www.npmjs.org/package/@google-cloud/video-transcoder)
@@ -44,7 +44,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 1.  [Select or create a Cloud Platform project][projects].
 1.  [Enable billing for your project][billing].
 1.  [Enable the Transcoder API API][enable_api].
-1.  [Set up authentication with a service account][auth] so you can access the
+1.  [Set up authentication][auth] so you can access the
     API from your local workstation.
 
 ### Installing the client library
@@ -82,20 +82,19 @@ listJobs();
 
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-node/tree/main/samples) directory. Each sample's `README.md` has instructions for running its sample.
+Samples are in the [`samples/`](https://github.com/googleapis/google-cloud-node/tree/main/packages/google-cloud-video-transcoder/samples) directory. Each sample's `README.md` has instructions for running its sample.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-| Transcoder_service.create_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job.js,samples/README.md) |
-| Transcoder_service.create_job_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job_template.js,samples/README.md) |
-| Transcoder_service.delete_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job.js,samples/README.md) |
-| Transcoder_service.delete_job_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job_template.js,samples/README.md) |
-| Transcoder_service.get_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job.js,samples/README.md) |
-| Transcoder_service.get_job_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job_template.js,samples/README.md) |
-| Transcoder_service.list_job_templates | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_job_templates.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_job_templates.js,samples/README.md) |
-| Transcoder_service.list_jobs | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_jobs.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_jobs.js,samples/README.md) |
-| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/quickstart.js,samples/README.md) |
-| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/test/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/test/quickstart.js,samples/README.md) |
+| Transcoder_service.create_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.create_job_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.create_job_template.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.delete_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.delete_job_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.delete_job_template.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.get_job | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.get_job_template | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job_template.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.get_job_template.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.list_job_templates | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_job_templates.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_job_templates.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Transcoder_service.list_jobs | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_jobs.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/generated/v1/transcoder_service.list_jobs.js,packages/google-cloud-video-transcoder/samples/README.md) |
+| Quickstart | [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-video-transcoder/samples/quickstart.js) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-video-transcoder/samples/quickstart.js,packages/google-cloud-video-transcoder/samples/README.md) |
 
 
 
@@ -104,7 +103,7 @@ also contains samples.
 
 ## Supported Node.js Versions
 
-Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/).
+Our client libraries follow the [Node.js release schedule](https://github.com/nodejs/release#release-schedule).
 Libraries are compatible with all current _active_ and _maintenance_ versions of
 Node.js.
 If you are using an end-of-life version of Node.js, we recommend that you update
@@ -165,4 +164,4 @@ See [LICENSE](https://github.com/googleapis/google-cloud-node/blob/main/LICENSE)
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 [enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=transcoder.googleapis.com
-[auth]: https://cloud.google.com/docs/authentication/getting-started
+[auth]: https://cloud.google.com/docs/authentication/external/set-up-adc-local

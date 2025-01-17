@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ function main() {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  A Google Analytics GA4 property identifier whose events are tracked.
+   *  Optional. A Google Analytics property identifier whose events are tracked.
    *  Specified in the URL path and not the body. To learn more, see where to
    *  find your Property
    *  ID (https://developers.google.com/analytics/devguides/reporting/data/v1/property-id).
@@ -39,68 +39,69 @@ function main() {
    */
   // const property = 'abc123'
   /**
-   *  Date ranges of data to read. If multiple date ranges are requested, each
-   *  response row will contain a zero based date range index. If two date
-   *  ranges overlap, the event data for the overlapping days is included in the
-   *  response rows for both date ranges.
+   *  Optional. Date ranges of data to read. If multiple date ranges are
+   *  requested, each response row will contain a zero based date range index. If
+   *  two date ranges overlap, the event data for the overlapping days is
+   *  included in the response rows for both date ranges.
    */
-  // const dateRanges = 1234
+  // const dateRanges = [1,2,3,4]
   /**
-   *  The configuration of this request's funnel. This funnel configuration is
-   *  required.
+   *  Optional. The configuration of this request's funnel. This funnel
+   *  configuration is required.
    */
   // const funnel = {}
   /**
-   *  If specified, this breakdown adds a dimension to the funnel table sub
-   *  report response. This breakdown dimension expands each funnel step to the
-   *  unique values of the breakdown dimension. For example, a breakdown by the
-   *  `deviceCategory` dimension will create rows for `mobile`, `tablet`,
+   *  Optional. If specified, this breakdown adds a dimension to the funnel table
+   *  sub report response. This breakdown dimension expands each funnel step to
+   *  the unique values of the breakdown dimension. For example, a breakdown by
+   *  the `deviceCategory` dimension will create rows for `mobile`, `tablet`,
    *  `desktop`, and the total.
    */
   // const funnelBreakdown = {}
   /**
-   *  If specified, next action adds a dimension to the funnel visualization sub
-   *  report response. This next action dimension expands each funnel step to the
-   *  unique values of the next action. For example a next action of the
-   *  `eventName` dimension will create rows for several events (i.e.
-   *  `session_start` & `click`) and the total.
+   *  Optional. If specified, next action adds a dimension to the funnel
+   *  visualization sub report response. This next action dimension expands each
+   *  funnel step to the unique values of the next action. For example a next
+   *  action of the `eventName` dimension will create rows for several events
+   *  (for example `session_start` & `click`) and the total.
    *  Next action only supports `eventName` and most Page / Screen dimensions
    *  like `pageTitle` and `pagePath`.
    */
   // const funnelNextAction = {}
   /**
-   *  The funnel visualization type controls the dimensions present in the funnel
-   *  visualization sub report response. If not specified, `STANDARD_FUNNEL` is
-   *  used.
+   *  Optional. The funnel visualization type controls the dimensions present in
+   *  the funnel visualization sub report response. If not specified,
+   *  `STANDARD_FUNNEL` is used.
    */
   // const funnelVisualizationType = {}
   /**
-   *  The configurations of segments. Segments are subsets of a property's data.
-   *  In a funnel report with segments, the funnel is evaluated in each segment.
+   *  Optional. The configurations of segments. Segments are subsets of a
+   *  property's data. In a funnel report with segments, the funnel is evaluated
+   *  in each segment.
    *  Each segment specified in this request
    *  produces a separate row in the response; in the response, each segment
    *  identified by its name.
    *  The segments parameter is optional. Requests are limited to 4 segments.
    */
-  // const segments = 1234
+  // const segments = [1,2,3,4]
   /**
-   *  The number of rows to return. If unspecified, 10,000 rows are returned. The
-   *  API returns a maximum of 100,000 rows per request, no matter how many you
-   *  ask for. `limit` must be positive.
+   *  Optional. The number of rows to return. If unspecified, 10,000 rows are
+   *  returned. The API returns a maximum of 250,000 rows per request, no matter
+   *  how many you ask for. `limit` must be positive.
    *  The API can also return fewer rows than the requested `limit`, if there
    *  aren't as many dimension values as the `limit`.
    */
   // const limit = 1234
   /**
-   *  Dimension filters allow you to ask for only specific dimension values in
-   *  the report. To learn more, see Creating a Report: Dimension
+   *  Optional. Dimension filters allow you to ask for only specific dimension
+   *  values in the report. To learn more, see Creating a Report: Dimension
    *  Filters (https://developers.google.com/analytics/devguides/reporting/data/v1/basics#dimension_filters)
    *  for examples. Metrics cannot be used in this filter.
    */
   // const dimensionFilter = {}
   /**
-   *  Toggles whether to return the current state of this Analytics Property's
-   *  quota. Quota is returned in PropertyQuota (#PropertyQuota).
+   *  Optional. Toggles whether to return the current state of this Analytics
+   *  Property's quota. Quota is returned in PropertyQuota (#PropertyQuota).
    */
   // const returnPropertyQuota = true
 

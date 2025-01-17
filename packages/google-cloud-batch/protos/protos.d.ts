@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -506,6 +506,9 @@ export namespace google {
                     /** ListJobsRequest filter */
                     filter?: (string|null);
 
+                    /** ListJobsRequest orderBy */
+                    orderBy?: (string|null);
+
                     /** ListJobsRequest pageSize */
                     pageSize?: (number|null);
 
@@ -527,6 +530,9 @@ export namespace google {
 
                     /** ListJobsRequest filter. */
                     public filter: string;
+
+                    /** ListJobsRequest orderBy. */
+                    public orderBy: string;
 
                     /** ListJobsRequest pageSize. */
                     public pageSize: number;
@@ -1340,6 +1346,9 @@ export namespace google {
 
                     /** LogsPolicy logsPath */
                     logsPath?: (string|null);
+
+                    /** LogsPolicy cloudLoggingOption */
+                    cloudLoggingOption?: (google.cloud.batch.v1.LogsPolicy.ICloudLoggingOption|null);
                 }
 
                 /** Represents a LogsPolicy. */
@@ -1356,6 +1365,9 @@ export namespace google {
 
                     /** LogsPolicy logsPath. */
                     public logsPath: string;
+
+                    /** LogsPolicy cloudLoggingOption. */
+                    public cloudLoggingOption?: (google.cloud.batch.v1.LogsPolicy.ICloudLoggingOption|null);
 
                     /**
                      * Creates a new LogsPolicy instance using the specified properties.
@@ -1436,6 +1448,103 @@ export namespace google {
                 }
 
                 namespace LogsPolicy {
+
+                    /** Properties of a CloudLoggingOption. */
+                    interface ICloudLoggingOption {
+
+                        /** CloudLoggingOption useGenericTaskMonitoredResource */
+                        useGenericTaskMonitoredResource?: (boolean|null);
+                    }
+
+                    /** Represents a CloudLoggingOption. */
+                    class CloudLoggingOption implements ICloudLoggingOption {
+
+                        /**
+                         * Constructs a new CloudLoggingOption.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.batch.v1.LogsPolicy.ICloudLoggingOption);
+
+                        /** CloudLoggingOption useGenericTaskMonitoredResource. */
+                        public useGenericTaskMonitoredResource: boolean;
+
+                        /**
+                         * Creates a new CloudLoggingOption instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns CloudLoggingOption instance
+                         */
+                        public static create(properties?: google.cloud.batch.v1.LogsPolicy.ICloudLoggingOption): google.cloud.batch.v1.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Encodes the specified CloudLoggingOption message. Does not implicitly {@link google.cloud.batch.v1.LogsPolicy.CloudLoggingOption.verify|verify} messages.
+                         * @param message CloudLoggingOption message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.batch.v1.LogsPolicy.ICloudLoggingOption, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified CloudLoggingOption message, length delimited. Does not implicitly {@link google.cloud.batch.v1.LogsPolicy.CloudLoggingOption.verify|verify} messages.
+                         * @param message CloudLoggingOption message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.batch.v1.LogsPolicy.ICloudLoggingOption, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a CloudLoggingOption message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns CloudLoggingOption
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Decodes a CloudLoggingOption message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns CloudLoggingOption
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Verifies a CloudLoggingOption message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a CloudLoggingOption message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns CloudLoggingOption
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Creates a plain object from a CloudLoggingOption message. Also converts values to other types if specified.
+                         * @param message CloudLoggingOption
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.batch.v1.LogsPolicy.CloudLoggingOption, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this CloudLoggingOption to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for CloudLoggingOption
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
 
                     /** Destination enum. */
                     enum Destination {
@@ -2034,6 +2143,9 @@ export namespace google {
 
                     /** AllocationPolicy placement */
                     placement?: (google.cloud.batch.v1.AllocationPolicy.IPlacementPolicy|null);
+
+                    /** AllocationPolicy tags */
+                    tags?: (string[]|null);
                 }
 
                 /** Represents an AllocationPolicy. */
@@ -2062,6 +2174,9 @@ export namespace google {
 
                     /** AllocationPolicy placement. */
                     public placement?: (google.cloud.batch.v1.AllocationPolicy.IPlacementPolicy|null);
+
+                    /** AllocationPolicy tags. */
+                    public tags: string[];
 
                     /**
                      * Creates a new AllocationPolicy instance using the specified properties.
@@ -2487,6 +2602,9 @@ export namespace google {
 
                         /** Accelerator installGpuDrivers */
                         installGpuDrivers?: (boolean|null);
+
+                        /** Accelerator driverVersion */
+                        driverVersion?: (string|null);
                     }
 
                     /** Represents an Accelerator. */
@@ -2506,6 +2624,9 @@ export namespace google {
 
                         /** Accelerator installGpuDrivers. */
                         public installGpuDrivers: boolean;
+
+                        /** Accelerator driverVersion. */
+                        public driverVersion: string;
 
                         /**
                          * Creates a new Accelerator instance using the specified properties.
@@ -2605,6 +2726,9 @@ export namespace google {
 
                         /** InstancePolicy disks */
                         disks?: (google.cloud.batch.v1.AllocationPolicy.IAttachedDisk[]|null);
+
+                        /** InstancePolicy reservation */
+                        reservation?: (string|null);
                     }
 
                     /** Represents an InstancePolicy. */
@@ -2633,6 +2757,9 @@ export namespace google {
 
                         /** InstancePolicy disks. */
                         public disks: google.cloud.batch.v1.AllocationPolicy.IAttachedDisk[];
+
+                        /** InstancePolicy reservation. */
+                        public reservation: string;
 
                         /**
                          * Creates a new InstancePolicy instance using the specified properties.
@@ -2723,6 +2850,12 @@ export namespace google {
 
                         /** InstancePolicyOrTemplate installGpuDrivers */
                         installGpuDrivers?: (boolean|null);
+
+                        /** InstancePolicyOrTemplate installOpsAgent */
+                        installOpsAgent?: (boolean|null);
+
+                        /** InstancePolicyOrTemplate blockProjectSshKeys */
+                        blockProjectSshKeys?: (boolean|null);
                     }
 
                     /** Represents an InstancePolicyOrTemplate. */
@@ -2742,6 +2875,12 @@ export namespace google {
 
                         /** InstancePolicyOrTemplate installGpuDrivers. */
                         public installGpuDrivers: boolean;
+
+                        /** InstancePolicyOrTemplate installOpsAgent. */
+                        public installOpsAgent: boolean;
+
+                        /** InstancePolicyOrTemplate blockProjectSshKeys. */
+                        public blockProjectSshKeys: boolean;
 
                         /** InstancePolicyOrTemplate policyTemplate. */
                         public policyTemplate?: ("policy"|"instanceTemplate");
@@ -3157,6 +3296,9 @@ export namespace google {
                     /** TaskGroup parallelism */
                     parallelism?: (number|Long|string|null);
 
+                    /** TaskGroup schedulingPolicy */
+                    schedulingPolicy?: (google.cloud.batch.v1.TaskGroup.SchedulingPolicy|keyof typeof google.cloud.batch.v1.TaskGroup.SchedulingPolicy|null);
+
                     /** TaskGroup taskEnvironments */
                     taskEnvironments?: (google.cloud.batch.v1.IEnvironment[]|null);
 
@@ -3168,6 +3310,9 @@ export namespace google {
 
                     /** TaskGroup permissiveSsh */
                     permissiveSsh?: (boolean|null);
+
+                    /** TaskGroup runAsNonRoot */
+                    runAsNonRoot?: (boolean|null);
                 }
 
                 /** Represents a TaskGroup. */
@@ -3191,6 +3336,9 @@ export namespace google {
                     /** TaskGroup parallelism. */
                     public parallelism: (number|Long|string);
 
+                    /** TaskGroup schedulingPolicy. */
+                    public schedulingPolicy: (google.cloud.batch.v1.TaskGroup.SchedulingPolicy|keyof typeof google.cloud.batch.v1.TaskGroup.SchedulingPolicy);
+
                     /** TaskGroup taskEnvironments. */
                     public taskEnvironments: google.cloud.batch.v1.IEnvironment[];
 
@@ -3202,6 +3350,9 @@ export namespace google {
 
                     /** TaskGroup permissiveSsh. */
                     public permissiveSsh: boolean;
+
+                    /** TaskGroup runAsNonRoot. */
+                    public runAsNonRoot: boolean;
 
                     /**
                      * Creates a new TaskGroup instance using the specified properties.
@@ -3279,6 +3430,16 @@ export namespace google {
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace TaskGroup {
+
+                    /** SchedulingPolicy enum. */
+                    enum SchedulingPolicy {
+                        SCHEDULING_POLICY_UNSPECIFIED = 0,
+                        AS_SOON_AS_POSSIBLE = 1,
+                        IN_ORDER = 2
+                    }
                 }
 
                 /** Properties of a ServiceAccount. */
@@ -3840,6 +4001,9 @@ export namespace google {
                     /** Runnable barrier */
                     barrier?: (google.cloud.batch.v1.Runnable.IBarrier|null);
 
+                    /** Runnable displayName */
+                    displayName?: (string|null);
+
                     /** Runnable ignoreExitStatus */
                     ignoreExitStatus?: (boolean|null);
 
@@ -3876,6 +4040,9 @@ export namespace google {
 
                     /** Runnable barrier. */
                     public barrier?: (google.cloud.batch.v1.Runnable.IBarrier|null);
+
+                    /** Runnable displayName. */
+                    public displayName: string;
 
                     /** Runnable ignoreExitStatus. */
                     public ignoreExitStatus: boolean;
@@ -4004,6 +4171,9 @@ export namespace google {
 
                         /** Container password */
                         password?: (string|null);
+
+                        /** Container enableImageStreaming */
+                        enableImageStreaming?: (boolean|null);
                     }
 
                     /** Represents a Container. */
@@ -4038,6 +4208,9 @@ export namespace google {
 
                         /** Container password. */
                         public password: string;
+
+                        /** Container enableImageStreaming. */
+                        public enableImageStreaming: boolean;
 
                         /**
                          * Creates a new Container instance using the specified properties.
@@ -5379,6 +5552,34 @@ export namespace google {
                     public deleteJob(request: google.cloud.batch.v1alpha.IDeleteJobRequest): Promise<google.longrunning.Operation>;
 
                     /**
+                     * Calls CancelJob.
+                     * @param request CancelJobRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public cancelJob(request: google.cloud.batch.v1alpha.ICancelJobRequest, callback: google.cloud.batch.v1alpha.BatchService.CancelJobCallback): void;
+
+                    /**
+                     * Calls CancelJob.
+                     * @param request CancelJobRequest message or plain object
+                     * @returns Promise
+                     */
+                    public cancelJob(request: google.cloud.batch.v1alpha.ICancelJobRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls UpdateJob.
+                     * @param request UpdateJobRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Job
+                     */
+                    public updateJob(request: google.cloud.batch.v1alpha.IUpdateJobRequest, callback: google.cloud.batch.v1alpha.BatchService.UpdateJobCallback): void;
+
+                    /**
+                     * Calls UpdateJob.
+                     * @param request UpdateJobRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateJob(request: google.cloud.batch.v1alpha.IUpdateJobRequest): Promise<google.cloud.batch.v1alpha.Job>;
+
+                    /**
                      * Calls ListJobs.
                      * @param request ListJobsRequest message or plain object
                      * @param callback Node-style callback called with the error, if any, and ListJobsResponse
@@ -5419,6 +5620,76 @@ export namespace google {
                      * @returns Promise
                      */
                     public listTasks(request: google.cloud.batch.v1alpha.IListTasksRequest): Promise<google.cloud.batch.v1alpha.ListTasksResponse>;
+
+                    /**
+                     * Calls CreateResourceAllowance.
+                     * @param request CreateResourceAllowanceRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ResourceAllowance
+                     */
+                    public createResourceAllowance(request: google.cloud.batch.v1alpha.ICreateResourceAllowanceRequest, callback: google.cloud.batch.v1alpha.BatchService.CreateResourceAllowanceCallback): void;
+
+                    /**
+                     * Calls CreateResourceAllowance.
+                     * @param request CreateResourceAllowanceRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createResourceAllowance(request: google.cloud.batch.v1alpha.ICreateResourceAllowanceRequest): Promise<google.cloud.batch.v1alpha.ResourceAllowance>;
+
+                    /**
+                     * Calls GetResourceAllowance.
+                     * @param request GetResourceAllowanceRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ResourceAllowance
+                     */
+                    public getResourceAllowance(request: google.cloud.batch.v1alpha.IGetResourceAllowanceRequest, callback: google.cloud.batch.v1alpha.BatchService.GetResourceAllowanceCallback): void;
+
+                    /**
+                     * Calls GetResourceAllowance.
+                     * @param request GetResourceAllowanceRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getResourceAllowance(request: google.cloud.batch.v1alpha.IGetResourceAllowanceRequest): Promise<google.cloud.batch.v1alpha.ResourceAllowance>;
+
+                    /**
+                     * Calls DeleteResourceAllowance.
+                     * @param request DeleteResourceAllowanceRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteResourceAllowance(request: google.cloud.batch.v1alpha.IDeleteResourceAllowanceRequest, callback: google.cloud.batch.v1alpha.BatchService.DeleteResourceAllowanceCallback): void;
+
+                    /**
+                     * Calls DeleteResourceAllowance.
+                     * @param request DeleteResourceAllowanceRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteResourceAllowance(request: google.cloud.batch.v1alpha.IDeleteResourceAllowanceRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls ListResourceAllowances.
+                     * @param request ListResourceAllowancesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListResourceAllowancesResponse
+                     */
+                    public listResourceAllowances(request: google.cloud.batch.v1alpha.IListResourceAllowancesRequest, callback: google.cloud.batch.v1alpha.BatchService.ListResourceAllowancesCallback): void;
+
+                    /**
+                     * Calls ListResourceAllowances.
+                     * @param request ListResourceAllowancesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listResourceAllowances(request: google.cloud.batch.v1alpha.IListResourceAllowancesRequest): Promise<google.cloud.batch.v1alpha.ListResourceAllowancesResponse>;
+
+                    /**
+                     * Calls UpdateResourceAllowance.
+                     * @param request UpdateResourceAllowanceRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ResourceAllowance
+                     */
+                    public updateResourceAllowance(request: google.cloud.batch.v1alpha.IUpdateResourceAllowanceRequest, callback: google.cloud.batch.v1alpha.BatchService.UpdateResourceAllowanceCallback): void;
+
+                    /**
+                     * Calls UpdateResourceAllowance.
+                     * @param request UpdateResourceAllowanceRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateResourceAllowance(request: google.cloud.batch.v1alpha.IUpdateResourceAllowanceRequest): Promise<google.cloud.batch.v1alpha.ResourceAllowance>;
                 }
 
                 namespace BatchService {
@@ -5445,6 +5716,20 @@ export namespace google {
                     type DeleteJobCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
                     /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|cancelJob}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CancelJobCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|updateJob}.
+                     * @param error Error, if any
+                     * @param [response] Job
+                     */
+                    type UpdateJobCallback = (error: (Error|null), response?: google.cloud.batch.v1alpha.Job) => void;
+
+                    /**
                      * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|listJobs}.
                      * @param error Error, if any
                      * @param [response] ListJobsResponse
@@ -5464,6 +5749,41 @@ export namespace google {
                      * @param [response] ListTasksResponse
                      */
                     type ListTasksCallback = (error: (Error|null), response?: google.cloud.batch.v1alpha.ListTasksResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|createResourceAllowance}.
+                     * @param error Error, if any
+                     * @param [response] ResourceAllowance
+                     */
+                    type CreateResourceAllowanceCallback = (error: (Error|null), response?: google.cloud.batch.v1alpha.ResourceAllowance) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|getResourceAllowance}.
+                     * @param error Error, if any
+                     * @param [response] ResourceAllowance
+                     */
+                    type GetResourceAllowanceCallback = (error: (Error|null), response?: google.cloud.batch.v1alpha.ResourceAllowance) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|deleteResourceAllowance}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteResourceAllowanceCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|listResourceAllowances}.
+                     * @param error Error, if any
+                     * @param [response] ListResourceAllowancesResponse
+                     */
+                    type ListResourceAllowancesCallback = (error: (Error|null), response?: google.cloud.batch.v1alpha.ListResourceAllowancesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.batch.v1alpha.BatchService|updateResourceAllowance}.
+                     * @param error Error, if any
+                     * @param [response] ResourceAllowance
+                     */
+                    type UpdateResourceAllowanceCallback = (error: (Error|null), response?: google.cloud.batch.v1alpha.ResourceAllowance) => void;
                 }
 
                 /** Properties of a CreateJobRequest. */
@@ -5781,6 +6101,309 @@ export namespace google {
 
                     /**
                      * Gets the default type url for DeleteJobRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CancelJobRequest. */
+                interface ICancelJobRequest {
+
+                    /** CancelJobRequest name */
+                    name?: (string|null);
+
+                    /** CancelJobRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CancelJobRequest. */
+                class CancelJobRequest implements ICancelJobRequest {
+
+                    /**
+                     * Constructs a new CancelJobRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.ICancelJobRequest);
+
+                    /** CancelJobRequest name. */
+                    public name: string;
+
+                    /** CancelJobRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CancelJobRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CancelJobRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.ICancelJobRequest): google.cloud.batch.v1alpha.CancelJobRequest;
+
+                    /**
+                     * Encodes the specified CancelJobRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.CancelJobRequest.verify|verify} messages.
+                     * @param message CancelJobRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.ICancelJobRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CancelJobRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.CancelJobRequest.verify|verify} messages.
+                     * @param message CancelJobRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.ICancelJobRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CancelJobRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CancelJobRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.CancelJobRequest;
+
+                    /**
+                     * Decodes a CancelJobRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CancelJobRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.CancelJobRequest;
+
+                    /**
+                     * Verifies a CancelJobRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CancelJobRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CancelJobRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.CancelJobRequest;
+
+                    /**
+                     * Creates a plain object from a CancelJobRequest message. Also converts values to other types if specified.
+                     * @param message CancelJobRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.CancelJobRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CancelJobRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CancelJobRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a CancelJobResponse. */
+                interface ICancelJobResponse {
+                }
+
+                /** Represents a CancelJobResponse. */
+                class CancelJobResponse implements ICancelJobResponse {
+
+                    /**
+                     * Constructs a new CancelJobResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.ICancelJobResponse);
+
+                    /**
+                     * Creates a new CancelJobResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CancelJobResponse instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.ICancelJobResponse): google.cloud.batch.v1alpha.CancelJobResponse;
+
+                    /**
+                     * Encodes the specified CancelJobResponse message. Does not implicitly {@link google.cloud.batch.v1alpha.CancelJobResponse.verify|verify} messages.
+                     * @param message CancelJobResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.ICancelJobResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CancelJobResponse message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.CancelJobResponse.verify|verify} messages.
+                     * @param message CancelJobResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.ICancelJobResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CancelJobResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CancelJobResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.CancelJobResponse;
+
+                    /**
+                     * Decodes a CancelJobResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CancelJobResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.CancelJobResponse;
+
+                    /**
+                     * Verifies a CancelJobResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CancelJobResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CancelJobResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.CancelJobResponse;
+
+                    /**
+                     * Creates a plain object from a CancelJobResponse message. Also converts values to other types if specified.
+                     * @param message CancelJobResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.CancelJobResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CancelJobResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CancelJobResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateJobRequest. */
+                interface IUpdateJobRequest {
+
+                    /** UpdateJobRequest job */
+                    job?: (google.cloud.batch.v1alpha.IJob|null);
+
+                    /** UpdateJobRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateJobRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateJobRequest. */
+                class UpdateJobRequest implements IUpdateJobRequest {
+
+                    /**
+                     * Constructs a new UpdateJobRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IUpdateJobRequest);
+
+                    /** UpdateJobRequest job. */
+                    public job?: (google.cloud.batch.v1alpha.IJob|null);
+
+                    /** UpdateJobRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateJobRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateJobRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateJobRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IUpdateJobRequest): google.cloud.batch.v1alpha.UpdateJobRequest;
+
+                    /**
+                     * Encodes the specified UpdateJobRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.UpdateJobRequest.verify|verify} messages.
+                     * @param message UpdateJobRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IUpdateJobRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateJobRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UpdateJobRequest.verify|verify} messages.
+                     * @param message UpdateJobRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IUpdateJobRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateJobRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateJobRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UpdateJobRequest;
+
+                    /**
+                     * Decodes an UpdateJobRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateJobRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UpdateJobRequest;
+
+                    /**
+                     * Verifies an UpdateJobRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateJobRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateJobRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UpdateJobRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateJobRequest message. Also converts values to other types if specified.
+                     * @param message UpdateJobRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.UpdateJobRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateJobRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateJobRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
@@ -6344,6 +6967,654 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a CreateResourceAllowanceRequest. */
+                interface ICreateResourceAllowanceRequest {
+
+                    /** CreateResourceAllowanceRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateResourceAllowanceRequest resourceAllowanceId */
+                    resourceAllowanceId?: (string|null);
+
+                    /** CreateResourceAllowanceRequest resourceAllowance */
+                    resourceAllowance?: (google.cloud.batch.v1alpha.IResourceAllowance|null);
+
+                    /** CreateResourceAllowanceRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateResourceAllowanceRequest. */
+                class CreateResourceAllowanceRequest implements ICreateResourceAllowanceRequest {
+
+                    /**
+                     * Constructs a new CreateResourceAllowanceRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.ICreateResourceAllowanceRequest);
+
+                    /** CreateResourceAllowanceRequest parent. */
+                    public parent: string;
+
+                    /** CreateResourceAllowanceRequest resourceAllowanceId. */
+                    public resourceAllowanceId: string;
+
+                    /** CreateResourceAllowanceRequest resourceAllowance. */
+                    public resourceAllowance?: (google.cloud.batch.v1alpha.IResourceAllowance|null);
+
+                    /** CreateResourceAllowanceRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new CreateResourceAllowanceRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateResourceAllowanceRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.ICreateResourceAllowanceRequest): google.cloud.batch.v1alpha.CreateResourceAllowanceRequest;
+
+                    /**
+                     * Encodes the specified CreateResourceAllowanceRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.CreateResourceAllowanceRequest.verify|verify} messages.
+                     * @param message CreateResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.ICreateResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateResourceAllowanceRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.CreateResourceAllowanceRequest.verify|verify} messages.
+                     * @param message CreateResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.ICreateResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateResourceAllowanceRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.CreateResourceAllowanceRequest;
+
+                    /**
+                     * Decodes a CreateResourceAllowanceRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.CreateResourceAllowanceRequest;
+
+                    /**
+                     * Verifies a CreateResourceAllowanceRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateResourceAllowanceRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateResourceAllowanceRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.CreateResourceAllowanceRequest;
+
+                    /**
+                     * Creates a plain object from a CreateResourceAllowanceRequest message. Also converts values to other types if specified.
+                     * @param message CreateResourceAllowanceRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.CreateResourceAllowanceRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateResourceAllowanceRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateResourceAllowanceRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetResourceAllowanceRequest. */
+                interface IGetResourceAllowanceRequest {
+
+                    /** GetResourceAllowanceRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetResourceAllowanceRequest. */
+                class GetResourceAllowanceRequest implements IGetResourceAllowanceRequest {
+
+                    /**
+                     * Constructs a new GetResourceAllowanceRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IGetResourceAllowanceRequest);
+
+                    /** GetResourceAllowanceRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetResourceAllowanceRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetResourceAllowanceRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IGetResourceAllowanceRequest): google.cloud.batch.v1alpha.GetResourceAllowanceRequest;
+
+                    /**
+                     * Encodes the specified GetResourceAllowanceRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.GetResourceAllowanceRequest.verify|verify} messages.
+                     * @param message GetResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IGetResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetResourceAllowanceRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.GetResourceAllowanceRequest.verify|verify} messages.
+                     * @param message GetResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IGetResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetResourceAllowanceRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.GetResourceAllowanceRequest;
+
+                    /**
+                     * Decodes a GetResourceAllowanceRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.GetResourceAllowanceRequest;
+
+                    /**
+                     * Verifies a GetResourceAllowanceRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetResourceAllowanceRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetResourceAllowanceRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.GetResourceAllowanceRequest;
+
+                    /**
+                     * Creates a plain object from a GetResourceAllowanceRequest message. Also converts values to other types if specified.
+                     * @param message GetResourceAllowanceRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.GetResourceAllowanceRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetResourceAllowanceRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetResourceAllowanceRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteResourceAllowanceRequest. */
+                interface IDeleteResourceAllowanceRequest {
+
+                    /** DeleteResourceAllowanceRequest name */
+                    name?: (string|null);
+
+                    /** DeleteResourceAllowanceRequest reason */
+                    reason?: (string|null);
+
+                    /** DeleteResourceAllowanceRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteResourceAllowanceRequest. */
+                class DeleteResourceAllowanceRequest implements IDeleteResourceAllowanceRequest {
+
+                    /**
+                     * Constructs a new DeleteResourceAllowanceRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IDeleteResourceAllowanceRequest);
+
+                    /** DeleteResourceAllowanceRequest name. */
+                    public name: string;
+
+                    /** DeleteResourceAllowanceRequest reason. */
+                    public reason: string;
+
+                    /** DeleteResourceAllowanceRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteResourceAllowanceRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteResourceAllowanceRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IDeleteResourceAllowanceRequest): google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest;
+
+                    /**
+                     * Encodes the specified DeleteResourceAllowanceRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest.verify|verify} messages.
+                     * @param message DeleteResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IDeleteResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteResourceAllowanceRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest.verify|verify} messages.
+                     * @param message DeleteResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IDeleteResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteResourceAllowanceRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest;
+
+                    /**
+                     * Decodes a DeleteResourceAllowanceRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest;
+
+                    /**
+                     * Verifies a DeleteResourceAllowanceRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteResourceAllowanceRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteResourceAllowanceRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteResourceAllowanceRequest message. Also converts values to other types if specified.
+                     * @param message DeleteResourceAllowanceRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.DeleteResourceAllowanceRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteResourceAllowanceRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteResourceAllowanceRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListResourceAllowancesRequest. */
+                interface IListResourceAllowancesRequest {
+
+                    /** ListResourceAllowancesRequest parent */
+                    parent?: (string|null);
+
+                    /** ListResourceAllowancesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListResourceAllowancesRequest pageToken */
+                    pageToken?: (string|null);
+                }
+
+                /** Represents a ListResourceAllowancesRequest. */
+                class ListResourceAllowancesRequest implements IListResourceAllowancesRequest {
+
+                    /**
+                     * Constructs a new ListResourceAllowancesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IListResourceAllowancesRequest);
+
+                    /** ListResourceAllowancesRequest parent. */
+                    public parent: string;
+
+                    /** ListResourceAllowancesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListResourceAllowancesRequest pageToken. */
+                    public pageToken: string;
+
+                    /**
+                     * Creates a new ListResourceAllowancesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListResourceAllowancesRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IListResourceAllowancesRequest): google.cloud.batch.v1alpha.ListResourceAllowancesRequest;
+
+                    /**
+                     * Encodes the specified ListResourceAllowancesRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.ListResourceAllowancesRequest.verify|verify} messages.
+                     * @param message ListResourceAllowancesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IListResourceAllowancesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListResourceAllowancesRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.ListResourceAllowancesRequest.verify|verify} messages.
+                     * @param message ListResourceAllowancesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IListResourceAllowancesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListResourceAllowancesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListResourceAllowancesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.ListResourceAllowancesRequest;
+
+                    /**
+                     * Decodes a ListResourceAllowancesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListResourceAllowancesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.ListResourceAllowancesRequest;
+
+                    /**
+                     * Verifies a ListResourceAllowancesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListResourceAllowancesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListResourceAllowancesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.ListResourceAllowancesRequest;
+
+                    /**
+                     * Creates a plain object from a ListResourceAllowancesRequest message. Also converts values to other types if specified.
+                     * @param message ListResourceAllowancesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.ListResourceAllowancesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListResourceAllowancesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListResourceAllowancesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListResourceAllowancesResponse. */
+                interface IListResourceAllowancesResponse {
+
+                    /** ListResourceAllowancesResponse resourceAllowances */
+                    resourceAllowances?: (google.cloud.batch.v1alpha.IResourceAllowance[]|null);
+
+                    /** ListResourceAllowancesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+
+                    /** ListResourceAllowancesResponse unreachable */
+                    unreachable?: (string[]|null);
+                }
+
+                /** Represents a ListResourceAllowancesResponse. */
+                class ListResourceAllowancesResponse implements IListResourceAllowancesResponse {
+
+                    /**
+                     * Constructs a new ListResourceAllowancesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IListResourceAllowancesResponse);
+
+                    /** ListResourceAllowancesResponse resourceAllowances. */
+                    public resourceAllowances: google.cloud.batch.v1alpha.IResourceAllowance[];
+
+                    /** ListResourceAllowancesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /** ListResourceAllowancesResponse unreachable. */
+                    public unreachable: string[];
+
+                    /**
+                     * Creates a new ListResourceAllowancesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListResourceAllowancesResponse instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IListResourceAllowancesResponse): google.cloud.batch.v1alpha.ListResourceAllowancesResponse;
+
+                    /**
+                     * Encodes the specified ListResourceAllowancesResponse message. Does not implicitly {@link google.cloud.batch.v1alpha.ListResourceAllowancesResponse.verify|verify} messages.
+                     * @param message ListResourceAllowancesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IListResourceAllowancesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListResourceAllowancesResponse message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.ListResourceAllowancesResponse.verify|verify} messages.
+                     * @param message ListResourceAllowancesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IListResourceAllowancesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListResourceAllowancesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListResourceAllowancesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.ListResourceAllowancesResponse;
+
+                    /**
+                     * Decodes a ListResourceAllowancesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListResourceAllowancesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.ListResourceAllowancesResponse;
+
+                    /**
+                     * Verifies a ListResourceAllowancesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListResourceAllowancesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListResourceAllowancesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.ListResourceAllowancesResponse;
+
+                    /**
+                     * Creates a plain object from a ListResourceAllowancesResponse message. Also converts values to other types if specified.
+                     * @param message ListResourceAllowancesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.ListResourceAllowancesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListResourceAllowancesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListResourceAllowancesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateResourceAllowanceRequest. */
+                interface IUpdateResourceAllowanceRequest {
+
+                    /** UpdateResourceAllowanceRequest resourceAllowance */
+                    resourceAllowance?: (google.cloud.batch.v1alpha.IResourceAllowance|null);
+
+                    /** UpdateResourceAllowanceRequest updateMask */
+                    updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateResourceAllowanceRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents an UpdateResourceAllowanceRequest. */
+                class UpdateResourceAllowanceRequest implements IUpdateResourceAllowanceRequest {
+
+                    /**
+                     * Constructs a new UpdateResourceAllowanceRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IUpdateResourceAllowanceRequest);
+
+                    /** UpdateResourceAllowanceRequest resourceAllowance. */
+                    public resourceAllowance?: (google.cloud.batch.v1alpha.IResourceAllowance|null);
+
+                    /** UpdateResourceAllowanceRequest updateMask. */
+                    public updateMask?: (google.protobuf.IFieldMask|null);
+
+                    /** UpdateResourceAllowanceRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new UpdateResourceAllowanceRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateResourceAllowanceRequest instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IUpdateResourceAllowanceRequest): google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest;
+
+                    /**
+                     * Encodes the specified UpdateResourceAllowanceRequest message. Does not implicitly {@link google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest.verify|verify} messages.
+                     * @param message UpdateResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IUpdateResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateResourceAllowanceRequest message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest.verify|verify} messages.
+                     * @param message UpdateResourceAllowanceRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IUpdateResourceAllowanceRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateResourceAllowanceRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest;
+
+                    /**
+                     * Decodes an UpdateResourceAllowanceRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateResourceAllowanceRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest;
+
+                    /**
+                     * Verifies an UpdateResourceAllowanceRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateResourceAllowanceRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateResourceAllowanceRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateResourceAllowanceRequest message. Also converts values to other types if specified.
+                     * @param message UpdateResourceAllowanceRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.UpdateResourceAllowanceRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateResourceAllowanceRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateResourceAllowanceRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of an OperationMetadata. */
                 interface IOperationMetadata {
 
@@ -6669,6 +7940,9 @@ export namespace google {
 
                     /** LogsPolicy logsPath */
                     logsPath?: (string|null);
+
+                    /** LogsPolicy cloudLoggingOption */
+                    cloudLoggingOption?: (google.cloud.batch.v1alpha.LogsPolicy.ICloudLoggingOption|null);
                 }
 
                 /** Represents a LogsPolicy. */
@@ -6685,6 +7959,9 @@ export namespace google {
 
                     /** LogsPolicy logsPath. */
                     public logsPath: string;
+
+                    /** LogsPolicy cloudLoggingOption. */
+                    public cloudLoggingOption?: (google.cloud.batch.v1alpha.LogsPolicy.ICloudLoggingOption|null);
 
                     /**
                      * Creates a new LogsPolicy instance using the specified properties.
@@ -6765,6 +8042,103 @@ export namespace google {
                 }
 
                 namespace LogsPolicy {
+
+                    /** Properties of a CloudLoggingOption. */
+                    interface ICloudLoggingOption {
+
+                        /** CloudLoggingOption useGenericTaskMonitoredResource */
+                        useGenericTaskMonitoredResource?: (boolean|null);
+                    }
+
+                    /** Represents a CloudLoggingOption. */
+                    class CloudLoggingOption implements ICloudLoggingOption {
+
+                        /**
+                         * Constructs a new CloudLoggingOption.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.batch.v1alpha.LogsPolicy.ICloudLoggingOption);
+
+                        /** CloudLoggingOption useGenericTaskMonitoredResource. */
+                        public useGenericTaskMonitoredResource: boolean;
+
+                        /**
+                         * Creates a new CloudLoggingOption instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns CloudLoggingOption instance
+                         */
+                        public static create(properties?: google.cloud.batch.v1alpha.LogsPolicy.ICloudLoggingOption): google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Encodes the specified CloudLoggingOption message. Does not implicitly {@link google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption.verify|verify} messages.
+                         * @param message CloudLoggingOption message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.batch.v1alpha.LogsPolicy.ICloudLoggingOption, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified CloudLoggingOption message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption.verify|verify} messages.
+                         * @param message CloudLoggingOption message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.batch.v1alpha.LogsPolicy.ICloudLoggingOption, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a CloudLoggingOption message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns CloudLoggingOption
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Decodes a CloudLoggingOption message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns CloudLoggingOption
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Verifies a CloudLoggingOption message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a CloudLoggingOption message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns CloudLoggingOption
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption;
+
+                        /**
+                         * Creates a plain object from a CloudLoggingOption message. Also converts values to other types if specified.
+                         * @param message CloudLoggingOption
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.batch.v1alpha.LogsPolicy.CloudLoggingOption, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this CloudLoggingOption to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for CloudLoggingOption
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
 
                     /** Destination enum. */
                     enum Destination {
@@ -7231,7 +8605,9 @@ export namespace google {
                         RUNNING = 3,
                         SUCCEEDED = 4,
                         FAILED = 5,
-                        DELETION_IN_PROGRESS = 6
+                        DELETION_IN_PROGRESS = 6,
+                        CANCELLATION_IN_PROGRESS = 7,
+                        CANCELLED = 8
                     }
                 }
 
@@ -7586,6 +8962,9 @@ export namespace google {
 
                     /** AllocationPolicy placement */
                     placement?: (google.cloud.batch.v1alpha.AllocationPolicy.IPlacementPolicy|null);
+
+                    /** AllocationPolicy tags */
+                    tags?: (string[]|null);
                 }
 
                 /** Represents an AllocationPolicy. */
@@ -7626,6 +9005,9 @@ export namespace google {
 
                     /** AllocationPolicy placement. */
                     public placement?: (google.cloud.batch.v1alpha.AllocationPolicy.IPlacementPolicy|null);
+
+                    /** AllocationPolicy tags. */
+                    public tags: string[];
 
                     /**
                      * Creates a new AllocationPolicy instance using the specified properties.
@@ -8057,6 +9439,9 @@ export namespace google {
 
                         /** Accelerator installGpuDrivers */
                         installGpuDrivers?: (boolean|null);
+
+                        /** Accelerator driverVersion */
+                        driverVersion?: (string|null);
                     }
 
                     /** Represents an Accelerator. */
@@ -8076,6 +9461,9 @@ export namespace google {
 
                         /** Accelerator installGpuDrivers. */
                         public installGpuDrivers: boolean;
+
+                        /** Accelerator driverVersion. */
+                        public driverVersion: string;
 
                         /**
                          * Creates a new Accelerator instance using the specified properties.
@@ -8305,6 +9693,12 @@ export namespace google {
 
                         /** InstancePolicyOrTemplate installGpuDrivers */
                         installGpuDrivers?: (boolean|null);
+
+                        /** InstancePolicyOrTemplate installOpsAgent */
+                        installOpsAgent?: (boolean|null);
+
+                        /** InstancePolicyOrTemplate blockProjectSshKeys */
+                        blockProjectSshKeys?: (boolean|null);
                     }
 
                     /** Represents an InstancePolicyOrTemplate. */
@@ -8324,6 +9718,12 @@ export namespace google {
 
                         /** InstancePolicyOrTemplate installGpuDrivers. */
                         public installGpuDrivers: boolean;
+
+                        /** InstancePolicyOrTemplate installOpsAgent. */
+                        public installOpsAgent: boolean;
+
+                        /** InstancePolicyOrTemplate blockProjectSshKeys. */
+                        public blockProjectSshKeys: boolean;
 
                         /** InstancePolicyOrTemplate policyTemplate. */
                         public policyTemplate?: ("policy"|"instanceTemplate");
@@ -8759,6 +10159,12 @@ export namespace google {
 
                     /** TaskGroup permissiveSsh */
                     permissiveSsh?: (boolean|null);
+
+                    /** TaskGroup runAsNonRoot */
+                    runAsNonRoot?: (boolean|null);
+
+                    /** TaskGroup serviceAccount */
+                    serviceAccount?: (google.cloud.batch.v1alpha.IServiceAccount|null);
                 }
 
                 /** Represents a TaskGroup. */
@@ -8802,6 +10208,12 @@ export namespace google {
 
                     /** TaskGroup permissiveSsh. */
                     public permissiveSsh: boolean;
+
+                    /** TaskGroup runAsNonRoot. */
+                    public runAsNonRoot: boolean;
+
+                    /** TaskGroup serviceAccount. */
+                    public serviceAccount?: (google.cloud.batch.v1alpha.IServiceAccount|null);
 
                     /**
                      * Creates a new TaskGroup instance using the specified properties.
@@ -9235,6 +10647,9 @@ export namespace google {
 
                     /** TaskExecution exitCode */
                     exitCode?: (number|null);
+
+                    /** TaskExecution stderrSnippet */
+                    stderrSnippet?: (string|null);
                 }
 
                 /** Represents a TaskExecution. */
@@ -9248,6 +10663,9 @@ export namespace google {
 
                     /** TaskExecution exitCode. */
                     public exitCode: number;
+
+                    /** TaskExecution stderrSnippet. */
+                    public stderrSnippet: string;
 
                     /**
                      * Creates a new TaskExecution instance using the specified properties.
@@ -9559,6 +10977,9 @@ export namespace google {
                     /** Runnable barrier */
                     barrier?: (google.cloud.batch.v1alpha.Runnable.IBarrier|null);
 
+                    /** Runnable displayName */
+                    displayName?: (string|null);
+
                     /** Runnable ignoreExitStatus */
                     ignoreExitStatus?: (boolean|null);
 
@@ -9595,6 +11016,9 @@ export namespace google {
 
                     /** Runnable barrier. */
                     public barrier?: (google.cloud.batch.v1alpha.Runnable.IBarrier|null);
+
+                    /** Runnable displayName. */
+                    public displayName: string;
 
                     /** Runnable ignoreExitStatus. */
                     public ignoreExitStatus: boolean;
@@ -9723,6 +11147,9 @@ export namespace google {
 
                         /** Container password */
                         password?: (string|null);
+
+                        /** Container enableImageStreaming */
+                        enableImageStreaming?: (boolean|null);
                     }
 
                     /** Represents a Container. */
@@ -9757,6 +11184,9 @@ export namespace google {
 
                         /** Container password. */
                         public password: string;
+
+                        /** Container enableImageStreaming. */
+                        public enableImageStreaming: boolean;
 
                         /**
                          * Creates a new Container instance using the specified properties.
@@ -11145,6 +12575,998 @@ export namespace google {
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
+
+                /** CalendarPeriod enum. */
+                enum CalendarPeriod {
+                    CALENDAR_PERIOD_UNSPECIFIED = 0,
+                    MONTH = 1,
+                    QUARTER = 2,
+                    YEAR = 3,
+                    WEEK = 4,
+                    DAY = 5
+                }
+
+                /** ResourceAllowanceState enum. */
+                enum ResourceAllowanceState {
+                    RESOURCE_ALLOWANCE_STATE_UNSPECIFIED = 0,
+                    RESOURCE_ALLOWANCE_ACTIVE = 1,
+                    RESOURCE_ALLOWANCE_DEPLETED = 2
+                }
+
+                /** Properties of a ResourceAllowance. */
+                interface IResourceAllowance {
+
+                    /** ResourceAllowance usageResourceAllowance */
+                    usageResourceAllowance?: (google.cloud.batch.v1alpha.IUsageResourceAllowance|null);
+
+                    /** ResourceAllowance name */
+                    name?: (string|null);
+
+                    /** ResourceAllowance uid */
+                    uid?: (string|null);
+
+                    /** ResourceAllowance createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ResourceAllowance labels */
+                    labels?: ({ [k: string]: string }|null);
+
+                    /** ResourceAllowance notifications */
+                    notifications?: (google.cloud.batch.v1alpha.INotification[]|null);
+                }
+
+                /** Represents a ResourceAllowance. */
+                class ResourceAllowance implements IResourceAllowance {
+
+                    /**
+                     * Constructs a new ResourceAllowance.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IResourceAllowance);
+
+                    /** ResourceAllowance usageResourceAllowance. */
+                    public usageResourceAllowance?: (google.cloud.batch.v1alpha.IUsageResourceAllowance|null);
+
+                    /** ResourceAllowance name. */
+                    public name: string;
+
+                    /** ResourceAllowance uid. */
+                    public uid: string;
+
+                    /** ResourceAllowance createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** ResourceAllowance labels. */
+                    public labels: { [k: string]: string };
+
+                    /** ResourceAllowance notifications. */
+                    public notifications: google.cloud.batch.v1alpha.INotification[];
+
+                    /** ResourceAllowance resourceAllowance. */
+                    public resourceAllowance?: "usageResourceAllowance";
+
+                    /**
+                     * Creates a new ResourceAllowance instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ResourceAllowance instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IResourceAllowance): google.cloud.batch.v1alpha.ResourceAllowance;
+
+                    /**
+                     * Encodes the specified ResourceAllowance message. Does not implicitly {@link google.cloud.batch.v1alpha.ResourceAllowance.verify|verify} messages.
+                     * @param message ResourceAllowance message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IResourceAllowance, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ResourceAllowance message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.ResourceAllowance.verify|verify} messages.
+                     * @param message ResourceAllowance message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IResourceAllowance, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ResourceAllowance message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ResourceAllowance
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.ResourceAllowance;
+
+                    /**
+                     * Decodes a ResourceAllowance message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ResourceAllowance
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.ResourceAllowance;
+
+                    /**
+                     * Verifies a ResourceAllowance message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ResourceAllowance message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ResourceAllowance
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.ResourceAllowance;
+
+                    /**
+                     * Creates a plain object from a ResourceAllowance message. Also converts values to other types if specified.
+                     * @param message ResourceAllowance
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.ResourceAllowance, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ResourceAllowance to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ResourceAllowance
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a UsageResourceAllowance. */
+                interface IUsageResourceAllowance {
+
+                    /** UsageResourceAllowance spec */
+                    spec?: (google.cloud.batch.v1alpha.IUsageResourceAllowanceSpec|null);
+
+                    /** UsageResourceAllowance status */
+                    status?: (google.cloud.batch.v1alpha.IUsageResourceAllowanceStatus|null);
+                }
+
+                /** Represents a UsageResourceAllowance. */
+                class UsageResourceAllowance implements IUsageResourceAllowance {
+
+                    /**
+                     * Constructs a new UsageResourceAllowance.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IUsageResourceAllowance);
+
+                    /** UsageResourceAllowance spec. */
+                    public spec?: (google.cloud.batch.v1alpha.IUsageResourceAllowanceSpec|null);
+
+                    /** UsageResourceAllowance status. */
+                    public status?: (google.cloud.batch.v1alpha.IUsageResourceAllowanceStatus|null);
+
+                    /**
+                     * Creates a new UsageResourceAllowance instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UsageResourceAllowance instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IUsageResourceAllowance): google.cloud.batch.v1alpha.UsageResourceAllowance;
+
+                    /**
+                     * Encodes the specified UsageResourceAllowance message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowance.verify|verify} messages.
+                     * @param message UsageResourceAllowance message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IUsageResourceAllowance, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UsageResourceAllowance message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowance.verify|verify} messages.
+                     * @param message UsageResourceAllowance message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IUsageResourceAllowance, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a UsageResourceAllowance message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UsageResourceAllowance
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowance;
+
+                    /**
+                     * Decodes a UsageResourceAllowance message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UsageResourceAllowance
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowance;
+
+                    /**
+                     * Verifies a UsageResourceAllowance message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a UsageResourceAllowance message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UsageResourceAllowance
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowance;
+
+                    /**
+                     * Creates a plain object from a UsageResourceAllowance message. Also converts values to other types if specified.
+                     * @param message UsageResourceAllowance
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowance, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UsageResourceAllowance to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UsageResourceAllowance
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a UsageResourceAllowanceSpec. */
+                interface IUsageResourceAllowanceSpec {
+
+                    /** UsageResourceAllowanceSpec type */
+                    type?: (string|null);
+
+                    /** UsageResourceAllowanceSpec limit */
+                    limit?: (google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.ILimit|null);
+                }
+
+                /** Represents a UsageResourceAllowanceSpec. */
+                class UsageResourceAllowanceSpec implements IUsageResourceAllowanceSpec {
+
+                    /**
+                     * Constructs a new UsageResourceAllowanceSpec.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IUsageResourceAllowanceSpec);
+
+                    /** UsageResourceAllowanceSpec type. */
+                    public type: string;
+
+                    /** UsageResourceAllowanceSpec limit. */
+                    public limit?: (google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.ILimit|null);
+
+                    /**
+                     * Creates a new UsageResourceAllowanceSpec instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UsageResourceAllowanceSpec instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IUsageResourceAllowanceSpec): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec;
+
+                    /**
+                     * Encodes the specified UsageResourceAllowanceSpec message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.verify|verify} messages.
+                     * @param message UsageResourceAllowanceSpec message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IUsageResourceAllowanceSpec, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UsageResourceAllowanceSpec message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.verify|verify} messages.
+                     * @param message UsageResourceAllowanceSpec message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IUsageResourceAllowanceSpec, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a UsageResourceAllowanceSpec message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UsageResourceAllowanceSpec
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec;
+
+                    /**
+                     * Decodes a UsageResourceAllowanceSpec message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UsageResourceAllowanceSpec
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec;
+
+                    /**
+                     * Verifies a UsageResourceAllowanceSpec message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a UsageResourceAllowanceSpec message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UsageResourceAllowanceSpec
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec;
+
+                    /**
+                     * Creates a plain object from a UsageResourceAllowanceSpec message. Also converts values to other types if specified.
+                     * @param message UsageResourceAllowanceSpec
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowanceSpec, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UsageResourceAllowanceSpec to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UsageResourceAllowanceSpec
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace UsageResourceAllowanceSpec {
+
+                    /** Properties of a Limit. */
+                    interface ILimit {
+
+                        /** Limit calendarPeriod */
+                        calendarPeriod?: (google.cloud.batch.v1alpha.CalendarPeriod|keyof typeof google.cloud.batch.v1alpha.CalendarPeriod|null);
+
+                        /** Limit limit */
+                        limit?: (number|null);
+                    }
+
+                    /** Represents a Limit. */
+                    class Limit implements ILimit {
+
+                        /**
+                         * Constructs a new Limit.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.ILimit);
+
+                        /** Limit calendarPeriod. */
+                        public calendarPeriod?: (google.cloud.batch.v1alpha.CalendarPeriod|keyof typeof google.cloud.batch.v1alpha.CalendarPeriod|null);
+
+                        /** Limit limit. */
+                        public limit?: (number|null);
+
+                        /** Limit duration. */
+                        public duration?: "calendarPeriod";
+
+                        /** Limit _limit. */
+                        public _limit?: "limit";
+
+                        /**
+                         * Creates a new Limit instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns Limit instance
+                         */
+                        public static create(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.ILimit): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit;
+
+                        /**
+                         * Encodes the specified Limit message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit.verify|verify} messages.
+                         * @param message Limit message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.ILimit, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified Limit message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit.verify|verify} messages.
+                         * @param message Limit message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.ILimit, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a Limit message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns Limit
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit;
+
+                        /**
+                         * Decodes a Limit message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Limit
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit;
+
+                        /**
+                         * Verifies a Limit message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a Limit message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns Limit
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit;
+
+                        /**
+                         * Creates a plain object from a Limit message. Also converts values to other types if specified.
+                         * @param message Limit
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowanceSpec.Limit, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this Limit to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for Limit
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+                }
+
+                /** Properties of a UsageResourceAllowanceStatus. */
+                interface IUsageResourceAllowanceStatus {
+
+                    /** UsageResourceAllowanceStatus state */
+                    state?: (google.cloud.batch.v1alpha.ResourceAllowanceState|keyof typeof google.cloud.batch.v1alpha.ResourceAllowanceState|null);
+
+                    /** UsageResourceAllowanceStatus limitStatus */
+                    limitStatus?: (google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ILimitStatus|null);
+
+                    /** UsageResourceAllowanceStatus report */
+                    report?: (google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IConsumptionReport|null);
+                }
+
+                /** Represents a UsageResourceAllowanceStatus. */
+                class UsageResourceAllowanceStatus implements IUsageResourceAllowanceStatus {
+
+                    /**
+                     * Constructs a new UsageResourceAllowanceStatus.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.IUsageResourceAllowanceStatus);
+
+                    /** UsageResourceAllowanceStatus state. */
+                    public state: (google.cloud.batch.v1alpha.ResourceAllowanceState|keyof typeof google.cloud.batch.v1alpha.ResourceAllowanceState);
+
+                    /** UsageResourceAllowanceStatus limitStatus. */
+                    public limitStatus?: (google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ILimitStatus|null);
+
+                    /** UsageResourceAllowanceStatus report. */
+                    public report?: (google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IConsumptionReport|null);
+
+                    /**
+                     * Creates a new UsageResourceAllowanceStatus instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UsageResourceAllowanceStatus instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.IUsageResourceAllowanceStatus): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus;
+
+                    /**
+                     * Encodes the specified UsageResourceAllowanceStatus message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.verify|verify} messages.
+                     * @param message UsageResourceAllowanceStatus message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.IUsageResourceAllowanceStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UsageResourceAllowanceStatus message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.verify|verify} messages.
+                     * @param message UsageResourceAllowanceStatus message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.IUsageResourceAllowanceStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a UsageResourceAllowanceStatus message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UsageResourceAllowanceStatus
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus;
+
+                    /**
+                     * Decodes a UsageResourceAllowanceStatus message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UsageResourceAllowanceStatus
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus;
+
+                    /**
+                     * Verifies a UsageResourceAllowanceStatus message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a UsageResourceAllowanceStatus message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UsageResourceAllowanceStatus
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus;
+
+                    /**
+                     * Creates a plain object from a UsageResourceAllowanceStatus message. Also converts values to other types if specified.
+                     * @param message UsageResourceAllowanceStatus
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UsageResourceAllowanceStatus to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UsageResourceAllowanceStatus
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace UsageResourceAllowanceStatus {
+
+                    /** Properties of a LimitStatus. */
+                    interface ILimitStatus {
+
+                        /** LimitStatus consumptionInterval */
+                        consumptionInterval?: (google.type.IInterval|null);
+
+                        /** LimitStatus limit */
+                        limit?: (number|null);
+
+                        /** LimitStatus consumed */
+                        consumed?: (number|null);
+                    }
+
+                    /** Represents a LimitStatus. */
+                    class LimitStatus implements ILimitStatus {
+
+                        /**
+                         * Constructs a new LimitStatus.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ILimitStatus);
+
+                        /** LimitStatus consumptionInterval. */
+                        public consumptionInterval?: (google.type.IInterval|null);
+
+                        /** LimitStatus limit. */
+                        public limit?: (number|null);
+
+                        /** LimitStatus consumed. */
+                        public consumed?: (number|null);
+
+                        /** LimitStatus _limit. */
+                        public _limit?: "limit";
+
+                        /** LimitStatus _consumed. */
+                        public _consumed?: "consumed";
+
+                        /**
+                         * Creates a new LimitStatus instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns LimitStatus instance
+                         */
+                        public static create(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ILimitStatus): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus;
+
+                        /**
+                         * Encodes the specified LimitStatus message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus.verify|verify} messages.
+                         * @param message LimitStatus message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ILimitStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified LimitStatus message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus.verify|verify} messages.
+                         * @param message LimitStatus message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ILimitStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a LimitStatus message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns LimitStatus
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus;
+
+                        /**
+                         * Decodes a LimitStatus message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns LimitStatus
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus;
+
+                        /**
+                         * Verifies a LimitStatus message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a LimitStatus message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns LimitStatus
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus;
+
+                        /**
+                         * Creates a plain object from a LimitStatus message. Also converts values to other types if specified.
+                         * @param message LimitStatus
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.LimitStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this LimitStatus to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for LimitStatus
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a PeriodConsumption. */
+                    interface IPeriodConsumption {
+
+                        /** PeriodConsumption consumptionInterval */
+                        consumptionInterval?: (google.type.IInterval|null);
+
+                        /** PeriodConsumption consumed */
+                        consumed?: (number|null);
+                    }
+
+                    /** Represents a PeriodConsumption. */
+                    class PeriodConsumption implements IPeriodConsumption {
+
+                        /**
+                         * Constructs a new PeriodConsumption.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IPeriodConsumption);
+
+                        /** PeriodConsumption consumptionInterval. */
+                        public consumptionInterval?: (google.type.IInterval|null);
+
+                        /** PeriodConsumption consumed. */
+                        public consumed?: (number|null);
+
+                        /** PeriodConsumption _consumed. */
+                        public _consumed?: "consumed";
+
+                        /**
+                         * Creates a new PeriodConsumption instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns PeriodConsumption instance
+                         */
+                        public static create(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IPeriodConsumption): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption;
+
+                        /**
+                         * Encodes the specified PeriodConsumption message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption.verify|verify} messages.
+                         * @param message PeriodConsumption message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IPeriodConsumption, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified PeriodConsumption message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption.verify|verify} messages.
+                         * @param message PeriodConsumption message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IPeriodConsumption, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a PeriodConsumption message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns PeriodConsumption
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption;
+
+                        /**
+                         * Decodes a PeriodConsumption message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns PeriodConsumption
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption;
+
+                        /**
+                         * Verifies a PeriodConsumption message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a PeriodConsumption message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns PeriodConsumption
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption;
+
+                        /**
+                         * Creates a plain object from a PeriodConsumption message. Also converts values to other types if specified.
+                         * @param message PeriodConsumption
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.PeriodConsumption, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this PeriodConsumption to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for PeriodConsumption
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a ConsumptionReport. */
+                    interface IConsumptionReport {
+
+                        /** ConsumptionReport latestPeriodConsumptions */
+                        latestPeriodConsumptions?: ({ [k: string]: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IPeriodConsumption }|null);
+                    }
+
+                    /** Represents a ConsumptionReport. */
+                    class ConsumptionReport implements IConsumptionReport {
+
+                        /**
+                         * Constructs a new ConsumptionReport.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IConsumptionReport);
+
+                        /** ConsumptionReport latestPeriodConsumptions. */
+                        public latestPeriodConsumptions: { [k: string]: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IPeriodConsumption };
+
+                        /**
+                         * Creates a new ConsumptionReport instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ConsumptionReport instance
+                         */
+                        public static create(properties?: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IConsumptionReport): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport;
+
+                        /**
+                         * Encodes the specified ConsumptionReport message. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport.verify|verify} messages.
+                         * @param message ConsumptionReport message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IConsumptionReport, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ConsumptionReport message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport.verify|verify} messages.
+                         * @param message ConsumptionReport message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.IConsumptionReport, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ConsumptionReport message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ConsumptionReport
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport;
+
+                        /**
+                         * Decodes a ConsumptionReport message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ConsumptionReport
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport;
+
+                        /**
+                         * Verifies a ConsumptionReport message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ConsumptionReport message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ConsumptionReport
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport;
+
+                        /**
+                         * Creates a plain object from a ConsumptionReport message. Also converts values to other types if specified.
+                         * @param message ConsumptionReport
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.batch.v1alpha.UsageResourceAllowanceStatus.ConsumptionReport, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ConsumptionReport to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ConsumptionReport
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+                }
+
+                /** Properties of a Notification. */
+                interface INotification {
+
+                    /** Notification pubsubTopic */
+                    pubsubTopic?: (string|null);
+                }
+
+                /** Represents a Notification. */
+                class Notification implements INotification {
+
+                    /**
+                     * Constructs a new Notification.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.batch.v1alpha.INotification);
+
+                    /** Notification pubsubTopic. */
+                    public pubsubTopic: string;
+
+                    /**
+                     * Creates a new Notification instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns Notification instance
+                     */
+                    public static create(properties?: google.cloud.batch.v1alpha.INotification): google.cloud.batch.v1alpha.Notification;
+
+                    /**
+                     * Encodes the specified Notification message. Does not implicitly {@link google.cloud.batch.v1alpha.Notification.verify|verify} messages.
+                     * @param message Notification message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.batch.v1alpha.INotification, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified Notification message, length delimited. Does not implicitly {@link google.cloud.batch.v1alpha.Notification.verify|verify} messages.
+                     * @param message Notification message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.batch.v1alpha.INotification, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a Notification message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns Notification
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.batch.v1alpha.Notification;
+
+                    /**
+                     * Decodes a Notification message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Notification
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.batch.v1alpha.Notification;
+
+                    /**
+                     * Verifies a Notification message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a Notification message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns Notification
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.batch.v1alpha.Notification;
+
+                    /**
+                     * Creates a plain object from a Notification message. Also converts values to other types if specified.
+                     * @param message Notification
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.batch.v1alpha.Notification, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this Notification to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Notification
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
             }
         }
     }
@@ -11512,6 +13934,1493 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Properties of a CommonLanguageSettings. */
+        interface ICommonLanguageSettings {
+
+            /** CommonLanguageSettings referenceDocsUri */
+            referenceDocsUri?: (string|null);
+
+            /** CommonLanguageSettings destinations */
+            destinations?: (google.api.ClientLibraryDestination[]|null);
+        }
+
+        /** Represents a CommonLanguageSettings. */
+        class CommonLanguageSettings implements ICommonLanguageSettings {
+
+            /**
+             * Constructs a new CommonLanguageSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICommonLanguageSettings);
+
+            /** CommonLanguageSettings referenceDocsUri. */
+            public referenceDocsUri: string;
+
+            /** CommonLanguageSettings destinations. */
+            public destinations: google.api.ClientLibraryDestination[];
+
+            /**
+             * Creates a new CommonLanguageSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CommonLanguageSettings instance
+             */
+            public static create(properties?: google.api.ICommonLanguageSettings): google.api.CommonLanguageSettings;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CommonLanguageSettings;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CommonLanguageSettings;
+
+            /**
+             * Verifies a CommonLanguageSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CommonLanguageSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CommonLanguageSettings;
+
+            /**
+             * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+             * @param message CommonLanguageSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CommonLanguageSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CommonLanguageSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CommonLanguageSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ClientLibrarySettings. */
+        interface IClientLibrarySettings {
+
+            /** ClientLibrarySettings version */
+            version?: (string|null);
+
+            /** ClientLibrarySettings launchStage */
+            launchStage?: (google.api.LaunchStage|keyof typeof google.api.LaunchStage|null);
+
+            /** ClientLibrarySettings restNumericEnums */
+            restNumericEnums?: (boolean|null);
+
+            /** ClientLibrarySettings javaSettings */
+            javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings */
+            cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings */
+            phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings */
+            pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings */
+            nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings */
+            dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings */
+            rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings */
+            goSettings?: (google.api.IGoSettings|null);
+        }
+
+        /** Represents a ClientLibrarySettings. */
+        class ClientLibrarySettings implements IClientLibrarySettings {
+
+            /**
+             * Constructs a new ClientLibrarySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IClientLibrarySettings);
+
+            /** ClientLibrarySettings version. */
+            public version: string;
+
+            /** ClientLibrarySettings launchStage. */
+            public launchStage: (google.api.LaunchStage|keyof typeof google.api.LaunchStage);
+
+            /** ClientLibrarySettings restNumericEnums. */
+            public restNumericEnums: boolean;
+
+            /** ClientLibrarySettings javaSettings. */
+            public javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings. */
+            public cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings. */
+            public phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings. */
+            public pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings. */
+            public nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings. */
+            public dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings. */
+            public rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings. */
+            public goSettings?: (google.api.IGoSettings|null);
+
+            /**
+             * Creates a new ClientLibrarySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ClientLibrarySettings instance
+             */
+            public static create(properties?: google.api.IClientLibrarySettings): google.api.ClientLibrarySettings;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.ClientLibrarySettings;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.ClientLibrarySettings;
+
+            /**
+             * Verifies a ClientLibrarySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ClientLibrarySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.ClientLibrarySettings;
+
+            /**
+             * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+             * @param message ClientLibrarySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.ClientLibrarySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ClientLibrarySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ClientLibrarySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a Publishing. */
+        interface IPublishing {
+
+            /** Publishing methodSettings */
+            methodSettings?: (google.api.IMethodSettings[]|null);
+
+            /** Publishing newIssueUri */
+            newIssueUri?: (string|null);
+
+            /** Publishing documentationUri */
+            documentationUri?: (string|null);
+
+            /** Publishing apiShortName */
+            apiShortName?: (string|null);
+
+            /** Publishing githubLabel */
+            githubLabel?: (string|null);
+
+            /** Publishing codeownerGithubTeams */
+            codeownerGithubTeams?: (string[]|null);
+
+            /** Publishing docTagPrefix */
+            docTagPrefix?: (string|null);
+
+            /** Publishing organization */
+            organization?: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization|null);
+
+            /** Publishing librarySettings */
+            librarySettings?: (google.api.IClientLibrarySettings[]|null);
+
+            /** Publishing protoReferenceDocumentationUri */
+            protoReferenceDocumentationUri?: (string|null);
+        }
+
+        /** Represents a Publishing. */
+        class Publishing implements IPublishing {
+
+            /**
+             * Constructs a new Publishing.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPublishing);
+
+            /** Publishing methodSettings. */
+            public methodSettings: google.api.IMethodSettings[];
+
+            /** Publishing newIssueUri. */
+            public newIssueUri: string;
+
+            /** Publishing documentationUri. */
+            public documentationUri: string;
+
+            /** Publishing apiShortName. */
+            public apiShortName: string;
+
+            /** Publishing githubLabel. */
+            public githubLabel: string;
+
+            /** Publishing codeownerGithubTeams. */
+            public codeownerGithubTeams: string[];
+
+            /** Publishing docTagPrefix. */
+            public docTagPrefix: string;
+
+            /** Publishing organization. */
+            public organization: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization);
+
+            /** Publishing librarySettings. */
+            public librarySettings: google.api.IClientLibrarySettings[];
+
+            /** Publishing protoReferenceDocumentationUri. */
+            public protoReferenceDocumentationUri: string;
+
+            /**
+             * Creates a new Publishing instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Publishing instance
+             */
+            public static create(properties?: google.api.IPublishing): google.api.Publishing;
+
+            /**
+             * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.Publishing;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.Publishing;
+
+            /**
+             * Verifies a Publishing message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Publishing
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.Publishing;
+
+            /**
+             * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+             * @param message Publishing
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.Publishing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Publishing to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Publishing
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a JavaSettings. */
+        interface IJavaSettings {
+
+            /** JavaSettings libraryPackage */
+            libraryPackage?: (string|null);
+
+            /** JavaSettings serviceClassNames */
+            serviceClassNames?: ({ [k: string]: string }|null);
+
+            /** JavaSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a JavaSettings. */
+        class JavaSettings implements IJavaSettings {
+
+            /**
+             * Constructs a new JavaSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IJavaSettings);
+
+            /** JavaSettings libraryPackage. */
+            public libraryPackage: string;
+
+            /** JavaSettings serviceClassNames. */
+            public serviceClassNames: { [k: string]: string };
+
+            /** JavaSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new JavaSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns JavaSettings instance
+             */
+            public static create(properties?: google.api.IJavaSettings): google.api.JavaSettings;
+
+            /**
+             * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.JavaSettings;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.JavaSettings;
+
+            /**
+             * Verifies a JavaSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns JavaSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.JavaSettings;
+
+            /**
+             * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+             * @param message JavaSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.JavaSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this JavaSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for JavaSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a CppSettings. */
+        interface ICppSettings {
+
+            /** CppSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a CppSettings. */
+        class CppSettings implements ICppSettings {
+
+            /**
+             * Constructs a new CppSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICppSettings);
+
+            /** CppSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new CppSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CppSettings instance
+             */
+            public static create(properties?: google.api.ICppSettings): google.api.CppSettings;
+
+            /**
+             * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CppSettings;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CppSettings;
+
+            /**
+             * Verifies a CppSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CppSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CppSettings;
+
+            /**
+             * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+             * @param message CppSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CppSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CppSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CppSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PhpSettings. */
+        interface IPhpSettings {
+
+            /** PhpSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PhpSettings. */
+        class PhpSettings implements IPhpSettings {
+
+            /**
+             * Constructs a new PhpSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPhpSettings);
+
+            /** PhpSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PhpSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PhpSettings instance
+             */
+            public static create(properties?: google.api.IPhpSettings): google.api.PhpSettings;
+
+            /**
+             * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PhpSettings;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PhpSettings;
+
+            /**
+             * Verifies a PhpSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PhpSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PhpSettings;
+
+            /**
+             * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+             * @param message PhpSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PhpSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PhpSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PhpSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PythonSettings. */
+        interface IPythonSettings {
+
+            /** PythonSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PythonSettings. */
+        class PythonSettings implements IPythonSettings {
+
+            /**
+             * Constructs a new PythonSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPythonSettings);
+
+            /** PythonSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PythonSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PythonSettings instance
+             */
+            public static create(properties?: google.api.IPythonSettings): google.api.PythonSettings;
+
+            /**
+             * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PythonSettings;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PythonSettings;
+
+            /**
+             * Verifies a PythonSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PythonSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PythonSettings;
+
+            /**
+             * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+             * @param message PythonSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PythonSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PythonSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PythonSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a NodeSettings. */
+        interface INodeSettings {
+
+            /** NodeSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a NodeSettings. */
+        class NodeSettings implements INodeSettings {
+
+            /**
+             * Constructs a new NodeSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.INodeSettings);
+
+            /** NodeSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new NodeSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns NodeSettings instance
+             */
+            public static create(properties?: google.api.INodeSettings): google.api.NodeSettings;
+
+            /**
+             * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.NodeSettings;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.NodeSettings;
+
+            /**
+             * Verifies a NodeSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns NodeSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.NodeSettings;
+
+            /**
+             * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+             * @param message NodeSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.NodeSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this NodeSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for NodeSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DotnetSettings. */
+        interface IDotnetSettings {
+
+            /** DotnetSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices */
+            renamedServices?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings renamedResources */
+            renamedResources?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings ignoredResources */
+            ignoredResources?: (string[]|null);
+
+            /** DotnetSettings forcedNamespaceAliases */
+            forcedNamespaceAliases?: (string[]|null);
+
+            /** DotnetSettings handwrittenSignatures */
+            handwrittenSignatures?: (string[]|null);
+        }
+
+        /** Represents a DotnetSettings. */
+        class DotnetSettings implements IDotnetSettings {
+
+            /**
+             * Constructs a new DotnetSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IDotnetSettings);
+
+            /** DotnetSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices. */
+            public renamedServices: { [k: string]: string };
+
+            /** DotnetSettings renamedResources. */
+            public renamedResources: { [k: string]: string };
+
+            /** DotnetSettings ignoredResources. */
+            public ignoredResources: string[];
+
+            /** DotnetSettings forcedNamespaceAliases. */
+            public forcedNamespaceAliases: string[];
+
+            /** DotnetSettings handwrittenSignatures. */
+            public handwrittenSignatures: string[];
+
+            /**
+             * Creates a new DotnetSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DotnetSettings instance
+             */
+            public static create(properties?: google.api.IDotnetSettings): google.api.DotnetSettings;
+
+            /**
+             * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.DotnetSettings;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.DotnetSettings;
+
+            /**
+             * Verifies a DotnetSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DotnetSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.DotnetSettings;
+
+            /**
+             * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+             * @param message DotnetSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.DotnetSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DotnetSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DotnetSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RubySettings. */
+        interface IRubySettings {
+
+            /** RubySettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a RubySettings. */
+        class RubySettings implements IRubySettings {
+
+            /**
+             * Constructs a new RubySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRubySettings);
+
+            /** RubySettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new RubySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RubySettings instance
+             */
+            public static create(properties?: google.api.IRubySettings): google.api.RubySettings;
+
+            /**
+             * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RubySettings;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RubySettings;
+
+            /**
+             * Verifies a RubySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RubySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RubySettings;
+
+            /**
+             * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+             * @param message RubySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RubySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RubySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RubySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GoSettings. */
+        interface IGoSettings {
+
+            /** GoSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a GoSettings. */
+        class GoSettings implements IGoSettings {
+
+            /**
+             * Constructs a new GoSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IGoSettings);
+
+            /** GoSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new GoSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GoSettings instance
+             */
+            public static create(properties?: google.api.IGoSettings): google.api.GoSettings;
+
+            /**
+             * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.GoSettings;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.GoSettings;
+
+            /**
+             * Verifies a GoSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GoSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.GoSettings;
+
+            /**
+             * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+             * @param message GoSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.GoSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GoSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GoSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MethodSettings. */
+        interface IMethodSettings {
+
+            /** MethodSettings selector */
+            selector?: (string|null);
+
+            /** MethodSettings longRunning */
+            longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields */
+            autoPopulatedFields?: (string[]|null);
+        }
+
+        /** Represents a MethodSettings. */
+        class MethodSettings implements IMethodSettings {
+
+            /**
+             * Constructs a new MethodSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IMethodSettings);
+
+            /** MethodSettings selector. */
+            public selector: string;
+
+            /** MethodSettings longRunning. */
+            public longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields. */
+            public autoPopulatedFields: string[];
+
+            /**
+             * Creates a new MethodSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MethodSettings instance
+             */
+            public static create(properties?: google.api.IMethodSettings): google.api.MethodSettings;
+
+            /**
+             * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings;
+
+            /**
+             * Verifies a MethodSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MethodSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.MethodSettings;
+
+            /**
+             * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+             * @param message MethodSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.MethodSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MethodSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace MethodSettings {
+
+            /** Properties of a LongRunning. */
+            interface ILongRunning {
+
+                /** LongRunning initialPollDelay */
+                initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier */
+                pollDelayMultiplier?: (number|null);
+
+                /** LongRunning maxPollDelay */
+                maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout */
+                totalPollTimeout?: (google.protobuf.IDuration|null);
+            }
+
+            /** Represents a LongRunning. */
+            class LongRunning implements ILongRunning {
+
+                /**
+                 * Constructs a new LongRunning.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.api.MethodSettings.ILongRunning);
+
+                /** LongRunning initialPollDelay. */
+                public initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier. */
+                public pollDelayMultiplier: number;
+
+                /** LongRunning maxPollDelay. */
+                public maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout. */
+                public totalPollTimeout?: (google.protobuf.IDuration|null);
+
+                /**
+                 * Creates a new LongRunning instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LongRunning instance
+                 */
+                public static create(properties?: google.api.MethodSettings.ILongRunning): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Verifies a LongRunning message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LongRunning
+                 */
+                public static fromObject(object: { [k: string]: any }): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                 * @param message LongRunning
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.api.MethodSettings.LongRunning, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LongRunning to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LongRunning
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** ClientLibraryOrganization enum. */
+        enum ClientLibraryOrganization {
+            CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED = 0,
+            CLOUD = 1,
+            ADS = 2,
+            PHOTOS = 3,
+            STREET_VIEW = 4,
+            SHOPPING = 5,
+            GEO = 6,
+            GENERATIVE_AI = 7
+        }
+
+        /** ClientLibraryDestination enum. */
+        enum ClientLibraryDestination {
+            CLIENT_LIBRARY_DESTINATION_UNSPECIFIED = 0,
+            GITHUB = 10,
+            PACKAGE_MANAGER = 20
+        }
+
+        /** LaunchStage enum. */
+        enum LaunchStage {
+            LAUNCH_STAGE_UNSPECIFIED = 0,
+            UNIMPLEMENTED = 6,
+            PRELAUNCH = 7,
+            EARLY_ACCESS = 1,
+            ALPHA = 2,
+            BETA = 3,
+            GA = 4,
+            DEPRECATED = 5
+        }
+
         /** FieldBehavior enum. */
         enum FieldBehavior {
             FIELD_BEHAVIOR_UNSPECIFIED = 0,
@@ -11521,7 +15430,117 @@ export namespace google {
             INPUT_ONLY = 4,
             IMMUTABLE = 5,
             UNORDERED_LIST = 6,
-            NON_EMPTY_DEFAULT = 7
+            NON_EMPTY_DEFAULT = 7,
+            IDENTIFIER = 8
+        }
+
+        /** Properties of a FieldInfo. */
+        interface IFieldInfo {
+
+            /** FieldInfo format */
+            format?: (google.api.FieldInfo.Format|keyof typeof google.api.FieldInfo.Format|null);
+        }
+
+        /** Represents a FieldInfo. */
+        class FieldInfo implements IFieldInfo {
+
+            /**
+             * Constructs a new FieldInfo.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IFieldInfo);
+
+            /** FieldInfo format. */
+            public format: (google.api.FieldInfo.Format|keyof typeof google.api.FieldInfo.Format);
+
+            /**
+             * Creates a new FieldInfo instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FieldInfo instance
+             */
+            public static create(properties?: google.api.IFieldInfo): google.api.FieldInfo;
+
+            /**
+             * Encodes the specified FieldInfo message. Does not implicitly {@link google.api.FieldInfo.verify|verify} messages.
+             * @param message FieldInfo message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IFieldInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FieldInfo message, length delimited. Does not implicitly {@link google.api.FieldInfo.verify|verify} messages.
+             * @param message FieldInfo message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IFieldInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FieldInfo message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FieldInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.FieldInfo;
+
+            /**
+             * Decodes a FieldInfo message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FieldInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.FieldInfo;
+
+            /**
+             * Verifies a FieldInfo message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FieldInfo message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FieldInfo
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.FieldInfo;
+
+            /**
+             * Creates a plain object from a FieldInfo message. Also converts values to other types if specified.
+             * @param message FieldInfo
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.FieldInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FieldInfo to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FieldInfo
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FieldInfo {
+
+            /** Format enum. */
+            enum Format {
+                FORMAT_UNSPECIFIED = 0,
+                UUID4 = 1,
+                IPV4 = 2,
+                IPV6 = 3,
+                IPV4_OR_IPV6 = 4
+            }
         }
 
         /** Properties of a ResourceDescriptor. */
@@ -11877,6 +15896,21 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Edition enum. */
+        enum Edition {
+            EDITION_UNKNOWN = 0,
+            EDITION_PROTO2 = 998,
+            EDITION_PROTO3 = 999,
+            EDITION_2023 = 1000,
+            EDITION_2024 = 1001,
+            EDITION_1_TEST_ONLY = 1,
+            EDITION_2_TEST_ONLY = 2,
+            EDITION_99997_TEST_ONLY = 99997,
+            EDITION_99998_TEST_ONLY = 99998,
+            EDITION_99999_TEST_ONLY = 99999,
+            EDITION_MAX = 2147483647
+        }
+
         /** Properties of a FileDescriptorProto. */
         interface IFileDescriptorProto {
 
@@ -11917,7 +15951,7 @@ export namespace google {
             syntax?: (string|null);
 
             /** FileDescriptorProto edition */
-            edition?: (string|null);
+            edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
         }
 
         /** Represents a FileDescriptorProto. */
@@ -11966,7 +16000,7 @@ export namespace google {
             public syntax: string;
 
             /** FileDescriptorProto edition. */
-            public edition: string;
+            public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
 
             /**
              * Creates a new FileDescriptorProto instance using the specified properties.
@@ -12417,6 +16451,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
+
+            /** ExtensionRangeOptions declaration */
+            declaration?: (google.protobuf.ExtensionRangeOptions.IDeclaration[]|null);
+
+            /** ExtensionRangeOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification */
+            verification?: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState|null);
         }
 
         /** Represents an ExtensionRangeOptions. */
@@ -12430,6 +16473,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
+
+            /** ExtensionRangeOptions declaration. */
+            public declaration: google.protobuf.ExtensionRangeOptions.IDeclaration[];
+
+            /** ExtensionRangeOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification. */
+            public verification: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState);
 
             /**
              * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -12507,6 +16559,136 @@ export namespace google {
              * @returns The default type url
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace ExtensionRangeOptions {
+
+            /** Properties of a Declaration. */
+            interface IDeclaration {
+
+                /** Declaration number */
+                number?: (number|null);
+
+                /** Declaration fullName */
+                fullName?: (string|null);
+
+                /** Declaration type */
+                type?: (string|null);
+
+                /** Declaration reserved */
+                reserved?: (boolean|null);
+
+                /** Declaration repeated */
+                repeated?: (boolean|null);
+            }
+
+            /** Represents a Declaration. */
+            class Declaration implements IDeclaration {
+
+                /**
+                 * Constructs a new Declaration.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration);
+
+                /** Declaration number. */
+                public number: number;
+
+                /** Declaration fullName. */
+                public fullName: string;
+
+                /** Declaration type. */
+                public type: string;
+
+                /** Declaration reserved. */
+                public reserved: boolean;
+
+                /** Declaration repeated. */
+                public repeated: boolean;
+
+                /**
+                 * Creates a new Declaration instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns Declaration instance
+                 */
+                public static create(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Verifies a Declaration message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns Declaration
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                 * @param message Declaration
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.ExtensionRangeOptions.Declaration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this Declaration to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Declaration
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** VerificationState enum. */
+            enum VerificationState {
+                DECLARATION = 0,
+                UNVERIFIED = 1
+            }
         }
 
         /** Properties of a FieldDescriptorProto. */
@@ -12693,8 +16875,8 @@ export namespace google {
             /** Label enum. */
             enum Label {
                 LABEL_OPTIONAL = 1,
-                LABEL_REQUIRED = 2,
-                LABEL_REPEATED = 3
+                LABEL_REPEATED = 3,
+                LABEL_REQUIRED = 2
             }
         }
 
@@ -13406,9 +17588,6 @@ export namespace google {
             /** FileOptions pyGenericServices */
             pyGenericServices?: (boolean|null);
 
-            /** FileOptions phpGenericServices */
-            phpGenericServices?: (boolean|null);
-
             /** FileOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -13435,6 +17614,9 @@ export namespace google {
 
             /** FileOptions rubyPackage */
             rubyPackage?: (string|null);
+
+            /** FileOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -13482,9 +17664,6 @@ export namespace google {
             /** FileOptions pyGenericServices. */
             public pyGenericServices: boolean;
 
-            /** FileOptions phpGenericServices. */
-            public phpGenericServices: boolean;
-
             /** FileOptions deprecated. */
             public deprecated: boolean;
 
@@ -13511,6 +17690,9 @@ export namespace google {
 
             /** FileOptions rubyPackage. */
             public rubyPackage: string;
+
+            /** FileOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -13618,6 +17800,12 @@ export namespace google {
             /** MessageOptions mapEntry */
             mapEntry?: (boolean|null);
 
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** MessageOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MessageOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -13645,6 +17833,12 @@ export namespace google {
 
             /** MessageOptions mapEntry. */
             public mapEntry: boolean;
+
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** MessageOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MessageOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -13751,11 +17945,29 @@ export namespace google {
             /** FieldOptions weak */
             weak?: (boolean|null);
 
+            /** FieldOptions debugRedact */
+            debugRedact?: (boolean|null);
+
+            /** FieldOptions retention */
+            retention?: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention|null);
+
+            /** FieldOptions targets */
+            targets?: (google.protobuf.FieldOptions.OptionTargetType[]|null);
+
+            /** FieldOptions editionDefaults */
+            editionDefaults?: (google.protobuf.FieldOptions.IEditionDefault[]|null);
+
+            /** FieldOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** FieldOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
             /** FieldOptions .google.api.fieldBehavior */
             ".google.api.fieldBehavior"?: (google.api.FieldBehavior[]|null);
+
+            /** FieldOptions .google.api.fieldInfo */
+            ".google.api.fieldInfo"?: (google.api.IFieldInfo|null);
 
             /** FieldOptions .google.api.resourceReference */
             ".google.api.resourceReference"?: (google.api.IResourceReference|null);
@@ -13790,6 +18002,21 @@ export namespace google {
 
             /** FieldOptions weak. */
             public weak: boolean;
+
+            /** FieldOptions debugRedact. */
+            public debugRedact: boolean;
+
+            /** FieldOptions retention. */
+            public retention: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention);
+
+            /** FieldOptions targets. */
+            public targets: google.protobuf.FieldOptions.OptionTargetType[];
+
+            /** FieldOptions editionDefaults. */
+            public editionDefaults: google.protobuf.FieldOptions.IEditionDefault[];
+
+            /** FieldOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FieldOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -13887,10 +18114,137 @@ export namespace google {
                 JS_STRING = 1,
                 JS_NUMBER = 2
             }
+
+            /** OptionRetention enum. */
+            enum OptionRetention {
+                RETENTION_UNKNOWN = 0,
+                RETENTION_RUNTIME = 1,
+                RETENTION_SOURCE = 2
+            }
+
+            /** OptionTargetType enum. */
+            enum OptionTargetType {
+                TARGET_TYPE_UNKNOWN = 0,
+                TARGET_TYPE_FILE = 1,
+                TARGET_TYPE_EXTENSION_RANGE = 2,
+                TARGET_TYPE_MESSAGE = 3,
+                TARGET_TYPE_FIELD = 4,
+                TARGET_TYPE_ONEOF = 5,
+                TARGET_TYPE_ENUM = 6,
+                TARGET_TYPE_ENUM_ENTRY = 7,
+                TARGET_TYPE_SERVICE = 8,
+                TARGET_TYPE_METHOD = 9
+            }
+
+            /** Properties of an EditionDefault. */
+            interface IEditionDefault {
+
+                /** EditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** EditionDefault value */
+                value?: (string|null);
+            }
+
+            /** Represents an EditionDefault. */
+            class EditionDefault implements IEditionDefault {
+
+                /**
+                 * Constructs a new EditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FieldOptions.IEditionDefault);
+
+                /** EditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** EditionDefault value. */
+                public value: string;
+
+                /**
+                 * Creates a new EditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns EditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FieldOptions.IEditionDefault): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Verifies an EditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns EditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                 * @param message EditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FieldOptions.EditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this EditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EditionDefault
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
         }
 
         /** Properties of an OneofOptions. */
         interface IOneofOptions {
+
+            /** OneofOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -13904,6 +18258,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IOneofOptions);
+
+            /** OneofOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -13995,6 +18352,12 @@ export namespace google {
             /** EnumOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** EnumOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** EnumOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -14013,6 +18376,12 @@ export namespace google {
 
             /** EnumOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** EnumOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** EnumOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -14101,6 +18470,12 @@ export namespace google {
             /** EnumValueOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumValueOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact */
+            debugRedact?: (boolean|null);
+
             /** EnumValueOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -14116,6 +18491,12 @@ export namespace google {
 
             /** EnumValueOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumValueOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact. */
+            public debugRedact: boolean;
 
             /** EnumValueOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -14201,6 +18582,9 @@ export namespace google {
         /** Properties of a ServiceOptions. */
         interface IServiceOptions {
 
+            /** ServiceOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** ServiceOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -14222,6 +18606,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IServiceOptions);
+
+            /** ServiceOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** ServiceOptions deprecated. */
             public deprecated: boolean;
@@ -14316,6 +18703,9 @@ export namespace google {
             /** MethodOptions idempotencyLevel */
             idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel|null);
 
+            /** MethodOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MethodOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -14343,6 +18733,9 @@ export namespace google {
 
             /** MethodOptions idempotencyLevel. */
             public idempotencyLevel: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel);
+
+            /** MethodOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MethodOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -14667,6 +19060,394 @@ export namespace google {
 
                 /**
                  * Gets the default type url for NamePart
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** Properties of a FeatureSet. */
+        interface IFeatureSet {
+
+            /** FeatureSet fieldPresence */
+            fieldPresence?: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence|null);
+
+            /** FeatureSet enumType */
+            enumType?: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType|null);
+
+            /** FeatureSet repeatedFieldEncoding */
+            repeatedFieldEncoding?: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding|null);
+
+            /** FeatureSet utf8Validation */
+            utf8Validation?: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation|null);
+
+            /** FeatureSet messageEncoding */
+            messageEncoding?: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding|null);
+
+            /** FeatureSet jsonFormat */
+            jsonFormat?: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat|null);
+        }
+
+        /** Represents a FeatureSet. */
+        class FeatureSet implements IFeatureSet {
+
+            /**
+             * Constructs a new FeatureSet.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSet);
+
+            /** FeatureSet fieldPresence. */
+            public fieldPresence: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence);
+
+            /** FeatureSet enumType. */
+            public enumType: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType);
+
+            /** FeatureSet repeatedFieldEncoding. */
+            public repeatedFieldEncoding: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding);
+
+            /** FeatureSet utf8Validation. */
+            public utf8Validation: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation);
+
+            /** FeatureSet messageEncoding. */
+            public messageEncoding: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding);
+
+            /** FeatureSet jsonFormat. */
+            public jsonFormat: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat);
+
+            /**
+             * Creates a new FeatureSet instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSet instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSet): google.protobuf.FeatureSet;
+
+            /**
+             * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSet;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSet;
+
+            /**
+             * Verifies a FeatureSet message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSet
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSet;
+
+            /**
+             * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+             * @param message FeatureSet
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSet to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSet
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSet {
+
+            /** FieldPresence enum. */
+            enum FieldPresence {
+                FIELD_PRESENCE_UNKNOWN = 0,
+                EXPLICIT = 1,
+                IMPLICIT = 2,
+                LEGACY_REQUIRED = 3
+            }
+
+            /** EnumType enum. */
+            enum EnumType {
+                ENUM_TYPE_UNKNOWN = 0,
+                OPEN = 1,
+                CLOSED = 2
+            }
+
+            /** RepeatedFieldEncoding enum. */
+            enum RepeatedFieldEncoding {
+                REPEATED_FIELD_ENCODING_UNKNOWN = 0,
+                PACKED = 1,
+                EXPANDED = 2
+            }
+
+            /** Utf8Validation enum. */
+            enum Utf8Validation {
+                UTF8_VALIDATION_UNKNOWN = 0,
+                VERIFY = 2,
+                NONE = 3
+            }
+
+            /** MessageEncoding enum. */
+            enum MessageEncoding {
+                MESSAGE_ENCODING_UNKNOWN = 0,
+                LENGTH_PREFIXED = 1,
+                DELIMITED = 2
+            }
+
+            /** JsonFormat enum. */
+            enum JsonFormat {
+                JSON_FORMAT_UNKNOWN = 0,
+                ALLOW = 1,
+                LEGACY_BEST_EFFORT = 2
+            }
+        }
+
+        /** Properties of a FeatureSetDefaults. */
+        interface IFeatureSetDefaults {
+
+            /** FeatureSetDefaults defaults */
+            defaults?: (google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[]|null);
+
+            /** FeatureSetDefaults minimumEdition */
+            minimumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+            /** FeatureSetDefaults maximumEdition */
+            maximumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+        }
+
+        /** Represents a FeatureSetDefaults. */
+        class FeatureSetDefaults implements IFeatureSetDefaults {
+
+            /**
+             * Constructs a new FeatureSetDefaults.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSetDefaults);
+
+            /** FeatureSetDefaults defaults. */
+            public defaults: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[];
+
+            /** FeatureSetDefaults minimumEdition. */
+            public minimumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /** FeatureSetDefaults maximumEdition. */
+            public maximumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /**
+             * Creates a new FeatureSetDefaults instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSetDefaults instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSetDefaults): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Verifies a FeatureSetDefaults message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSetDefaults
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+             * @param message FeatureSetDefaults
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSetDefaults, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSetDefaults to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSetDefaults
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSetDefaults {
+
+            /** Properties of a FeatureSetEditionDefault. */
+            interface IFeatureSetEditionDefault {
+
+                /** FeatureSetEditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** FeatureSetEditionDefault features */
+                features?: (google.protobuf.IFeatureSet|null);
+            }
+
+            /** Represents a FeatureSetEditionDefault. */
+            class FeatureSetEditionDefault implements IFeatureSetEditionDefault {
+
+                /**
+                 * Constructs a new FeatureSetEditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault);
+
+                /** FeatureSetEditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** FeatureSetEditionDefault features. */
+                public features?: (google.protobuf.IFeatureSet|null);
+
+                /**
+                 * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns FeatureSetEditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Verifies a FeatureSetEditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns FeatureSetEditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                 * @param message FeatureSetEditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this FeatureSetEditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for FeatureSetEditionDefault
                  * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                  * @returns The default type url
                  */
@@ -15520,6 +20301,103 @@ export namespace google {
 
             /**
              * Gets the default type url for Empty
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a FieldMask. */
+        interface IFieldMask {
+
+            /** FieldMask paths */
+            paths?: (string[]|null);
+        }
+
+        /** Represents a FieldMask. */
+        class FieldMask implements IFieldMask {
+
+            /**
+             * Constructs a new FieldMask.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFieldMask);
+
+            /** FieldMask paths. */
+            public paths: string[];
+
+            /**
+             * Creates a new FieldMask instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FieldMask instance
+             */
+            public static create(properties?: google.protobuf.IFieldMask): google.protobuf.FieldMask;
+
+            /**
+             * Encodes the specified FieldMask message. Does not implicitly {@link google.protobuf.FieldMask.verify|verify} messages.
+             * @param message FieldMask message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFieldMask, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FieldMask message, length delimited. Does not implicitly {@link google.protobuf.FieldMask.verify|verify} messages.
+             * @param message FieldMask message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFieldMask, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FieldMask message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FieldMask
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldMask;
+
+            /**
+             * Decodes a FieldMask message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FieldMask
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldMask;
+
+            /**
+             * Verifies a FieldMask message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FieldMask message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FieldMask
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FieldMask;
+
+            /**
+             * Creates a plain object from a FieldMask message. Also converts values to other types if specified.
+             * @param message FieldMask
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FieldMask, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FieldMask to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FieldMask
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */
@@ -16605,6 +21483,113 @@ export namespace google {
 
             /**
              * Gets the default type url for Status
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+    }
+
+    /** Namespace type. */
+    namespace type {
+
+        /** Properties of an Interval. */
+        interface IInterval {
+
+            /** Interval startTime */
+            startTime?: (google.protobuf.ITimestamp|null);
+
+            /** Interval endTime */
+            endTime?: (google.protobuf.ITimestamp|null);
+        }
+
+        /** Represents an Interval. */
+        class Interval implements IInterval {
+
+            /**
+             * Constructs a new Interval.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.type.IInterval);
+
+            /** Interval startTime. */
+            public startTime?: (google.protobuf.ITimestamp|null);
+
+            /** Interval endTime. */
+            public endTime?: (google.protobuf.ITimestamp|null);
+
+            /**
+             * Creates a new Interval instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Interval instance
+             */
+            public static create(properties?: google.type.IInterval): google.type.Interval;
+
+            /**
+             * Encodes the specified Interval message. Does not implicitly {@link google.type.Interval.verify|verify} messages.
+             * @param message Interval message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.type.IInterval, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Interval message, length delimited. Does not implicitly {@link google.type.Interval.verify|verify} messages.
+             * @param message Interval message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.type.IInterval, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Interval message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Interval
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.type.Interval;
+
+            /**
+             * Decodes an Interval message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Interval
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.type.Interval;
+
+            /**
+             * Verifies an Interval message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Interval message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Interval
+             */
+            public static fromObject(object: { [k: string]: any }): google.type.Interval;
+
+            /**
+             * Creates a plain object from an Interval message. Also converts values to other types if specified.
+             * @param message Interval
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.type.Interval, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Interval to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Interval
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */

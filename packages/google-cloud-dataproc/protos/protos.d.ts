@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1676,6 +1676,9 @@ export namespace google {
 
                     /** ListBatchesResponse nextPageToken */
                     nextPageToken?: (string|null);
+
+                    /** ListBatchesResponse unreachable */
+                    unreachable?: (string[]|null);
                 }
 
                 /** Represents a ListBatchesResponse. */
@@ -1692,6 +1695,9 @@ export namespace google {
 
                     /** ListBatchesResponse nextPageToken. */
                     public nextPageToken: string;
+
+                    /** ListBatchesResponse unreachable. */
+                    public unreachable: string[];
 
                     /**
                      * Creates a new ListBatchesResponse instance using the specified properties.
@@ -2679,6 +2685,15 @@ export namespace google {
 
                     /** RuntimeConfig properties */
                     properties?: ({ [k: string]: string }|null);
+
+                    /** RuntimeConfig repositoryConfig */
+                    repositoryConfig?: (google.cloud.dataproc.v1.IRepositoryConfig|null);
+
+                    /** RuntimeConfig autotuningConfig */
+                    autotuningConfig?: (google.cloud.dataproc.v1.IAutotuningConfig|null);
+
+                    /** RuntimeConfig cohort */
+                    cohort?: (string|null);
                 }
 
                 /** Represents a RuntimeConfig. */
@@ -2698,6 +2713,15 @@ export namespace google {
 
                     /** RuntimeConfig properties. */
                     public properties: { [k: string]: string };
+
+                    /** RuntimeConfig repositoryConfig. */
+                    public repositoryConfig?: (google.cloud.dataproc.v1.IRepositoryConfig|null);
+
+                    /** RuntimeConfig autotuningConfig. */
+                    public autotuningConfig?: (google.cloud.dataproc.v1.IAutotuningConfig|null);
+
+                    /** RuntimeConfig cohort. */
+                    public cohort: string;
 
                     /**
                      * Creates a new RuntimeConfig instance using the specified properties.
@@ -2898,6 +2922,9 @@ export namespace google {
                     /** ExecutionConfig kmsKey */
                     kmsKey?: (string|null);
 
+                    /** ExecutionConfig idleTtl */
+                    idleTtl?: (google.protobuf.IDuration|null);
+
                     /** ExecutionConfig ttl */
                     ttl?: (google.protobuf.IDuration|null);
 
@@ -2928,6 +2955,9 @@ export namespace google {
 
                     /** ExecutionConfig kmsKey. */
                     public kmsKey: string;
+
+                    /** ExecutionConfig idleTtl. */
+                    public idleTtl?: (google.protobuf.IDuration|null);
 
                     /** ExecutionConfig ttl. */
                     public ttl?: (google.protobuf.IDuration|null);
@@ -3345,6 +3375,12 @@ export namespace google {
 
                     /** UsageMetrics shuffleStorageGbSeconds */
                     shuffleStorageGbSeconds?: (number|Long|string|null);
+
+                    /** UsageMetrics milliAcceleratorSeconds */
+                    milliAcceleratorSeconds?: (number|Long|string|null);
+
+                    /** UsageMetrics acceleratorType */
+                    acceleratorType?: (string|null);
                 }
 
                 /** Represents a UsageMetrics. */
@@ -3361,6 +3397,12 @@ export namespace google {
 
                     /** UsageMetrics shuffleStorageGbSeconds. */
                     public shuffleStorageGbSeconds: (number|Long|string);
+
+                    /** UsageMetrics milliAcceleratorSeconds. */
+                    public milliAcceleratorSeconds: (number|Long|string);
+
+                    /** UsageMetrics acceleratorType. */
+                    public acceleratorType: string;
 
                     /**
                      * Creates a new UsageMetrics instance using the specified properties.
@@ -3449,6 +3491,18 @@ export namespace google {
                     /** UsageSnapshot shuffleStorageGb */
                     shuffleStorageGb?: (number|Long|string|null);
 
+                    /** UsageSnapshot milliDcuPremium */
+                    milliDcuPremium?: (number|Long|string|null);
+
+                    /** UsageSnapshot shuffleStorageGbPremium */
+                    shuffleStorageGbPremium?: (number|Long|string|null);
+
+                    /** UsageSnapshot milliAccelerator */
+                    milliAccelerator?: (number|Long|string|null);
+
+                    /** UsageSnapshot acceleratorType */
+                    acceleratorType?: (string|null);
+
                     /** UsageSnapshot snapshotTime */
                     snapshotTime?: (google.protobuf.ITimestamp|null);
                 }
@@ -3467,6 +3521,18 @@ export namespace google {
 
                     /** UsageSnapshot shuffleStorageGb. */
                     public shuffleStorageGb: (number|Long|string);
+
+                    /** UsageSnapshot milliDcuPremium. */
+                    public milliDcuPremium: (number|Long|string);
+
+                    /** UsageSnapshot shuffleStorageGbPremium. */
+                    public shuffleStorageGbPremium: (number|Long|string);
+
+                    /** UsageSnapshot milliAccelerator. */
+                    public milliAccelerator: (number|Long|string);
+
+                    /** UsageSnapshot acceleratorType. */
+                    public acceleratorType: string;
 
                     /** UsageSnapshot snapshotTime. */
                     public snapshotTime?: (google.protobuf.ITimestamp|null);
@@ -4445,6 +4511,308 @@ export namespace google {
                     }
                 }
 
+                /** Properties of an AutotuningConfig. */
+                interface IAutotuningConfig {
+
+                    /** AutotuningConfig scenarios */
+                    scenarios?: (google.cloud.dataproc.v1.AutotuningConfig.Scenario[]|null);
+                }
+
+                /** Represents an AutotuningConfig. */
+                class AutotuningConfig implements IAutotuningConfig {
+
+                    /**
+                     * Constructs a new AutotuningConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IAutotuningConfig);
+
+                    /** AutotuningConfig scenarios. */
+                    public scenarios: google.cloud.dataproc.v1.AutotuningConfig.Scenario[];
+
+                    /**
+                     * Creates a new AutotuningConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns AutotuningConfig instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IAutotuningConfig): google.cloud.dataproc.v1.AutotuningConfig;
+
+                    /**
+                     * Encodes the specified AutotuningConfig message. Does not implicitly {@link google.cloud.dataproc.v1.AutotuningConfig.verify|verify} messages.
+                     * @param message AutotuningConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IAutotuningConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified AutotuningConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.AutotuningConfig.verify|verify} messages.
+                     * @param message AutotuningConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IAutotuningConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an AutotuningConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns AutotuningConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.AutotuningConfig;
+
+                    /**
+                     * Decodes an AutotuningConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns AutotuningConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.AutotuningConfig;
+
+                    /**
+                     * Verifies an AutotuningConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an AutotuningConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns AutotuningConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.AutotuningConfig;
+
+                    /**
+                     * Creates a plain object from an AutotuningConfig message. Also converts values to other types if specified.
+                     * @param message AutotuningConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.AutotuningConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this AutotuningConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for AutotuningConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace AutotuningConfig {
+
+                    /** Scenario enum. */
+                    enum Scenario {
+                        SCENARIO_UNSPECIFIED = 0,
+                        SCALING = 2,
+                        BROADCAST_HASH_JOIN = 3,
+                        MEMORY = 4
+                    }
+                }
+
+                /** Properties of a RepositoryConfig. */
+                interface IRepositoryConfig {
+
+                    /** RepositoryConfig pypiRepositoryConfig */
+                    pypiRepositoryConfig?: (google.cloud.dataproc.v1.IPyPiRepositoryConfig|null);
+                }
+
+                /** Represents a RepositoryConfig. */
+                class RepositoryConfig implements IRepositoryConfig {
+
+                    /**
+                     * Constructs a new RepositoryConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IRepositoryConfig);
+
+                    /** RepositoryConfig pypiRepositoryConfig. */
+                    public pypiRepositoryConfig?: (google.cloud.dataproc.v1.IPyPiRepositoryConfig|null);
+
+                    /**
+                     * Creates a new RepositoryConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns RepositoryConfig instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IRepositoryConfig): google.cloud.dataproc.v1.RepositoryConfig;
+
+                    /**
+                     * Encodes the specified RepositoryConfig message. Does not implicitly {@link google.cloud.dataproc.v1.RepositoryConfig.verify|verify} messages.
+                     * @param message RepositoryConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IRepositoryConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified RepositoryConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.RepositoryConfig.verify|verify} messages.
+                     * @param message RepositoryConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IRepositoryConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a RepositoryConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns RepositoryConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.RepositoryConfig;
+
+                    /**
+                     * Decodes a RepositoryConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns RepositoryConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.RepositoryConfig;
+
+                    /**
+                     * Verifies a RepositoryConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a RepositoryConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns RepositoryConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.RepositoryConfig;
+
+                    /**
+                     * Creates a plain object from a RepositoryConfig message. Also converts values to other types if specified.
+                     * @param message RepositoryConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.RepositoryConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this RepositoryConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for RepositoryConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a PyPiRepositoryConfig. */
+                interface IPyPiRepositoryConfig {
+
+                    /** PyPiRepositoryConfig pypiRepository */
+                    pypiRepository?: (string|null);
+                }
+
+                /** Represents a PyPiRepositoryConfig. */
+                class PyPiRepositoryConfig implements IPyPiRepositoryConfig {
+
+                    /**
+                     * Constructs a new PyPiRepositoryConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IPyPiRepositoryConfig);
+
+                    /** PyPiRepositoryConfig pypiRepository. */
+                    public pypiRepository: string;
+
+                    /**
+                     * Creates a new PyPiRepositoryConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns PyPiRepositoryConfig instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IPyPiRepositoryConfig): google.cloud.dataproc.v1.PyPiRepositoryConfig;
+
+                    /**
+                     * Encodes the specified PyPiRepositoryConfig message. Does not implicitly {@link google.cloud.dataproc.v1.PyPiRepositoryConfig.verify|verify} messages.
+                     * @param message PyPiRepositoryConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IPyPiRepositoryConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified PyPiRepositoryConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.PyPiRepositoryConfig.verify|verify} messages.
+                     * @param message PyPiRepositoryConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IPyPiRepositoryConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a PyPiRepositoryConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns PyPiRepositoryConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.PyPiRepositoryConfig;
+
+                    /**
+                     * Decodes a PyPiRepositoryConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns PyPiRepositoryConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.PyPiRepositoryConfig;
+
+                    /**
+                     * Verifies a PyPiRepositoryConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a PyPiRepositoryConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns PyPiRepositoryConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.PyPiRepositoryConfig;
+
+                    /**
+                     * Creates a plain object from a PyPiRepositoryConfig message. Also converts values to other types if specified.
+                     * @param message PyPiRepositoryConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.PyPiRepositoryConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this PyPiRepositoryConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for PyPiRepositoryConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Component enum. */
                 enum Component {
                     COMPONENT_UNSPECIFIED = 0,
@@ -5415,6 +5783,9 @@ export namespace google {
 
                     /** EncryptionConfig gcePdKmsKeyName */
                     gcePdKmsKeyName?: (string|null);
+
+                    /** EncryptionConfig kmsKey */
+                    kmsKey?: (string|null);
                 }
 
                 /** Represents an EncryptionConfig. */
@@ -5428,6 +5799,9 @@ export namespace google {
 
                     /** EncryptionConfig gcePdKmsKeyName. */
                     public gcePdKmsKeyName: string;
+
+                    /** EncryptionConfig kmsKey. */
+                    public kmsKey: string;
 
                     /**
                      * Creates a new EncryptionConfig instance using the specified properties.
@@ -6011,6 +6385,9 @@ export namespace google {
                     /** InstanceGroupConfig instanceNames */
                     instanceNames?: (string[]|null);
 
+                    /** InstanceGroupConfig instanceReferences */
+                    instanceReferences?: (google.cloud.dataproc.v1.IInstanceReference[]|null);
+
                     /** InstanceGroupConfig imageUri */
                     imageUri?: (string|null);
 
@@ -6034,6 +6411,15 @@ export namespace google {
 
                     /** InstanceGroupConfig minCpuPlatform */
                     minCpuPlatform?: (string|null);
+
+                    /** InstanceGroupConfig minNumInstances */
+                    minNumInstances?: (number|null);
+
+                    /** InstanceGroupConfig instanceFlexibilityPolicy */
+                    instanceFlexibilityPolicy?: (google.cloud.dataproc.v1.IInstanceFlexibilityPolicy|null);
+
+                    /** InstanceGroupConfig startupConfig */
+                    startupConfig?: (google.cloud.dataproc.v1.IStartupConfig|null);
                 }
 
                 /** Represents an InstanceGroupConfig. */
@@ -6050,6 +6436,9 @@ export namespace google {
 
                     /** InstanceGroupConfig instanceNames. */
                     public instanceNames: string[];
+
+                    /** InstanceGroupConfig instanceReferences. */
+                    public instanceReferences: google.cloud.dataproc.v1.IInstanceReference[];
 
                     /** InstanceGroupConfig imageUri. */
                     public imageUri: string;
@@ -6074,6 +6463,15 @@ export namespace google {
 
                     /** InstanceGroupConfig minCpuPlatform. */
                     public minCpuPlatform: string;
+
+                    /** InstanceGroupConfig minNumInstances. */
+                    public minNumInstances: number;
+
+                    /** InstanceGroupConfig instanceFlexibilityPolicy. */
+                    public instanceFlexibilityPolicy?: (google.cloud.dataproc.v1.IInstanceFlexibilityPolicy|null);
+
+                    /** InstanceGroupConfig startupConfig. */
+                    public startupConfig?: (google.cloud.dataproc.v1.IStartupConfig|null);
 
                     /**
                      * Creates a new InstanceGroupConfig instance using the specified properties.
@@ -6164,6 +6562,221 @@ export namespace google {
                     }
                 }
 
+                /** Properties of a StartupConfig. */
+                interface IStartupConfig {
+
+                    /** StartupConfig requiredRegistrationFraction */
+                    requiredRegistrationFraction?: (number|null);
+                }
+
+                /** Represents a StartupConfig. */
+                class StartupConfig implements IStartupConfig {
+
+                    /**
+                     * Constructs a new StartupConfig.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IStartupConfig);
+
+                    /** StartupConfig requiredRegistrationFraction. */
+                    public requiredRegistrationFraction?: (number|null);
+
+                    /** StartupConfig _requiredRegistrationFraction. */
+                    public _requiredRegistrationFraction?: "requiredRegistrationFraction";
+
+                    /**
+                     * Creates a new StartupConfig instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns StartupConfig instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IStartupConfig): google.cloud.dataproc.v1.StartupConfig;
+
+                    /**
+                     * Encodes the specified StartupConfig message. Does not implicitly {@link google.cloud.dataproc.v1.StartupConfig.verify|verify} messages.
+                     * @param message StartupConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IStartupConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified StartupConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.StartupConfig.verify|verify} messages.
+                     * @param message StartupConfig message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IStartupConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a StartupConfig message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns StartupConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.StartupConfig;
+
+                    /**
+                     * Decodes a StartupConfig message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns StartupConfig
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.StartupConfig;
+
+                    /**
+                     * Verifies a StartupConfig message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a StartupConfig message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns StartupConfig
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.StartupConfig;
+
+                    /**
+                     * Creates a plain object from a StartupConfig message. Also converts values to other types if specified.
+                     * @param message StartupConfig
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.StartupConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this StartupConfig to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for StartupConfig
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an InstanceReference. */
+                interface IInstanceReference {
+
+                    /** InstanceReference instanceName */
+                    instanceName?: (string|null);
+
+                    /** InstanceReference instanceId */
+                    instanceId?: (string|null);
+
+                    /** InstanceReference publicKey */
+                    publicKey?: (string|null);
+
+                    /** InstanceReference publicEciesKey */
+                    publicEciesKey?: (string|null);
+                }
+
+                /** Represents an InstanceReference. */
+                class InstanceReference implements IInstanceReference {
+
+                    /**
+                     * Constructs a new InstanceReference.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IInstanceReference);
+
+                    /** InstanceReference instanceName. */
+                    public instanceName: string;
+
+                    /** InstanceReference instanceId. */
+                    public instanceId: string;
+
+                    /** InstanceReference publicKey. */
+                    public publicKey: string;
+
+                    /** InstanceReference publicEciesKey. */
+                    public publicEciesKey: string;
+
+                    /**
+                     * Creates a new InstanceReference instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns InstanceReference instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IInstanceReference): google.cloud.dataproc.v1.InstanceReference;
+
+                    /**
+                     * Encodes the specified InstanceReference message. Does not implicitly {@link google.cloud.dataproc.v1.InstanceReference.verify|verify} messages.
+                     * @param message InstanceReference message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IInstanceReference, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified InstanceReference message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.InstanceReference.verify|verify} messages.
+                     * @param message InstanceReference message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IInstanceReference, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an InstanceReference message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns InstanceReference
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.InstanceReference;
+
+                    /**
+                     * Decodes an InstanceReference message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns InstanceReference
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.InstanceReference;
+
+                    /**
+                     * Verifies an InstanceReference message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an InstanceReference message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns InstanceReference
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.InstanceReference;
+
+                    /**
+                     * Creates a plain object from an InstanceReference message. Also converts values to other types if specified.
+                     * @param message InstanceReference
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.InstanceReference, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this InstanceReference to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for InstanceReference
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of a ManagedGroupConfig. */
                 interface IManagedGroupConfig {
 
@@ -6172,6 +6785,9 @@ export namespace google {
 
                     /** ManagedGroupConfig instanceGroupManagerName */
                     instanceGroupManagerName?: (string|null);
+
+                    /** ManagedGroupConfig instanceGroupManagerUri */
+                    instanceGroupManagerUri?: (string|null);
                 }
 
                 /** Represents a ManagedGroupConfig. */
@@ -6188,6 +6804,9 @@ export namespace google {
 
                     /** ManagedGroupConfig instanceGroupManagerName. */
                     public instanceGroupManagerName: string;
+
+                    /** ManagedGroupConfig instanceGroupManagerUri. */
+                    public instanceGroupManagerUri: string;
 
                     /**
                      * Creates a new ManagedGroupConfig instance using the specified properties.
@@ -6265,6 +6884,439 @@ export namespace google {
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an InstanceFlexibilityPolicy. */
+                interface IInstanceFlexibilityPolicy {
+
+                    /** InstanceFlexibilityPolicy provisioningModelMix */
+                    provisioningModelMix?: (google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IProvisioningModelMix|null);
+
+                    /** InstanceFlexibilityPolicy instanceSelectionList */
+                    instanceSelectionList?: (google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelection[]|null);
+
+                    /** InstanceFlexibilityPolicy instanceSelectionResults */
+                    instanceSelectionResults?: (google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelectionResult[]|null);
+                }
+
+                /** Represents an InstanceFlexibilityPolicy. */
+                class InstanceFlexibilityPolicy implements IInstanceFlexibilityPolicy {
+
+                    /**
+                     * Constructs a new InstanceFlexibilityPolicy.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IInstanceFlexibilityPolicy);
+
+                    /** InstanceFlexibilityPolicy provisioningModelMix. */
+                    public provisioningModelMix?: (google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IProvisioningModelMix|null);
+
+                    /** InstanceFlexibilityPolicy instanceSelectionList. */
+                    public instanceSelectionList: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelection[];
+
+                    /** InstanceFlexibilityPolicy instanceSelectionResults. */
+                    public instanceSelectionResults: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelectionResult[];
+
+                    /**
+                     * Creates a new InstanceFlexibilityPolicy instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns InstanceFlexibilityPolicy instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IInstanceFlexibilityPolicy): google.cloud.dataproc.v1.InstanceFlexibilityPolicy;
+
+                    /**
+                     * Encodes the specified InstanceFlexibilityPolicy message. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.verify|verify} messages.
+                     * @param message InstanceFlexibilityPolicy message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IInstanceFlexibilityPolicy, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified InstanceFlexibilityPolicy message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.verify|verify} messages.
+                     * @param message InstanceFlexibilityPolicy message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IInstanceFlexibilityPolicy, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an InstanceFlexibilityPolicy message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns InstanceFlexibilityPolicy
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.InstanceFlexibilityPolicy;
+
+                    /**
+                     * Decodes an InstanceFlexibilityPolicy message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns InstanceFlexibilityPolicy
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.InstanceFlexibilityPolicy;
+
+                    /**
+                     * Verifies an InstanceFlexibilityPolicy message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an InstanceFlexibilityPolicy message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns InstanceFlexibilityPolicy
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.InstanceFlexibilityPolicy;
+
+                    /**
+                     * Creates a plain object from an InstanceFlexibilityPolicy message. Also converts values to other types if specified.
+                     * @param message InstanceFlexibilityPolicy
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this InstanceFlexibilityPolicy to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for InstanceFlexibilityPolicy
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace InstanceFlexibilityPolicy {
+
+                    /** Properties of a ProvisioningModelMix. */
+                    interface IProvisioningModelMix {
+
+                        /** ProvisioningModelMix standardCapacityBase */
+                        standardCapacityBase?: (number|null);
+
+                        /** ProvisioningModelMix standardCapacityPercentAboveBase */
+                        standardCapacityPercentAboveBase?: (number|null);
+                    }
+
+                    /** Represents a ProvisioningModelMix. */
+                    class ProvisioningModelMix implements IProvisioningModelMix {
+
+                        /**
+                         * Constructs a new ProvisioningModelMix.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IProvisioningModelMix);
+
+                        /** ProvisioningModelMix standardCapacityBase. */
+                        public standardCapacityBase?: (number|null);
+
+                        /** ProvisioningModelMix standardCapacityPercentAboveBase. */
+                        public standardCapacityPercentAboveBase?: (number|null);
+
+                        /** ProvisioningModelMix _standardCapacityBase. */
+                        public _standardCapacityBase?: "standardCapacityBase";
+
+                        /** ProvisioningModelMix _standardCapacityPercentAboveBase. */
+                        public _standardCapacityPercentAboveBase?: "standardCapacityPercentAboveBase";
+
+                        /**
+                         * Creates a new ProvisioningModelMix instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ProvisioningModelMix instance
+                         */
+                        public static create(properties?: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IProvisioningModelMix): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix;
+
+                        /**
+                         * Encodes the specified ProvisioningModelMix message. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix.verify|verify} messages.
+                         * @param message ProvisioningModelMix message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IProvisioningModelMix, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ProvisioningModelMix message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix.verify|verify} messages.
+                         * @param message ProvisioningModelMix message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IProvisioningModelMix, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ProvisioningModelMix message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ProvisioningModelMix
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix;
+
+                        /**
+                         * Decodes a ProvisioningModelMix message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ProvisioningModelMix
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix;
+
+                        /**
+                         * Verifies a ProvisioningModelMix message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ProvisioningModelMix message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ProvisioningModelMix
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix;
+
+                        /**
+                         * Creates a plain object from a ProvisioningModelMix message. Also converts values to other types if specified.
+                         * @param message ProvisioningModelMix
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.ProvisioningModelMix, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ProvisioningModelMix to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ProvisioningModelMix
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of an InstanceSelection. */
+                    interface IInstanceSelection {
+
+                        /** InstanceSelection machineTypes */
+                        machineTypes?: (string[]|null);
+
+                        /** InstanceSelection rank */
+                        rank?: (number|null);
+                    }
+
+                    /** Represents an InstanceSelection. */
+                    class InstanceSelection implements IInstanceSelection {
+
+                        /**
+                         * Constructs a new InstanceSelection.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelection);
+
+                        /** InstanceSelection machineTypes. */
+                        public machineTypes: string[];
+
+                        /** InstanceSelection rank. */
+                        public rank: number;
+
+                        /**
+                         * Creates a new InstanceSelection instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns InstanceSelection instance
+                         */
+                        public static create(properties?: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelection): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection;
+
+                        /**
+                         * Encodes the specified InstanceSelection message. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection.verify|verify} messages.
+                         * @param message InstanceSelection message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelection, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified InstanceSelection message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection.verify|verify} messages.
+                         * @param message InstanceSelection message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelection, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an InstanceSelection message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns InstanceSelection
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection;
+
+                        /**
+                         * Decodes an InstanceSelection message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns InstanceSelection
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection;
+
+                        /**
+                         * Verifies an InstanceSelection message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an InstanceSelection message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns InstanceSelection
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection;
+
+                        /**
+                         * Creates a plain object from an InstanceSelection message. Also converts values to other types if specified.
+                         * @param message InstanceSelection
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelection, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this InstanceSelection to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for InstanceSelection
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of an InstanceSelectionResult. */
+                    interface IInstanceSelectionResult {
+
+                        /** InstanceSelectionResult machineType */
+                        machineType?: (string|null);
+
+                        /** InstanceSelectionResult vmCount */
+                        vmCount?: (number|null);
+                    }
+
+                    /** Represents an InstanceSelectionResult. */
+                    class InstanceSelectionResult implements IInstanceSelectionResult {
+
+                        /**
+                         * Constructs a new InstanceSelectionResult.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelectionResult);
+
+                        /** InstanceSelectionResult machineType. */
+                        public machineType?: (string|null);
+
+                        /** InstanceSelectionResult vmCount. */
+                        public vmCount?: (number|null);
+
+                        /** InstanceSelectionResult _machineType. */
+                        public _machineType?: "machineType";
+
+                        /** InstanceSelectionResult _vmCount. */
+                        public _vmCount?: "vmCount";
+
+                        /**
+                         * Creates a new InstanceSelectionResult instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns InstanceSelectionResult instance
+                         */
+                        public static create(properties?: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelectionResult): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult;
+
+                        /**
+                         * Encodes the specified InstanceSelectionResult message. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult.verify|verify} messages.
+                         * @param message InstanceSelectionResult message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelectionResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified InstanceSelectionResult message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult.verify|verify} messages.
+                         * @param message InstanceSelectionResult message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.IInstanceSelectionResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an InstanceSelectionResult message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns InstanceSelectionResult
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult;
+
+                        /**
+                         * Decodes an InstanceSelectionResult message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns InstanceSelectionResult
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult;
+
+                        /**
+                         * Verifies an InstanceSelectionResult message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an InstanceSelectionResult message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns InstanceSelectionResult
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult;
+
+                        /**
+                         * Creates a plain object from an InstanceSelectionResult message. Also converts values to other types if specified.
+                         * @param message InstanceSelectionResult
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.dataproc.v1.InstanceFlexibilityPolicy.InstanceSelectionResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this InstanceSelectionResult to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for InstanceSelectionResult
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
                 }
 
                 /** Properties of an AcceleratorConfig. */
@@ -6384,6 +7436,12 @@ export namespace google {
 
                     /** DiskConfig localSsdInterface */
                     localSsdInterface?: (string|null);
+
+                    /** DiskConfig bootDiskProvisionedIops */
+                    bootDiskProvisionedIops?: (number|Long|string|null);
+
+                    /** DiskConfig bootDiskProvisionedThroughput */
+                    bootDiskProvisionedThroughput?: (number|Long|string|null);
                 }
 
                 /** Represents a DiskConfig. */
@@ -6406,6 +7464,18 @@ export namespace google {
 
                     /** DiskConfig localSsdInterface. */
                     public localSsdInterface: string;
+
+                    /** DiskConfig bootDiskProvisionedIops. */
+                    public bootDiskProvisionedIops?: (number|Long|string|null);
+
+                    /** DiskConfig bootDiskProvisionedThroughput. */
+                    public bootDiskProvisionedThroughput?: (number|Long|string|null);
+
+                    /** DiskConfig _bootDiskProvisionedIops. */
+                    public _bootDiskProvisionedIops?: "bootDiskProvisionedIops";
+
+                    /** DiskConfig _bootDiskProvisionedThroughput. */
+                    public _bootDiskProvisionedThroughput?: "bootDiskProvisionedThroughput";
 
                     /**
                      * Creates a new DiskConfig instance using the specified properties.
@@ -6943,7 +8013,8 @@ export namespace google {
                         UPDATING = 5,
                         STOPPING = 6,
                         STOPPED = 7,
-                        STARTING = 8
+                        STARTING = 8,
+                        REPAIRING = 10
                     }
 
                     /** Substate enum. */
@@ -7870,7 +8941,8 @@ export namespace google {
                         YARN = 4,
                         SPARK_HISTORY_SERVER = 5,
                         HIVESERVER2 = 6,
-                        HIVEMETASTORE = 7
+                        HIVEMETASTORE = 7,
+                        FLINK = 8
                     }
 
                     /** Properties of a Metric. */
@@ -8938,6 +10010,21 @@ export namespace google {
 
                     /** DiagnoseClusterRequest clusterName */
                     clusterName?: (string|null);
+
+                    /** DiagnoseClusterRequest tarballGcsDir */
+                    tarballGcsDir?: (string|null);
+
+                    /** DiagnoseClusterRequest tarballAccess */
+                    tarballAccess?: (google.cloud.dataproc.v1.DiagnoseClusterRequest.TarballAccess|keyof typeof google.cloud.dataproc.v1.DiagnoseClusterRequest.TarballAccess|null);
+
+                    /** DiagnoseClusterRequest diagnosisInterval */
+                    diagnosisInterval?: (google.type.IInterval|null);
+
+                    /** DiagnoseClusterRequest jobs */
+                    jobs?: (string[]|null);
+
+                    /** DiagnoseClusterRequest yarnApplicationIds */
+                    yarnApplicationIds?: (string[]|null);
                 }
 
                 /** Represents a DiagnoseClusterRequest. */
@@ -8957,6 +10044,21 @@ export namespace google {
 
                     /** DiagnoseClusterRequest clusterName. */
                     public clusterName: string;
+
+                    /** DiagnoseClusterRequest tarballGcsDir. */
+                    public tarballGcsDir: string;
+
+                    /** DiagnoseClusterRequest tarballAccess. */
+                    public tarballAccess: (google.cloud.dataproc.v1.DiagnoseClusterRequest.TarballAccess|keyof typeof google.cloud.dataproc.v1.DiagnoseClusterRequest.TarballAccess);
+
+                    /** DiagnoseClusterRequest diagnosisInterval. */
+                    public diagnosisInterval?: (google.type.IInterval|null);
+
+                    /** DiagnoseClusterRequest jobs. */
+                    public jobs: string[];
+
+                    /** DiagnoseClusterRequest yarnApplicationIds. */
+                    public yarnApplicationIds: string[];
 
                     /**
                      * Creates a new DiagnoseClusterRequest instance using the specified properties.
@@ -9034,6 +10136,16 @@ export namespace google {
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace DiagnoseClusterRequest {
+
+                    /** TarballAccess enum. */
+                    enum TarballAccess {
+                        TARBALL_ACCESS_UNSPECIFIED = 0,
+                        GOOGLE_CLOUD_SUPPORT = 1,
+                        GOOGLE_DATAPROC_DIAGNOSE = 2
+                    }
                 }
 
                 /** Properties of a DiagnoseClusterResults. */
@@ -9250,6 +10362,726 @@ export namespace google {
                         NO_RESERVATION = 1,
                         ANY_RESERVATION = 2,
                         SPECIFIC_RESERVATION = 3
+                    }
+                }
+
+                /** Properties of a BatchOperationMetadata. */
+                interface IBatchOperationMetadata {
+
+                    /** BatchOperationMetadata batch */
+                    batch?: (string|null);
+
+                    /** BatchOperationMetadata batchUuid */
+                    batchUuid?: (string|null);
+
+                    /** BatchOperationMetadata createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** BatchOperationMetadata doneTime */
+                    doneTime?: (google.protobuf.ITimestamp|null);
+
+                    /** BatchOperationMetadata operationType */
+                    operationType?: (google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType|keyof typeof google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType|null);
+
+                    /** BatchOperationMetadata description */
+                    description?: (string|null);
+
+                    /** BatchOperationMetadata labels */
+                    labels?: ({ [k: string]: string }|null);
+
+                    /** BatchOperationMetadata warnings */
+                    warnings?: (string[]|null);
+                }
+
+                /** Represents a BatchOperationMetadata. */
+                class BatchOperationMetadata implements IBatchOperationMetadata {
+
+                    /**
+                     * Constructs a new BatchOperationMetadata.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IBatchOperationMetadata);
+
+                    /** BatchOperationMetadata batch. */
+                    public batch: string;
+
+                    /** BatchOperationMetadata batchUuid. */
+                    public batchUuid: string;
+
+                    /** BatchOperationMetadata createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** BatchOperationMetadata doneTime. */
+                    public doneTime?: (google.protobuf.ITimestamp|null);
+
+                    /** BatchOperationMetadata operationType. */
+                    public operationType: (google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType|keyof typeof google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType);
+
+                    /** BatchOperationMetadata description. */
+                    public description: string;
+
+                    /** BatchOperationMetadata labels. */
+                    public labels: { [k: string]: string };
+
+                    /** BatchOperationMetadata warnings. */
+                    public warnings: string[];
+
+                    /**
+                     * Creates a new BatchOperationMetadata instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns BatchOperationMetadata instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IBatchOperationMetadata): google.cloud.dataproc.v1.BatchOperationMetadata;
+
+                    /**
+                     * Encodes the specified BatchOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.BatchOperationMetadata.verify|verify} messages.
+                     * @param message BatchOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IBatchOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified BatchOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.BatchOperationMetadata.verify|verify} messages.
+                     * @param message BatchOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IBatchOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a BatchOperationMetadata message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns BatchOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.BatchOperationMetadata;
+
+                    /**
+                     * Decodes a BatchOperationMetadata message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns BatchOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.BatchOperationMetadata;
+
+                    /**
+                     * Verifies a BatchOperationMetadata message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a BatchOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns BatchOperationMetadata
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.BatchOperationMetadata;
+
+                    /**
+                     * Creates a plain object from a BatchOperationMetadata message. Also converts values to other types if specified.
+                     * @param message BatchOperationMetadata
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.BatchOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this BatchOperationMetadata to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for BatchOperationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace BatchOperationMetadata {
+
+                    /** BatchOperationType enum. */
+                    enum BatchOperationType {
+                        BATCH_OPERATION_TYPE_UNSPECIFIED = 0,
+                        BATCH = 1
+                    }
+                }
+
+                /** Properties of a SessionOperationMetadata. */
+                interface ISessionOperationMetadata {
+
+                    /** SessionOperationMetadata session */
+                    session?: (string|null);
+
+                    /** SessionOperationMetadata sessionUuid */
+                    sessionUuid?: (string|null);
+
+                    /** SessionOperationMetadata createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionOperationMetadata doneTime */
+                    doneTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionOperationMetadata operationType */
+                    operationType?: (google.cloud.dataproc.v1.SessionOperationMetadata.SessionOperationType|keyof typeof google.cloud.dataproc.v1.SessionOperationMetadata.SessionOperationType|null);
+
+                    /** SessionOperationMetadata description */
+                    description?: (string|null);
+
+                    /** SessionOperationMetadata labels */
+                    labels?: ({ [k: string]: string }|null);
+
+                    /** SessionOperationMetadata warnings */
+                    warnings?: (string[]|null);
+                }
+
+                /** Represents a SessionOperationMetadata. */
+                class SessionOperationMetadata implements ISessionOperationMetadata {
+
+                    /**
+                     * Constructs a new SessionOperationMetadata.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.ISessionOperationMetadata);
+
+                    /** SessionOperationMetadata session. */
+                    public session: string;
+
+                    /** SessionOperationMetadata sessionUuid. */
+                    public sessionUuid: string;
+
+                    /** SessionOperationMetadata createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionOperationMetadata doneTime. */
+                    public doneTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionOperationMetadata operationType. */
+                    public operationType: (google.cloud.dataproc.v1.SessionOperationMetadata.SessionOperationType|keyof typeof google.cloud.dataproc.v1.SessionOperationMetadata.SessionOperationType);
+
+                    /** SessionOperationMetadata description. */
+                    public description: string;
+
+                    /** SessionOperationMetadata labels. */
+                    public labels: { [k: string]: string };
+
+                    /** SessionOperationMetadata warnings. */
+                    public warnings: string[];
+
+                    /**
+                     * Creates a new SessionOperationMetadata instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns SessionOperationMetadata instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.ISessionOperationMetadata): google.cloud.dataproc.v1.SessionOperationMetadata;
+
+                    /**
+                     * Encodes the specified SessionOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.SessionOperationMetadata.verify|verify} messages.
+                     * @param message SessionOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.ISessionOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified SessionOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.SessionOperationMetadata.verify|verify} messages.
+                     * @param message SessionOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ISessionOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a SessionOperationMetadata message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns SessionOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.SessionOperationMetadata;
+
+                    /**
+                     * Decodes a SessionOperationMetadata message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns SessionOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.SessionOperationMetadata;
+
+                    /**
+                     * Verifies a SessionOperationMetadata message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a SessionOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns SessionOperationMetadata
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.SessionOperationMetadata;
+
+                    /**
+                     * Creates a plain object from a SessionOperationMetadata message. Also converts values to other types if specified.
+                     * @param message SessionOperationMetadata
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.SessionOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this SessionOperationMetadata to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for SessionOperationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace SessionOperationMetadata {
+
+                    /** SessionOperationType enum. */
+                    enum SessionOperationType {
+                        SESSION_OPERATION_TYPE_UNSPECIFIED = 0,
+                        CREATE = 1,
+                        TERMINATE = 2,
+                        DELETE = 3
+                    }
+                }
+
+                /** Properties of a ClusterOperationStatus. */
+                interface IClusterOperationStatus {
+
+                    /** ClusterOperationStatus state */
+                    state?: (google.cloud.dataproc.v1.ClusterOperationStatus.State|keyof typeof google.cloud.dataproc.v1.ClusterOperationStatus.State|null);
+
+                    /** ClusterOperationStatus innerState */
+                    innerState?: (string|null);
+
+                    /** ClusterOperationStatus details */
+                    details?: (string|null);
+
+                    /** ClusterOperationStatus stateStartTime */
+                    stateStartTime?: (google.protobuf.ITimestamp|null);
+                }
+
+                /** Represents a ClusterOperationStatus. */
+                class ClusterOperationStatus implements IClusterOperationStatus {
+
+                    /**
+                     * Constructs a new ClusterOperationStatus.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IClusterOperationStatus);
+
+                    /** ClusterOperationStatus state. */
+                    public state: (google.cloud.dataproc.v1.ClusterOperationStatus.State|keyof typeof google.cloud.dataproc.v1.ClusterOperationStatus.State);
+
+                    /** ClusterOperationStatus innerState. */
+                    public innerState: string;
+
+                    /** ClusterOperationStatus details. */
+                    public details: string;
+
+                    /** ClusterOperationStatus stateStartTime. */
+                    public stateStartTime?: (google.protobuf.ITimestamp|null);
+
+                    /**
+                     * Creates a new ClusterOperationStatus instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ClusterOperationStatus instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IClusterOperationStatus): google.cloud.dataproc.v1.ClusterOperationStatus;
+
+                    /**
+                     * Encodes the specified ClusterOperationStatus message. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationStatus.verify|verify} messages.
+                     * @param message ClusterOperationStatus message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IClusterOperationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ClusterOperationStatus message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationStatus.verify|verify} messages.
+                     * @param message ClusterOperationStatus message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IClusterOperationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ClusterOperationStatus message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ClusterOperationStatus
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ClusterOperationStatus;
+
+                    /**
+                     * Decodes a ClusterOperationStatus message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ClusterOperationStatus
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ClusterOperationStatus;
+
+                    /**
+                     * Verifies a ClusterOperationStatus message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ClusterOperationStatus message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ClusterOperationStatus
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ClusterOperationStatus;
+
+                    /**
+                     * Creates a plain object from a ClusterOperationStatus message. Also converts values to other types if specified.
+                     * @param message ClusterOperationStatus
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.ClusterOperationStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ClusterOperationStatus to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ClusterOperationStatus
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace ClusterOperationStatus {
+
+                    /** State enum. */
+                    enum State {
+                        UNKNOWN = 0,
+                        PENDING = 1,
+                        RUNNING = 2,
+                        DONE = 3
+                    }
+                }
+
+                /** Properties of a ClusterOperationMetadata. */
+                interface IClusterOperationMetadata {
+
+                    /** ClusterOperationMetadata clusterName */
+                    clusterName?: (string|null);
+
+                    /** ClusterOperationMetadata clusterUuid */
+                    clusterUuid?: (string|null);
+
+                    /** ClusterOperationMetadata status */
+                    status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
+
+                    /** ClusterOperationMetadata statusHistory */
+                    statusHistory?: (google.cloud.dataproc.v1.IClusterOperationStatus[]|null);
+
+                    /** ClusterOperationMetadata operationType */
+                    operationType?: (string|null);
+
+                    /** ClusterOperationMetadata description */
+                    description?: (string|null);
+
+                    /** ClusterOperationMetadata labels */
+                    labels?: ({ [k: string]: string }|null);
+
+                    /** ClusterOperationMetadata warnings */
+                    warnings?: (string[]|null);
+
+                    /** ClusterOperationMetadata childOperationIds */
+                    childOperationIds?: (string[]|null);
+                }
+
+                /** Represents a ClusterOperationMetadata. */
+                class ClusterOperationMetadata implements IClusterOperationMetadata {
+
+                    /**
+                     * Constructs a new ClusterOperationMetadata.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IClusterOperationMetadata);
+
+                    /** ClusterOperationMetadata clusterName. */
+                    public clusterName: string;
+
+                    /** ClusterOperationMetadata clusterUuid. */
+                    public clusterUuid: string;
+
+                    /** ClusterOperationMetadata status. */
+                    public status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
+
+                    /** ClusterOperationMetadata statusHistory. */
+                    public statusHistory: google.cloud.dataproc.v1.IClusterOperationStatus[];
+
+                    /** ClusterOperationMetadata operationType. */
+                    public operationType: string;
+
+                    /** ClusterOperationMetadata description. */
+                    public description: string;
+
+                    /** ClusterOperationMetadata labels. */
+                    public labels: { [k: string]: string };
+
+                    /** ClusterOperationMetadata warnings. */
+                    public warnings: string[];
+
+                    /** ClusterOperationMetadata childOperationIds. */
+                    public childOperationIds: string[];
+
+                    /**
+                     * Creates a new ClusterOperationMetadata instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ClusterOperationMetadata instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IClusterOperationMetadata): google.cloud.dataproc.v1.ClusterOperationMetadata;
+
+                    /**
+                     * Encodes the specified ClusterOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationMetadata.verify|verify} messages.
+                     * @param message ClusterOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IClusterOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ClusterOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationMetadata.verify|verify} messages.
+                     * @param message ClusterOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IClusterOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ClusterOperationMetadata message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ClusterOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ClusterOperationMetadata;
+
+                    /**
+                     * Decodes a ClusterOperationMetadata message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ClusterOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ClusterOperationMetadata;
+
+                    /**
+                     * Verifies a ClusterOperationMetadata message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ClusterOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ClusterOperationMetadata
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ClusterOperationMetadata;
+
+                    /**
+                     * Creates a plain object from a ClusterOperationMetadata message. Also converts values to other types if specified.
+                     * @param message ClusterOperationMetadata
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.ClusterOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ClusterOperationMetadata to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ClusterOperationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a NodeGroupOperationMetadata. */
+                interface INodeGroupOperationMetadata {
+
+                    /** NodeGroupOperationMetadata nodeGroupId */
+                    nodeGroupId?: (string|null);
+
+                    /** NodeGroupOperationMetadata clusterUuid */
+                    clusterUuid?: (string|null);
+
+                    /** NodeGroupOperationMetadata status */
+                    status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
+
+                    /** NodeGroupOperationMetadata statusHistory */
+                    statusHistory?: (google.cloud.dataproc.v1.IClusterOperationStatus[]|null);
+
+                    /** NodeGroupOperationMetadata operationType */
+                    operationType?: (google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType|keyof typeof google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType|null);
+
+                    /** NodeGroupOperationMetadata description */
+                    description?: (string|null);
+
+                    /** NodeGroupOperationMetadata labels */
+                    labels?: ({ [k: string]: string }|null);
+
+                    /** NodeGroupOperationMetadata warnings */
+                    warnings?: (string[]|null);
+                }
+
+                /** Represents a NodeGroupOperationMetadata. */
+                class NodeGroupOperationMetadata implements INodeGroupOperationMetadata {
+
+                    /**
+                     * Constructs a new NodeGroupOperationMetadata.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.INodeGroupOperationMetadata);
+
+                    /** NodeGroupOperationMetadata nodeGroupId. */
+                    public nodeGroupId: string;
+
+                    /** NodeGroupOperationMetadata clusterUuid. */
+                    public clusterUuid: string;
+
+                    /** NodeGroupOperationMetadata status. */
+                    public status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
+
+                    /** NodeGroupOperationMetadata statusHistory. */
+                    public statusHistory: google.cloud.dataproc.v1.IClusterOperationStatus[];
+
+                    /** NodeGroupOperationMetadata operationType. */
+                    public operationType: (google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType|keyof typeof google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType);
+
+                    /** NodeGroupOperationMetadata description. */
+                    public description: string;
+
+                    /** NodeGroupOperationMetadata labels. */
+                    public labels: { [k: string]: string };
+
+                    /** NodeGroupOperationMetadata warnings. */
+                    public warnings: string[];
+
+                    /**
+                     * Creates a new NodeGroupOperationMetadata instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns NodeGroupOperationMetadata instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.INodeGroupOperationMetadata): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+
+                    /**
+                     * Encodes the specified NodeGroupOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.NodeGroupOperationMetadata.verify|verify} messages.
+                     * @param message NodeGroupOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.INodeGroupOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified NodeGroupOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.NodeGroupOperationMetadata.verify|verify} messages.
+                     * @param message NodeGroupOperationMetadata message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.INodeGroupOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a NodeGroupOperationMetadata message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns NodeGroupOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+
+                    /**
+                     * Decodes a NodeGroupOperationMetadata message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns NodeGroupOperationMetadata
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+
+                    /**
+                     * Verifies a NodeGroupOperationMetadata message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a NodeGroupOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns NodeGroupOperationMetadata
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+
+                    /**
+                     * Creates a plain object from a NodeGroupOperationMetadata message. Also converts values to other types if specified.
+                     * @param message NodeGroupOperationMetadata
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.NodeGroupOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this NodeGroupOperationMetadata to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for NodeGroupOperationMetadata
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace NodeGroupOperationMetadata {
+
+                    /** NodeGroupOperationType enum. */
+                    enum NodeGroupOperationType {
+                        NODE_GROUP_OPERATION_TYPE_UNSPECIFIED = 0,
+                        CREATE = 1,
+                        UPDATE = 2,
+                        DELETE = 3,
+                        RESIZE = 4
                     }
                 }
 
@@ -10852,6 +12684,142 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
+                /** Properties of a FlinkJob. */
+                interface IFlinkJob {
+
+                    /** FlinkJob mainJarFileUri */
+                    mainJarFileUri?: (string|null);
+
+                    /** FlinkJob mainClass */
+                    mainClass?: (string|null);
+
+                    /** FlinkJob args */
+                    args?: (string[]|null);
+
+                    /** FlinkJob jarFileUris */
+                    jarFileUris?: (string[]|null);
+
+                    /** FlinkJob savepointUri */
+                    savepointUri?: (string|null);
+
+                    /** FlinkJob properties */
+                    properties?: ({ [k: string]: string }|null);
+
+                    /** FlinkJob loggingConfig */
+                    loggingConfig?: (google.cloud.dataproc.v1.ILoggingConfig|null);
+                }
+
+                /** Represents a FlinkJob. */
+                class FlinkJob implements IFlinkJob {
+
+                    /**
+                     * Constructs a new FlinkJob.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IFlinkJob);
+
+                    /** FlinkJob mainJarFileUri. */
+                    public mainJarFileUri?: (string|null);
+
+                    /** FlinkJob mainClass. */
+                    public mainClass?: (string|null);
+
+                    /** FlinkJob args. */
+                    public args: string[];
+
+                    /** FlinkJob jarFileUris. */
+                    public jarFileUris: string[];
+
+                    /** FlinkJob savepointUri. */
+                    public savepointUri: string;
+
+                    /** FlinkJob properties. */
+                    public properties: { [k: string]: string };
+
+                    /** FlinkJob loggingConfig. */
+                    public loggingConfig?: (google.cloud.dataproc.v1.ILoggingConfig|null);
+
+                    /** FlinkJob driver. */
+                    public driver?: ("mainJarFileUri"|"mainClass");
+
+                    /**
+                     * Creates a new FlinkJob instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns FlinkJob instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IFlinkJob): google.cloud.dataproc.v1.FlinkJob;
+
+                    /**
+                     * Encodes the specified FlinkJob message. Does not implicitly {@link google.cloud.dataproc.v1.FlinkJob.verify|verify} messages.
+                     * @param message FlinkJob message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IFlinkJob, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified FlinkJob message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.FlinkJob.verify|verify} messages.
+                     * @param message FlinkJob message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IFlinkJob, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a FlinkJob message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns FlinkJob
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.FlinkJob;
+
+                    /**
+                     * Decodes a FlinkJob message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns FlinkJob
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.FlinkJob;
+
+                    /**
+                     * Verifies a FlinkJob message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a FlinkJob message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns FlinkJob
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.FlinkJob;
+
+                    /**
+                     * Creates a plain object from a FlinkJob message. Also converts values to other types if specified.
+                     * @param message FlinkJob
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.FlinkJob, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this FlinkJob to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for FlinkJob
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
                 /** Properties of a JobPlacement. */
                 interface IJobPlacement {
 
@@ -11371,6 +13339,9 @@ export namespace google {
                     /** Job trinoJob */
                     trinoJob?: (google.cloud.dataproc.v1.ITrinoJob|null);
 
+                    /** Job flinkJob */
+                    flinkJob?: (google.cloud.dataproc.v1.IFlinkJob|null);
+
                     /** Job status */
                     status?: (google.cloud.dataproc.v1.IJobStatus|null);
 
@@ -11444,6 +13415,9 @@ export namespace google {
                     /** Job trinoJob. */
                     public trinoJob?: (google.cloud.dataproc.v1.ITrinoJob|null);
 
+                    /** Job flinkJob. */
+                    public flinkJob?: (google.cloud.dataproc.v1.IFlinkJob|null);
+
                     /** Job status. */
                     public status?: (google.cloud.dataproc.v1.IJobStatus|null);
 
@@ -11475,7 +13449,7 @@ export namespace google {
                     public driverSchedulingConfig?: (google.cloud.dataproc.v1.IDriverSchedulingConfig|null);
 
                     /** Job typeJob. */
-                    public typeJob?: ("hadoopJob"|"sparkJob"|"pysparkJob"|"hiveJob"|"pigJob"|"sparkRJob"|"sparkSqlJob"|"prestoJob"|"trinoJob");
+                    public typeJob?: ("hadoopJob"|"sparkJob"|"pysparkJob"|"hiveJob"|"pigJob"|"sparkRJob"|"sparkSqlJob"|"prestoJob"|"trinoJob"|"flinkJob");
 
                     /**
                      * Creates a new Job instance using the specified properties.
@@ -12372,6 +14346,9 @@ export namespace google {
 
                     /** ListJobsResponse nextPageToken */
                     nextPageToken?: (string|null);
+
+                    /** ListJobsResponse unreachable */
+                    unreachable?: (string[]|null);
                 }
 
                 /** Represents a ListJobsResponse. */
@@ -12388,6 +14365,9 @@ export namespace google {
 
                     /** ListJobsResponse nextPageToken. */
                     public nextPageToken: string;
+
+                    /** ListJobsResponse unreachable. */
+                    public unreachable: string[];
 
                     /**
                      * Creates a new ListJobsResponse instance using the specified properties.
@@ -13099,574 +15079,2186 @@ export namespace google {
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
-                /** Properties of a BatchOperationMetadata. */
-                interface IBatchOperationMetadata {
+                /** Represents a SessionTemplateController */
+                class SessionTemplateController extends $protobuf.rpc.Service {
 
-                    /** BatchOperationMetadata batch */
-                    batch?: (string|null);
+                    /**
+                     * Constructs a new SessionTemplateController service.
+                     * @param rpcImpl RPC implementation
+                     * @param [requestDelimited=false] Whether requests are length-delimited
+                     * @param [responseDelimited=false] Whether responses are length-delimited
+                     */
+                    constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
 
-                    /** BatchOperationMetadata batchUuid */
-                    batchUuid?: (string|null);
+                    /**
+                     * Creates new SessionTemplateController service using the specified rpc implementation.
+                     * @param rpcImpl RPC implementation
+                     * @param [requestDelimited=false] Whether requests are length-delimited
+                     * @param [responseDelimited=false] Whether responses are length-delimited
+                     * @returns RPC service. Useful where requests and/or responses are streamed.
+                     */
+                    public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): SessionTemplateController;
 
-                    /** BatchOperationMetadata createTime */
-                    createTime?: (google.protobuf.ITimestamp|null);
+                    /**
+                     * Calls CreateSessionTemplate.
+                     * @param request CreateSessionTemplateRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and SessionTemplate
+                     */
+                    public createSessionTemplate(request: google.cloud.dataproc.v1.ICreateSessionTemplateRequest, callback: google.cloud.dataproc.v1.SessionTemplateController.CreateSessionTemplateCallback): void;
 
-                    /** BatchOperationMetadata doneTime */
-                    doneTime?: (google.protobuf.ITimestamp|null);
+                    /**
+                     * Calls CreateSessionTemplate.
+                     * @param request CreateSessionTemplateRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createSessionTemplate(request: google.cloud.dataproc.v1.ICreateSessionTemplateRequest): Promise<google.cloud.dataproc.v1.SessionTemplate>;
 
-                    /** BatchOperationMetadata operationType */
-                    operationType?: (google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType|keyof typeof google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType|null);
+                    /**
+                     * Calls UpdateSessionTemplate.
+                     * @param request UpdateSessionTemplateRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and SessionTemplate
+                     */
+                    public updateSessionTemplate(request: google.cloud.dataproc.v1.IUpdateSessionTemplateRequest, callback: google.cloud.dataproc.v1.SessionTemplateController.UpdateSessionTemplateCallback): void;
 
-                    /** BatchOperationMetadata description */
+                    /**
+                     * Calls UpdateSessionTemplate.
+                     * @param request UpdateSessionTemplateRequest message or plain object
+                     * @returns Promise
+                     */
+                    public updateSessionTemplate(request: google.cloud.dataproc.v1.IUpdateSessionTemplateRequest): Promise<google.cloud.dataproc.v1.SessionTemplate>;
+
+                    /**
+                     * Calls GetSessionTemplate.
+                     * @param request GetSessionTemplateRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and SessionTemplate
+                     */
+                    public getSessionTemplate(request: google.cloud.dataproc.v1.IGetSessionTemplateRequest, callback: google.cloud.dataproc.v1.SessionTemplateController.GetSessionTemplateCallback): void;
+
+                    /**
+                     * Calls GetSessionTemplate.
+                     * @param request GetSessionTemplateRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getSessionTemplate(request: google.cloud.dataproc.v1.IGetSessionTemplateRequest): Promise<google.cloud.dataproc.v1.SessionTemplate>;
+
+                    /**
+                     * Calls ListSessionTemplates.
+                     * @param request ListSessionTemplatesRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListSessionTemplatesResponse
+                     */
+                    public listSessionTemplates(request: google.cloud.dataproc.v1.IListSessionTemplatesRequest, callback: google.cloud.dataproc.v1.SessionTemplateController.ListSessionTemplatesCallback): void;
+
+                    /**
+                     * Calls ListSessionTemplates.
+                     * @param request ListSessionTemplatesRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listSessionTemplates(request: google.cloud.dataproc.v1.IListSessionTemplatesRequest): Promise<google.cloud.dataproc.v1.ListSessionTemplatesResponse>;
+
+                    /**
+                     * Calls DeleteSessionTemplate.
+                     * @param request DeleteSessionTemplateRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Empty
+                     */
+                    public deleteSessionTemplate(request: google.cloud.dataproc.v1.IDeleteSessionTemplateRequest, callback: google.cloud.dataproc.v1.SessionTemplateController.DeleteSessionTemplateCallback): void;
+
+                    /**
+                     * Calls DeleteSessionTemplate.
+                     * @param request DeleteSessionTemplateRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteSessionTemplate(request: google.cloud.dataproc.v1.IDeleteSessionTemplateRequest): Promise<google.protobuf.Empty>;
+                }
+
+                namespace SessionTemplateController {
+
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionTemplateController|createSessionTemplate}.
+                     * @param error Error, if any
+                     * @param [response] SessionTemplate
+                     */
+                    type CreateSessionTemplateCallback = (error: (Error|null), response?: google.cloud.dataproc.v1.SessionTemplate) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionTemplateController|updateSessionTemplate}.
+                     * @param error Error, if any
+                     * @param [response] SessionTemplate
+                     */
+                    type UpdateSessionTemplateCallback = (error: (Error|null), response?: google.cloud.dataproc.v1.SessionTemplate) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionTemplateController|getSessionTemplate}.
+                     * @param error Error, if any
+                     * @param [response] SessionTemplate
+                     */
+                    type GetSessionTemplateCallback = (error: (Error|null), response?: google.cloud.dataproc.v1.SessionTemplate) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionTemplateController|listSessionTemplates}.
+                     * @param error Error, if any
+                     * @param [response] ListSessionTemplatesResponse
+                     */
+                    type ListSessionTemplatesCallback = (error: (Error|null), response?: google.cloud.dataproc.v1.ListSessionTemplatesResponse) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionTemplateController|deleteSessionTemplate}.
+                     * @param error Error, if any
+                     * @param [response] Empty
+                     */
+                    type DeleteSessionTemplateCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
+                }
+
+                /** Properties of a CreateSessionTemplateRequest. */
+                interface ICreateSessionTemplateRequest {
+
+                    /** CreateSessionTemplateRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateSessionTemplateRequest sessionTemplate */
+                    sessionTemplate?: (google.cloud.dataproc.v1.ISessionTemplate|null);
+                }
+
+                /** Represents a CreateSessionTemplateRequest. */
+                class CreateSessionTemplateRequest implements ICreateSessionTemplateRequest {
+
+                    /**
+                     * Constructs a new CreateSessionTemplateRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.ICreateSessionTemplateRequest);
+
+                    /** CreateSessionTemplateRequest parent. */
+                    public parent: string;
+
+                    /** CreateSessionTemplateRequest sessionTemplate. */
+                    public sessionTemplate?: (google.cloud.dataproc.v1.ISessionTemplate|null);
+
+                    /**
+                     * Creates a new CreateSessionTemplateRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns CreateSessionTemplateRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.ICreateSessionTemplateRequest): google.cloud.dataproc.v1.CreateSessionTemplateRequest;
+
+                    /**
+                     * Encodes the specified CreateSessionTemplateRequest message. Does not implicitly {@link google.cloud.dataproc.v1.CreateSessionTemplateRequest.verify|verify} messages.
+                     * @param message CreateSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.ICreateSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified CreateSessionTemplateRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.CreateSessionTemplateRequest.verify|verify} messages.
+                     * @param message CreateSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ICreateSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a CreateSessionTemplateRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns CreateSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.CreateSessionTemplateRequest;
+
+                    /**
+                     * Decodes a CreateSessionTemplateRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns CreateSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.CreateSessionTemplateRequest;
+
+                    /**
+                     * Verifies a CreateSessionTemplateRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a CreateSessionTemplateRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns CreateSessionTemplateRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.CreateSessionTemplateRequest;
+
+                    /**
+                     * Creates a plain object from a CreateSessionTemplateRequest message. Also converts values to other types if specified.
+                     * @param message CreateSessionTemplateRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.CreateSessionTemplateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this CreateSessionTemplateRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for CreateSessionTemplateRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of an UpdateSessionTemplateRequest. */
+                interface IUpdateSessionTemplateRequest {
+
+                    /** UpdateSessionTemplateRequest sessionTemplate */
+                    sessionTemplate?: (google.cloud.dataproc.v1.ISessionTemplate|null);
+                }
+
+                /** Represents an UpdateSessionTemplateRequest. */
+                class UpdateSessionTemplateRequest implements IUpdateSessionTemplateRequest {
+
+                    /**
+                     * Constructs a new UpdateSessionTemplateRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IUpdateSessionTemplateRequest);
+
+                    /** UpdateSessionTemplateRequest sessionTemplate. */
+                    public sessionTemplate?: (google.cloud.dataproc.v1.ISessionTemplate|null);
+
+                    /**
+                     * Creates a new UpdateSessionTemplateRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns UpdateSessionTemplateRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IUpdateSessionTemplateRequest): google.cloud.dataproc.v1.UpdateSessionTemplateRequest;
+
+                    /**
+                     * Encodes the specified UpdateSessionTemplateRequest message. Does not implicitly {@link google.cloud.dataproc.v1.UpdateSessionTemplateRequest.verify|verify} messages.
+                     * @param message UpdateSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IUpdateSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified UpdateSessionTemplateRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.UpdateSessionTemplateRequest.verify|verify} messages.
+                     * @param message UpdateSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IUpdateSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes an UpdateSessionTemplateRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns UpdateSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.UpdateSessionTemplateRequest;
+
+                    /**
+                     * Decodes an UpdateSessionTemplateRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns UpdateSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.UpdateSessionTemplateRequest;
+
+                    /**
+                     * Verifies an UpdateSessionTemplateRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates an UpdateSessionTemplateRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns UpdateSessionTemplateRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.UpdateSessionTemplateRequest;
+
+                    /**
+                     * Creates a plain object from an UpdateSessionTemplateRequest message. Also converts values to other types if specified.
+                     * @param message UpdateSessionTemplateRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.UpdateSessionTemplateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this UpdateSessionTemplateRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for UpdateSessionTemplateRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a GetSessionTemplateRequest. */
+                interface IGetSessionTemplateRequest {
+
+                    /** GetSessionTemplateRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetSessionTemplateRequest. */
+                class GetSessionTemplateRequest implements IGetSessionTemplateRequest {
+
+                    /**
+                     * Constructs a new GetSessionTemplateRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IGetSessionTemplateRequest);
+
+                    /** GetSessionTemplateRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetSessionTemplateRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetSessionTemplateRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IGetSessionTemplateRequest): google.cloud.dataproc.v1.GetSessionTemplateRequest;
+
+                    /**
+                     * Encodes the specified GetSessionTemplateRequest message. Does not implicitly {@link google.cloud.dataproc.v1.GetSessionTemplateRequest.verify|verify} messages.
+                     * @param message GetSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IGetSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetSessionTemplateRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.GetSessionTemplateRequest.verify|verify} messages.
+                     * @param message GetSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IGetSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetSessionTemplateRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.GetSessionTemplateRequest;
+
+                    /**
+                     * Decodes a GetSessionTemplateRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.GetSessionTemplateRequest;
+
+                    /**
+                     * Verifies a GetSessionTemplateRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetSessionTemplateRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetSessionTemplateRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.GetSessionTemplateRequest;
+
+                    /**
+                     * Creates a plain object from a GetSessionTemplateRequest message. Also converts values to other types if specified.
+                     * @param message GetSessionTemplateRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.GetSessionTemplateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetSessionTemplateRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetSessionTemplateRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListSessionTemplatesRequest. */
+                interface IListSessionTemplatesRequest {
+
+                    /** ListSessionTemplatesRequest parent */
+                    parent?: (string|null);
+
+                    /** ListSessionTemplatesRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListSessionTemplatesRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListSessionTemplatesRequest filter */
+                    filter?: (string|null);
+                }
+
+                /** Represents a ListSessionTemplatesRequest. */
+                class ListSessionTemplatesRequest implements IListSessionTemplatesRequest {
+
+                    /**
+                     * Constructs a new ListSessionTemplatesRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IListSessionTemplatesRequest);
+
+                    /** ListSessionTemplatesRequest parent. */
+                    public parent: string;
+
+                    /** ListSessionTemplatesRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListSessionTemplatesRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListSessionTemplatesRequest filter. */
+                    public filter: string;
+
+                    /**
+                     * Creates a new ListSessionTemplatesRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListSessionTemplatesRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IListSessionTemplatesRequest): google.cloud.dataproc.v1.ListSessionTemplatesRequest;
+
+                    /**
+                     * Encodes the specified ListSessionTemplatesRequest message. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionTemplatesRequest.verify|verify} messages.
+                     * @param message ListSessionTemplatesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IListSessionTemplatesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListSessionTemplatesRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionTemplatesRequest.verify|verify} messages.
+                     * @param message ListSessionTemplatesRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IListSessionTemplatesRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListSessionTemplatesRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListSessionTemplatesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ListSessionTemplatesRequest;
+
+                    /**
+                     * Decodes a ListSessionTemplatesRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListSessionTemplatesRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ListSessionTemplatesRequest;
+
+                    /**
+                     * Verifies a ListSessionTemplatesRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListSessionTemplatesRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListSessionTemplatesRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ListSessionTemplatesRequest;
+
+                    /**
+                     * Creates a plain object from a ListSessionTemplatesRequest message. Also converts values to other types if specified.
+                     * @param message ListSessionTemplatesRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.ListSessionTemplatesRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListSessionTemplatesRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListSessionTemplatesRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListSessionTemplatesResponse. */
+                interface IListSessionTemplatesResponse {
+
+                    /** ListSessionTemplatesResponse sessionTemplates */
+                    sessionTemplates?: (google.cloud.dataproc.v1.ISessionTemplate[]|null);
+
+                    /** ListSessionTemplatesResponse nextPageToken */
+                    nextPageToken?: (string|null);
+                }
+
+                /** Represents a ListSessionTemplatesResponse. */
+                class ListSessionTemplatesResponse implements IListSessionTemplatesResponse {
+
+                    /**
+                     * Constructs a new ListSessionTemplatesResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IListSessionTemplatesResponse);
+
+                    /** ListSessionTemplatesResponse sessionTemplates. */
+                    public sessionTemplates: google.cloud.dataproc.v1.ISessionTemplate[];
+
+                    /** ListSessionTemplatesResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /**
+                     * Creates a new ListSessionTemplatesResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListSessionTemplatesResponse instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IListSessionTemplatesResponse): google.cloud.dataproc.v1.ListSessionTemplatesResponse;
+
+                    /**
+                     * Encodes the specified ListSessionTemplatesResponse message. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionTemplatesResponse.verify|verify} messages.
+                     * @param message ListSessionTemplatesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IListSessionTemplatesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListSessionTemplatesResponse message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionTemplatesResponse.verify|verify} messages.
+                     * @param message ListSessionTemplatesResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IListSessionTemplatesResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListSessionTemplatesResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListSessionTemplatesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ListSessionTemplatesResponse;
+
+                    /**
+                     * Decodes a ListSessionTemplatesResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListSessionTemplatesResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ListSessionTemplatesResponse;
+
+                    /**
+                     * Verifies a ListSessionTemplatesResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListSessionTemplatesResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListSessionTemplatesResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ListSessionTemplatesResponse;
+
+                    /**
+                     * Creates a plain object from a ListSessionTemplatesResponse message. Also converts values to other types if specified.
+                     * @param message ListSessionTemplatesResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.ListSessionTemplatesResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListSessionTemplatesResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListSessionTemplatesResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteSessionTemplateRequest. */
+                interface IDeleteSessionTemplateRequest {
+
+                    /** DeleteSessionTemplateRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a DeleteSessionTemplateRequest. */
+                class DeleteSessionTemplateRequest implements IDeleteSessionTemplateRequest {
+
+                    /**
+                     * Constructs a new DeleteSessionTemplateRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IDeleteSessionTemplateRequest);
+
+                    /** DeleteSessionTemplateRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new DeleteSessionTemplateRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteSessionTemplateRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IDeleteSessionTemplateRequest): google.cloud.dataproc.v1.DeleteSessionTemplateRequest;
+
+                    /**
+                     * Encodes the specified DeleteSessionTemplateRequest message. Does not implicitly {@link google.cloud.dataproc.v1.DeleteSessionTemplateRequest.verify|verify} messages.
+                     * @param message DeleteSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IDeleteSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteSessionTemplateRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.DeleteSessionTemplateRequest.verify|verify} messages.
+                     * @param message DeleteSessionTemplateRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IDeleteSessionTemplateRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteSessionTemplateRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.DeleteSessionTemplateRequest;
+
+                    /**
+                     * Decodes a DeleteSessionTemplateRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteSessionTemplateRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.DeleteSessionTemplateRequest;
+
+                    /**
+                     * Verifies a DeleteSessionTemplateRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteSessionTemplateRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteSessionTemplateRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.DeleteSessionTemplateRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteSessionTemplateRequest message. Also converts values to other types if specified.
+                     * @param message DeleteSessionTemplateRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.DeleteSessionTemplateRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteSessionTemplateRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteSessionTemplateRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a SessionTemplate. */
+                interface ISessionTemplate {
+
+                    /** SessionTemplate name */
+                    name?: (string|null);
+
+                    /** SessionTemplate description */
                     description?: (string|null);
 
-                    /** BatchOperationMetadata labels */
+                    /** SessionTemplate createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionTemplate jupyterSession */
+                    jupyterSession?: (google.cloud.dataproc.v1.IJupyterConfig|null);
+
+                    /** SessionTemplate sparkConnectSession */
+                    sparkConnectSession?: (google.cloud.dataproc.v1.ISparkConnectConfig|null);
+
+                    /** SessionTemplate creator */
+                    creator?: (string|null);
+
+                    /** SessionTemplate labels */
                     labels?: ({ [k: string]: string }|null);
 
-                    /** BatchOperationMetadata warnings */
-                    warnings?: (string[]|null);
+                    /** SessionTemplate runtimeConfig */
+                    runtimeConfig?: (google.cloud.dataproc.v1.IRuntimeConfig|null);
+
+                    /** SessionTemplate environmentConfig */
+                    environmentConfig?: (google.cloud.dataproc.v1.IEnvironmentConfig|null);
+
+                    /** SessionTemplate updateTime */
+                    updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionTemplate uuid */
+                    uuid?: (string|null);
                 }
 
-                /** Represents a BatchOperationMetadata. */
-                class BatchOperationMetadata implements IBatchOperationMetadata {
+                /** Represents a SessionTemplate. */
+                class SessionTemplate implements ISessionTemplate {
 
                     /**
-                     * Constructs a new BatchOperationMetadata.
+                     * Constructs a new SessionTemplate.
                      * @param [properties] Properties to set
                      */
-                    constructor(properties?: google.cloud.dataproc.v1.IBatchOperationMetadata);
+                    constructor(properties?: google.cloud.dataproc.v1.ISessionTemplate);
 
-                    /** BatchOperationMetadata batch. */
-                    public batch: string;
+                    /** SessionTemplate name. */
+                    public name: string;
 
-                    /** BatchOperationMetadata batchUuid. */
-                    public batchUuid: string;
-
-                    /** BatchOperationMetadata createTime. */
-                    public createTime?: (google.protobuf.ITimestamp|null);
-
-                    /** BatchOperationMetadata doneTime. */
-                    public doneTime?: (google.protobuf.ITimestamp|null);
-
-                    /** BatchOperationMetadata operationType. */
-                    public operationType: (google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType|keyof typeof google.cloud.dataproc.v1.BatchOperationMetadata.BatchOperationType);
-
-                    /** BatchOperationMetadata description. */
+                    /** SessionTemplate description. */
                     public description: string;
 
-                    /** BatchOperationMetadata labels. */
+                    /** SessionTemplate createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionTemplate jupyterSession. */
+                    public jupyterSession?: (google.cloud.dataproc.v1.IJupyterConfig|null);
+
+                    /** SessionTemplate sparkConnectSession. */
+                    public sparkConnectSession?: (google.cloud.dataproc.v1.ISparkConnectConfig|null);
+
+                    /** SessionTemplate creator. */
+                    public creator: string;
+
+                    /** SessionTemplate labels. */
                     public labels: { [k: string]: string };
 
-                    /** BatchOperationMetadata warnings. */
-                    public warnings: string[];
+                    /** SessionTemplate runtimeConfig. */
+                    public runtimeConfig?: (google.cloud.dataproc.v1.IRuntimeConfig|null);
+
+                    /** SessionTemplate environmentConfig. */
+                    public environmentConfig?: (google.cloud.dataproc.v1.IEnvironmentConfig|null);
+
+                    /** SessionTemplate updateTime. */
+                    public updateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** SessionTemplate uuid. */
+                    public uuid: string;
+
+                    /** SessionTemplate sessionConfig. */
+                    public sessionConfig?: ("jupyterSession"|"sparkConnectSession");
 
                     /**
-                     * Creates a new BatchOperationMetadata instance using the specified properties.
+                     * Creates a new SessionTemplate instance using the specified properties.
                      * @param [properties] Properties to set
-                     * @returns BatchOperationMetadata instance
+                     * @returns SessionTemplate instance
                      */
-                    public static create(properties?: google.cloud.dataproc.v1.IBatchOperationMetadata): google.cloud.dataproc.v1.BatchOperationMetadata;
+                    public static create(properties?: google.cloud.dataproc.v1.ISessionTemplate): google.cloud.dataproc.v1.SessionTemplate;
 
                     /**
-                     * Encodes the specified BatchOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.BatchOperationMetadata.verify|verify} messages.
-                     * @param message BatchOperationMetadata message or plain object to encode
+                     * Encodes the specified SessionTemplate message. Does not implicitly {@link google.cloud.dataproc.v1.SessionTemplate.verify|verify} messages.
+                     * @param message SessionTemplate message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encode(message: google.cloud.dataproc.v1.IBatchOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encode(message: google.cloud.dataproc.v1.ISessionTemplate, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Encodes the specified BatchOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.BatchOperationMetadata.verify|verify} messages.
-                     * @param message BatchOperationMetadata message or plain object to encode
+                     * Encodes the specified SessionTemplate message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.SessionTemplate.verify|verify} messages.
+                     * @param message SessionTemplate message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encodeDelimited(message: google.cloud.dataproc.v1.IBatchOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ISessionTemplate, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Decodes a BatchOperationMetadata message from the specified reader or buffer.
+                     * Decodes a SessionTemplate message from the specified reader or buffer.
                      * @param reader Reader or buffer to decode from
                      * @param [length] Message length if known beforehand
-                     * @returns BatchOperationMetadata
+                     * @returns SessionTemplate
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.BatchOperationMetadata;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.SessionTemplate;
 
                     /**
-                     * Decodes a BatchOperationMetadata message from the specified reader or buffer, length delimited.
+                     * Decodes a SessionTemplate message from the specified reader or buffer, length delimited.
                      * @param reader Reader or buffer to decode from
-                     * @returns BatchOperationMetadata
+                     * @returns SessionTemplate
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.BatchOperationMetadata;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.SessionTemplate;
 
                     /**
-                     * Verifies a BatchOperationMetadata message.
+                     * Verifies a SessionTemplate message.
                      * @param message Plain object to verify
                      * @returns `null` if valid, otherwise the reason why it is not
                      */
                     public static verify(message: { [k: string]: any }): (string|null);
 
                     /**
-                     * Creates a BatchOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * Creates a SessionTemplate message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
-                     * @returns BatchOperationMetadata
+                     * @returns SessionTemplate
                      */
-                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.BatchOperationMetadata;
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.SessionTemplate;
 
                     /**
-                     * Creates a plain object from a BatchOperationMetadata message. Also converts values to other types if specified.
-                     * @param message BatchOperationMetadata
+                     * Creates a plain object from a SessionTemplate message. Also converts values to other types if specified.
+                     * @param message SessionTemplate
                      * @param [options] Conversion options
                      * @returns Plain object
                      */
-                    public static toObject(message: google.cloud.dataproc.v1.BatchOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static toObject(message: google.cloud.dataproc.v1.SessionTemplate, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                     /**
-                     * Converts this BatchOperationMetadata to JSON.
+                     * Converts this SessionTemplate to JSON.
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
 
                     /**
-                     * Gets the default type url for BatchOperationMetadata
+                     * Gets the default type url for SessionTemplate
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
-                namespace BatchOperationMetadata {
+                /** Represents a SessionController */
+                class SessionController extends $protobuf.rpc.Service {
 
-                    /** BatchOperationType enum. */
-                    enum BatchOperationType {
-                        BATCH_OPERATION_TYPE_UNSPECIFIED = 0,
-                        BATCH = 1
-                    }
+                    /**
+                     * Constructs a new SessionController service.
+                     * @param rpcImpl RPC implementation
+                     * @param [requestDelimited=false] Whether requests are length-delimited
+                     * @param [responseDelimited=false] Whether responses are length-delimited
+                     */
+                    constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+                    /**
+                     * Creates new SessionController service using the specified rpc implementation.
+                     * @param rpcImpl RPC implementation
+                     * @param [requestDelimited=false] Whether requests are length-delimited
+                     * @param [responseDelimited=false] Whether responses are length-delimited
+                     * @returns RPC service. Useful where requests and/or responses are streamed.
+                     */
+                    public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): SessionController;
+
+                    /**
+                     * Calls CreateSession.
+                     * @param request CreateSessionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public createSession(request: google.cloud.dataproc.v1.ICreateSessionRequest, callback: google.cloud.dataproc.v1.SessionController.CreateSessionCallback): void;
+
+                    /**
+                     * Calls CreateSession.
+                     * @param request CreateSessionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public createSession(request: google.cloud.dataproc.v1.ICreateSessionRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls GetSession.
+                     * @param request GetSessionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Session
+                     */
+                    public getSession(request: google.cloud.dataproc.v1.IGetSessionRequest, callback: google.cloud.dataproc.v1.SessionController.GetSessionCallback): void;
+
+                    /**
+                     * Calls GetSession.
+                     * @param request GetSessionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public getSession(request: google.cloud.dataproc.v1.IGetSessionRequest): Promise<google.cloud.dataproc.v1.Session>;
+
+                    /**
+                     * Calls ListSessions.
+                     * @param request ListSessionsRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and ListSessionsResponse
+                     */
+                    public listSessions(request: google.cloud.dataproc.v1.IListSessionsRequest, callback: google.cloud.dataproc.v1.SessionController.ListSessionsCallback): void;
+
+                    /**
+                     * Calls ListSessions.
+                     * @param request ListSessionsRequest message or plain object
+                     * @returns Promise
+                     */
+                    public listSessions(request: google.cloud.dataproc.v1.IListSessionsRequest): Promise<google.cloud.dataproc.v1.ListSessionsResponse>;
+
+                    /**
+                     * Calls TerminateSession.
+                     * @param request TerminateSessionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public terminateSession(request: google.cloud.dataproc.v1.ITerminateSessionRequest, callback: google.cloud.dataproc.v1.SessionController.TerminateSessionCallback): void;
+
+                    /**
+                     * Calls TerminateSession.
+                     * @param request TerminateSessionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public terminateSession(request: google.cloud.dataproc.v1.ITerminateSessionRequest): Promise<google.longrunning.Operation>;
+
+                    /**
+                     * Calls DeleteSession.
+                     * @param request DeleteSessionRequest message or plain object
+                     * @param callback Node-style callback called with the error, if any, and Operation
+                     */
+                    public deleteSession(request: google.cloud.dataproc.v1.IDeleteSessionRequest, callback: google.cloud.dataproc.v1.SessionController.DeleteSessionCallback): void;
+
+                    /**
+                     * Calls DeleteSession.
+                     * @param request DeleteSessionRequest message or plain object
+                     * @returns Promise
+                     */
+                    public deleteSession(request: google.cloud.dataproc.v1.IDeleteSessionRequest): Promise<google.longrunning.Operation>;
                 }
 
-                /** Properties of a ClusterOperationStatus. */
-                interface IClusterOperationStatus {
+                namespace SessionController {
 
-                    /** ClusterOperationStatus state */
-                    state?: (google.cloud.dataproc.v1.ClusterOperationStatus.State|keyof typeof google.cloud.dataproc.v1.ClusterOperationStatus.State|null);
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionController|createSession}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type CreateSessionCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
 
-                    /** ClusterOperationStatus innerState */
-                    innerState?: (string|null);
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionController|getSession}.
+                     * @param error Error, if any
+                     * @param [response] Session
+                     */
+                    type GetSessionCallback = (error: (Error|null), response?: google.cloud.dataproc.v1.Session) => void;
 
-                    /** ClusterOperationStatus details */
-                    details?: (string|null);
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionController|listSessions}.
+                     * @param error Error, if any
+                     * @param [response] ListSessionsResponse
+                     */
+                    type ListSessionsCallback = (error: (Error|null), response?: google.cloud.dataproc.v1.ListSessionsResponse) => void;
 
-                    /** ClusterOperationStatus stateStartTime */
-                    stateStartTime?: (google.protobuf.ITimestamp|null);
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionController|terminateSession}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type TerminateSessionCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                    /**
+                     * Callback as used by {@link google.cloud.dataproc.v1.SessionController|deleteSession}.
+                     * @param error Error, if any
+                     * @param [response] Operation
+                     */
+                    type DeleteSessionCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
                 }
 
-                /** Represents a ClusterOperationStatus. */
-                class ClusterOperationStatus implements IClusterOperationStatus {
+                /** Properties of a CreateSessionRequest. */
+                interface ICreateSessionRequest {
+
+                    /** CreateSessionRequest parent */
+                    parent?: (string|null);
+
+                    /** CreateSessionRequest session */
+                    session?: (google.cloud.dataproc.v1.ISession|null);
+
+                    /** CreateSessionRequest sessionId */
+                    sessionId?: (string|null);
+
+                    /** CreateSessionRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a CreateSessionRequest. */
+                class CreateSessionRequest implements ICreateSessionRequest {
 
                     /**
-                     * Constructs a new ClusterOperationStatus.
+                     * Constructs a new CreateSessionRequest.
                      * @param [properties] Properties to set
                      */
-                    constructor(properties?: google.cloud.dataproc.v1.IClusterOperationStatus);
+                    constructor(properties?: google.cloud.dataproc.v1.ICreateSessionRequest);
 
-                    /** ClusterOperationStatus state. */
-                    public state: (google.cloud.dataproc.v1.ClusterOperationStatus.State|keyof typeof google.cloud.dataproc.v1.ClusterOperationStatus.State);
+                    /** CreateSessionRequest parent. */
+                    public parent: string;
 
-                    /** ClusterOperationStatus innerState. */
-                    public innerState: string;
+                    /** CreateSessionRequest session. */
+                    public session?: (google.cloud.dataproc.v1.ISession|null);
 
-                    /** ClusterOperationStatus details. */
-                    public details: string;
+                    /** CreateSessionRequest sessionId. */
+                    public sessionId: string;
 
-                    /** ClusterOperationStatus stateStartTime. */
-                    public stateStartTime?: (google.protobuf.ITimestamp|null);
+                    /** CreateSessionRequest requestId. */
+                    public requestId: string;
 
                     /**
-                     * Creates a new ClusterOperationStatus instance using the specified properties.
+                     * Creates a new CreateSessionRequest instance using the specified properties.
                      * @param [properties] Properties to set
-                     * @returns ClusterOperationStatus instance
+                     * @returns CreateSessionRequest instance
                      */
-                    public static create(properties?: google.cloud.dataproc.v1.IClusterOperationStatus): google.cloud.dataproc.v1.ClusterOperationStatus;
+                    public static create(properties?: google.cloud.dataproc.v1.ICreateSessionRequest): google.cloud.dataproc.v1.CreateSessionRequest;
 
                     /**
-                     * Encodes the specified ClusterOperationStatus message. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationStatus.verify|verify} messages.
-                     * @param message ClusterOperationStatus message or plain object to encode
+                     * Encodes the specified CreateSessionRequest message. Does not implicitly {@link google.cloud.dataproc.v1.CreateSessionRequest.verify|verify} messages.
+                     * @param message CreateSessionRequest message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encode(message: google.cloud.dataproc.v1.IClusterOperationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encode(message: google.cloud.dataproc.v1.ICreateSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Encodes the specified ClusterOperationStatus message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationStatus.verify|verify} messages.
-                     * @param message ClusterOperationStatus message or plain object to encode
+                     * Encodes the specified CreateSessionRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.CreateSessionRequest.verify|verify} messages.
+                     * @param message CreateSessionRequest message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encodeDelimited(message: google.cloud.dataproc.v1.IClusterOperationStatus, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ICreateSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Decodes a ClusterOperationStatus message from the specified reader or buffer.
+                     * Decodes a CreateSessionRequest message from the specified reader or buffer.
                      * @param reader Reader or buffer to decode from
                      * @param [length] Message length if known beforehand
-                     * @returns ClusterOperationStatus
+                     * @returns CreateSessionRequest
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ClusterOperationStatus;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.CreateSessionRequest;
 
                     /**
-                     * Decodes a ClusterOperationStatus message from the specified reader or buffer, length delimited.
+                     * Decodes a CreateSessionRequest message from the specified reader or buffer, length delimited.
                      * @param reader Reader or buffer to decode from
-                     * @returns ClusterOperationStatus
+                     * @returns CreateSessionRequest
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ClusterOperationStatus;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.CreateSessionRequest;
 
                     /**
-                     * Verifies a ClusterOperationStatus message.
+                     * Verifies a CreateSessionRequest message.
                      * @param message Plain object to verify
                      * @returns `null` if valid, otherwise the reason why it is not
                      */
                     public static verify(message: { [k: string]: any }): (string|null);
 
                     /**
-                     * Creates a ClusterOperationStatus message from a plain object. Also converts values to their respective internal types.
+                     * Creates a CreateSessionRequest message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
-                     * @returns ClusterOperationStatus
+                     * @returns CreateSessionRequest
                      */
-                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ClusterOperationStatus;
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.CreateSessionRequest;
 
                     /**
-                     * Creates a plain object from a ClusterOperationStatus message. Also converts values to other types if specified.
-                     * @param message ClusterOperationStatus
+                     * Creates a plain object from a CreateSessionRequest message. Also converts values to other types if specified.
+                     * @param message CreateSessionRequest
                      * @param [options] Conversion options
                      * @returns Plain object
                      */
-                    public static toObject(message: google.cloud.dataproc.v1.ClusterOperationStatus, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static toObject(message: google.cloud.dataproc.v1.CreateSessionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                     /**
-                     * Converts this ClusterOperationStatus to JSON.
+                     * Converts this CreateSessionRequest to JSON.
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
 
                     /**
-                     * Gets the default type url for ClusterOperationStatus
+                     * Gets the default type url for CreateSessionRequest
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
-                namespace ClusterOperationStatus {
+                /** Properties of a GetSessionRequest. */
+                interface IGetSessionRequest {
+
+                    /** GetSessionRequest name */
+                    name?: (string|null);
+                }
+
+                /** Represents a GetSessionRequest. */
+                class GetSessionRequest implements IGetSessionRequest {
+
+                    /**
+                     * Constructs a new GetSessionRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IGetSessionRequest);
+
+                    /** GetSessionRequest name. */
+                    public name: string;
+
+                    /**
+                     * Creates a new GetSessionRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns GetSessionRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IGetSessionRequest): google.cloud.dataproc.v1.GetSessionRequest;
+
+                    /**
+                     * Encodes the specified GetSessionRequest message. Does not implicitly {@link google.cloud.dataproc.v1.GetSessionRequest.verify|verify} messages.
+                     * @param message GetSessionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IGetSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified GetSessionRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.GetSessionRequest.verify|verify} messages.
+                     * @param message GetSessionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IGetSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a GetSessionRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns GetSessionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.GetSessionRequest;
+
+                    /**
+                     * Decodes a GetSessionRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns GetSessionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.GetSessionRequest;
+
+                    /**
+                     * Verifies a GetSessionRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a GetSessionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns GetSessionRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.GetSessionRequest;
+
+                    /**
+                     * Creates a plain object from a GetSessionRequest message. Also converts values to other types if specified.
+                     * @param message GetSessionRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.GetSessionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this GetSessionRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for GetSessionRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListSessionsRequest. */
+                interface IListSessionsRequest {
+
+                    /** ListSessionsRequest parent */
+                    parent?: (string|null);
+
+                    /** ListSessionsRequest pageSize */
+                    pageSize?: (number|null);
+
+                    /** ListSessionsRequest pageToken */
+                    pageToken?: (string|null);
+
+                    /** ListSessionsRequest filter */
+                    filter?: (string|null);
+                }
+
+                /** Represents a ListSessionsRequest. */
+                class ListSessionsRequest implements IListSessionsRequest {
+
+                    /**
+                     * Constructs a new ListSessionsRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IListSessionsRequest);
+
+                    /** ListSessionsRequest parent. */
+                    public parent: string;
+
+                    /** ListSessionsRequest pageSize. */
+                    public pageSize: number;
+
+                    /** ListSessionsRequest pageToken. */
+                    public pageToken: string;
+
+                    /** ListSessionsRequest filter. */
+                    public filter: string;
+
+                    /**
+                     * Creates a new ListSessionsRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListSessionsRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IListSessionsRequest): google.cloud.dataproc.v1.ListSessionsRequest;
+
+                    /**
+                     * Encodes the specified ListSessionsRequest message. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionsRequest.verify|verify} messages.
+                     * @param message ListSessionsRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IListSessionsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListSessionsRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionsRequest.verify|verify} messages.
+                     * @param message ListSessionsRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IListSessionsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListSessionsRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListSessionsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ListSessionsRequest;
+
+                    /**
+                     * Decodes a ListSessionsRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListSessionsRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ListSessionsRequest;
+
+                    /**
+                     * Verifies a ListSessionsRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListSessionsRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListSessionsRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ListSessionsRequest;
+
+                    /**
+                     * Creates a plain object from a ListSessionsRequest message. Also converts values to other types if specified.
+                     * @param message ListSessionsRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.ListSessionsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListSessionsRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListSessionsRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a ListSessionsResponse. */
+                interface IListSessionsResponse {
+
+                    /** ListSessionsResponse sessions */
+                    sessions?: (google.cloud.dataproc.v1.ISession[]|null);
+
+                    /** ListSessionsResponse nextPageToken */
+                    nextPageToken?: (string|null);
+                }
+
+                /** Represents a ListSessionsResponse. */
+                class ListSessionsResponse implements IListSessionsResponse {
+
+                    /**
+                     * Constructs a new ListSessionsResponse.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IListSessionsResponse);
+
+                    /** ListSessionsResponse sessions. */
+                    public sessions: google.cloud.dataproc.v1.ISession[];
+
+                    /** ListSessionsResponse nextPageToken. */
+                    public nextPageToken: string;
+
+                    /**
+                     * Creates a new ListSessionsResponse instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns ListSessionsResponse instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IListSessionsResponse): google.cloud.dataproc.v1.ListSessionsResponse;
+
+                    /**
+                     * Encodes the specified ListSessionsResponse message. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionsResponse.verify|verify} messages.
+                     * @param message ListSessionsResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IListSessionsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified ListSessionsResponse message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ListSessionsResponse.verify|verify} messages.
+                     * @param message ListSessionsResponse message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IListSessionsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a ListSessionsResponse message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns ListSessionsResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ListSessionsResponse;
+
+                    /**
+                     * Decodes a ListSessionsResponse message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns ListSessionsResponse
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ListSessionsResponse;
+
+                    /**
+                     * Verifies a ListSessionsResponse message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a ListSessionsResponse message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns ListSessionsResponse
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ListSessionsResponse;
+
+                    /**
+                     * Creates a plain object from a ListSessionsResponse message. Also converts values to other types if specified.
+                     * @param message ListSessionsResponse
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.ListSessionsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this ListSessionsResponse to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for ListSessionsResponse
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a TerminateSessionRequest. */
+                interface ITerminateSessionRequest {
+
+                    /** TerminateSessionRequest name */
+                    name?: (string|null);
+
+                    /** TerminateSessionRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a TerminateSessionRequest. */
+                class TerminateSessionRequest implements ITerminateSessionRequest {
+
+                    /**
+                     * Constructs a new TerminateSessionRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.ITerminateSessionRequest);
+
+                    /** TerminateSessionRequest name. */
+                    public name: string;
+
+                    /** TerminateSessionRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new TerminateSessionRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns TerminateSessionRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.ITerminateSessionRequest): google.cloud.dataproc.v1.TerminateSessionRequest;
+
+                    /**
+                     * Encodes the specified TerminateSessionRequest message. Does not implicitly {@link google.cloud.dataproc.v1.TerminateSessionRequest.verify|verify} messages.
+                     * @param message TerminateSessionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.ITerminateSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified TerminateSessionRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.TerminateSessionRequest.verify|verify} messages.
+                     * @param message TerminateSessionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ITerminateSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a TerminateSessionRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns TerminateSessionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.TerminateSessionRequest;
+
+                    /**
+                     * Decodes a TerminateSessionRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns TerminateSessionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.TerminateSessionRequest;
+
+                    /**
+                     * Verifies a TerminateSessionRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a TerminateSessionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns TerminateSessionRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.TerminateSessionRequest;
+
+                    /**
+                     * Creates a plain object from a TerminateSessionRequest message. Also converts values to other types if specified.
+                     * @param message TerminateSessionRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.TerminateSessionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this TerminateSessionRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for TerminateSessionRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a DeleteSessionRequest. */
+                interface IDeleteSessionRequest {
+
+                    /** DeleteSessionRequest name */
+                    name?: (string|null);
+
+                    /** DeleteSessionRequest requestId */
+                    requestId?: (string|null);
+                }
+
+                /** Represents a DeleteSessionRequest. */
+                class DeleteSessionRequest implements IDeleteSessionRequest {
+
+                    /**
+                     * Constructs a new DeleteSessionRequest.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.IDeleteSessionRequest);
+
+                    /** DeleteSessionRequest name. */
+                    public name: string;
+
+                    /** DeleteSessionRequest requestId. */
+                    public requestId: string;
+
+                    /**
+                     * Creates a new DeleteSessionRequest instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns DeleteSessionRequest instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.IDeleteSessionRequest): google.cloud.dataproc.v1.DeleteSessionRequest;
+
+                    /**
+                     * Encodes the specified DeleteSessionRequest message. Does not implicitly {@link google.cloud.dataproc.v1.DeleteSessionRequest.verify|verify} messages.
+                     * @param message DeleteSessionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.IDeleteSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified DeleteSessionRequest message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.DeleteSessionRequest.verify|verify} messages.
+                     * @param message DeleteSessionRequest message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IDeleteSessionRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a DeleteSessionRequest message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns DeleteSessionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.DeleteSessionRequest;
+
+                    /**
+                     * Decodes a DeleteSessionRequest message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns DeleteSessionRequest
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.DeleteSessionRequest;
+
+                    /**
+                     * Verifies a DeleteSessionRequest message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a DeleteSessionRequest message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns DeleteSessionRequest
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.DeleteSessionRequest;
+
+                    /**
+                     * Creates a plain object from a DeleteSessionRequest message. Also converts values to other types if specified.
+                     * @param message DeleteSessionRequest
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.DeleteSessionRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this DeleteSessionRequest to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for DeleteSessionRequest
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                /** Properties of a Session. */
+                interface ISession {
+
+                    /** Session name */
+                    name?: (string|null);
+
+                    /** Session uuid */
+                    uuid?: (string|null);
+
+                    /** Session createTime */
+                    createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** Session jupyterSession */
+                    jupyterSession?: (google.cloud.dataproc.v1.IJupyterConfig|null);
+
+                    /** Session sparkConnectSession */
+                    sparkConnectSession?: (google.cloud.dataproc.v1.ISparkConnectConfig|null);
+
+                    /** Session runtimeInfo */
+                    runtimeInfo?: (google.cloud.dataproc.v1.IRuntimeInfo|null);
+
+                    /** Session state */
+                    state?: (google.cloud.dataproc.v1.Session.State|keyof typeof google.cloud.dataproc.v1.Session.State|null);
+
+                    /** Session stateMessage */
+                    stateMessage?: (string|null);
+
+                    /** Session stateTime */
+                    stateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** Session creator */
+                    creator?: (string|null);
+
+                    /** Session labels */
+                    labels?: ({ [k: string]: string }|null);
+
+                    /** Session runtimeConfig */
+                    runtimeConfig?: (google.cloud.dataproc.v1.IRuntimeConfig|null);
+
+                    /** Session environmentConfig */
+                    environmentConfig?: (google.cloud.dataproc.v1.IEnvironmentConfig|null);
+
+                    /** Session user */
+                    user?: (string|null);
+
+                    /** Session stateHistory */
+                    stateHistory?: (google.cloud.dataproc.v1.Session.ISessionStateHistory[]|null);
+
+                    /** Session sessionTemplate */
+                    sessionTemplate?: (string|null);
+                }
+
+                /** Represents a Session. */
+                class Session implements ISession {
+
+                    /**
+                     * Constructs a new Session.
+                     * @param [properties] Properties to set
+                     */
+                    constructor(properties?: google.cloud.dataproc.v1.ISession);
+
+                    /** Session name. */
+                    public name: string;
+
+                    /** Session uuid. */
+                    public uuid: string;
+
+                    /** Session createTime. */
+                    public createTime?: (google.protobuf.ITimestamp|null);
+
+                    /** Session jupyterSession. */
+                    public jupyterSession?: (google.cloud.dataproc.v1.IJupyterConfig|null);
+
+                    /** Session sparkConnectSession. */
+                    public sparkConnectSession?: (google.cloud.dataproc.v1.ISparkConnectConfig|null);
+
+                    /** Session runtimeInfo. */
+                    public runtimeInfo?: (google.cloud.dataproc.v1.IRuntimeInfo|null);
+
+                    /** Session state. */
+                    public state: (google.cloud.dataproc.v1.Session.State|keyof typeof google.cloud.dataproc.v1.Session.State);
+
+                    /** Session stateMessage. */
+                    public stateMessage: string;
+
+                    /** Session stateTime. */
+                    public stateTime?: (google.protobuf.ITimestamp|null);
+
+                    /** Session creator. */
+                    public creator: string;
+
+                    /** Session labels. */
+                    public labels: { [k: string]: string };
+
+                    /** Session runtimeConfig. */
+                    public runtimeConfig?: (google.cloud.dataproc.v1.IRuntimeConfig|null);
+
+                    /** Session environmentConfig. */
+                    public environmentConfig?: (google.cloud.dataproc.v1.IEnvironmentConfig|null);
+
+                    /** Session user. */
+                    public user: string;
+
+                    /** Session stateHistory. */
+                    public stateHistory: google.cloud.dataproc.v1.Session.ISessionStateHistory[];
+
+                    /** Session sessionTemplate. */
+                    public sessionTemplate: string;
+
+                    /** Session sessionConfig. */
+                    public sessionConfig?: ("jupyterSession"|"sparkConnectSession");
+
+                    /**
+                     * Creates a new Session instance using the specified properties.
+                     * @param [properties] Properties to set
+                     * @returns Session instance
+                     */
+                    public static create(properties?: google.cloud.dataproc.v1.ISession): google.cloud.dataproc.v1.Session;
+
+                    /**
+                     * Encodes the specified Session message. Does not implicitly {@link google.cloud.dataproc.v1.Session.verify|verify} messages.
+                     * @param message Session message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encode(message: google.cloud.dataproc.v1.ISession, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Encodes the specified Session message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.Session.verify|verify} messages.
+                     * @param message Session message or plain object to encode
+                     * @param [writer] Writer to encode to
+                     * @returns Writer
+                     */
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ISession, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                    /**
+                     * Decodes a Session message from the specified reader or buffer.
+                     * @param reader Reader or buffer to decode from
+                     * @param [length] Message length if known beforehand
+                     * @returns Session
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.Session;
+
+                    /**
+                     * Decodes a Session message from the specified reader or buffer, length delimited.
+                     * @param reader Reader or buffer to decode from
+                     * @returns Session
+                     * @throws {Error} If the payload is not a reader or valid buffer
+                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                     */
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.Session;
+
+                    /**
+                     * Verifies a Session message.
+                     * @param message Plain object to verify
+                     * @returns `null` if valid, otherwise the reason why it is not
+                     */
+                    public static verify(message: { [k: string]: any }): (string|null);
+
+                    /**
+                     * Creates a Session message from a plain object. Also converts values to their respective internal types.
+                     * @param object Plain object
+                     * @returns Session
+                     */
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.Session;
+
+                    /**
+                     * Creates a plain object from a Session message. Also converts values to other types if specified.
+                     * @param message Session
+                     * @param [options] Conversion options
+                     * @returns Plain object
+                     */
+                    public static toObject(message: google.cloud.dataproc.v1.Session, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                    /**
+                     * Converts this Session to JSON.
+                     * @returns JSON object
+                     */
+                    public toJSON(): { [k: string]: any };
+
+                    /**
+                     * Gets the default type url for Session
+                     * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                     * @returns The default type url
+                     */
+                    public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace Session {
 
                     /** State enum. */
                     enum State {
-                        UNKNOWN = 0,
-                        PENDING = 1,
-                        RUNNING = 2,
-                        DONE = 3
+                        STATE_UNSPECIFIED = 0,
+                        CREATING = 1,
+                        ACTIVE = 2,
+                        TERMINATING = 3,
+                        TERMINATED = 4,
+                        FAILED = 5
+                    }
+
+                    /** Properties of a SessionStateHistory. */
+                    interface ISessionStateHistory {
+
+                        /** SessionStateHistory state */
+                        state?: (google.cloud.dataproc.v1.Session.State|keyof typeof google.cloud.dataproc.v1.Session.State|null);
+
+                        /** SessionStateHistory stateMessage */
+                        stateMessage?: (string|null);
+
+                        /** SessionStateHistory stateStartTime */
+                        stateStartTime?: (google.protobuf.ITimestamp|null);
+                    }
+
+                    /** Represents a SessionStateHistory. */
+                    class SessionStateHistory implements ISessionStateHistory {
+
+                        /**
+                         * Constructs a new SessionStateHistory.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.dataproc.v1.Session.ISessionStateHistory);
+
+                        /** SessionStateHistory state. */
+                        public state: (google.cloud.dataproc.v1.Session.State|keyof typeof google.cloud.dataproc.v1.Session.State);
+
+                        /** SessionStateHistory stateMessage. */
+                        public stateMessage: string;
+
+                        /** SessionStateHistory stateStartTime. */
+                        public stateStartTime?: (google.protobuf.ITimestamp|null);
+
+                        /**
+                         * Creates a new SessionStateHistory instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns SessionStateHistory instance
+                         */
+                        public static create(properties?: google.cloud.dataproc.v1.Session.ISessionStateHistory): google.cloud.dataproc.v1.Session.SessionStateHistory;
+
+                        /**
+                         * Encodes the specified SessionStateHistory message. Does not implicitly {@link google.cloud.dataproc.v1.Session.SessionStateHistory.verify|verify} messages.
+                         * @param message SessionStateHistory message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.dataproc.v1.Session.ISessionStateHistory, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified SessionStateHistory message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.Session.SessionStateHistory.verify|verify} messages.
+                         * @param message SessionStateHistory message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.dataproc.v1.Session.ISessionStateHistory, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a SessionStateHistory message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns SessionStateHistory
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.Session.SessionStateHistory;
+
+                        /**
+                         * Decodes a SessionStateHistory message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns SessionStateHistory
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.Session.SessionStateHistory;
+
+                        /**
+                         * Verifies a SessionStateHistory message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a SessionStateHistory message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns SessionStateHistory
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.Session.SessionStateHistory;
+
+                        /**
+                         * Creates a plain object from a SessionStateHistory message. Also converts values to other types if specified.
+                         * @param message SessionStateHistory
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.dataproc.v1.Session.SessionStateHistory, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this SessionStateHistory to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for SessionStateHistory
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
                 }
 
-                /** Properties of a ClusterOperationMetadata. */
-                interface IClusterOperationMetadata {
+                /** Properties of a JupyterConfig. */
+                interface IJupyterConfig {
 
-                    /** ClusterOperationMetadata clusterName */
-                    clusterName?: (string|null);
+                    /** JupyterConfig kernel */
+                    kernel?: (google.cloud.dataproc.v1.JupyterConfig.Kernel|keyof typeof google.cloud.dataproc.v1.JupyterConfig.Kernel|null);
 
-                    /** ClusterOperationMetadata clusterUuid */
-                    clusterUuid?: (string|null);
-
-                    /** ClusterOperationMetadata status */
-                    status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
-
-                    /** ClusterOperationMetadata statusHistory */
-                    statusHistory?: (google.cloud.dataproc.v1.IClusterOperationStatus[]|null);
-
-                    /** ClusterOperationMetadata operationType */
-                    operationType?: (string|null);
-
-                    /** ClusterOperationMetadata description */
-                    description?: (string|null);
-
-                    /** ClusterOperationMetadata labels */
-                    labels?: ({ [k: string]: string }|null);
-
-                    /** ClusterOperationMetadata warnings */
-                    warnings?: (string[]|null);
-
-                    /** ClusterOperationMetadata childOperationIds */
-                    childOperationIds?: (string[]|null);
+                    /** JupyterConfig displayName */
+                    displayName?: (string|null);
                 }
 
-                /** Represents a ClusterOperationMetadata. */
-                class ClusterOperationMetadata implements IClusterOperationMetadata {
+                /** Represents a JupyterConfig. */
+                class JupyterConfig implements IJupyterConfig {
 
                     /**
-                     * Constructs a new ClusterOperationMetadata.
+                     * Constructs a new JupyterConfig.
                      * @param [properties] Properties to set
                      */
-                    constructor(properties?: google.cloud.dataproc.v1.IClusterOperationMetadata);
+                    constructor(properties?: google.cloud.dataproc.v1.IJupyterConfig);
 
-                    /** ClusterOperationMetadata clusterName. */
-                    public clusterName: string;
+                    /** JupyterConfig kernel. */
+                    public kernel: (google.cloud.dataproc.v1.JupyterConfig.Kernel|keyof typeof google.cloud.dataproc.v1.JupyterConfig.Kernel);
 
-                    /** ClusterOperationMetadata clusterUuid. */
-                    public clusterUuid: string;
-
-                    /** ClusterOperationMetadata status. */
-                    public status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
-
-                    /** ClusterOperationMetadata statusHistory. */
-                    public statusHistory: google.cloud.dataproc.v1.IClusterOperationStatus[];
-
-                    /** ClusterOperationMetadata operationType. */
-                    public operationType: string;
-
-                    /** ClusterOperationMetadata description. */
-                    public description: string;
-
-                    /** ClusterOperationMetadata labels. */
-                    public labels: { [k: string]: string };
-
-                    /** ClusterOperationMetadata warnings. */
-                    public warnings: string[];
-
-                    /** ClusterOperationMetadata childOperationIds. */
-                    public childOperationIds: string[];
+                    /** JupyterConfig displayName. */
+                    public displayName: string;
 
                     /**
-                     * Creates a new ClusterOperationMetadata instance using the specified properties.
+                     * Creates a new JupyterConfig instance using the specified properties.
                      * @param [properties] Properties to set
-                     * @returns ClusterOperationMetadata instance
+                     * @returns JupyterConfig instance
                      */
-                    public static create(properties?: google.cloud.dataproc.v1.IClusterOperationMetadata): google.cloud.dataproc.v1.ClusterOperationMetadata;
+                    public static create(properties?: google.cloud.dataproc.v1.IJupyterConfig): google.cloud.dataproc.v1.JupyterConfig;
 
                     /**
-                     * Encodes the specified ClusterOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationMetadata.verify|verify} messages.
-                     * @param message ClusterOperationMetadata message or plain object to encode
+                     * Encodes the specified JupyterConfig message. Does not implicitly {@link google.cloud.dataproc.v1.JupyterConfig.verify|verify} messages.
+                     * @param message JupyterConfig message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encode(message: google.cloud.dataproc.v1.IClusterOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encode(message: google.cloud.dataproc.v1.IJupyterConfig, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Encodes the specified ClusterOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.ClusterOperationMetadata.verify|verify} messages.
-                     * @param message ClusterOperationMetadata message or plain object to encode
+                     * Encodes the specified JupyterConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.JupyterConfig.verify|verify} messages.
+                     * @param message JupyterConfig message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encodeDelimited(message: google.cloud.dataproc.v1.IClusterOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.IJupyterConfig, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Decodes a ClusterOperationMetadata message from the specified reader or buffer.
+                     * Decodes a JupyterConfig message from the specified reader or buffer.
                      * @param reader Reader or buffer to decode from
                      * @param [length] Message length if known beforehand
-                     * @returns ClusterOperationMetadata
+                     * @returns JupyterConfig
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.ClusterOperationMetadata;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.JupyterConfig;
 
                     /**
-                     * Decodes a ClusterOperationMetadata message from the specified reader or buffer, length delimited.
+                     * Decodes a JupyterConfig message from the specified reader or buffer, length delimited.
                      * @param reader Reader or buffer to decode from
-                     * @returns ClusterOperationMetadata
+                     * @returns JupyterConfig
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.ClusterOperationMetadata;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.JupyterConfig;
 
                     /**
-                     * Verifies a ClusterOperationMetadata message.
+                     * Verifies a JupyterConfig message.
                      * @param message Plain object to verify
                      * @returns `null` if valid, otherwise the reason why it is not
                      */
                     public static verify(message: { [k: string]: any }): (string|null);
 
                     /**
-                     * Creates a ClusterOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * Creates a JupyterConfig message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
-                     * @returns ClusterOperationMetadata
+                     * @returns JupyterConfig
                      */
-                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.ClusterOperationMetadata;
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.JupyterConfig;
 
                     /**
-                     * Creates a plain object from a ClusterOperationMetadata message. Also converts values to other types if specified.
-                     * @param message ClusterOperationMetadata
+                     * Creates a plain object from a JupyterConfig message. Also converts values to other types if specified.
+                     * @param message JupyterConfig
                      * @param [options] Conversion options
                      * @returns Plain object
                      */
-                    public static toObject(message: google.cloud.dataproc.v1.ClusterOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static toObject(message: google.cloud.dataproc.v1.JupyterConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                     /**
-                     * Converts this ClusterOperationMetadata to JSON.
+                     * Converts this JupyterConfig to JSON.
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
 
                     /**
-                     * Gets the default type url for ClusterOperationMetadata
+                     * Gets the default type url for JupyterConfig
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
                 }
 
-                /** Properties of a NodeGroupOperationMetadata. */
-                interface INodeGroupOperationMetadata {
+                namespace JupyterConfig {
 
-                    /** NodeGroupOperationMetadata nodeGroupId */
-                    nodeGroupId?: (string|null);
-
-                    /** NodeGroupOperationMetadata clusterUuid */
-                    clusterUuid?: (string|null);
-
-                    /** NodeGroupOperationMetadata status */
-                    status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
-
-                    /** NodeGroupOperationMetadata statusHistory */
-                    statusHistory?: (google.cloud.dataproc.v1.IClusterOperationStatus[]|null);
-
-                    /** NodeGroupOperationMetadata operationType */
-                    operationType?: (google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType|keyof typeof google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType|null);
-
-                    /** NodeGroupOperationMetadata description */
-                    description?: (string|null);
-
-                    /** NodeGroupOperationMetadata labels */
-                    labels?: ({ [k: string]: string }|null);
-
-                    /** NodeGroupOperationMetadata warnings */
-                    warnings?: (string[]|null);
+                    /** Kernel enum. */
+                    enum Kernel {
+                        KERNEL_UNSPECIFIED = 0,
+                        PYTHON = 1,
+                        SCALA = 2
+                    }
                 }
 
-                /** Represents a NodeGroupOperationMetadata. */
-                class NodeGroupOperationMetadata implements INodeGroupOperationMetadata {
+                /** Properties of a SparkConnectConfig. */
+                interface ISparkConnectConfig {
+                }
+
+                /** Represents a SparkConnectConfig. */
+                class SparkConnectConfig implements ISparkConnectConfig {
 
                     /**
-                     * Constructs a new NodeGroupOperationMetadata.
+                     * Constructs a new SparkConnectConfig.
                      * @param [properties] Properties to set
                      */
-                    constructor(properties?: google.cloud.dataproc.v1.INodeGroupOperationMetadata);
-
-                    /** NodeGroupOperationMetadata nodeGroupId. */
-                    public nodeGroupId: string;
-
-                    /** NodeGroupOperationMetadata clusterUuid. */
-                    public clusterUuid: string;
-
-                    /** NodeGroupOperationMetadata status. */
-                    public status?: (google.cloud.dataproc.v1.IClusterOperationStatus|null);
-
-                    /** NodeGroupOperationMetadata statusHistory. */
-                    public statusHistory: google.cloud.dataproc.v1.IClusterOperationStatus[];
-
-                    /** NodeGroupOperationMetadata operationType. */
-                    public operationType: (google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType|keyof typeof google.cloud.dataproc.v1.NodeGroupOperationMetadata.NodeGroupOperationType);
-
-                    /** NodeGroupOperationMetadata description. */
-                    public description: string;
-
-                    /** NodeGroupOperationMetadata labels. */
-                    public labels: { [k: string]: string };
-
-                    /** NodeGroupOperationMetadata warnings. */
-                    public warnings: string[];
+                    constructor(properties?: google.cloud.dataproc.v1.ISparkConnectConfig);
 
                     /**
-                     * Creates a new NodeGroupOperationMetadata instance using the specified properties.
+                     * Creates a new SparkConnectConfig instance using the specified properties.
                      * @param [properties] Properties to set
-                     * @returns NodeGroupOperationMetadata instance
+                     * @returns SparkConnectConfig instance
                      */
-                    public static create(properties?: google.cloud.dataproc.v1.INodeGroupOperationMetadata): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+                    public static create(properties?: google.cloud.dataproc.v1.ISparkConnectConfig): google.cloud.dataproc.v1.SparkConnectConfig;
 
                     /**
-                     * Encodes the specified NodeGroupOperationMetadata message. Does not implicitly {@link google.cloud.dataproc.v1.NodeGroupOperationMetadata.verify|verify} messages.
-                     * @param message NodeGroupOperationMetadata message or plain object to encode
+                     * Encodes the specified SparkConnectConfig message. Does not implicitly {@link google.cloud.dataproc.v1.SparkConnectConfig.verify|verify} messages.
+                     * @param message SparkConnectConfig message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encode(message: google.cloud.dataproc.v1.INodeGroupOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encode(message: google.cloud.dataproc.v1.ISparkConnectConfig, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Encodes the specified NodeGroupOperationMetadata message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.NodeGroupOperationMetadata.verify|verify} messages.
-                     * @param message NodeGroupOperationMetadata message or plain object to encode
+                     * Encodes the specified SparkConnectConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.SparkConnectConfig.verify|verify} messages.
+                     * @param message SparkConnectConfig message or plain object to encode
                      * @param [writer] Writer to encode to
                      * @returns Writer
                      */
-                    public static encodeDelimited(message: google.cloud.dataproc.v1.INodeGroupOperationMetadata, writer?: $protobuf.Writer): $protobuf.Writer;
+                    public static encodeDelimited(message: google.cloud.dataproc.v1.ISparkConnectConfig, writer?: $protobuf.Writer): $protobuf.Writer;
 
                     /**
-                     * Decodes a NodeGroupOperationMetadata message from the specified reader or buffer.
+                     * Decodes a SparkConnectConfig message from the specified reader or buffer.
                      * @param reader Reader or buffer to decode from
                      * @param [length] Message length if known beforehand
-                     * @returns NodeGroupOperationMetadata
+                     * @returns SparkConnectConfig
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+                    public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.SparkConnectConfig;
 
                     /**
-                     * Decodes a NodeGroupOperationMetadata message from the specified reader or buffer, length delimited.
+                     * Decodes a SparkConnectConfig message from the specified reader or buffer, length delimited.
                      * @param reader Reader or buffer to decode from
-                     * @returns NodeGroupOperationMetadata
+                     * @returns SparkConnectConfig
                      * @throws {Error} If the payload is not a reader or valid buffer
                      * @throws {$protobuf.util.ProtocolError} If required fields are missing
                      */
-                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+                    public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.SparkConnectConfig;
 
                     /**
-                     * Verifies a NodeGroupOperationMetadata message.
+                     * Verifies a SparkConnectConfig message.
                      * @param message Plain object to verify
                      * @returns `null` if valid, otherwise the reason why it is not
                      */
                     public static verify(message: { [k: string]: any }): (string|null);
 
                     /**
-                     * Creates a NodeGroupOperationMetadata message from a plain object. Also converts values to their respective internal types.
+                     * Creates a SparkConnectConfig message from a plain object. Also converts values to their respective internal types.
                      * @param object Plain object
-                     * @returns NodeGroupOperationMetadata
+                     * @returns SparkConnectConfig
                      */
-                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.NodeGroupOperationMetadata;
+                    public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.SparkConnectConfig;
 
                     /**
-                     * Creates a plain object from a NodeGroupOperationMetadata message. Also converts values to other types if specified.
-                     * @param message NodeGroupOperationMetadata
+                     * Creates a plain object from a SparkConnectConfig message. Also converts values to other types if specified.
+                     * @param message SparkConnectConfig
                      * @param [options] Conversion options
                      * @returns Plain object
                      */
-                    public static toObject(message: google.cloud.dataproc.v1.NodeGroupOperationMetadata, options?: $protobuf.IConversionOptions): { [k: string]: any };
+                    public static toObject(message: google.cloud.dataproc.v1.SparkConnectConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
 
                     /**
-                     * Converts this NodeGroupOperationMetadata to JSON.
+                     * Converts this SparkConnectConfig to JSON.
                      * @returns JSON object
                      */
                     public toJSON(): { [k: string]: any };
 
                     /**
-                     * Gets the default type url for NodeGroupOperationMetadata
+                     * Gets the default type url for SparkConnectConfig
                      * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
-                }
-
-                namespace NodeGroupOperationMetadata {
-
-                    /** NodeGroupOperationType enum. */
-                    enum NodeGroupOperationType {
-                        NODE_GROUP_OPERATION_TYPE_UNSPECIFIED = 0,
-                        CREATE = 1,
-                        UPDATE = 2,
-                        DELETE = 3,
-                        RESIZE = 4
-                    }
                 }
 
                 /** Represents a WorkflowTemplateService */
@@ -13872,6 +17464,9 @@ export namespace google {
 
                     /** WorkflowTemplate dagTimeout */
                     dagTimeout?: (google.protobuf.IDuration|null);
+
+                    /** WorkflowTemplate encryptionConfig */
+                    encryptionConfig?: (google.cloud.dataproc.v1.WorkflowTemplate.IEncryptionConfig|null);
                 }
 
                 /** Represents a WorkflowTemplate. */
@@ -13912,6 +17507,9 @@ export namespace google {
 
                     /** WorkflowTemplate dagTimeout. */
                     public dagTimeout?: (google.protobuf.IDuration|null);
+
+                    /** WorkflowTemplate encryptionConfig. */
+                    public encryptionConfig?: (google.cloud.dataproc.v1.WorkflowTemplate.IEncryptionConfig|null);
 
                     /**
                      * Creates a new WorkflowTemplate instance using the specified properties.
@@ -13989,6 +17587,106 @@ export namespace google {
                      * @returns The default type url
                      */
                     public static getTypeUrl(typeUrlPrefix?: string): string;
+                }
+
+                namespace WorkflowTemplate {
+
+                    /** Properties of an EncryptionConfig. */
+                    interface IEncryptionConfig {
+
+                        /** EncryptionConfig kmsKey */
+                        kmsKey?: (string|null);
+                    }
+
+                    /** Represents an EncryptionConfig. */
+                    class EncryptionConfig implements IEncryptionConfig {
+
+                        /**
+                         * Constructs a new EncryptionConfig.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.dataproc.v1.WorkflowTemplate.IEncryptionConfig);
+
+                        /** EncryptionConfig kmsKey. */
+                        public kmsKey: string;
+
+                        /**
+                         * Creates a new EncryptionConfig instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns EncryptionConfig instance
+                         */
+                        public static create(properties?: google.cloud.dataproc.v1.WorkflowTemplate.IEncryptionConfig): google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig;
+
+                        /**
+                         * Encodes the specified EncryptionConfig message. Does not implicitly {@link google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig.verify|verify} messages.
+                         * @param message EncryptionConfig message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.dataproc.v1.WorkflowTemplate.IEncryptionConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified EncryptionConfig message, length delimited. Does not implicitly {@link google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig.verify|verify} messages.
+                         * @param message EncryptionConfig message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.dataproc.v1.WorkflowTemplate.IEncryptionConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an EncryptionConfig message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns EncryptionConfig
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig;
+
+                        /**
+                         * Decodes an EncryptionConfig message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns EncryptionConfig
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig;
+
+                        /**
+                         * Verifies an EncryptionConfig message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an EncryptionConfig message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns EncryptionConfig
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig;
+
+                        /**
+                         * Creates a plain object from an EncryptionConfig message. Also converts values to other types if specified.
+                         * @param message EncryptionConfig
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.dataproc.v1.WorkflowTemplate.EncryptionConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this EncryptionConfig to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for EncryptionConfig
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
                 }
 
                 /** Properties of a WorkflowTemplatePlacement. */
@@ -14339,6 +18037,12 @@ export namespace google {
                     /** OrderedJob prestoJob */
                     prestoJob?: (google.cloud.dataproc.v1.IPrestoJob|null);
 
+                    /** OrderedJob trinoJob */
+                    trinoJob?: (google.cloud.dataproc.v1.ITrinoJob|null);
+
+                    /** OrderedJob flinkJob */
+                    flinkJob?: (google.cloud.dataproc.v1.IFlinkJob|null);
+
                     /** OrderedJob labels */
                     labels?: ({ [k: string]: string }|null);
 
@@ -14385,6 +18089,12 @@ export namespace google {
                     /** OrderedJob prestoJob. */
                     public prestoJob?: (google.cloud.dataproc.v1.IPrestoJob|null);
 
+                    /** OrderedJob trinoJob. */
+                    public trinoJob?: (google.cloud.dataproc.v1.ITrinoJob|null);
+
+                    /** OrderedJob flinkJob. */
+                    public flinkJob?: (google.cloud.dataproc.v1.IFlinkJob|null);
+
                     /** OrderedJob labels. */
                     public labels: { [k: string]: string };
 
@@ -14395,7 +18105,7 @@ export namespace google {
                     public prerequisiteStepIds: string[];
 
                     /** OrderedJob jobType. */
-                    public jobType?: ("hadoopJob"|"sparkJob"|"pysparkJob"|"hiveJob"|"pigJob"|"sparkRJob"|"sparkSqlJob"|"prestoJob");
+                    public jobType?: ("hadoopJob"|"sparkJob"|"pysparkJob"|"hiveJob"|"pigJob"|"sparkRJob"|"sparkSqlJob"|"prestoJob"|"trinoJob"|"flinkJob");
 
                     /**
                      * Creates a new OrderedJob instance using the specified properties.
@@ -16060,6 +19770,9 @@ export namespace google {
 
                     /** ListWorkflowTemplatesResponse nextPageToken */
                     nextPageToken?: (string|null);
+
+                    /** ListWorkflowTemplatesResponse unreachable */
+                    unreachable?: (string[]|null);
                 }
 
                 /** Represents a ListWorkflowTemplatesResponse. */
@@ -16076,6 +19789,9 @@ export namespace google {
 
                     /** ListWorkflowTemplatesResponse nextPageToken. */
                     public nextPageToken: string;
+
+                    /** ListWorkflowTemplatesResponse unreachable. */
+                    public unreachable: string[];
 
                     /**
                      * Creates a new ListWorkflowTemplatesResponse instance using the specified properties.
@@ -16624,6 +20340,1493 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Properties of a CommonLanguageSettings. */
+        interface ICommonLanguageSettings {
+
+            /** CommonLanguageSettings referenceDocsUri */
+            referenceDocsUri?: (string|null);
+
+            /** CommonLanguageSettings destinations */
+            destinations?: (google.api.ClientLibraryDestination[]|null);
+        }
+
+        /** Represents a CommonLanguageSettings. */
+        class CommonLanguageSettings implements ICommonLanguageSettings {
+
+            /**
+             * Constructs a new CommonLanguageSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICommonLanguageSettings);
+
+            /** CommonLanguageSettings referenceDocsUri. */
+            public referenceDocsUri: string;
+
+            /** CommonLanguageSettings destinations. */
+            public destinations: google.api.ClientLibraryDestination[];
+
+            /**
+             * Creates a new CommonLanguageSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CommonLanguageSettings instance
+             */
+            public static create(properties?: google.api.ICommonLanguageSettings): google.api.CommonLanguageSettings;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CommonLanguageSettings;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CommonLanguageSettings;
+
+            /**
+             * Verifies a CommonLanguageSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CommonLanguageSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CommonLanguageSettings;
+
+            /**
+             * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+             * @param message CommonLanguageSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CommonLanguageSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CommonLanguageSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CommonLanguageSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ClientLibrarySettings. */
+        interface IClientLibrarySettings {
+
+            /** ClientLibrarySettings version */
+            version?: (string|null);
+
+            /** ClientLibrarySettings launchStage */
+            launchStage?: (google.api.LaunchStage|keyof typeof google.api.LaunchStage|null);
+
+            /** ClientLibrarySettings restNumericEnums */
+            restNumericEnums?: (boolean|null);
+
+            /** ClientLibrarySettings javaSettings */
+            javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings */
+            cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings */
+            phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings */
+            pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings */
+            nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings */
+            dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings */
+            rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings */
+            goSettings?: (google.api.IGoSettings|null);
+        }
+
+        /** Represents a ClientLibrarySettings. */
+        class ClientLibrarySettings implements IClientLibrarySettings {
+
+            /**
+             * Constructs a new ClientLibrarySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IClientLibrarySettings);
+
+            /** ClientLibrarySettings version. */
+            public version: string;
+
+            /** ClientLibrarySettings launchStage. */
+            public launchStage: (google.api.LaunchStage|keyof typeof google.api.LaunchStage);
+
+            /** ClientLibrarySettings restNumericEnums. */
+            public restNumericEnums: boolean;
+
+            /** ClientLibrarySettings javaSettings. */
+            public javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings. */
+            public cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings. */
+            public phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings. */
+            public pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings. */
+            public nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings. */
+            public dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings. */
+            public rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings. */
+            public goSettings?: (google.api.IGoSettings|null);
+
+            /**
+             * Creates a new ClientLibrarySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ClientLibrarySettings instance
+             */
+            public static create(properties?: google.api.IClientLibrarySettings): google.api.ClientLibrarySettings;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.ClientLibrarySettings;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.ClientLibrarySettings;
+
+            /**
+             * Verifies a ClientLibrarySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ClientLibrarySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.ClientLibrarySettings;
+
+            /**
+             * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+             * @param message ClientLibrarySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.ClientLibrarySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ClientLibrarySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ClientLibrarySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a Publishing. */
+        interface IPublishing {
+
+            /** Publishing methodSettings */
+            methodSettings?: (google.api.IMethodSettings[]|null);
+
+            /** Publishing newIssueUri */
+            newIssueUri?: (string|null);
+
+            /** Publishing documentationUri */
+            documentationUri?: (string|null);
+
+            /** Publishing apiShortName */
+            apiShortName?: (string|null);
+
+            /** Publishing githubLabel */
+            githubLabel?: (string|null);
+
+            /** Publishing codeownerGithubTeams */
+            codeownerGithubTeams?: (string[]|null);
+
+            /** Publishing docTagPrefix */
+            docTagPrefix?: (string|null);
+
+            /** Publishing organization */
+            organization?: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization|null);
+
+            /** Publishing librarySettings */
+            librarySettings?: (google.api.IClientLibrarySettings[]|null);
+
+            /** Publishing protoReferenceDocumentationUri */
+            protoReferenceDocumentationUri?: (string|null);
+        }
+
+        /** Represents a Publishing. */
+        class Publishing implements IPublishing {
+
+            /**
+             * Constructs a new Publishing.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPublishing);
+
+            /** Publishing methodSettings. */
+            public methodSettings: google.api.IMethodSettings[];
+
+            /** Publishing newIssueUri. */
+            public newIssueUri: string;
+
+            /** Publishing documentationUri. */
+            public documentationUri: string;
+
+            /** Publishing apiShortName. */
+            public apiShortName: string;
+
+            /** Publishing githubLabel. */
+            public githubLabel: string;
+
+            /** Publishing codeownerGithubTeams. */
+            public codeownerGithubTeams: string[];
+
+            /** Publishing docTagPrefix. */
+            public docTagPrefix: string;
+
+            /** Publishing organization. */
+            public organization: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization);
+
+            /** Publishing librarySettings. */
+            public librarySettings: google.api.IClientLibrarySettings[];
+
+            /** Publishing protoReferenceDocumentationUri. */
+            public protoReferenceDocumentationUri: string;
+
+            /**
+             * Creates a new Publishing instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Publishing instance
+             */
+            public static create(properties?: google.api.IPublishing): google.api.Publishing;
+
+            /**
+             * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.Publishing;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.Publishing;
+
+            /**
+             * Verifies a Publishing message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Publishing
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.Publishing;
+
+            /**
+             * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+             * @param message Publishing
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.Publishing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Publishing to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Publishing
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a JavaSettings. */
+        interface IJavaSettings {
+
+            /** JavaSettings libraryPackage */
+            libraryPackage?: (string|null);
+
+            /** JavaSettings serviceClassNames */
+            serviceClassNames?: ({ [k: string]: string }|null);
+
+            /** JavaSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a JavaSettings. */
+        class JavaSettings implements IJavaSettings {
+
+            /**
+             * Constructs a new JavaSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IJavaSettings);
+
+            /** JavaSettings libraryPackage. */
+            public libraryPackage: string;
+
+            /** JavaSettings serviceClassNames. */
+            public serviceClassNames: { [k: string]: string };
+
+            /** JavaSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new JavaSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns JavaSettings instance
+             */
+            public static create(properties?: google.api.IJavaSettings): google.api.JavaSettings;
+
+            /**
+             * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.JavaSettings;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.JavaSettings;
+
+            /**
+             * Verifies a JavaSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns JavaSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.JavaSettings;
+
+            /**
+             * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+             * @param message JavaSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.JavaSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this JavaSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for JavaSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a CppSettings. */
+        interface ICppSettings {
+
+            /** CppSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a CppSettings. */
+        class CppSettings implements ICppSettings {
+
+            /**
+             * Constructs a new CppSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICppSettings);
+
+            /** CppSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new CppSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CppSettings instance
+             */
+            public static create(properties?: google.api.ICppSettings): google.api.CppSettings;
+
+            /**
+             * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CppSettings;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CppSettings;
+
+            /**
+             * Verifies a CppSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CppSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CppSettings;
+
+            /**
+             * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+             * @param message CppSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CppSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CppSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CppSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PhpSettings. */
+        interface IPhpSettings {
+
+            /** PhpSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PhpSettings. */
+        class PhpSettings implements IPhpSettings {
+
+            /**
+             * Constructs a new PhpSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPhpSettings);
+
+            /** PhpSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PhpSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PhpSettings instance
+             */
+            public static create(properties?: google.api.IPhpSettings): google.api.PhpSettings;
+
+            /**
+             * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PhpSettings;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PhpSettings;
+
+            /**
+             * Verifies a PhpSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PhpSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PhpSettings;
+
+            /**
+             * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+             * @param message PhpSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PhpSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PhpSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PhpSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PythonSettings. */
+        interface IPythonSettings {
+
+            /** PythonSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PythonSettings. */
+        class PythonSettings implements IPythonSettings {
+
+            /**
+             * Constructs a new PythonSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPythonSettings);
+
+            /** PythonSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PythonSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PythonSettings instance
+             */
+            public static create(properties?: google.api.IPythonSettings): google.api.PythonSettings;
+
+            /**
+             * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PythonSettings;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PythonSettings;
+
+            /**
+             * Verifies a PythonSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PythonSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PythonSettings;
+
+            /**
+             * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+             * @param message PythonSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PythonSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PythonSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PythonSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a NodeSettings. */
+        interface INodeSettings {
+
+            /** NodeSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a NodeSettings. */
+        class NodeSettings implements INodeSettings {
+
+            /**
+             * Constructs a new NodeSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.INodeSettings);
+
+            /** NodeSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new NodeSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns NodeSettings instance
+             */
+            public static create(properties?: google.api.INodeSettings): google.api.NodeSettings;
+
+            /**
+             * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.NodeSettings;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.NodeSettings;
+
+            /**
+             * Verifies a NodeSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns NodeSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.NodeSettings;
+
+            /**
+             * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+             * @param message NodeSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.NodeSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this NodeSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for NodeSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DotnetSettings. */
+        interface IDotnetSettings {
+
+            /** DotnetSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices */
+            renamedServices?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings renamedResources */
+            renamedResources?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings ignoredResources */
+            ignoredResources?: (string[]|null);
+
+            /** DotnetSettings forcedNamespaceAliases */
+            forcedNamespaceAliases?: (string[]|null);
+
+            /** DotnetSettings handwrittenSignatures */
+            handwrittenSignatures?: (string[]|null);
+        }
+
+        /** Represents a DotnetSettings. */
+        class DotnetSettings implements IDotnetSettings {
+
+            /**
+             * Constructs a new DotnetSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IDotnetSettings);
+
+            /** DotnetSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices. */
+            public renamedServices: { [k: string]: string };
+
+            /** DotnetSettings renamedResources. */
+            public renamedResources: { [k: string]: string };
+
+            /** DotnetSettings ignoredResources. */
+            public ignoredResources: string[];
+
+            /** DotnetSettings forcedNamespaceAliases. */
+            public forcedNamespaceAliases: string[];
+
+            /** DotnetSettings handwrittenSignatures. */
+            public handwrittenSignatures: string[];
+
+            /**
+             * Creates a new DotnetSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DotnetSettings instance
+             */
+            public static create(properties?: google.api.IDotnetSettings): google.api.DotnetSettings;
+
+            /**
+             * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.DotnetSettings;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.DotnetSettings;
+
+            /**
+             * Verifies a DotnetSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DotnetSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.DotnetSettings;
+
+            /**
+             * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+             * @param message DotnetSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.DotnetSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DotnetSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DotnetSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RubySettings. */
+        interface IRubySettings {
+
+            /** RubySettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a RubySettings. */
+        class RubySettings implements IRubySettings {
+
+            /**
+             * Constructs a new RubySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRubySettings);
+
+            /** RubySettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new RubySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RubySettings instance
+             */
+            public static create(properties?: google.api.IRubySettings): google.api.RubySettings;
+
+            /**
+             * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RubySettings;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RubySettings;
+
+            /**
+             * Verifies a RubySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RubySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RubySettings;
+
+            /**
+             * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+             * @param message RubySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RubySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RubySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RubySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GoSettings. */
+        interface IGoSettings {
+
+            /** GoSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a GoSettings. */
+        class GoSettings implements IGoSettings {
+
+            /**
+             * Constructs a new GoSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IGoSettings);
+
+            /** GoSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new GoSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GoSettings instance
+             */
+            public static create(properties?: google.api.IGoSettings): google.api.GoSettings;
+
+            /**
+             * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.GoSettings;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.GoSettings;
+
+            /**
+             * Verifies a GoSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GoSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.GoSettings;
+
+            /**
+             * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+             * @param message GoSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.GoSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GoSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GoSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MethodSettings. */
+        interface IMethodSettings {
+
+            /** MethodSettings selector */
+            selector?: (string|null);
+
+            /** MethodSettings longRunning */
+            longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields */
+            autoPopulatedFields?: (string[]|null);
+        }
+
+        /** Represents a MethodSettings. */
+        class MethodSettings implements IMethodSettings {
+
+            /**
+             * Constructs a new MethodSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IMethodSettings);
+
+            /** MethodSettings selector. */
+            public selector: string;
+
+            /** MethodSettings longRunning. */
+            public longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields. */
+            public autoPopulatedFields: string[];
+
+            /**
+             * Creates a new MethodSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MethodSettings instance
+             */
+            public static create(properties?: google.api.IMethodSettings): google.api.MethodSettings;
+
+            /**
+             * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings;
+
+            /**
+             * Verifies a MethodSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MethodSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.MethodSettings;
+
+            /**
+             * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+             * @param message MethodSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.MethodSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MethodSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace MethodSettings {
+
+            /** Properties of a LongRunning. */
+            interface ILongRunning {
+
+                /** LongRunning initialPollDelay */
+                initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier */
+                pollDelayMultiplier?: (number|null);
+
+                /** LongRunning maxPollDelay */
+                maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout */
+                totalPollTimeout?: (google.protobuf.IDuration|null);
+            }
+
+            /** Represents a LongRunning. */
+            class LongRunning implements ILongRunning {
+
+                /**
+                 * Constructs a new LongRunning.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.api.MethodSettings.ILongRunning);
+
+                /** LongRunning initialPollDelay. */
+                public initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier. */
+                public pollDelayMultiplier: number;
+
+                /** LongRunning maxPollDelay. */
+                public maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout. */
+                public totalPollTimeout?: (google.protobuf.IDuration|null);
+
+                /**
+                 * Creates a new LongRunning instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LongRunning instance
+                 */
+                public static create(properties?: google.api.MethodSettings.ILongRunning): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Verifies a LongRunning message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LongRunning
+                 */
+                public static fromObject(object: { [k: string]: any }): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                 * @param message LongRunning
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.api.MethodSettings.LongRunning, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LongRunning to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LongRunning
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** ClientLibraryOrganization enum. */
+        enum ClientLibraryOrganization {
+            CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED = 0,
+            CLOUD = 1,
+            ADS = 2,
+            PHOTOS = 3,
+            STREET_VIEW = 4,
+            SHOPPING = 5,
+            GEO = 6,
+            GENERATIVE_AI = 7
+        }
+
+        /** ClientLibraryDestination enum. */
+        enum ClientLibraryDestination {
+            CLIENT_LIBRARY_DESTINATION_UNSPECIFIED = 0,
+            GITHUB = 10,
+            PACKAGE_MANAGER = 20
+        }
+
+        /** LaunchStage enum. */
+        enum LaunchStage {
+            LAUNCH_STAGE_UNSPECIFIED = 0,
+            UNIMPLEMENTED = 6,
+            PRELAUNCH = 7,
+            EARLY_ACCESS = 1,
+            ALPHA = 2,
+            BETA = 3,
+            GA = 4,
+            DEPRECATED = 5
+        }
+
         /** FieldBehavior enum. */
         enum FieldBehavior {
             FIELD_BEHAVIOR_UNSPECIFIED = 0,
@@ -16633,7 +21836,8 @@ export namespace google {
             INPUT_ONLY = 4,
             IMMUTABLE = 5,
             UNORDERED_LIST = 6,
-            NON_EMPTY_DEFAULT = 7
+            NON_EMPTY_DEFAULT = 7,
+            IDENTIFIER = 8
         }
 
         /** Properties of a ResourceDescriptor. */
@@ -16989,6 +22193,21 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Edition enum. */
+        enum Edition {
+            EDITION_UNKNOWN = 0,
+            EDITION_PROTO2 = 998,
+            EDITION_PROTO3 = 999,
+            EDITION_2023 = 1000,
+            EDITION_2024 = 1001,
+            EDITION_1_TEST_ONLY = 1,
+            EDITION_2_TEST_ONLY = 2,
+            EDITION_99997_TEST_ONLY = 99997,
+            EDITION_99998_TEST_ONLY = 99998,
+            EDITION_99999_TEST_ONLY = 99999,
+            EDITION_MAX = 2147483647
+        }
+
         /** Properties of a FileDescriptorProto. */
         interface IFileDescriptorProto {
 
@@ -17029,7 +22248,7 @@ export namespace google {
             syntax?: (string|null);
 
             /** FileDescriptorProto edition */
-            edition?: (string|null);
+            edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
         }
 
         /** Represents a FileDescriptorProto. */
@@ -17078,7 +22297,7 @@ export namespace google {
             public syntax: string;
 
             /** FileDescriptorProto edition. */
-            public edition: string;
+            public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
 
             /**
              * Creates a new FileDescriptorProto instance using the specified properties.
@@ -17529,6 +22748,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
+
+            /** ExtensionRangeOptions declaration */
+            declaration?: (google.protobuf.ExtensionRangeOptions.IDeclaration[]|null);
+
+            /** ExtensionRangeOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification */
+            verification?: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState|null);
         }
 
         /** Represents an ExtensionRangeOptions. */
@@ -17542,6 +22770,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
+
+            /** ExtensionRangeOptions declaration. */
+            public declaration: google.protobuf.ExtensionRangeOptions.IDeclaration[];
+
+            /** ExtensionRangeOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification. */
+            public verification: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState);
 
             /**
              * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -17619,6 +22856,136 @@ export namespace google {
              * @returns The default type url
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace ExtensionRangeOptions {
+
+            /** Properties of a Declaration. */
+            interface IDeclaration {
+
+                /** Declaration number */
+                number?: (number|null);
+
+                /** Declaration fullName */
+                fullName?: (string|null);
+
+                /** Declaration type */
+                type?: (string|null);
+
+                /** Declaration reserved */
+                reserved?: (boolean|null);
+
+                /** Declaration repeated */
+                repeated?: (boolean|null);
+            }
+
+            /** Represents a Declaration. */
+            class Declaration implements IDeclaration {
+
+                /**
+                 * Constructs a new Declaration.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration);
+
+                /** Declaration number. */
+                public number: number;
+
+                /** Declaration fullName. */
+                public fullName: string;
+
+                /** Declaration type. */
+                public type: string;
+
+                /** Declaration reserved. */
+                public reserved: boolean;
+
+                /** Declaration repeated. */
+                public repeated: boolean;
+
+                /**
+                 * Creates a new Declaration instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns Declaration instance
+                 */
+                public static create(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Verifies a Declaration message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns Declaration
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                 * @param message Declaration
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.ExtensionRangeOptions.Declaration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this Declaration to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Declaration
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** VerificationState enum. */
+            enum VerificationState {
+                DECLARATION = 0,
+                UNVERIFIED = 1
+            }
         }
 
         /** Properties of a FieldDescriptorProto. */
@@ -17805,8 +23172,8 @@ export namespace google {
             /** Label enum. */
             enum Label {
                 LABEL_OPTIONAL = 1,
-                LABEL_REQUIRED = 2,
-                LABEL_REPEATED = 3
+                LABEL_REPEATED = 3,
+                LABEL_REQUIRED = 2
             }
         }
 
@@ -18518,9 +23885,6 @@ export namespace google {
             /** FileOptions pyGenericServices */
             pyGenericServices?: (boolean|null);
 
-            /** FileOptions phpGenericServices */
-            phpGenericServices?: (boolean|null);
-
             /** FileOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -18547,6 +23911,9 @@ export namespace google {
 
             /** FileOptions rubyPackage */
             rubyPackage?: (string|null);
+
+            /** FileOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -18594,9 +23961,6 @@ export namespace google {
             /** FileOptions pyGenericServices. */
             public pyGenericServices: boolean;
 
-            /** FileOptions phpGenericServices. */
-            public phpGenericServices: boolean;
-
             /** FileOptions deprecated. */
             public deprecated: boolean;
 
@@ -18623,6 +23987,9 @@ export namespace google {
 
             /** FileOptions rubyPackage. */
             public rubyPackage: string;
+
+            /** FileOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -18730,6 +24097,12 @@ export namespace google {
             /** MessageOptions mapEntry */
             mapEntry?: (boolean|null);
 
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** MessageOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MessageOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -18757,6 +24130,12 @@ export namespace google {
 
             /** MessageOptions mapEntry. */
             public mapEntry: boolean;
+
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** MessageOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MessageOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -18863,6 +24242,21 @@ export namespace google {
             /** FieldOptions weak */
             weak?: (boolean|null);
 
+            /** FieldOptions debugRedact */
+            debugRedact?: (boolean|null);
+
+            /** FieldOptions retention */
+            retention?: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention|null);
+
+            /** FieldOptions targets */
+            targets?: (google.protobuf.FieldOptions.OptionTargetType[]|null);
+
+            /** FieldOptions editionDefaults */
+            editionDefaults?: (google.protobuf.FieldOptions.IEditionDefault[]|null);
+
+            /** FieldOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** FieldOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -18902,6 +24296,21 @@ export namespace google {
 
             /** FieldOptions weak. */
             public weak: boolean;
+
+            /** FieldOptions debugRedact. */
+            public debugRedact: boolean;
+
+            /** FieldOptions retention. */
+            public retention: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention);
+
+            /** FieldOptions targets. */
+            public targets: google.protobuf.FieldOptions.OptionTargetType[];
+
+            /** FieldOptions editionDefaults. */
+            public editionDefaults: google.protobuf.FieldOptions.IEditionDefault[];
+
+            /** FieldOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FieldOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -18999,10 +24408,137 @@ export namespace google {
                 JS_STRING = 1,
                 JS_NUMBER = 2
             }
+
+            /** OptionRetention enum. */
+            enum OptionRetention {
+                RETENTION_UNKNOWN = 0,
+                RETENTION_RUNTIME = 1,
+                RETENTION_SOURCE = 2
+            }
+
+            /** OptionTargetType enum. */
+            enum OptionTargetType {
+                TARGET_TYPE_UNKNOWN = 0,
+                TARGET_TYPE_FILE = 1,
+                TARGET_TYPE_EXTENSION_RANGE = 2,
+                TARGET_TYPE_MESSAGE = 3,
+                TARGET_TYPE_FIELD = 4,
+                TARGET_TYPE_ONEOF = 5,
+                TARGET_TYPE_ENUM = 6,
+                TARGET_TYPE_ENUM_ENTRY = 7,
+                TARGET_TYPE_SERVICE = 8,
+                TARGET_TYPE_METHOD = 9
+            }
+
+            /** Properties of an EditionDefault. */
+            interface IEditionDefault {
+
+                /** EditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** EditionDefault value */
+                value?: (string|null);
+            }
+
+            /** Represents an EditionDefault. */
+            class EditionDefault implements IEditionDefault {
+
+                /**
+                 * Constructs a new EditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FieldOptions.IEditionDefault);
+
+                /** EditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** EditionDefault value. */
+                public value: string;
+
+                /**
+                 * Creates a new EditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns EditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FieldOptions.IEditionDefault): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Verifies an EditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns EditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                 * @param message EditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FieldOptions.EditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this EditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EditionDefault
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
         }
 
         /** Properties of an OneofOptions. */
         interface IOneofOptions {
+
+            /** OneofOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -19016,6 +24552,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IOneofOptions);
+
+            /** OneofOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -19107,6 +24646,12 @@ export namespace google {
             /** EnumOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** EnumOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** EnumOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -19125,6 +24670,12 @@ export namespace google {
 
             /** EnumOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** EnumOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** EnumOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -19213,6 +24764,12 @@ export namespace google {
             /** EnumValueOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumValueOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact */
+            debugRedact?: (boolean|null);
+
             /** EnumValueOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -19228,6 +24785,12 @@ export namespace google {
 
             /** EnumValueOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumValueOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact. */
+            public debugRedact: boolean;
 
             /** EnumValueOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -19313,6 +24876,9 @@ export namespace google {
         /** Properties of a ServiceOptions. */
         interface IServiceOptions {
 
+            /** ServiceOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** ServiceOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -19334,6 +24900,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IServiceOptions);
+
+            /** ServiceOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** ServiceOptions deprecated. */
             public deprecated: boolean;
@@ -19428,6 +24997,9 @@ export namespace google {
             /** MethodOptions idempotencyLevel */
             idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel|null);
 
+            /** MethodOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MethodOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -19455,6 +25027,9 @@ export namespace google {
 
             /** MethodOptions idempotencyLevel. */
             public idempotencyLevel: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel);
+
+            /** MethodOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MethodOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -19779,6 +25354,394 @@ export namespace google {
 
                 /**
                  * Gets the default type url for NamePart
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** Properties of a FeatureSet. */
+        interface IFeatureSet {
+
+            /** FeatureSet fieldPresence */
+            fieldPresence?: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence|null);
+
+            /** FeatureSet enumType */
+            enumType?: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType|null);
+
+            /** FeatureSet repeatedFieldEncoding */
+            repeatedFieldEncoding?: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding|null);
+
+            /** FeatureSet utf8Validation */
+            utf8Validation?: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation|null);
+
+            /** FeatureSet messageEncoding */
+            messageEncoding?: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding|null);
+
+            /** FeatureSet jsonFormat */
+            jsonFormat?: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat|null);
+        }
+
+        /** Represents a FeatureSet. */
+        class FeatureSet implements IFeatureSet {
+
+            /**
+             * Constructs a new FeatureSet.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSet);
+
+            /** FeatureSet fieldPresence. */
+            public fieldPresence: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence);
+
+            /** FeatureSet enumType. */
+            public enumType: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType);
+
+            /** FeatureSet repeatedFieldEncoding. */
+            public repeatedFieldEncoding: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding);
+
+            /** FeatureSet utf8Validation. */
+            public utf8Validation: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation);
+
+            /** FeatureSet messageEncoding. */
+            public messageEncoding: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding);
+
+            /** FeatureSet jsonFormat. */
+            public jsonFormat: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat);
+
+            /**
+             * Creates a new FeatureSet instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSet instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSet): google.protobuf.FeatureSet;
+
+            /**
+             * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSet;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSet;
+
+            /**
+             * Verifies a FeatureSet message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSet
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSet;
+
+            /**
+             * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+             * @param message FeatureSet
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSet to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSet
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSet {
+
+            /** FieldPresence enum. */
+            enum FieldPresence {
+                FIELD_PRESENCE_UNKNOWN = 0,
+                EXPLICIT = 1,
+                IMPLICIT = 2,
+                LEGACY_REQUIRED = 3
+            }
+
+            /** EnumType enum. */
+            enum EnumType {
+                ENUM_TYPE_UNKNOWN = 0,
+                OPEN = 1,
+                CLOSED = 2
+            }
+
+            /** RepeatedFieldEncoding enum. */
+            enum RepeatedFieldEncoding {
+                REPEATED_FIELD_ENCODING_UNKNOWN = 0,
+                PACKED = 1,
+                EXPANDED = 2
+            }
+
+            /** Utf8Validation enum. */
+            enum Utf8Validation {
+                UTF8_VALIDATION_UNKNOWN = 0,
+                VERIFY = 2,
+                NONE = 3
+            }
+
+            /** MessageEncoding enum. */
+            enum MessageEncoding {
+                MESSAGE_ENCODING_UNKNOWN = 0,
+                LENGTH_PREFIXED = 1,
+                DELIMITED = 2
+            }
+
+            /** JsonFormat enum. */
+            enum JsonFormat {
+                JSON_FORMAT_UNKNOWN = 0,
+                ALLOW = 1,
+                LEGACY_BEST_EFFORT = 2
+            }
+        }
+
+        /** Properties of a FeatureSetDefaults. */
+        interface IFeatureSetDefaults {
+
+            /** FeatureSetDefaults defaults */
+            defaults?: (google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[]|null);
+
+            /** FeatureSetDefaults minimumEdition */
+            minimumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+            /** FeatureSetDefaults maximumEdition */
+            maximumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+        }
+
+        /** Represents a FeatureSetDefaults. */
+        class FeatureSetDefaults implements IFeatureSetDefaults {
+
+            /**
+             * Constructs a new FeatureSetDefaults.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSetDefaults);
+
+            /** FeatureSetDefaults defaults. */
+            public defaults: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[];
+
+            /** FeatureSetDefaults minimumEdition. */
+            public minimumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /** FeatureSetDefaults maximumEdition. */
+            public maximumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /**
+             * Creates a new FeatureSetDefaults instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSetDefaults instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSetDefaults): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Verifies a FeatureSetDefaults message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSetDefaults
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+             * @param message FeatureSetDefaults
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSetDefaults, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSetDefaults to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSetDefaults
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSetDefaults {
+
+            /** Properties of a FeatureSetEditionDefault. */
+            interface IFeatureSetEditionDefault {
+
+                /** FeatureSetEditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** FeatureSetEditionDefault features */
+                features?: (google.protobuf.IFeatureSet|null);
+            }
+
+            /** Represents a FeatureSetEditionDefault. */
+            class FeatureSetEditionDefault implements IFeatureSetEditionDefault {
+
+                /**
+                 * Constructs a new FeatureSetEditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault);
+
+                /** FeatureSetEditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** FeatureSetEditionDefault features. */
+                public features?: (google.protobuf.IFeatureSet|null);
+
+                /**
+                 * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns FeatureSetEditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Verifies a FeatureSetEditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns FeatureSetEditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                 * @param message FeatureSetEditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this FeatureSetEditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for FeatureSetEditionDefault
                  * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                  * @returns The default type url
                  */
@@ -20729,6 +26692,879 @@ export namespace google {
 
             /**
              * Gets the default type url for FieldMask
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DoubleValue. */
+        interface IDoubleValue {
+
+            /** DoubleValue value */
+            value?: (number|null);
+        }
+
+        /** Represents a DoubleValue. */
+        class DoubleValue implements IDoubleValue {
+
+            /**
+             * Constructs a new DoubleValue.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IDoubleValue);
+
+            /** DoubleValue value. */
+            public value: number;
+
+            /**
+             * Creates a new DoubleValue instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DoubleValue instance
+             */
+            public static create(properties?: google.protobuf.IDoubleValue): google.protobuf.DoubleValue;
+
+            /**
+             * Encodes the specified DoubleValue message. Does not implicitly {@link google.protobuf.DoubleValue.verify|verify} messages.
+             * @param message DoubleValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IDoubleValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DoubleValue message, length delimited. Does not implicitly {@link google.protobuf.DoubleValue.verify|verify} messages.
+             * @param message DoubleValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IDoubleValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DoubleValue message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DoubleValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.DoubleValue;
+
+            /**
+             * Decodes a DoubleValue message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DoubleValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.DoubleValue;
+
+            /**
+             * Verifies a DoubleValue message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DoubleValue message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DoubleValue
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.DoubleValue;
+
+            /**
+             * Creates a plain object from a DoubleValue message. Also converts values to other types if specified.
+             * @param message DoubleValue
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.DoubleValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DoubleValue to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DoubleValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a FloatValue. */
+        interface IFloatValue {
+
+            /** FloatValue value */
+            value?: (number|null);
+        }
+
+        /** Represents a FloatValue. */
+        class FloatValue implements IFloatValue {
+
+            /**
+             * Constructs a new FloatValue.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFloatValue);
+
+            /** FloatValue value. */
+            public value: number;
+
+            /**
+             * Creates a new FloatValue instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FloatValue instance
+             */
+            public static create(properties?: google.protobuf.IFloatValue): google.protobuf.FloatValue;
+
+            /**
+             * Encodes the specified FloatValue message. Does not implicitly {@link google.protobuf.FloatValue.verify|verify} messages.
+             * @param message FloatValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFloatValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FloatValue message, length delimited. Does not implicitly {@link google.protobuf.FloatValue.verify|verify} messages.
+             * @param message FloatValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFloatValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FloatValue message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FloatValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FloatValue;
+
+            /**
+             * Decodes a FloatValue message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FloatValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FloatValue;
+
+            /**
+             * Verifies a FloatValue message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FloatValue message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FloatValue
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FloatValue;
+
+            /**
+             * Creates a plain object from a FloatValue message. Also converts values to other types if specified.
+             * @param message FloatValue
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FloatValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FloatValue to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FloatValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an Int64Value. */
+        interface IInt64Value {
+
+            /** Int64Value value */
+            value?: (number|Long|string|null);
+        }
+
+        /** Represents an Int64Value. */
+        class Int64Value implements IInt64Value {
+
+            /**
+             * Constructs a new Int64Value.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IInt64Value);
+
+            /** Int64Value value. */
+            public value: (number|Long|string);
+
+            /**
+             * Creates a new Int64Value instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Int64Value instance
+             */
+            public static create(properties?: google.protobuf.IInt64Value): google.protobuf.Int64Value;
+
+            /**
+             * Encodes the specified Int64Value message. Does not implicitly {@link google.protobuf.Int64Value.verify|verify} messages.
+             * @param message Int64Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IInt64Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Int64Value message, length delimited. Does not implicitly {@link google.protobuf.Int64Value.verify|verify} messages.
+             * @param message Int64Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IInt64Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Int64Value message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Int64Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Int64Value;
+
+            /**
+             * Decodes an Int64Value message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Int64Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Int64Value;
+
+            /**
+             * Verifies an Int64Value message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Int64Value message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Int64Value
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.Int64Value;
+
+            /**
+             * Creates a plain object from an Int64Value message. Also converts values to other types if specified.
+             * @param message Int64Value
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.Int64Value, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Int64Value to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Int64Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a UInt64Value. */
+        interface IUInt64Value {
+
+            /** UInt64Value value */
+            value?: (number|Long|string|null);
+        }
+
+        /** Represents a UInt64Value. */
+        class UInt64Value implements IUInt64Value {
+
+            /**
+             * Constructs a new UInt64Value.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IUInt64Value);
+
+            /** UInt64Value value. */
+            public value: (number|Long|string);
+
+            /**
+             * Creates a new UInt64Value instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns UInt64Value instance
+             */
+            public static create(properties?: google.protobuf.IUInt64Value): google.protobuf.UInt64Value;
+
+            /**
+             * Encodes the specified UInt64Value message. Does not implicitly {@link google.protobuf.UInt64Value.verify|verify} messages.
+             * @param message UInt64Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IUInt64Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified UInt64Value message, length delimited. Does not implicitly {@link google.protobuf.UInt64Value.verify|verify} messages.
+             * @param message UInt64Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IUInt64Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a UInt64Value message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns UInt64Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.UInt64Value;
+
+            /**
+             * Decodes a UInt64Value message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns UInt64Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.UInt64Value;
+
+            /**
+             * Verifies a UInt64Value message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a UInt64Value message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns UInt64Value
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.UInt64Value;
+
+            /**
+             * Creates a plain object from a UInt64Value message. Also converts values to other types if specified.
+             * @param message UInt64Value
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.UInt64Value, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this UInt64Value to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for UInt64Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of an Int32Value. */
+        interface IInt32Value {
+
+            /** Int32Value value */
+            value?: (number|null);
+        }
+
+        /** Represents an Int32Value. */
+        class Int32Value implements IInt32Value {
+
+            /**
+             * Constructs a new Int32Value.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IInt32Value);
+
+            /** Int32Value value. */
+            public value: number;
+
+            /**
+             * Creates a new Int32Value instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Int32Value instance
+             */
+            public static create(properties?: google.protobuf.IInt32Value): google.protobuf.Int32Value;
+
+            /**
+             * Encodes the specified Int32Value message. Does not implicitly {@link google.protobuf.Int32Value.verify|verify} messages.
+             * @param message Int32Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IInt32Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Int32Value message, length delimited. Does not implicitly {@link google.protobuf.Int32Value.verify|verify} messages.
+             * @param message Int32Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IInt32Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Int32Value message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Int32Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.Int32Value;
+
+            /**
+             * Decodes an Int32Value message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Int32Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.Int32Value;
+
+            /**
+             * Verifies an Int32Value message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Int32Value message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Int32Value
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.Int32Value;
+
+            /**
+             * Creates a plain object from an Int32Value message. Also converts values to other types if specified.
+             * @param message Int32Value
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.Int32Value, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Int32Value to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Int32Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a UInt32Value. */
+        interface IUInt32Value {
+
+            /** UInt32Value value */
+            value?: (number|null);
+        }
+
+        /** Represents a UInt32Value. */
+        class UInt32Value implements IUInt32Value {
+
+            /**
+             * Constructs a new UInt32Value.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IUInt32Value);
+
+            /** UInt32Value value. */
+            public value: number;
+
+            /**
+             * Creates a new UInt32Value instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns UInt32Value instance
+             */
+            public static create(properties?: google.protobuf.IUInt32Value): google.protobuf.UInt32Value;
+
+            /**
+             * Encodes the specified UInt32Value message. Does not implicitly {@link google.protobuf.UInt32Value.verify|verify} messages.
+             * @param message UInt32Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IUInt32Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified UInt32Value message, length delimited. Does not implicitly {@link google.protobuf.UInt32Value.verify|verify} messages.
+             * @param message UInt32Value message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IUInt32Value, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a UInt32Value message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns UInt32Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.UInt32Value;
+
+            /**
+             * Decodes a UInt32Value message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns UInt32Value
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.UInt32Value;
+
+            /**
+             * Verifies a UInt32Value message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a UInt32Value message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns UInt32Value
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.UInt32Value;
+
+            /**
+             * Creates a plain object from a UInt32Value message. Also converts values to other types if specified.
+             * @param message UInt32Value
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.UInt32Value, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this UInt32Value to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for UInt32Value
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a BoolValue. */
+        interface IBoolValue {
+
+            /** BoolValue value */
+            value?: (boolean|null);
+        }
+
+        /** Represents a BoolValue. */
+        class BoolValue implements IBoolValue {
+
+            /**
+             * Constructs a new BoolValue.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IBoolValue);
+
+            /** BoolValue value. */
+            public value: boolean;
+
+            /**
+             * Creates a new BoolValue instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns BoolValue instance
+             */
+            public static create(properties?: google.protobuf.IBoolValue): google.protobuf.BoolValue;
+
+            /**
+             * Encodes the specified BoolValue message. Does not implicitly {@link google.protobuf.BoolValue.verify|verify} messages.
+             * @param message BoolValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IBoolValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified BoolValue message, length delimited. Does not implicitly {@link google.protobuf.BoolValue.verify|verify} messages.
+             * @param message BoolValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IBoolValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a BoolValue message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns BoolValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.BoolValue;
+
+            /**
+             * Decodes a BoolValue message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns BoolValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.BoolValue;
+
+            /**
+             * Verifies a BoolValue message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a BoolValue message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns BoolValue
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.BoolValue;
+
+            /**
+             * Creates a plain object from a BoolValue message. Also converts values to other types if specified.
+             * @param message BoolValue
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.BoolValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this BoolValue to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for BoolValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a StringValue. */
+        interface IStringValue {
+
+            /** StringValue value */
+            value?: (string|null);
+        }
+
+        /** Represents a StringValue. */
+        class StringValue implements IStringValue {
+
+            /**
+             * Constructs a new StringValue.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IStringValue);
+
+            /** StringValue value. */
+            public value: string;
+
+            /**
+             * Creates a new StringValue instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns StringValue instance
+             */
+            public static create(properties?: google.protobuf.IStringValue): google.protobuf.StringValue;
+
+            /**
+             * Encodes the specified StringValue message. Does not implicitly {@link google.protobuf.StringValue.verify|verify} messages.
+             * @param message StringValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IStringValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified StringValue message, length delimited. Does not implicitly {@link google.protobuf.StringValue.verify|verify} messages.
+             * @param message StringValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IStringValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a StringValue message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns StringValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.StringValue;
+
+            /**
+             * Decodes a StringValue message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns StringValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.StringValue;
+
+            /**
+             * Verifies a StringValue message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a StringValue message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns StringValue
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.StringValue;
+
+            /**
+             * Creates a plain object from a StringValue message. Also converts values to other types if specified.
+             * @param message StringValue
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.StringValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this StringValue to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for StringValue
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a BytesValue. */
+        interface IBytesValue {
+
+            /** BytesValue value */
+            value?: (Uint8Array|string|null);
+        }
+
+        /** Represents a BytesValue. */
+        class BytesValue implements IBytesValue {
+
+            /**
+             * Constructs a new BytesValue.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IBytesValue);
+
+            /** BytesValue value. */
+            public value: (Uint8Array|string);
+
+            /**
+             * Creates a new BytesValue instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns BytesValue instance
+             */
+            public static create(properties?: google.protobuf.IBytesValue): google.protobuf.BytesValue;
+
+            /**
+             * Encodes the specified BytesValue message. Does not implicitly {@link google.protobuf.BytesValue.verify|verify} messages.
+             * @param message BytesValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IBytesValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified BytesValue message, length delimited. Does not implicitly {@link google.protobuf.BytesValue.verify|verify} messages.
+             * @param message BytesValue message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IBytesValue, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a BytesValue message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns BytesValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.BytesValue;
+
+            /**
+             * Decodes a BytesValue message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns BytesValue
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.BytesValue;
+
+            /**
+             * Verifies a BytesValue message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a BytesValue message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns BytesValue
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.BytesValue;
+
+            /**
+             * Creates a plain object from a BytesValue message. Also converts values to other types if specified.
+             * @param message BytesValue
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.BytesValue, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this BytesValue to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for BytesValue
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */
@@ -21814,6 +28650,113 @@ export namespace google {
 
             /**
              * Gets the default type url for Status
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+    }
+
+    /** Namespace type. */
+    namespace type {
+
+        /** Properties of an Interval. */
+        interface IInterval {
+
+            /** Interval startTime */
+            startTime?: (google.protobuf.ITimestamp|null);
+
+            /** Interval endTime */
+            endTime?: (google.protobuf.ITimestamp|null);
+        }
+
+        /** Represents an Interval. */
+        class Interval implements IInterval {
+
+            /**
+             * Constructs a new Interval.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.type.IInterval);
+
+            /** Interval startTime. */
+            public startTime?: (google.protobuf.ITimestamp|null);
+
+            /** Interval endTime. */
+            public endTime?: (google.protobuf.ITimestamp|null);
+
+            /**
+             * Creates a new Interval instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Interval instance
+             */
+            public static create(properties?: google.type.IInterval): google.type.Interval;
+
+            /**
+             * Encodes the specified Interval message. Does not implicitly {@link google.type.Interval.verify|verify} messages.
+             * @param message Interval message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.type.IInterval, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Interval message, length delimited. Does not implicitly {@link google.type.Interval.verify|verify} messages.
+             * @param message Interval message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.type.IInterval, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Interval message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Interval
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.type.Interval;
+
+            /**
+             * Decodes an Interval message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Interval
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.type.Interval;
+
+            /**
+             * Verifies an Interval message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Interval message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Interval
+             */
+            public static fromObject(object: { [k: string]: any }): google.type.Interval;
+
+            /**
+             * Creates a plain object from an Interval message. Also converts values to other types if specified.
+             * @param message Interval
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.type.Interval, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Interval to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Interval
              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
              * @returns The default type url
              */

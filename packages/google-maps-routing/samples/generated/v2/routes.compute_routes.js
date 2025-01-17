@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ function main(origin, destination) {
    *  for either stopping at or passing by. Up to 25 intermediate waypoints are
    *  supported.
    */
-  // const intermediates = 1234
+  // const intermediates = [1,2,3,4]
   /**
    *  Optional. Specifies the mode of transportation.
    */
@@ -64,10 +64,22 @@ function main(origin, destination) {
   // const polylineEncoding = {}
   /**
    *  Optional. The departure time. If you don't set this value, then this value
-   *  defaults to the time that you made the request. If you set this value to a
-   *  time that has already occurred, then the request fails.
+   *  defaults to the time that you made the request.
+   *  NOTE: You can only specify a `departure_time` in the past when
+   *  `RouteTravelMode` google.maps.routing.v2.RouteTravelMode  is set to
+   *  `TRANSIT`. Transit trips are available for up to 7 days in the past or 100
+   *  days in the future.
    */
   // const departureTime = {}
+  /**
+   *  Optional. The arrival time.
+   *  NOTE: Can only be set when
+   *  RouteTravelMode google.maps.routing.v2.RouteTravelMode  is set to
+   *  `TRANSIT`. You can specify either `departure_time` or `arrival_time`, but
+   *  not both. Transit trips are available for up to 7 days in the past or 100
+   *  days in the future.
+   */
+  // const arrivalTime = {}
   /**
    *  Optional. Specifies whether to calculate alternate routes in addition to
    *  the route. No alternative routes are returned for requests that have
@@ -81,43 +93,82 @@ function main(origin, destination) {
   // const routeModifiers = {}
   /**
    *  Optional. The BCP-47 language code, such as "en-US" or "sr-Latn". For more
-   *  information, see
-   *  http://www.unicode.org/reports/tr35/#Unicode_locale_identifier. See
-   *  Language Support (https://developers.google.com/maps/faq#languagesupport)
+   *  information, see Unicode Locale
+   *  Identifier (http://www.unicode.org/reports/tr35/#Unicode_locale_identifier).
+   *  See Language
+   *  Support (https://developers.google.com/maps/faq#languagesupport)
    *  for the list of supported languages. When you don't provide this value, the
    *  display language is inferred from the location of the route request.
    */
   // const languageCode = 'abc123'
   /**
    *  Optional. The region code, specified as a ccTLD ("top-level domain")
-   *  two-character value. For more information see
-   *  https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains
+   *  two-character value. For more information see Country code top-level
+   *  domains (https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Country_code_top-level_domains).
    */
   // const regionCode = 'abc123'
   /**
-   *  Optional. Specifies the units of measure for the display fields. This
-   *  includes the `instruction` field in
-   *  NavigationInstruction google.maps.routing.v2.NavigationInstruction. The
-   *  units of measure used for the route, leg, step distance, and duration are
-   *  not affected by this value. If you don't provide this value, then the
-   *  display units are inferred from the location of the request.
+   *  Optional. Specifies the units of measure for the display fields. These
+   *  fields include the `instruction` field in
+   *  `NavigationInstruction` google.maps.routing.v2.NavigationInstruction.
+   *  The units of measure used for the route, leg, step distance, and duration
+   *  are not affected by this value. If you don't provide this value, then the
+   *  display units are inferred from the location of the first origin.
    */
   // const units = {}
+  /**
+   *  Optional. If set to true, the service attempts to minimize the overall cost
+   *  of the route by re-ordering the specified intermediate waypoints. The
+   *  request fails if any of the intermediate waypoints is a `via` waypoint. Use
+   *  `ComputeRoutesResponse.Routes.optimized_intermediate_waypoint_index` to
+   *  find the new ordering.
+   *  If `ComputeRoutesResponseroutes.optimized_intermediate_waypoint_index` is
+   *  not requested in the `X-Goog-FieldMask` header, the request fails.
+   *  If `optimize_waypoint_order` is set to false,
+   *  `ComputeRoutesResponse.optimized_intermediate_waypoint_index` will be
+   *  empty.
+   */
+  // const optimizeWaypointOrder = true
   /**
    *  Optional. Specifies what reference routes to calculate as part of the
    *  request in addition to the default route. A reference route is a route with
    *  a different route calculation objective than the default route. For example
    *  a `FUEL_EFFICIENT` reference route calculation takes into account various
-   *  parameters that would generate an optimal fuel efficient route.
+   *  parameters that would generate an optimal fuel efficient route. When using
+   *  this feature, look for
+   *  `route_labels` google.maps.routing.v2.Route.route_labels  on the
+   *  resulting routes.
    */
-  // const requestedReferenceRoutes = 1234
+  // const requestedReferenceRoutes = [1,2,3,4]
   /**
    *  Optional. A list of extra computations which may be used to complete the
    *  request. Note: These extra computations may return extra fields on the
    *  response. These extra fields must also be specified in the field mask to be
    *  returned in the response.
    */
-  // const extraComputations = 1234
+  // const extraComputations = [1,2,3,4]
+  /**
+   *  Optional. Specifies the assumptions to use when calculating time in
+   *  traffic. This setting affects the value returned in the duration field in
+   *  the
+   *  `Route` google.maps.routing.v2.Route  and
+   *  `RouteLeg` google.maps.routing.v2.RouteLeg  which contains the predicted
+   *  time in traffic based on historical averages.
+   *  `TrafficModel` is only available for requests that have set
+   *  `RoutingPreference` google.maps.routing.v2.RoutingPreference  to
+   *  `TRAFFIC_AWARE_OPTIMAL` and
+   *  `RouteTravelMode` google.maps.routing.v2.RouteTravelMode  to `DRIVE`.
+   *  Defaults to `BEST_GUESS` if traffic is requested and `TrafficModel` is not
+   *  specified.
+   */
+  // const trafficModel = {}
+  /**
+   *  Optional. Specifies preferences that influence the route returned for
+   *  `TRANSIT` routes. NOTE: You can only specify a `transit_preferences` when
+   *  `RouteTravelMode` google.maps.routing.v2.RouteTravelMode  is set to
+   *  `TRANSIT`.
+   */
+  // const transitPreferences = {}
 
   // Imports the Routing library
   const {RoutesClient} = require('@googlemaps/routing').v2;

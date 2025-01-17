@@ -1,5 +1,89 @@
 # Changelog
 
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/channel-v3.5.0...channel-v3.6.0) (2024-10-10)
+
+
+### Features
+
+* [channel] Add support for primary_admin_email as customer_identity for ImportCustomer ([#5736](https://github.com/googleapis/google-cloud-node/issues/5736)) ([8c61279](https://github.com/googleapis/google-cloud-node/commit/8c6127917d14c6d06c56f1061a5ac293d333f397))
+* Add support for importing team customer from a different reseller ([8c61279](https://github.com/googleapis/google-cloud-node/commit/8c6127917d14c6d06c56f1061a5ac293d333f397))
+* Add support to look up team customer Cloud Identity information ([8c61279](https://github.com/googleapis/google-cloud-node/commit/8c6127917d14c6d06c56f1061a5ac293d333f397))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/channel-v3.4.0...channel-v3.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/channel-v3.3.0...channel-v3.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5187](https://github.com/googleapis/google-cloud-node/issues/5187)) ([1952fbe](https://github.com/googleapis/google-cloud-node/commit/1952fbe432b96115278d42e5c1dbdbc7de39036b))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/channel-v3.2.1...channel-v3.3.0) (2024-02-09)
+
+
+### Features
+
+* Support for Trusted Private Cloud ([895830a](https://github.com/googleapis/google-cloud-node/commit/895830a3ef91666c30a96a7f68bd4cd1f582d58d))
+
+## [3.2.1](https://github.com/googleapis/google-cloud-node/compare/channel-v3.2.0...channel-v3.2.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* [Many APIs] improve retry logic for streaming API calls ([#4963](https://github.com/googleapis/google-cloud-node/issues/4963)) ([4292a43](https://github.com/googleapis/google-cloud-node/commit/4292a438a9a458e43fbe032f2bab8c11bf51867a))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/channel-v3.1.0...channel-v3.2.0) (2024-01-05)
+
+
+### Features
+
+* [channel] `CloudChannelReportsService` is deprecated ([#4903](https://github.com/googleapis/google-cloud-node/issues/4903)) ([64a2e41](https://github.com/googleapis/google-cloud-node/commit/64a2e4179a393e34a235ff6b4ece0880fcf625dd))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/channel-v3.0.1...channel-v3.1.0) (2023-09-11)
+
+
+### Features
+
+* [channel] mark ChannelPartnerGranularity as deprecated and offer alternatives ([#4623](https://github.com/googleapis/google-cloud-node/issues/4623)) ([0805d0f](https://github.com/googleapis/google-cloud-node/commit/0805d0f4417a853f5c0f365f357f078f8c481c17))
+
+## [3.0.1](https://github.com/googleapis/google-cloud-node/compare/channel-v3.0.0...channel-v3.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4584](https://github.com/googleapis/google-cloud-node/issues/4584)) ([13537fc](https://github.com/googleapis/google-cloud-node/commit/13537fcd6e3c552199d5057daf3b00c24033c908))
+* **deps:** Update dependency @google-cloud/local-auth to v3 ([#4546](https://github.com/googleapis/google-cloud-node/issues/4546)) ([f2beef4](https://github.com/googleapis/google-cloud-node/commit/f2beef407ce694af7133d0013221c11e7f093a59))
+* **deps:** Update dependency google-auth-library to v9 ([#4560](https://github.com/googleapis/google-cloud-node/issues/4560)) ([e5099b7](https://github.com/googleapis/google-cloud-node/commit/e5099b7a475e0cfaf0d25aa8d6755cd7bc43cbe0))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/channel-v2.8.0...channel-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4460](https://github.com/googleapis/google-cloud-node/issues/4460)) ([c32965c](https://github.com/googleapis/google-cloud-node/commit/c32965c0c4a5975ba37371ecd819d9cffb080aa5))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [2.8.0](https://github.com/googleapis/google-cloud-node/compare/channel-v2.7.0...channel-v2.8.0) (2023-06-28)
+
+
+### Features
+
+* [channel] Add support for ListSkuGroups and ListSkuGroupBillableSkus APIs in Cloud Channel APIs ([#4348](https://github.com/googleapis/google-cloud-node/issues/4348)) ([926d727](https://github.com/googleapis/google-cloud-node/commit/926d727f25951f9199e3f02d419a41dbb8e1c824))
+
 ## [2.7.0](https://github.com/googleapis/google-cloud-node/compare/channel-v2.6.0...channel-v2.7.0) (2023-05-20)
 
 

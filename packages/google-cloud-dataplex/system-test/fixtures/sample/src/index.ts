@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,13 +17,18 @@
 // ** All changes to this file may be overwritten. **
 
 import {
+  CatalogServiceClient,
   ContentServiceClient,
   DataplexServiceClient,
   DataScanServiceClient,
+  DataTaxonomyServiceClient,
   MetadataServiceClient,
 } from '@google-cloud/dataplex';
 
 // check that the client class type name can be used
+function doStuffWithCatalogServiceClient(client: CatalogServiceClient) {
+  client.close();
+}
 function doStuffWithContentServiceClient(client: ContentServiceClient) {
   client.close();
 }
@@ -33,11 +38,19 @@ function doStuffWithDataplexServiceClient(client: DataplexServiceClient) {
 function doStuffWithDataScanServiceClient(client: DataScanServiceClient) {
   client.close();
 }
+function doStuffWithDataTaxonomyServiceClient(
+  client: DataTaxonomyServiceClient
+) {
+  client.close();
+}
 function doStuffWithMetadataServiceClient(client: MetadataServiceClient) {
   client.close();
 }
 
 function main() {
+  // check that the client instance can be created
+  const catalogServiceClient = new CatalogServiceClient();
+  doStuffWithCatalogServiceClient(catalogServiceClient);
   // check that the client instance can be created
   const contentServiceClient = new ContentServiceClient();
   doStuffWithContentServiceClient(contentServiceClient);
@@ -47,6 +60,9 @@ function main() {
   // check that the client instance can be created
   const dataScanServiceClient = new DataScanServiceClient();
   doStuffWithDataScanServiceClient(dataScanServiceClient);
+  // check that the client instance can be created
+  const dataTaxonomyServiceClient = new DataTaxonomyServiceClient();
+  doStuffWithDataTaxonomyServiceClient(dataTaxonomyServiceClient);
   // check that the client instance can be created
   const metadataServiceClient = new MetadataServiceClient();
   doStuffWithMetadataServiceClient(metadataServiceClient);

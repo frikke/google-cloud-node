@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ function main(parent) {
   /**
    *  Required. The name of the environment to retrieve history for.
    *  Supported formats:
-   *  - `projects/<Project Number / ID>/agent/environments/<Environment ID>`
-   *  - `projects/<Project Number / ID>/locations/<Location
+   *  - `projects/<Project ID>/agent/environments/<Environment ID>`
+   *  - `projects/<Project ID>/locations/<Location
    *    ID>/agent/environments/<Environment ID>`
    */
   // const parent = 'abc123'
@@ -59,7 +59,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await dialogflowClient.getEnvironmentHistoryAsync(request);
+    const iterable = dialogflowClient.getEnvironmentHistoryAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

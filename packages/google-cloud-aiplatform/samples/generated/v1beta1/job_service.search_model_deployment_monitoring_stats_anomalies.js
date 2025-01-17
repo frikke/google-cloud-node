@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ function main(modelDeploymentMonitoringJob, deployedModelId, objectives) {
   /**
    *  Required. Objectives of the stats to retrieve.
    */
-  // const objectives = 1234
+  // const objectives = [1,2,3,4]
   /**
    *  The standard list page size.
    */
@@ -86,7 +86,7 @@ function main(modelDeploymentMonitoringJob, deployedModelId, objectives) {
     };
 
     // Run request
-    const iterable = await aiplatformClient.searchModelDeploymentMonitoringStatsAnomaliesAsync(request);
+    const iterable = aiplatformClient.searchModelDeploymentMonitoringStatsAnomaliesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

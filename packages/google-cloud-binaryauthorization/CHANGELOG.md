@@ -1,5 +1,76 @@
 # Changelog
 
+## [3.7.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.6.0...binary-authorization-v3.7.0) (2024-08-09)
+
+
+### Features
+
+* [binaryauthorization] A new field `version` is added to message `.grafeas.v1.ComplianceOccurrence` ([#5587](https://github.com/googleapis/google-cloud-node/issues/5587)) ([1526ce6](https://github.com/googleapis/google-cloud-node/commit/1526ce64fee4c45b7a047aa8c1f94719744b68e4))
+
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.5.0...binary-authorization-v3.6.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.4.0...binary-authorization-v3.5.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5187](https://github.com/googleapis/google-cloud-node/issues/5187)) ([1952fbe](https://github.com/googleapis/google-cloud-node/commit/1952fbe432b96115278d42e5c1dbdbc7de39036b))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.3.0...binary-authorization-v3.4.0) (2024-03-23)
+
+
+### Features
+
+* [binaryauthorization] A new field `in_toto_slsa_provenance_v1` is added to message `BuildOccurrence` ([#5135](https://github.com/googleapis/google-cloud-node/issues/5135)) ([fbc2b48](https://github.com/googleapis/google-cloud-node/commit/fbc2b487f1f2c3eb9f7e95187e6acb28522b6753))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.2.0...binary-authorization-v3.3.0) (2024-02-09)
+
+
+### Features
+
+* Support for Trusted Private Cloud ([895830a](https://github.com/googleapis/google-cloud-node/commit/895830a3ef91666c30a96a7f68bd4cd1f582d58d))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.1.0...binary-authorization-v3.2.0) (2023-11-30)
+
+
+### Features
+
+* [binaryauthorization] add container_name, container_type fields to Continuous Validation Logs ([#4848](https://github.com/googleapis/google-cloud-node/issues/4848)) ([a3d7006](https://github.com/googleapis/google-cloud-node/commit/a3d7006c6b9897021df87d23c3f6265bcc623145))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v3.0.0...binary-authorization-v3.1.0) (2023-09-06)
+
+
+### Features
+
+* [binaryauthorization] Adds support for check-based platform policy evaluation to Binary Authorization Continuous Validation logs ([#4555](https://github.com/googleapis/google-cloud-node/issues/4555)) ([844ffbc](https://github.com/googleapis/google-cloud-node/commit/844ffbc2f828a2f19081a3761b90b0fb4428e564))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4584](https://github.com/googleapis/google-cloud-node/issues/4584)) ([13537fc](https://github.com/googleapis/google-cloud-node/commit/13537fcd6e3c552199d5057daf3b00c24033c908))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v2.5.0...binary-authorization-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4460](https://github.com/googleapis/google-cloud-node/issues/4460)) ([c32965c](https://github.com/googleapis/google-cloud-node/commit/c32965c0c4a5975ba37371ecd819d9cffb080aa5))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [2.5.0](https://github.com/googleapis/google-cloud-node/compare/binary-authorization-v2.4.0...binary-authorization-v2.5.0) (2023-04-13)
 
 

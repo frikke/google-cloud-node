@@ -4,6 +4,84 @@
 
 [1]: https://www.npmjs.com/package/@google-cloud/containeranalysis?activeTab=versions
 
+## [5.6.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.5.0...containeranalysis-v5.6.0) (2024-08-09)
+
+
+### Features
+
+* [containeranalysis] A new field `version` is added to message `.grafeas.v1.ComplianceOccurrence` ([#5586](https://github.com/googleapis/google-cloud-node/issues/5586)) ([f60f2f9](https://github.com/googleapis/google-cloud-node/commit/f60f2f901ce9aa4e51237246f359a6acf7f3d5b1))
+
+## [5.5.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.4.0...containeranalysis-v5.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [5.4.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.3.0...containeranalysis-v5.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5192](https://github.com/googleapis/google-cloud-node/issues/5192)) ([b926f13](https://github.com/googleapis/google-cloud-node/commit/b926f1326ea4df73c411dbeb7e529f8d9ccc3642))
+
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.2.0...containeranalysis-v5.3.0) (2024-03-23)
+
+
+### Features
+
+* [containeranalysis] A new field `in_toto_slsa_provenance_v1` is added to message `BuildOccurrence` ([#5134](https://github.com/googleapis/google-cloud-node/issues/5134)) ([e15c0fa](https://github.com/googleapis/google-cloud-node/commit/e15c0fa84d38e7bfd1e1ff2551b6b39ccbbd8554))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.1.1...containeranalysis-v5.2.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5029](https://github.com/googleapis/google-cloud-node/issues/5029)) ([09e59ad](https://github.com/googleapis/google-cloud-node/commit/09e59ad6e34001a33d01894ccd5a0643f1a84883))
+
+## [5.1.1](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.1.0...containeranalysis-v5.1.1) (2023-09-11)
+
+
+### Bug Fixes
+
+* Publication issues with containeranalysis and policytroubleshooter ([#4628](https://github.com/googleapis/google-cloud-node/issues/4628)) ([2ba7b48](https://github.com/googleapis/google-cloud-node/commit/2ba7b489e6109e5bf3d5e7276a0b94558ebd48d0))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.0.1...containeranalysis-v5.1.0) (2023-09-06)
+
+
+### Features
+
+* [containeranalysis] add ExportSBOM API method ([#4607](https://github.com/googleapis/google-cloud-node/issues/4607)) ([8443053](https://github.com/googleapis/google-cloud-node/commit/8443053fb025ea54d4381e622684776b99b8081c))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4589](https://github.com/googleapis/google-cloud-node/issues/4589)) ([07967ad](https://github.com/googleapis/google-cloud-node/commit/07967add1b5fc28b548cf74721b595ea0ba90d5b))
+
+## [5.0.1](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v5.0.0...containeranalysis-v5.0.1) (2023-08-09)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency @google-cloud/grafeas to v5 ([#4512](https://github.com/googleapis/google-cloud-node/issues/4512)) ([10458cd](https://github.com/googleapis/google-cloud-node/commit/10458cd35c9083c6c94d320a32d858aa4321a4aa))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v4.7.0...containeranalysis-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4464](https://github.com/googleapis/google-cloud-node/issues/4464)) ([c909357](https://github.com/googleapis/google-cloud-node/commit/c90935765ceee0eea6b9ce21a151707df142cf7d))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [4.7.0](https://github.com/googleapis/google-cloud-node/compare/containeranalysis-v4.6.1...containeranalysis-v4.7.0) (2023-04-24)
 
 

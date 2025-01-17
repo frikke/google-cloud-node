@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ function main() {
   /**
    *  The runtime parameters to pass to the job.
    */
-  // const parameters = 1234
+  // const parameters = [1,2,3,4]
   /**
    *  The runtime environment for the job.
    */

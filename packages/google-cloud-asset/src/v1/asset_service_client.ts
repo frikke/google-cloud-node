@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/asset_service_client_config.json`.
@@ -52,6 +53,8 @@ export class AssetServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -93,8 +96,7 @@ export class AssetServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -102,7 +104,7 @@ export class AssetServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new AssetServiceClient({fallback: 'rest'}, gax);
+   *     const client = new AssetServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -111,8 +113,27 @@ export class AssetServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof AssetServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'cloudasset.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -127,7 +148,7 @@ export class AssetServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -152,23 +173,23 @@ export class AssetServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -265,7 +286,7 @@ export class AssetServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -415,19 +436,50 @@ export class AssetServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudasset.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudasset.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -519,9 +571,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.BatchGetAssetsHistoryResponse | BatchGetAssetsHistoryResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.BatchGetAssetsHistoryResponse|BatchGetAssetsHistoryResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.batch_get_assets_history.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_BatchGetAssetsHistory_async
@@ -533,7 +584,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IBatchGetAssetsHistoryResponse,
       protos.google.cloud.asset.v1.IBatchGetAssetsHistoryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchGetAssetsHistory(
@@ -579,7 +630,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IBatchGetAssetsHistoryResponse,
       protos.google.cloud.asset.v1.IBatchGetAssetsHistoryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -623,9 +674,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.Feed | Feed}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.Feed|Feed}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.create_feed.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_CreateFeed_async
@@ -637,7 +687,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IFeed,
       protos.google.cloud.asset.v1.ICreateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createFeed(
@@ -675,7 +725,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IFeed,
       protos.google.cloud.asset.v1.ICreateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -709,9 +759,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.Feed | Feed}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.Feed|Feed}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.get_feed.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_GetFeed_async
@@ -723,7 +772,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IFeed,
       protos.google.cloud.asset.v1.IGetFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getFeed(
@@ -761,7 +810,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IFeed,
       protos.google.cloud.asset.v1.IGetFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -794,9 +843,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.ListFeedsResponse | ListFeedsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.ListFeedsResponse|ListFeedsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.list_feeds.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_ListFeeds_async
@@ -808,7 +856,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IListFeedsResponse,
       protos.google.cloud.asset.v1.IListFeedsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   listFeeds(
@@ -846,7 +894,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IListFeedsResponse,
       protos.google.cloud.asset.v1.IListFeedsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -885,9 +933,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.Feed | Feed}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.Feed|Feed}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.update_feed.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_UpdateFeed_async
@@ -899,7 +946,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IFeed,
       protos.google.cloud.asset.v1.IUpdateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateFeed(
@@ -937,7 +984,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IFeed,
       protos.google.cloud.asset.v1.IUpdateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -971,9 +1018,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.delete_feed.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_DeleteFeed_async
@@ -985,7 +1031,7 @@ export class AssetServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.asset.v1.IDeleteFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteFeed(
@@ -1023,7 +1069,7 @@ export class AssetServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.asset.v1.IDeleteFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1062,7 +1108,7 @@ export class AssetServiceClient {
    *   If both `analysis_query` and `saved_analysis_query` are provided, they
    *   will be merged together with the `saved_analysis_query` as base and
    *   the `analysis_query` as overrides. For more details of the merge behavior,
-   *   please refer to the
+   *   refer to the
    *   [MergeFrom](https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message#Message.MergeFrom.details)
    *   page.
    *
@@ -1084,9 +1130,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.AnalyzeIamPolicyResponse | AnalyzeIamPolicyResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.AnalyzeIamPolicyResponse|AnalyzeIamPolicyResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_iam_policy.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeIamPolicy_async
@@ -1098,7 +1143,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IAnalyzeIamPolicyResponse,
       protos.google.cloud.asset.v1.IAnalyzeIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   analyzeIamPolicy(
@@ -1138,7 +1183,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IAnalyzeIamPolicyResponse,
       protos.google.cloud.asset.v1.IAnalyzeIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1185,9 +1230,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.AnalyzeMoveResponse | AnalyzeMoveResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.AnalyzeMoveResponse|AnalyzeMoveResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_move.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeMove_async
@@ -1199,7 +1243,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IAnalyzeMoveResponse,
       protos.google.cloud.asset.v1.IAnalyzeMoveRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   analyzeMove(
@@ -1237,7 +1281,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IAnalyzeMoveResponse,
       protos.google.cloud.asset.v1.IAnalyzeMoveRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1260,8 +1304,7 @@ export class AssetServiceClient {
   }
   /**
    * Issue a job that queries assets using a SQL statement compatible with
-   * [BigQuery Standard
-   * SQL](http://cloud/bigquery/docs/reference/standard-sql/enabling-standard-sql).
+   * [BigQuery SQL](https://cloud.google.com/bigquery/docs/introduction-sql).
    *
    * If the query execution finishes within timeout and there's no pagination,
    * the full query results will be returned in the `QueryAssetsResponse`.
@@ -1270,9 +1313,8 @@ export class AssetServiceClient {
    * with the `job_reference` from the a previous `QueryAssets` call.
    *
    * Note, the query result has approximately 10 GB limitation enforced by
-   * BigQuery
-   * https://cloud.google.com/bigquery/docs/best-practices-performance-output,
-   * queries return larger results will result in errors.
+   * [BigQuery](https://cloud.google.com/bigquery/docs/best-practices-performance-output).
+   * Queries return larger results will result in errors.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1284,8 +1326,8 @@ export class AssetServiceClient {
    *
    *   Only assets belonging to the `parent` will be returned.
    * @param {string} [request.statement]
-   *   Optional. A SQL statement that's compatible with [BigQuery Standard
-   *   SQL](http://cloud/bigquery/docs/reference/standard-sql/enabling-standard-sql).
+   *   Optional. A SQL statement that's compatible with [BigQuery
+   *   SQL](https://cloud.google.com/bigquery/docs/introduction-sql).
    * @param {string} [request.jobReference]
    *   Optional. Reference to the query job, which is from the
    *   `QueryAssetsResponse` of previous `QueryAssets` call.
@@ -1335,9 +1377,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.QueryAssetsResponse | QueryAssetsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.QueryAssetsResponse|QueryAssetsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.query_assets.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_QueryAssets_async
@@ -1349,7 +1390,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IQueryAssetsResponse,
       protos.google.cloud.asset.v1.IQueryAssetsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   queryAssets(
@@ -1387,7 +1428,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IQueryAssetsResponse,
       protos.google.cloud.asset.v1.IQueryAssetsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1428,16 +1469,15 @@ export class AssetServiceClient {
    *   resource name.
    *
    *   This value should be 4-63 characters, and valid characters
-   *   are `{@link 0-9|a-z}-`.
+   *   are `{@link protos.0-9|a-z}-`.
    *
    *   Notice that this field is required in the saved query creation, and the
    *   `name` field of the `saved_query` will be ignored.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.SavedQuery | SavedQuery}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.SavedQuery|SavedQuery}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.create_saved_query.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_CreateSavedQuery_async
@@ -1449,7 +1489,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery,
       protos.google.cloud.asset.v1.ICreateSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createSavedQuery(
@@ -1489,7 +1529,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery,
       protos.google.cloud.asset.v1.ICreateSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1524,9 +1564,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.SavedQuery | SavedQuery}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.SavedQuery|SavedQuery}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.get_saved_query.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_GetSavedQuery_async
@@ -1538,7 +1577,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery,
       protos.google.cloud.asset.v1.IGetSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getSavedQuery(
@@ -1576,7 +1615,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery,
       protos.google.cloud.asset.v1.IGetSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1616,9 +1655,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.SavedQuery | SavedQuery}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.SavedQuery|SavedQuery}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.update_saved_query.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_UpdateSavedQuery_async
@@ -1630,7 +1668,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery,
       protos.google.cloud.asset.v1.IUpdateSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateSavedQuery(
@@ -1670,7 +1708,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery,
       protos.google.cloud.asset.v1.IUpdateSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1706,9 +1744,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.delete_saved_query.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_DeleteSavedQuery_async
@@ -1720,7 +1757,7 @@ export class AssetServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.asset.v1.IDeleteSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteSavedQuery(
@@ -1760,7 +1797,7 @@ export class AssetServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.asset.v1.IDeleteSavedQueryRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1793,23 +1830,22 @@ export class AssetServiceClient {
    *   folder number (such as "folders/123"), a project ID (such as
    *   "projects/my-project-id"), or a project number (such as "projects/12345").
    *
-   *   To know how to get organization id, visit [here
+   *   To know how to get organization ID, visit [here
    *   ](https://cloud.google.com/resource-manager/docs/creating-managing-organization#retrieving_your_organization_id).
    *
-   *   To know how to get folder or project id, visit [here
+   *   To know how to get folder or project ID, visit [here
    *   ](https://cloud.google.com/resource-manager/docs/creating-managing-folders#viewing_or_listing_folders_and_projects).
    * @param {string[]} request.names
    *   Required. The names refer to the [full_resource_names]
    *   (https://cloud.google.com/asset-inventory/docs/resource-name-format)
-   *   of [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   of the asset types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types).
    *   A maximum of 20 resources' effective policies can be retrieved in a batch.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1.BatchGetEffectiveIamPoliciesResponse | BatchGetEffectiveIamPoliciesResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1.BatchGetEffectiveIamPoliciesResponse|BatchGetEffectiveIamPoliciesResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.batch_get_effective_iam_policies.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_BatchGetEffectiveIamPolicies_async
@@ -1824,7 +1860,7 @@ export class AssetServiceClient {
         | protos.google.cloud.asset.v1.IBatchGetEffectiveIamPoliciesRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchGetEffectiveIamPolicies(
@@ -1873,7 +1909,7 @@ export class AssetServiceClient {
         | protos.google.cloud.asset.v1.IBatchGetEffectiveIamPoliciesRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1903,10 +1939,10 @@ export class AssetServiceClient {
    * Exports assets with time and resource types to a given Cloud Storage
    * location/BigQuery table. For Cloud Storage location destinations, the
    * output format is newline-delimited JSON. Each line represents a
-   * {@link google.cloud.asset.v1.Asset|google.cloud.asset.v1.Asset} in the JSON
+   * {@link protos.google.cloud.asset.v1.Asset|google.cloud.asset.v1.Asset} in the JSON
    * format; for BigQuery table destinations, the output table stores the fields
    * in asset Protobuf as columns. This API implements the
-   * {@link google.longrunning.Operation|google.longrunning.Operation} API, which
+   * {@link protos.google.longrunning.Operation|google.longrunning.Operation} API, which
    * allows you to keep track of the export. We recommend intervals of at least
    * 2 seconds with exponential retry to poll the export operation result. For
    * regular-size resource parent, the export operation usually finishes within
@@ -1972,8 +2008,7 @@ export class AssetServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.export_assets.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_ExportAssets_async
@@ -1988,7 +2023,7 @@ export class AssetServiceClient {
         protos.google.cloud.asset.v1.IExportAssetsRequest
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   exportAssets(
@@ -2041,7 +2076,7 @@ export class AssetServiceClient {
         protos.google.cloud.asset.v1.IExportAssetsRequest
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2068,8 +2103,7 @@ export class AssetServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.export_assets.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_ExportAssets_async
@@ -2102,9 +2136,9 @@ export class AssetServiceClient {
    * accesses on which resources, and writes the analysis results to a Google
    * Cloud Storage or a BigQuery destination. For Cloud Storage destination, the
    * output format is the JSON format that represents a
-   * {@link google.cloud.asset.v1.AnalyzeIamPolicyResponse|AnalyzeIamPolicyResponse}.
+   * {@link protos.google.cloud.asset.v1.AnalyzeIamPolicyResponse|AnalyzeIamPolicyResponse}.
    * This method implements the
-   * {@link google.longrunning.Operation|google.longrunning.Operation}, which allows
+   * {@link protos.google.longrunning.Operation|google.longrunning.Operation}, which allows
    * you to track the operation status. We recommend intervals of at least 2
    * seconds with exponential backoff retry to poll the operation result. The
    * metadata contains the metadata for the long-running operation.
@@ -2123,7 +2157,7 @@ export class AssetServiceClient {
    *   If both `analysis_query` and `saved_analysis_query` are provided, they
    *   will be merged together with the `saved_analysis_query` as base and
    *   the `analysis_query` as overrides. For more details of the merge behavior,
-   *   please refer to the
+   *   refer to the
    *   [MergeFrom](https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message#Message.MergeFrom.details)
    *   doc.
    *
@@ -2139,8 +2173,7 @@ export class AssetServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_iam_policy_longrunning.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeIamPolicyLongrunning_async
@@ -2155,7 +2188,7 @@ export class AssetServiceClient {
         protos.google.cloud.asset.v1.IAnalyzeIamPolicyLongrunningMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   analyzeIamPolicyLongrunning(
@@ -2208,7 +2241,7 @@ export class AssetServiceClient {
         protos.google.cloud.asset.v1.IAnalyzeIamPolicyLongrunningMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2239,8 +2272,7 @@ export class AssetServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_iam_policy_longrunning.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeIamPolicyLongrunning_async
@@ -2334,14 +2366,13 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.Asset | Asset}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.Asset|Asset}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listAssetsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listAssets(
@@ -2351,7 +2382,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IAsset[],
       protos.google.cloud.asset.v1.IListAssetsRequest | null,
-      protos.google.cloud.asset.v1.IListAssetsResponse
+      protos.google.cloud.asset.v1.IListAssetsResponse,
     ]
   >;
   listAssets(
@@ -2389,7 +2420,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IAsset[],
       protos.google.cloud.asset.v1.IListAssetsRequest | null,
-      protos.google.cloud.asset.v1.IListAssetsResponse
+      protos.google.cloud.asset.v1.IListAssetsResponse,
     ]
   > | void {
     request = request || {};
@@ -2475,13 +2506,12 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.Asset | Asset} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.Asset|Asset} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listAssetsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listAssetsStream(
@@ -2572,12 +2602,11 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.Asset | Asset}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.Asset|Asset}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.list_assets.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_ListAssets_async
@@ -2633,54 +2662,82 @@ export class AssetServiceClient {
    *   Examples:
    *
    *   * `name:Important` to find Google Cloud resources whose name contains
-   *     "Important" as a word.
+   *     `Important` as a word.
    *   * `name=Important` to find the Google Cloud resource whose name is exactly
-   *     "Important".
+   *     `Important`.
    *   * `displayName:Impor*` to find Google Cloud resources whose display name
-   *     contains "Impor" as a prefix of any word in the field.
+   *     contains `Impor` as a prefix of any word in the field.
    *   * `location:us-west*` to find Google Cloud resources whose location
-   *     contains both "us" and "west" as prefixes.
-   *   * `labels:prod` to find Google Cloud resources whose labels contain "prod"
+   *     contains both `us` and `west` as prefixes.
+   *   * `labels:prod` to find Google Cloud resources whose labels contain `prod`
    *     as a key or value.
-   *   * `labels.env:prod` to find Google Cloud resources that have a label "env"
-   *     and its value is "prod".
-   *   * `labels.env:*` to find Google Cloud resources that have a label "env".
+   *   * `labels.env:prod` to find Google Cloud resources that have a label `env`
+   *     and its value is `prod`.
+   *   * `labels.env:*` to find Google Cloud resources that have a label `env`.
+   *   * `tagKeys:env` to find Google Cloud resources that have directly
+   *     attached tags where the
+   *     [`TagKey.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey)
+   *     contains `env`.
+   *   * `tagValues:prod*` to find Google Cloud resources that have directly
+   *     attached tags where the
+   *     [`TagValue.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     contains a word prefixed by `prod`.
+   *   * `tagValueIds=tagValues/123` to find Google Cloud resources that have
+   *     directly attached tags where the
+   *     [`TagValue.name`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     is exactly `tagValues/123`.
+   *   * `effectiveTagKeys:env` to find Google Cloud resources that have
+   *     directly attached or inherited tags where the
+   *     [`TagKey.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey)
+   *     contains `env`.
+   *   * `effectiveTagValues:prod*` to find Google Cloud resources that have
+   *     directly attached or inherited tags where the
+   *     [`TagValue.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     contains a word prefixed by `prod`.
+   *   * `effectiveTagValueIds=tagValues/123` to find Google Cloud resources that
+   *      have directly attached or inherited tags where the
+   *     [`TagValue.name`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     is exactly `tagValues/123`.
    *   * `kmsKey:key` to find Google Cloud resources encrypted with a
-   *     customer-managed encryption key whose name contains "key" as a word. This
-   *     field is deprecated. Please use the `kmsKeys` field to retrieve Cloud KMS
+   *     customer-managed encryption key whose name contains `key` as a word. This
+   *     field is deprecated. Use the `kmsKeys` field to retrieve Cloud KMS
    *     key information.
    *   * `kmsKeys:key` to find Google Cloud resources encrypted with
-   *     customer-managed encryption keys whose name contains the word "key".
+   *     customer-managed encryption keys whose name contains the word `key`.
    *   * `relationships:instance-group-1` to find Google Cloud resources that have
-   *     relationships with "instance-group-1" in the related resource name.
+   *     relationships with `instance-group-1` in the related resource name.
    *   * `relationships:INSTANCE_TO_INSTANCEGROUP` to find Compute Engine
-   *     instances that have relationships of type "INSTANCE_TO_INSTANCEGROUP".
+   *     instances that have relationships of type `INSTANCE_TO_INSTANCEGROUP`.
    *   * `relationships.INSTANCE_TO_INSTANCEGROUP:instance-group-1` to find
-   *     Compute Engine instances that have relationships with "instance-group-1"
+   *     Compute Engine instances that have relationships with `instance-group-1`
    *     in the Compute Engine instance group resource name, for relationship type
-   *     "INSTANCE_TO_INSTANCEGROUP".
+   *     `INSTANCE_TO_INSTANCEGROUP`.
+   *   * `sccSecurityMarks.key=value` to find Cloud resources that are attached
+   *     with security marks whose key is `key` and value is `value`.
+   *   * `sccSecurityMarks.key:*` to find Cloud resources that are attached with
+   *     security marks whose key is `key`.
    *   * `state:ACTIVE` to find Google Cloud resources whose state contains
-   *     "ACTIVE" as a word.
+   *     `ACTIVE` as a word.
    *   * `NOT state:ACTIVE` to find Google Cloud resources whose state doesn't
-   *     contain "ACTIVE" as a word.
+   *     contain `ACTIVE` as a word.
    *   * `createTime<1609459200` to find Google Cloud resources that were created
-   *     before "2021-01-01 00:00:00 UTC". 1609459200 is the epoch timestamp of
-   *     "2021-01-01 00:00:00 UTC" in seconds.
+   *     before `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of
+   *     `2021-01-01 00:00:00 UTC` in seconds.
    *   * `updateTime>1609459200` to find Google Cloud resources that were updated
-   *     after "2021-01-01 00:00:00 UTC". 1609459200 is the epoch timestamp of
-   *     "2021-01-01 00:00:00 UTC" in seconds.
-   *   * `Important` to find Google Cloud resources that contain "Important" as a
+   *     after `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of
+   *     `2021-01-01 00:00:00 UTC` in seconds.
+   *   * `Important` to find Google Cloud resources that contain `Important` as a
    *     word in any of the searchable fields.
-   *   * `Impor*` to find Google Cloud resources that contain "Impor" as a prefix
+   *   * `Impor*` to find Google Cloud resources that contain `Impor` as a prefix
    *     of any word in any of the searchable fields.
    *   * `Important location:(us-west1 OR global)` to find Google Cloud
-   *     resources that contain "Important" as a word in any of the searchable
-   *     fields and are also located in the "us-west1" region or the "global"
+   *     resources that contain `Important` as a word in any of the searchable
+   *     fields and are also located in the `us-west1` region or the `global`
    *     location.
    * @param {string[]} [request.assetTypes]
    *   Optional. A list of asset types that this request searches for. If empty,
-   *   it will search all the [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   it will search all the asset types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types).
    *
    *   Regular expressions are also supported. For example:
    *
@@ -2694,10 +2751,10 @@ export class AssetServiceClient {
    *   supported asset type, an INVALID_ARGUMENT error will be returned.
    * @param {number} [request.pageSize]
    *   Optional. The page size for search result pagination. Page size is capped
-   *   at 500 even if a larger value is given. If set to zero, server will pick an
-   *   appropriate default. Returned results may be fewer than requested. When
-   *   this happens, there could be more results as long as `next_page_token` is
-   *   returned.
+   *   at 500 even if a larger value is given. If set to zero or a negative value,
+   *   server will pick an appropriate default. Returned results may be fewer than
+   *   requested. When this happens, there could be more results as long as
+   *   `next_page_token` is returned.
    * @param {string} [request.pageToken]
    *   Optional. If present, then retrieve the next batch of results from the
    *   preceding call to this method. `page_token` must be the value of
@@ -2708,7 +2765,7 @@ export class AssetServiceClient {
    *   the results. The default order is ascending. Add " DESC" after the field
    *   name to indicate descending order. Redundant space characters are ignored.
    *   Example: "location DESC, name".
-   *   Only singular primitive fields in the response are sortable:
+   *   Only the following fields in the response are sortable:
    *
    *     * name
    *     * assetType
@@ -2721,55 +2778,48 @@ export class AssetServiceClient {
    *     * state
    *     * parentFullResourceName
    *     * parentAssetType
-   *
-   *   All the other fields such as repeated fields (e.g., `networkTags`,
-   *   `kmsKeys`), map fields (e.g., `labels`) and struct fields (e.g.,
-   *   `additionalAttributes`) are not supported.
    * @param {google.protobuf.FieldMask} [request.readMask]
-   *   Optional. A comma-separated list of fields specifying which fields to be
-   *   returned in ResourceSearchResult. Only '*' or combination of top level
-   *   fields can be specified. Field names of both snake_case and camelCase are
-   *   supported. Examples: `"*"`, `"name,location"`, `"name,versionedResources"`.
+   *   Optional. A comma-separated list of fields that you want returned in the
+   *   results. The following fields are returned by default if not specified:
    *
-   *   The read_mask paths must be valid field paths listed but not limited to
-   *   (both snake_case and camelCase are supported):
+   *     * `name`
+   *     * `assetType`
+   *     * `project`
+   *     * `folders`
+   *     * `organization`
+   *     * `displayName`
+   *     * `description`
+   *     * `location`
+   *     * `labels`
+   *     * `tags`
+   *     * `effectiveTags`
+   *     * `networkTags`
+   *     * `kmsKeys`
+   *     * `createTime`
+   *     * `updateTime`
+   *     * `state`
+   *     * `additionalAttributes`
+   *     * `parentFullResourceName`
+   *     * `parentAssetType`
    *
-   *     * name
-   *     * assetType
-   *     * project
-   *     * displayName
-   *     * description
-   *     * location
-   *     * tagKeys
-   *     * tagValues
-   *     * tagValueIds
-   *     * labels
-   *     * networkTags
-   *     * kmsKey (This field is deprecated. Please use the `kmsKeys` field to
-   *       retrieve Cloud KMS key information.)
-   *     * kmsKeys
-   *     * createTime
-   *     * updateTime
-   *     * state
-   *     * additionalAttributes
-   *     * versionedResources
-   *
-   *   If read_mask is not specified, all fields except versionedResources will
-   *   be returned.
-   *   If only '*' is specified, all fields including versionedResources will be
-   *   returned.
+   *   Some fields of large size, such as `versionedResources`,
+   *   `attachedResources`, `effectiveTags` etc., are not returned by default, but
+   *   you can specify them in the `read_mask` parameter if you want to include
+   *   them. If `"*"` is specified, all [available
+   *   fields](https://cloud.google.com/asset-inventory/docs/reference/rest/v1/TopLevel/searchAllResources#resourcesearchresult)
+   *   are returned.
+   *   Examples: `"name,location"`, `"name,versionedResources"`, `"*"`.
    *   Any invalid field path will trigger INVALID_ARGUMENT error.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.ResourceSearchResult | ResourceSearchResult}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.ResourceSearchResult|ResourceSearchResult}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `searchAllResourcesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   searchAllResources(
@@ -2779,7 +2829,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IResourceSearchResult[],
       protos.google.cloud.asset.v1.ISearchAllResourcesRequest | null,
-      protos.google.cloud.asset.v1.ISearchAllResourcesResponse
+      protos.google.cloud.asset.v1.ISearchAllResourcesResponse,
     ]
   >;
   searchAllResources(
@@ -2825,7 +2875,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IResourceSearchResult[],
       protos.google.cloud.asset.v1.ISearchAllResourcesRequest | null,
-      protos.google.cloud.asset.v1.ISearchAllResourcesResponse
+      protos.google.cloud.asset.v1.ISearchAllResourcesResponse,
     ]
   > | void {
     request = request || {};
@@ -2873,54 +2923,82 @@ export class AssetServiceClient {
    *   Examples:
    *
    *   * `name:Important` to find Google Cloud resources whose name contains
-   *     "Important" as a word.
+   *     `Important` as a word.
    *   * `name=Important` to find the Google Cloud resource whose name is exactly
-   *     "Important".
+   *     `Important`.
    *   * `displayName:Impor*` to find Google Cloud resources whose display name
-   *     contains "Impor" as a prefix of any word in the field.
+   *     contains `Impor` as a prefix of any word in the field.
    *   * `location:us-west*` to find Google Cloud resources whose location
-   *     contains both "us" and "west" as prefixes.
-   *   * `labels:prod` to find Google Cloud resources whose labels contain "prod"
+   *     contains both `us` and `west` as prefixes.
+   *   * `labels:prod` to find Google Cloud resources whose labels contain `prod`
    *     as a key or value.
-   *   * `labels.env:prod` to find Google Cloud resources that have a label "env"
-   *     and its value is "prod".
-   *   * `labels.env:*` to find Google Cloud resources that have a label "env".
+   *   * `labels.env:prod` to find Google Cloud resources that have a label `env`
+   *     and its value is `prod`.
+   *   * `labels.env:*` to find Google Cloud resources that have a label `env`.
+   *   * `tagKeys:env` to find Google Cloud resources that have directly
+   *     attached tags where the
+   *     [`TagKey.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey)
+   *     contains `env`.
+   *   * `tagValues:prod*` to find Google Cloud resources that have directly
+   *     attached tags where the
+   *     [`TagValue.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     contains a word prefixed by `prod`.
+   *   * `tagValueIds=tagValues/123` to find Google Cloud resources that have
+   *     directly attached tags where the
+   *     [`TagValue.name`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     is exactly `tagValues/123`.
+   *   * `effectiveTagKeys:env` to find Google Cloud resources that have
+   *     directly attached or inherited tags where the
+   *     [`TagKey.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey)
+   *     contains `env`.
+   *   * `effectiveTagValues:prod*` to find Google Cloud resources that have
+   *     directly attached or inherited tags where the
+   *     [`TagValue.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     contains a word prefixed by `prod`.
+   *   * `effectiveTagValueIds=tagValues/123` to find Google Cloud resources that
+   *      have directly attached or inherited tags where the
+   *     [`TagValue.name`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     is exactly `tagValues/123`.
    *   * `kmsKey:key` to find Google Cloud resources encrypted with a
-   *     customer-managed encryption key whose name contains "key" as a word. This
-   *     field is deprecated. Please use the `kmsKeys` field to retrieve Cloud KMS
+   *     customer-managed encryption key whose name contains `key` as a word. This
+   *     field is deprecated. Use the `kmsKeys` field to retrieve Cloud KMS
    *     key information.
    *   * `kmsKeys:key` to find Google Cloud resources encrypted with
-   *     customer-managed encryption keys whose name contains the word "key".
+   *     customer-managed encryption keys whose name contains the word `key`.
    *   * `relationships:instance-group-1` to find Google Cloud resources that have
-   *     relationships with "instance-group-1" in the related resource name.
+   *     relationships with `instance-group-1` in the related resource name.
    *   * `relationships:INSTANCE_TO_INSTANCEGROUP` to find Compute Engine
-   *     instances that have relationships of type "INSTANCE_TO_INSTANCEGROUP".
+   *     instances that have relationships of type `INSTANCE_TO_INSTANCEGROUP`.
    *   * `relationships.INSTANCE_TO_INSTANCEGROUP:instance-group-1` to find
-   *     Compute Engine instances that have relationships with "instance-group-1"
+   *     Compute Engine instances that have relationships with `instance-group-1`
    *     in the Compute Engine instance group resource name, for relationship type
-   *     "INSTANCE_TO_INSTANCEGROUP".
+   *     `INSTANCE_TO_INSTANCEGROUP`.
+   *   * `sccSecurityMarks.key=value` to find Cloud resources that are attached
+   *     with security marks whose key is `key` and value is `value`.
+   *   * `sccSecurityMarks.key:*` to find Cloud resources that are attached with
+   *     security marks whose key is `key`.
    *   * `state:ACTIVE` to find Google Cloud resources whose state contains
-   *     "ACTIVE" as a word.
+   *     `ACTIVE` as a word.
    *   * `NOT state:ACTIVE` to find Google Cloud resources whose state doesn't
-   *     contain "ACTIVE" as a word.
+   *     contain `ACTIVE` as a word.
    *   * `createTime<1609459200` to find Google Cloud resources that were created
-   *     before "2021-01-01 00:00:00 UTC". 1609459200 is the epoch timestamp of
-   *     "2021-01-01 00:00:00 UTC" in seconds.
+   *     before `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of
+   *     `2021-01-01 00:00:00 UTC` in seconds.
    *   * `updateTime>1609459200` to find Google Cloud resources that were updated
-   *     after "2021-01-01 00:00:00 UTC". 1609459200 is the epoch timestamp of
-   *     "2021-01-01 00:00:00 UTC" in seconds.
-   *   * `Important` to find Google Cloud resources that contain "Important" as a
+   *     after `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of
+   *     `2021-01-01 00:00:00 UTC` in seconds.
+   *   * `Important` to find Google Cloud resources that contain `Important` as a
    *     word in any of the searchable fields.
-   *   * `Impor*` to find Google Cloud resources that contain "Impor" as a prefix
+   *   * `Impor*` to find Google Cloud resources that contain `Impor` as a prefix
    *     of any word in any of the searchable fields.
    *   * `Important location:(us-west1 OR global)` to find Google Cloud
-   *     resources that contain "Important" as a word in any of the searchable
-   *     fields and are also located in the "us-west1" region or the "global"
+   *     resources that contain `Important` as a word in any of the searchable
+   *     fields and are also located in the `us-west1` region or the `global`
    *     location.
    * @param {string[]} [request.assetTypes]
    *   Optional. A list of asset types that this request searches for. If empty,
-   *   it will search all the [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   it will search all the asset types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types).
    *
    *   Regular expressions are also supported. For example:
    *
@@ -2934,10 +3012,10 @@ export class AssetServiceClient {
    *   supported asset type, an INVALID_ARGUMENT error will be returned.
    * @param {number} [request.pageSize]
    *   Optional. The page size for search result pagination. Page size is capped
-   *   at 500 even if a larger value is given. If set to zero, server will pick an
-   *   appropriate default. Returned results may be fewer than requested. When
-   *   this happens, there could be more results as long as `next_page_token` is
-   *   returned.
+   *   at 500 even if a larger value is given. If set to zero or a negative value,
+   *   server will pick an appropriate default. Returned results may be fewer than
+   *   requested. When this happens, there could be more results as long as
+   *   `next_page_token` is returned.
    * @param {string} [request.pageToken]
    *   Optional. If present, then retrieve the next batch of results from the
    *   preceding call to this method. `page_token` must be the value of
@@ -2948,7 +3026,7 @@ export class AssetServiceClient {
    *   the results. The default order is ascending. Add " DESC" after the field
    *   name to indicate descending order. Redundant space characters are ignored.
    *   Example: "location DESC, name".
-   *   Only singular primitive fields in the response are sortable:
+   *   Only the following fields in the response are sortable:
    *
    *     * name
    *     * assetType
@@ -2961,54 +3039,47 @@ export class AssetServiceClient {
    *     * state
    *     * parentFullResourceName
    *     * parentAssetType
-   *
-   *   All the other fields such as repeated fields (e.g., `networkTags`,
-   *   `kmsKeys`), map fields (e.g., `labels`) and struct fields (e.g.,
-   *   `additionalAttributes`) are not supported.
    * @param {google.protobuf.FieldMask} [request.readMask]
-   *   Optional. A comma-separated list of fields specifying which fields to be
-   *   returned in ResourceSearchResult. Only '*' or combination of top level
-   *   fields can be specified. Field names of both snake_case and camelCase are
-   *   supported. Examples: `"*"`, `"name,location"`, `"name,versionedResources"`.
+   *   Optional. A comma-separated list of fields that you want returned in the
+   *   results. The following fields are returned by default if not specified:
    *
-   *   The read_mask paths must be valid field paths listed but not limited to
-   *   (both snake_case and camelCase are supported):
+   *     * `name`
+   *     * `assetType`
+   *     * `project`
+   *     * `folders`
+   *     * `organization`
+   *     * `displayName`
+   *     * `description`
+   *     * `location`
+   *     * `labels`
+   *     * `tags`
+   *     * `effectiveTags`
+   *     * `networkTags`
+   *     * `kmsKeys`
+   *     * `createTime`
+   *     * `updateTime`
+   *     * `state`
+   *     * `additionalAttributes`
+   *     * `parentFullResourceName`
+   *     * `parentAssetType`
    *
-   *     * name
-   *     * assetType
-   *     * project
-   *     * displayName
-   *     * description
-   *     * location
-   *     * tagKeys
-   *     * tagValues
-   *     * tagValueIds
-   *     * labels
-   *     * networkTags
-   *     * kmsKey (This field is deprecated. Please use the `kmsKeys` field to
-   *       retrieve Cloud KMS key information.)
-   *     * kmsKeys
-   *     * createTime
-   *     * updateTime
-   *     * state
-   *     * additionalAttributes
-   *     * versionedResources
-   *
-   *   If read_mask is not specified, all fields except versionedResources will
-   *   be returned.
-   *   If only '*' is specified, all fields including versionedResources will be
-   *   returned.
+   *   Some fields of large size, such as `versionedResources`,
+   *   `attachedResources`, `effectiveTags` etc., are not returned by default, but
+   *   you can specify them in the `read_mask` parameter if you want to include
+   *   them. If `"*"` is specified, all [available
+   *   fields](https://cloud.google.com/asset-inventory/docs/reference/rest/v1/TopLevel/searchAllResources#resourcesearchresult)
+   *   are returned.
+   *   Examples: `"name,location"`, `"name,versionedResources"`, `"*"`.
    *   Any invalid field path will trigger INVALID_ARGUMENT error.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.ResourceSearchResult | ResourceSearchResult} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.ResourceSearchResult|ResourceSearchResult} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `searchAllResourcesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   searchAllResourcesStream(
@@ -3061,54 +3132,82 @@ export class AssetServiceClient {
    *   Examples:
    *
    *   * `name:Important` to find Google Cloud resources whose name contains
-   *     "Important" as a word.
+   *     `Important` as a word.
    *   * `name=Important` to find the Google Cloud resource whose name is exactly
-   *     "Important".
+   *     `Important`.
    *   * `displayName:Impor*` to find Google Cloud resources whose display name
-   *     contains "Impor" as a prefix of any word in the field.
+   *     contains `Impor` as a prefix of any word in the field.
    *   * `location:us-west*` to find Google Cloud resources whose location
-   *     contains both "us" and "west" as prefixes.
-   *   * `labels:prod` to find Google Cloud resources whose labels contain "prod"
+   *     contains both `us` and `west` as prefixes.
+   *   * `labels:prod` to find Google Cloud resources whose labels contain `prod`
    *     as a key or value.
-   *   * `labels.env:prod` to find Google Cloud resources that have a label "env"
-   *     and its value is "prod".
-   *   * `labels.env:*` to find Google Cloud resources that have a label "env".
+   *   * `labels.env:prod` to find Google Cloud resources that have a label `env`
+   *     and its value is `prod`.
+   *   * `labels.env:*` to find Google Cloud resources that have a label `env`.
+   *   * `tagKeys:env` to find Google Cloud resources that have directly
+   *     attached tags where the
+   *     [`TagKey.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey)
+   *     contains `env`.
+   *   * `tagValues:prod*` to find Google Cloud resources that have directly
+   *     attached tags where the
+   *     [`TagValue.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     contains a word prefixed by `prod`.
+   *   * `tagValueIds=tagValues/123` to find Google Cloud resources that have
+   *     directly attached tags where the
+   *     [`TagValue.name`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     is exactly `tagValues/123`.
+   *   * `effectiveTagKeys:env` to find Google Cloud resources that have
+   *     directly attached or inherited tags where the
+   *     [`TagKey.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagKeys#resource:-tagkey)
+   *     contains `env`.
+   *   * `effectiveTagValues:prod*` to find Google Cloud resources that have
+   *     directly attached or inherited tags where the
+   *     [`TagValue.namespacedName`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     contains a word prefixed by `prod`.
+   *   * `effectiveTagValueIds=tagValues/123` to find Google Cloud resources that
+   *      have directly attached or inherited tags where the
+   *     [`TagValue.name`](https://cloud.google.com/resource-manager/reference/rest/v3/tagValues#resource:-tagvalue)
+   *     is exactly `tagValues/123`.
    *   * `kmsKey:key` to find Google Cloud resources encrypted with a
-   *     customer-managed encryption key whose name contains "key" as a word. This
-   *     field is deprecated. Please use the `kmsKeys` field to retrieve Cloud KMS
+   *     customer-managed encryption key whose name contains `key` as a word. This
+   *     field is deprecated. Use the `kmsKeys` field to retrieve Cloud KMS
    *     key information.
    *   * `kmsKeys:key` to find Google Cloud resources encrypted with
-   *     customer-managed encryption keys whose name contains the word "key".
+   *     customer-managed encryption keys whose name contains the word `key`.
    *   * `relationships:instance-group-1` to find Google Cloud resources that have
-   *     relationships with "instance-group-1" in the related resource name.
+   *     relationships with `instance-group-1` in the related resource name.
    *   * `relationships:INSTANCE_TO_INSTANCEGROUP` to find Compute Engine
-   *     instances that have relationships of type "INSTANCE_TO_INSTANCEGROUP".
+   *     instances that have relationships of type `INSTANCE_TO_INSTANCEGROUP`.
    *   * `relationships.INSTANCE_TO_INSTANCEGROUP:instance-group-1` to find
-   *     Compute Engine instances that have relationships with "instance-group-1"
+   *     Compute Engine instances that have relationships with `instance-group-1`
    *     in the Compute Engine instance group resource name, for relationship type
-   *     "INSTANCE_TO_INSTANCEGROUP".
+   *     `INSTANCE_TO_INSTANCEGROUP`.
+   *   * `sccSecurityMarks.key=value` to find Cloud resources that are attached
+   *     with security marks whose key is `key` and value is `value`.
+   *   * `sccSecurityMarks.key:*` to find Cloud resources that are attached with
+   *     security marks whose key is `key`.
    *   * `state:ACTIVE` to find Google Cloud resources whose state contains
-   *     "ACTIVE" as a word.
+   *     `ACTIVE` as a word.
    *   * `NOT state:ACTIVE` to find Google Cloud resources whose state doesn't
-   *     contain "ACTIVE" as a word.
+   *     contain `ACTIVE` as a word.
    *   * `createTime<1609459200` to find Google Cloud resources that were created
-   *     before "2021-01-01 00:00:00 UTC". 1609459200 is the epoch timestamp of
-   *     "2021-01-01 00:00:00 UTC" in seconds.
+   *     before `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of
+   *     `2021-01-01 00:00:00 UTC` in seconds.
    *   * `updateTime>1609459200` to find Google Cloud resources that were updated
-   *     after "2021-01-01 00:00:00 UTC". 1609459200 is the epoch timestamp of
-   *     "2021-01-01 00:00:00 UTC" in seconds.
-   *   * `Important` to find Google Cloud resources that contain "Important" as a
+   *     after `2021-01-01 00:00:00 UTC`. `1609459200` is the epoch timestamp of
+   *     `2021-01-01 00:00:00 UTC` in seconds.
+   *   * `Important` to find Google Cloud resources that contain `Important` as a
    *     word in any of the searchable fields.
-   *   * `Impor*` to find Google Cloud resources that contain "Impor" as a prefix
+   *   * `Impor*` to find Google Cloud resources that contain `Impor` as a prefix
    *     of any word in any of the searchable fields.
    *   * `Important location:(us-west1 OR global)` to find Google Cloud
-   *     resources that contain "Important" as a word in any of the searchable
-   *     fields and are also located in the "us-west1" region or the "global"
+   *     resources that contain `Important` as a word in any of the searchable
+   *     fields and are also located in the `us-west1` region or the `global`
    *     location.
    * @param {string[]} [request.assetTypes]
    *   Optional. A list of asset types that this request searches for. If empty,
-   *   it will search all the [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   it will search all the asset types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types).
    *
    *   Regular expressions are also supported. For example:
    *
@@ -3122,10 +3221,10 @@ export class AssetServiceClient {
    *   supported asset type, an INVALID_ARGUMENT error will be returned.
    * @param {number} [request.pageSize]
    *   Optional. The page size for search result pagination. Page size is capped
-   *   at 500 even if a larger value is given. If set to zero, server will pick an
-   *   appropriate default. Returned results may be fewer than requested. When
-   *   this happens, there could be more results as long as `next_page_token` is
-   *   returned.
+   *   at 500 even if a larger value is given. If set to zero or a negative value,
+   *   server will pick an appropriate default. Returned results may be fewer than
+   *   requested. When this happens, there could be more results as long as
+   *   `next_page_token` is returned.
    * @param {string} [request.pageToken]
    *   Optional. If present, then retrieve the next batch of results from the
    *   preceding call to this method. `page_token` must be the value of
@@ -3136,7 +3235,7 @@ export class AssetServiceClient {
    *   the results. The default order is ascending. Add " DESC" after the field
    *   name to indicate descending order. Redundant space characters are ignored.
    *   Example: "location DESC, name".
-   *   Only singular primitive fields in the response are sortable:
+   *   Only the following fields in the response are sortable:
    *
    *     * name
    *     * assetType
@@ -3149,53 +3248,46 @@ export class AssetServiceClient {
    *     * state
    *     * parentFullResourceName
    *     * parentAssetType
-   *
-   *   All the other fields such as repeated fields (e.g., `networkTags`,
-   *   `kmsKeys`), map fields (e.g., `labels`) and struct fields (e.g.,
-   *   `additionalAttributes`) are not supported.
    * @param {google.protobuf.FieldMask} [request.readMask]
-   *   Optional. A comma-separated list of fields specifying which fields to be
-   *   returned in ResourceSearchResult. Only '*' or combination of top level
-   *   fields can be specified. Field names of both snake_case and camelCase are
-   *   supported. Examples: `"*"`, `"name,location"`, `"name,versionedResources"`.
+   *   Optional. A comma-separated list of fields that you want returned in the
+   *   results. The following fields are returned by default if not specified:
    *
-   *   The read_mask paths must be valid field paths listed but not limited to
-   *   (both snake_case and camelCase are supported):
+   *     * `name`
+   *     * `assetType`
+   *     * `project`
+   *     * `folders`
+   *     * `organization`
+   *     * `displayName`
+   *     * `description`
+   *     * `location`
+   *     * `labels`
+   *     * `tags`
+   *     * `effectiveTags`
+   *     * `networkTags`
+   *     * `kmsKeys`
+   *     * `createTime`
+   *     * `updateTime`
+   *     * `state`
+   *     * `additionalAttributes`
+   *     * `parentFullResourceName`
+   *     * `parentAssetType`
    *
-   *     * name
-   *     * assetType
-   *     * project
-   *     * displayName
-   *     * description
-   *     * location
-   *     * tagKeys
-   *     * tagValues
-   *     * tagValueIds
-   *     * labels
-   *     * networkTags
-   *     * kmsKey (This field is deprecated. Please use the `kmsKeys` field to
-   *       retrieve Cloud KMS key information.)
-   *     * kmsKeys
-   *     * createTime
-   *     * updateTime
-   *     * state
-   *     * additionalAttributes
-   *     * versionedResources
-   *
-   *   If read_mask is not specified, all fields except versionedResources will
-   *   be returned.
-   *   If only '*' is specified, all fields including versionedResources will be
-   *   returned.
+   *   Some fields of large size, such as `versionedResources`,
+   *   `attachedResources`, `effectiveTags` etc., are not returned by default, but
+   *   you can specify them in the `read_mask` parameter if you want to include
+   *   them. If `"*"` is specified, all [available
+   *   fields](https://cloud.google.com/asset-inventory/docs/reference/rest/v1/TopLevel/searchAllResources#resourcesearchresult)
+   *   are returned.
+   *   Examples: `"name,location"`, `"name,versionedResources"`, `"*"`.
    *   Any invalid field path will trigger INVALID_ARGUMENT error.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.ResourceSearchResult | ResourceSearchResult}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.ResourceSearchResult|ResourceSearchResult}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.search_all_resources.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_SearchAllResources_async
@@ -3287,10 +3379,10 @@ export class AssetServiceClient {
    *     principal type "user".
    * @param {number} [request.pageSize]
    *   Optional. The page size for search result pagination. Page size is capped
-   *   at 500 even if a larger value is given. If set to zero, server will pick an
-   *   appropriate default. Returned results may be fewer than requested. When
-   *   this happens, there could be more results as long as `next_page_token` is
-   *   returned.
+   *   at 500 even if a larger value is given. If set to zero or a negative value,
+   *   server will pick an appropriate default. Returned results may be fewer than
+   *   requested. When this happens, there could be more results as long as
+   *   `next_page_token` is returned.
    * @param {string} [request.pageToken]
    *   Optional. If present, retrieve the next batch of results from the preceding
    *   call to this method. `page_token` must be the value of `next_page_token`
@@ -3298,9 +3390,9 @@ export class AssetServiceClient {
    *   be identical to those in the previous call.
    * @param {string[]} [request.assetTypes]
    *   Optional. A list of asset types that the IAM policies are attached to. If
-   *   empty, it will search the IAM policies that are attached to all the
-   *   [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   empty, it will search the IAM policies that are attached to all the asset
+   *   types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types)
    *
    *   Regular expressions are also supported. For example:
    *
@@ -3328,14 +3420,13 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.IamPolicySearchResult | IamPolicySearchResult}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.IamPolicySearchResult|IamPolicySearchResult}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `searchAllIamPoliciesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   searchAllIamPolicies(
@@ -3345,7 +3436,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IIamPolicySearchResult[],
       protos.google.cloud.asset.v1.ISearchAllIamPoliciesRequest | null,
-      protos.google.cloud.asset.v1.ISearchAllIamPoliciesResponse
+      protos.google.cloud.asset.v1.ISearchAllIamPoliciesResponse,
     ]
   >;
   searchAllIamPolicies(
@@ -3391,7 +3482,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.IIamPolicySearchResult[],
       protos.google.cloud.asset.v1.ISearchAllIamPoliciesRequest | null,
-      protos.google.cloud.asset.v1.ISearchAllIamPoliciesResponse
+      protos.google.cloud.asset.v1.ISearchAllIamPoliciesResponse,
     ]
   > | void {
     request = request || {};
@@ -3475,10 +3566,10 @@ export class AssetServiceClient {
    *     principal type "user".
    * @param {number} [request.pageSize]
    *   Optional. The page size for search result pagination. Page size is capped
-   *   at 500 even if a larger value is given. If set to zero, server will pick an
-   *   appropriate default. Returned results may be fewer than requested. When
-   *   this happens, there could be more results as long as `next_page_token` is
-   *   returned.
+   *   at 500 even if a larger value is given. If set to zero or a negative value,
+   *   server will pick an appropriate default. Returned results may be fewer than
+   *   requested. When this happens, there could be more results as long as
+   *   `next_page_token` is returned.
    * @param {string} [request.pageToken]
    *   Optional. If present, retrieve the next batch of results from the preceding
    *   call to this method. `page_token` must be the value of `next_page_token`
@@ -3486,9 +3577,9 @@ export class AssetServiceClient {
    *   be identical to those in the previous call.
    * @param {string[]} [request.assetTypes]
    *   Optional. A list of asset types that the IAM policies are attached to. If
-   *   empty, it will search the IAM policies that are attached to all the
-   *   [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   empty, it will search the IAM policies that are attached to all the asset
+   *   types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types)
    *
    *   Regular expressions are also supported. For example:
    *
@@ -3516,13 +3607,12 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.IamPolicySearchResult | IamPolicySearchResult} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.IamPolicySearchResult|IamPolicySearchResult} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `searchAllIamPoliciesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   searchAllIamPoliciesStream(
@@ -3611,10 +3701,10 @@ export class AssetServiceClient {
    *     principal type "user".
    * @param {number} [request.pageSize]
    *   Optional. The page size for search result pagination. Page size is capped
-   *   at 500 even if a larger value is given. If set to zero, server will pick an
-   *   appropriate default. Returned results may be fewer than requested. When
-   *   this happens, there could be more results as long as `next_page_token` is
-   *   returned.
+   *   at 500 even if a larger value is given. If set to zero or a negative value,
+   *   server will pick an appropriate default. Returned results may be fewer than
+   *   requested. When this happens, there could be more results as long as
+   *   `next_page_token` is returned.
    * @param {string} [request.pageToken]
    *   Optional. If present, retrieve the next batch of results from the preceding
    *   call to this method. `page_token` must be the value of `next_page_token`
@@ -3622,9 +3712,9 @@ export class AssetServiceClient {
    *   be identical to those in the previous call.
    * @param {string[]} [request.assetTypes]
    *   Optional. A list of asset types that the IAM policies are attached to. If
-   *   empty, it will search the IAM policies that are attached to all the
-   *   [searchable asset
-   *   types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types).
+   *   empty, it will search the IAM policies that are attached to all the asset
+   *   types [supported by search
+   *   APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types)
    *
    *   Regular expressions are also supported. For example:
    *
@@ -3652,12 +3742,11 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.IamPolicySearchResult | IamPolicySearchResult}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.IamPolicySearchResult|IamPolicySearchResult}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.search_all_iam_policies.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_SearchAllIamPolicies_async
@@ -3714,14 +3803,13 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.SavedQuery | SavedQuery}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.SavedQuery|SavedQuery}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listSavedQueriesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSavedQueries(
@@ -3731,7 +3819,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery[],
       protos.google.cloud.asset.v1.IListSavedQueriesRequest | null,
-      protos.google.cloud.asset.v1.IListSavedQueriesResponse
+      protos.google.cloud.asset.v1.IListSavedQueriesResponse,
     ]
   >;
   listSavedQueries(
@@ -3771,7 +3859,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.ISavedQuery[],
       protos.google.cloud.asset.v1.IListSavedQueriesRequest | null,
-      protos.google.cloud.asset.v1.IListSavedQueriesResponse
+      protos.google.cloud.asset.v1.IListSavedQueriesResponse,
     ]
   > | void {
     request = request || {};
@@ -3823,13 +3911,12 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.SavedQuery | SavedQuery} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.SavedQuery|SavedQuery} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listSavedQueriesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSavedQueriesStream(
@@ -3886,12 +3973,11 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.SavedQuery | SavedQuery}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.SavedQuery|SavedQuery}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.list_saved_queries.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_ListSavedQueries_async
@@ -3933,30 +4019,32 @@ export class AssetServiceClient {
    *   constraint.
    * @param {string} request.filter
    *   The expression to filter
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}.
-   *   The only supported field is `consolidated_policy.attached_resource`, and
-   *   the only supported operator is `=`.
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}.
+   *   Filtering is currently available for bare literal values and the following
+   *   fields:
+   *   * consolidated_policy.attached_resource
+   *   * consolidated_policy.rules.enforce
    *
-   *   Example:
+   *   When filtering by a specific field, the only supported operator is `=`.
+   *   For example, filtering by
    *   consolidated_policy.attached_resource="//cloudresourcemanager.googleapis.com/folders/001"
-   *   will return the org policy results of"folders/001".
+   *   will return all the Organization Policy results attached to "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}
    *   will contain 20 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.OrgPolicyResult | OrgPolicyResult}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.OrgPolicyResult|OrgPolicyResult}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `analyzeOrgPoliciesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   analyzeOrgPolicies(
@@ -3966,7 +4054,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.IOrgPolicyResult[],
       protos.google.cloud.asset.v1.IAnalyzeOrgPoliciesRequest | null,
-      protos.google.cloud.asset.v1.IAnalyzeOrgPoliciesResponse
+      protos.google.cloud.asset.v1.IAnalyzeOrgPoliciesResponse,
     ]
   >;
   analyzeOrgPolicies(
@@ -4012,7 +4100,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.IOrgPolicyResult[],
       protos.google.cloud.asset.v1.IAnalyzeOrgPoliciesRequest | null,
-      protos.google.cloud.asset.v1.IAnalyzeOrgPoliciesResponse
+      protos.google.cloud.asset.v1.IAnalyzeOrgPoliciesResponse,
     ]
   > | void {
     request = request || {};
@@ -4049,29 +4137,31 @@ export class AssetServiceClient {
    *   constraint.
    * @param {string} request.filter
    *   The expression to filter
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}.
-   *   The only supported field is `consolidated_policy.attached_resource`, and
-   *   the only supported operator is `=`.
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}.
+   *   Filtering is currently available for bare literal values and the following
+   *   fields:
+   *   * consolidated_policy.attached_resource
+   *   * consolidated_policy.rules.enforce
    *
-   *   Example:
+   *   When filtering by a specific field, the only supported operator is `=`.
+   *   For example, filtering by
    *   consolidated_policy.attached_resource="//cloudresourcemanager.googleapis.com/folders/001"
-   *   will return the org policy results of"folders/001".
+   *   will return all the Organization Policy results attached to "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}
    *   will contain 20 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.OrgPolicyResult | OrgPolicyResult} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.OrgPolicyResult|OrgPolicyResult} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `analyzeOrgPoliciesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   analyzeOrgPoliciesStream(
@@ -4113,28 +4203,30 @@ export class AssetServiceClient {
    *   constraint.
    * @param {string} request.filter
    *   The expression to filter
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}.
-   *   The only supported field is `consolidated_policy.attached_resource`, and
-   *   the only supported operator is `=`.
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}.
+   *   Filtering is currently available for bare literal values and the following
+   *   fields:
+   *   * consolidated_policy.attached_resource
+   *   * consolidated_policy.rules.enforce
    *
-   *   Example:
+   *   When filtering by a specific field, the only supported operator is `=`.
+   *   For example, filtering by
    *   consolidated_policy.attached_resource="//cloudresourcemanager.googleapis.com/folders/001"
-   *   will return the org policy results of"folders/001".
+   *   will return all the Organization Policy results attached to "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.org_policy_results|AnalyzeOrgPoliciesResponse.org_policy_results}
    *   will contain 20 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.OrgPolicyResult | OrgPolicyResult}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPoliciesResponse.OrgPolicyResult|OrgPolicyResult}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_org_policies.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeOrgPolicies_async
@@ -4178,30 +4270,33 @@ export class AssetServiceClient {
    *   The analysis only contains organization policies for the provided
    *   constraint.
    * @param {string} request.filter
-   *   The expression to filter the governed containers in result.
-   *   The only supported field is `parent`, and the only supported operator is
-   *   `=`.
+   *   The expression to filter
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}.
+   *   Filtering is currently available for bare literal values and the following
+   *   fields:
+   *   * parent
+   *   * consolidated_policy.rules.enforce
    *
-   *   Example:
-   *   parent="//cloudresourcemanager.googleapis.com/folders/001" will return all
-   *   containers under "folders/001".
+   *   When filtering by a specific field, the only supported operator is `=`.
+   *   For example, filtering by
+   *   parent="//cloudresourcemanager.googleapis.com/folders/001"
+   *   will return all the containers under "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}
    *   will contain 100 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.GovernedContainer | GovernedContainer}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.GovernedContainer|GovernedContainer}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `analyzeOrgPolicyGovernedContainersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   analyzeOrgPolicyGovernedContainers(
@@ -4211,7 +4306,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.IGovernedContainer[],
       protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedContainersRequest | null,
-      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedContainersResponse
+      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedContainersResponse,
     ]
   >;
   analyzeOrgPolicyGovernedContainers(
@@ -4257,7 +4352,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.IGovernedContainer[],
       protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedContainersRequest | null,
-      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedContainersResponse
+      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedContainersResponse,
     ]
   > | void {
     request = request || {};
@@ -4299,29 +4394,32 @@ export class AssetServiceClient {
    *   The analysis only contains organization policies for the provided
    *   constraint.
    * @param {string} request.filter
-   *   The expression to filter the governed containers in result.
-   *   The only supported field is `parent`, and the only supported operator is
-   *   `=`.
+   *   The expression to filter
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}.
+   *   Filtering is currently available for bare literal values and the following
+   *   fields:
+   *   * parent
+   *   * consolidated_policy.rules.enforce
    *
-   *   Example:
-   *   parent="//cloudresourcemanager.googleapis.com/folders/001" will return all
-   *   containers under "folders/001".
+   *   When filtering by a specific field, the only supported operator is `=`.
+   *   For example, filtering by
+   *   parent="//cloudresourcemanager.googleapis.com/folders/001"
+   *   will return all the containers under "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}
    *   will contain 100 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.GovernedContainer | GovernedContainer} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.GovernedContainer|GovernedContainer} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `analyzeOrgPolicyGovernedContainersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   analyzeOrgPolicyGovernedContainersStream(
@@ -4365,28 +4463,31 @@ export class AssetServiceClient {
    *   The analysis only contains organization policies for the provided
    *   constraint.
    * @param {string} request.filter
-   *   The expression to filter the governed containers in result.
-   *   The only supported field is `parent`, and the only supported operator is
-   *   `=`.
+   *   The expression to filter
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}.
+   *   Filtering is currently available for bare literal values and the following
+   *   fields:
+   *   * parent
+   *   * consolidated_policy.rules.enforce
    *
-   *   Example:
-   *   parent="//cloudresourcemanager.googleapis.com/folders/001" will return all
-   *   containers under "folders/001".
+   *   When filtering by a specific field, the only supported operator is `=`.
+   *   For example, filtering by
+   *   parent="//cloudresourcemanager.googleapis.com/folders/001"
+   *   will return all the containers under "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.governed_containers|AnalyzeOrgPolicyGovernedContainersResponse.governed_containers}
    *   will contain 100 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.GovernedContainer | GovernedContainer}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedContainersResponse.GovernedContainer|GovernedContainer}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_org_policy_governed_containers.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeOrgPolicyGovernedContainers_async
@@ -4416,22 +4517,52 @@ export class AssetServiceClient {
   /**
    * Analyzes organization policies governed assets (Google Cloud resources or
    * policies) under a scope. This RPC supports custom constraints and the
-   * following 10 canned constraints:
+   * following canned constraints:
    *
-   * * storage.uniformBucketLevelAccess
-   * * iam.disableServiceAccountKeyCreation
-   * * iam.allowedPolicyMemberDomains
-   * * compute.vmExternalIpAccess
-   * * appengine.enforceServiceAccountActAsCheck
-   * * gcp.resourceLocations
-   * * compute.trustedImageProjects
-   * * compute.skipDefaultNetworkCreation
-   * * compute.requireOsLogin
-   * * compute.disableNestedVirtualization
+   * * constraints/ainotebooks.accessMode
+   * * constraints/ainotebooks.disableFileDownloads
+   * * constraints/ainotebooks.disableRootAccess
+   * * constraints/ainotebooks.disableTerminal
+   * * constraints/ainotebooks.environmentOptions
+   * * constraints/ainotebooks.requireAutoUpgradeSchedule
+   * * constraints/ainotebooks.restrictVpcNetworks
+   * * constraints/compute.disableGuestAttributesAccess
+   * * constraints/compute.disableInstanceDataAccessApis
+   * * constraints/compute.disableNestedVirtualization
+   * * constraints/compute.disableSerialPortAccess
+   * * constraints/compute.disableSerialPortLogging
+   * * constraints/compute.disableVpcExternalIpv6
+   * * constraints/compute.requireOsLogin
+   * * constraints/compute.requireShieldedVm
+   * * constraints/compute.restrictLoadBalancerCreationForTypes
+   * * constraints/compute.restrictProtocolForwardingCreationForTypes
+   * * constraints/compute.restrictXpnProjectLienRemoval
+   * * constraints/compute.setNewProjectDefaultToZonalDNSOnly
+   * * constraints/compute.skipDefaultNetworkCreation
+   * * constraints/compute.trustedImageProjects
+   * * constraints/compute.vmCanIpForward
+   * * constraints/compute.vmExternalIpAccess
+   * * constraints/gcp.detailedAuditLoggingMode
+   * * constraints/gcp.resourceLocations
+   * * constraints/iam.allowedPolicyMemberDomains
+   * * constraints/iam.automaticIamGrantsForDefaultServiceAccounts
+   * * constraints/iam.disableServiceAccountCreation
+   * * constraints/iam.disableServiceAccountKeyCreation
+   * * constraints/iam.disableServiceAccountKeyUpload
+   * * constraints/iam.restrictCrossProjectServiceAccountLienRemoval
+   * * constraints/iam.serviceAccountKeyExpiryHours
+   * * constraints/resourcemanager.accessBoundaries
+   * * constraints/resourcemanager.allowedExportDestinations
+   * * constraints/sql.restrictAuthorizedNetworks
+   * * constraints/sql.restrictNoncompliantDiagnosticDataAccess
+   * * constraints/sql.restrictNoncompliantResourceCreation
+   * * constraints/sql.restrictPublicIp
+   * * constraints/storage.publicAccessPrevention
+   * * constraints/storage.restrictAuthTypes
+   * * constraints/storage.uniformBucketLevelAccess
    *
-   * This RPC only returns either resources of types supported by [searchable
-   * asset
-   * types](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types),
+   * This RPC only returns either resources of types [supported by search
+   * APIs](https://cloud.google.com/asset-inventory/docs/supported-asset-types)
    * or IAM policies.
    *
    * @param {Object} request
@@ -4448,35 +4579,49 @@ export class AssetServiceClient {
    *   analysis only contains analyzed organization policies for the provided
    *   constraint.
    * @param {string} request.filter
-   *   The expression to filter the governed assets in result. The only supported
-   *   fields for governed resources are `governed_resource.project` and
-   *   `governed_resource.folders`. The only supported fields for governed iam
-   *   policies are `governed_iam_policy.project` and
-   *   `governed_iam_policy.folders`. The only supported operator is `=`.
+   *   The expression to filter
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}.
    *
-   *   Example 1: governed_resource.project="projects/12345678" filter will return
-   *   all governed resources under projects/12345678 including the project
-   *   ifself, if applicable.
+   *   For governed resources, filtering is currently available for bare literal
+   *   values and the following fields:
+   *   * governed_resource.project
+   *   * governed_resource.folders
+   *   * consolidated_policy.rules.enforce
+   *   When filtering by `governed_resource.project` or
+   *   `consolidated_policy.rules.enforce`, the only supported operator is `=`.
+   *   When filtering by `governed_resource.folders`, the supported operators
+   *   are `=` and `:`.
+   *   For example, filtering by `governed_resource.project="projects/12345678"`
+   *   will return all the governed resources under "projects/12345678",
+   *   including the project itself if applicable.
    *
-   *   Example 2: governed_iam_policy.folders="folders/12345678" filter will
-   *   return all governed iam policies under folders/12345678, if applicable.
+   *   For governed IAM policies, filtering is currently available for bare
+   *   literal values and the following fields:
+   *   * governed_iam_policy.project
+   *   * governed_iam_policy.folders
+   *   * consolidated_policy.rules.enforce
+   *   When filtering by `governed_iam_policy.project` or
+   *   `consolidated_policy.rules.enforce`, the only supported operator is `=`.
+   *   When filtering by `governed_iam_policy.folders`, the supported operators
+   *   are `=` and `:`.
+   *   For example, filtering by `governed_iam_policy.folders:"folders/12345678"`
+   *   will return all the governed IAM policies under "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}
    *   will contain 100 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.GovernedAsset | GovernedAsset}.
+   *   The first element of the array is Array of {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.GovernedAsset|GovernedAsset}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `analyzeOrgPolicyGovernedAssetsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   analyzeOrgPolicyGovernedAssets(
@@ -4486,7 +4631,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.IGovernedAsset[],
       protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedAssetsRequest | null,
-      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedAssetsResponse
+      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedAssetsResponse,
     ]
   >;
   analyzeOrgPolicyGovernedAssets(
@@ -4532,7 +4677,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.IGovernedAsset[],
       protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedAssetsRequest | null,
-      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedAssetsResponse
+      protos.google.cloud.asset.v1.IAnalyzeOrgPolicyGovernedAssetsResponse,
     ]
   > | void {
     request = request || {};
@@ -4574,34 +4719,48 @@ export class AssetServiceClient {
    *   analysis only contains analyzed organization policies for the provided
    *   constraint.
    * @param {string} request.filter
-   *   The expression to filter the governed assets in result. The only supported
-   *   fields for governed resources are `governed_resource.project` and
-   *   `governed_resource.folders`. The only supported fields for governed iam
-   *   policies are `governed_iam_policy.project` and
-   *   `governed_iam_policy.folders`. The only supported operator is `=`.
+   *   The expression to filter
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}.
    *
-   *   Example 1: governed_resource.project="projects/12345678" filter will return
-   *   all governed resources under projects/12345678 including the project
-   *   ifself, if applicable.
+   *   For governed resources, filtering is currently available for bare literal
+   *   values and the following fields:
+   *   * governed_resource.project
+   *   * governed_resource.folders
+   *   * consolidated_policy.rules.enforce
+   *   When filtering by `governed_resource.project` or
+   *   `consolidated_policy.rules.enforce`, the only supported operator is `=`.
+   *   When filtering by `governed_resource.folders`, the supported operators
+   *   are `=` and `:`.
+   *   For example, filtering by `governed_resource.project="projects/12345678"`
+   *   will return all the governed resources under "projects/12345678",
+   *   including the project itself if applicable.
    *
-   *   Example 2: governed_iam_policy.folders="folders/12345678" filter will
-   *   return all governed iam policies under folders/12345678, if applicable.
+   *   For governed IAM policies, filtering is currently available for bare
+   *   literal values and the following fields:
+   *   * governed_iam_policy.project
+   *   * governed_iam_policy.folders
+   *   * consolidated_policy.rules.enforce
+   *   When filtering by `governed_iam_policy.project` or
+   *   `consolidated_policy.rules.enforce`, the only supported operator is `=`.
+   *   When filtering by `governed_iam_policy.folders`, the supported operators
+   *   are `=` and `:`.
+   *   For example, filtering by `governed_iam_policy.folders:"folders/12345678"`
+   *   will return all the governed IAM policies under "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}
    *   will contain 100 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.GovernedAsset | GovernedAsset} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.GovernedAsset|GovernedAsset} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `analyzeOrgPolicyGovernedAssetsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   analyzeOrgPolicyGovernedAssetsStream(
@@ -4645,33 +4804,47 @@ export class AssetServiceClient {
    *   analysis only contains analyzed organization policies for the provided
    *   constraint.
    * @param {string} request.filter
-   *   The expression to filter the governed assets in result. The only supported
-   *   fields for governed resources are `governed_resource.project` and
-   *   `governed_resource.folders`. The only supported fields for governed iam
-   *   policies are `governed_iam_policy.project` and
-   *   `governed_iam_policy.folders`. The only supported operator is `=`.
+   *   The expression to filter
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}.
    *
-   *   Example 1: governed_resource.project="projects/12345678" filter will return
-   *   all governed resources under projects/12345678 including the project
-   *   ifself, if applicable.
+   *   For governed resources, filtering is currently available for bare literal
+   *   values and the following fields:
+   *   * governed_resource.project
+   *   * governed_resource.folders
+   *   * consolidated_policy.rules.enforce
+   *   When filtering by `governed_resource.project` or
+   *   `consolidated_policy.rules.enforce`, the only supported operator is `=`.
+   *   When filtering by `governed_resource.folders`, the supported operators
+   *   are `=` and `:`.
+   *   For example, filtering by `governed_resource.project="projects/12345678"`
+   *   will return all the governed resources under "projects/12345678",
+   *   including the project itself if applicable.
    *
-   *   Example 2: governed_iam_policy.folders="folders/12345678" filter will
-   *   return all governed iam policies under folders/12345678, if applicable.
+   *   For governed IAM policies, filtering is currently available for bare
+   *   literal values and the following fields:
+   *   * governed_iam_policy.project
+   *   * governed_iam_policy.folders
+   *   * consolidated_policy.rules.enforce
+   *   When filtering by `governed_iam_policy.project` or
+   *   `consolidated_policy.rules.enforce`, the only supported operator is `=`.
+   *   When filtering by `governed_iam_policy.folders`, the supported operators
+   *   are `=` and `:`.
+   *   For example, filtering by `governed_iam_policy.folders:"folders/12345678"`
+   *   will return all the governed IAM policies under "folders/001".
    * @param {number} request.pageSize
    *   The maximum number of items to return per page. If unspecified,
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets|AnalyzeOrgPolicyGovernedAssetsResponse.governed_assets}
    *   will contain 100 items with a maximum of 200.
    * @param {string} request.pageToken
    *   The pagination token to retrieve the next page.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.GovernedAsset | GovernedAsset}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.asset.v1.AnalyzeOrgPolicyGovernedAssetsResponse.GovernedAsset|GovernedAsset}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/asset_service.analyze_org_policy_governed_assets.js</caption>
    * region_tag:cloudasset_v1_generated_AssetService_AnalyzeOrgPolicyGovernedAssets_async

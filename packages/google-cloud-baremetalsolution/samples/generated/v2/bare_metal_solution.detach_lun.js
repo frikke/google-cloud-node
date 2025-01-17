@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,6 +36,10 @@ function main(instance, lun) {
    *  Required. Name of the Lun to detach.
    */
   // const lun = 'abc123'
+  /**
+   *  If true, performs lun unmapping without instance reboot.
+   */
+  // const skipReboot = true
 
   // Imports the Baremetalsolution library
   const {BareMetalSolutionClient} = require('@google-cloud/bare-metal-solution').v2;

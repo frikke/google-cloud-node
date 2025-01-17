@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -161,16 +161,97 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.AttachedClustersClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        attachedclustersModule.v1.AttachedClustersClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'gkemulticloud.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        attachedclustersModule.v1.AttachedClustersClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          attachedclustersModule.v1.AttachedClustersClient.servicePath;
+        assert.strictEqual(servicePath, 'gkemulticloud.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          attachedclustersModule.v1.AttachedClustersClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'gkemulticloud.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'gkemulticloud.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'gkemulticloud.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new attachedclustersModule.v1.AttachedClustersClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'gkemulticloud.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new attachedclustersModule.v1.AttachedClustersClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(
+            servicePath,
+            'gkemulticloud.configured.example.com'
+          );
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new attachedclustersModule.v1.AttachedClustersClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -548,9 +629,8 @@ describe('v1.AttachedClustersClient', () => {
       );
       client.innerApiCalls.generateAttachedClusterInstallManifest =
         stubSimpleCall(expectedResponse);
-      const [response] = await client.generateAttachedClusterInstallManifest(
-        request
-      );
+      const [response] =
+        await client.generateAttachedClusterInstallManifest(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (
         client.innerApiCalls.generateAttachedClusterInstallManifest as SinonStub
@@ -659,6 +739,144 @@ describe('v1.AttachedClustersClient', () => {
       client.close();
       await assert.rejects(
         client.generateAttachedClusterInstallManifest(request),
+        expectedError
+      );
+    });
+  });
+
+  describe('generateAttachedClusterAgentToken', () => {
+    it('invokes generateAttachedClusterAgentToken without error', async () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest',
+        ['attachedCluster']
+      );
+      request.attachedCluster = defaultValue1;
+      const expectedHeaderRequestParams = `attached_cluster=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse()
+      );
+      client.innerApiCalls.generateAttachedClusterAgentToken =
+        stubSimpleCall(expectedResponse);
+      const [response] =
+        await client.generateAttachedClusterAgentToken(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.generateAttachedClusterAgentToken as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.generateAttachedClusterAgentToken as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes generateAttachedClusterAgentToken without error using callback', async () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest',
+        ['attachedCluster']
+      );
+      request.attachedCluster = defaultValue1;
+      const expectedHeaderRequestParams = `attached_cluster=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenResponse()
+      );
+      client.innerApiCalls.generateAttachedClusterAgentToken =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.generateAttachedClusterAgentToken(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.gkemulticloud.v1.IGenerateAttachedClusterAgentTokenResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.generateAttachedClusterAgentToken as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.generateAttachedClusterAgentToken as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes generateAttachedClusterAgentToken with error', async () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest',
+        ['attachedCluster']
+      );
+      request.attachedCluster = defaultValue1;
+      const expectedHeaderRequestParams = `attached_cluster=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.generateAttachedClusterAgentToken = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.generateAttachedClusterAgentToken(request),
+        expectedError
+      );
+      const actualRequest = (
+        client.innerApiCalls.generateAttachedClusterAgentToken as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.generateAttachedClusterAgentToken as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes generateAttachedClusterAgentToken with closed client', async () => {
+      const client = new attachedclustersModule.v1.AttachedClustersClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.gkemulticloud.v1.GenerateAttachedClusterAgentTokenRequest',
+        ['attachedCluster']
+      );
+      request.attachedCluster = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(
+        client.generateAttachedClusterAgentToken(request),
         expectedError
       );
     });
@@ -1640,9 +1858,9 @@ describe('v1.AttachedClustersClient', () => {
       assert(
         (client.descriptors.page.listAttachedClusters.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1690,9 +1908,9 @@ describe('v1.AttachedClustersClient', () => {
       assert(
         (client.descriptors.page.listAttachedClusters.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1740,9 +1958,9 @@ describe('v1.AttachedClustersClient', () => {
       assert(
         (client.descriptors.page.listAttachedClusters.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -1781,9 +1999,9 @@ describe('v1.AttachedClustersClient', () => {
       assert(
         (client.descriptors.page.listAttachedClusters.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });

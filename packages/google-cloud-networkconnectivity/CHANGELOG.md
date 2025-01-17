@@ -1,5 +1,72 @@
 # Changelog
 
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.5.0...network-connectivity-v3.6.0) (2024-12-18)
+
+
+### Features
+
+* [networkconnectivity] add Network Connectivity Center APIs for PSC connection propagation through NCC ([#5859](https://github.com/googleapis/google-cloud-node/issues/5859)) ([04c60cc](https://github.com/googleapis/google-cloud-node/commit/04c60cc25a3a1c002491b9c70bfd27c714a4262d))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.4.0...network-connectivity-v3.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.3.0...network-connectivity-v3.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5189](https://github.com/googleapis/google-cloud-node/issues/5189)) ([64b5a75](https://github.com/googleapis/google-cloud-node/commit/64b5a759caa979837199086c2d546a565ad2b3b1))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.2.0...network-connectivity-v3.3.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5026](https://github.com/googleapis/google-cloud-node/issues/5026)) ([43acd89](https://github.com/googleapis/google-cloud-node/commit/43acd893e6c428f219d62f0c4264e4db78b99f99))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.1.0...network-connectivity-v3.2.0) (2023-10-18)
+
+
+### Features
+
+* [networkconnectivity] add Network Connectivity Center APIs related to VPC spokes ([#4725](https://github.com/googleapis/google-cloud-node/issues/4725)) ([4e65f0a](https://github.com/googleapis/google-cloud-node/commit/4e65f0a9c2b49bb04b552ac9a04a93112d2c50bf))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.0.1...network-connectivity-v3.1.0) (2023-09-14)
+
+
+### Features
+
+* [networkconnectivity] add PolicyBasedRouting APIs ([#4636](https://github.com/googleapis/google-cloud-node/issues/4636)) ([7f6f625](https://github.com/googleapis/google-cloud-node/commit/7f6f62557446160c96677b72185deb9f2794d4cf))
+
+## [3.0.1](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v3.0.0...network-connectivity-v3.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4586](https://github.com/googleapis/google-cloud-node/issues/4586)) ([4b18686](https://github.com/googleapis/google-cloud-node/commit/4b186867323b8b15469bf5e1cb890bf703b531b3))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v2.3.3...network-connectivity-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4461](https://github.com/googleapis/google-cloud-node/issues/4461)) ([61bcc0a](https://github.com/googleapis/google-cloud-node/commit/61bcc0a89c70cf1037299eecd72aef9c98c2e666))
+* [Many APIs] fix typings for IAM methods ([#4462](https://github.com/googleapis/google-cloud-node/issues/4462)) ([6df8854](https://github.com/googleapis/google-cloud-node/commit/6df8854fdfbf62e6374f79d785f142b2f2e6cfae))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [2.3.3](https://github.com/googleapis/google-cloud-node/compare/network-connectivity-v2.3.2...network-connectivity-v2.3.3) (2023-04-13)
 
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ function main() {
    *  than 20 services are specified, the request will fail, and no state changes
    *  will occur.
    */
-  // const serviceIds = 'abc123'
+  // const serviceIds = ['abc','def']
 
   // Imports the Serviceusage library
   const {ServiceUsageClient} = require('@google-cloud/service-usage').v1beta1;

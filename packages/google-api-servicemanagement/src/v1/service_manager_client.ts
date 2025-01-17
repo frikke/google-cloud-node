@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,10 +27,13 @@ import type {
   LROperation,
   PaginationCallback,
   GaxCall,
+  IamClient,
+  IamProtos,
 } from 'google-gax';
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/service_manager_client_config.json`.
@@ -53,6 +56,8 @@ export class ServiceManagerClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -62,6 +67,7 @@ export class ServiceManagerClient {
   };
   warn: (code: string, message: string, warnType?: string) => void;
   innerApiCalls: {[name: string]: Function};
+  iamClient: IamClient;
   operationsClient: gax.OperationsClient;
   serviceManagerStub?: Promise<{[name: string]: Function}>;
 
@@ -93,8 +99,7 @@ export class ServiceManagerClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -102,7 +107,7 @@ export class ServiceManagerClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new ServiceManagerClient({fallback: 'rest'}, gax);
+   *     const client = new ServiceManagerClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -111,8 +116,27 @@ export class ServiceManagerClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof ServiceManagerClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'servicemanagement.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -127,7 +151,7 @@ export class ServiceManagerClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -152,23 +176,24 @@ export class ServiceManagerClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
+    this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -206,7 +231,7 @@ export class ServiceManagerClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -408,19 +433,50 @@ export class ServiceManagerClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'servicemanagement.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'servicemanagement.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -476,9 +532,8 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.servicemanagement.v1.ManagedService | ManagedService}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.servicemanagement.v1.ManagedService|ManagedService}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.get_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_GetService_async
@@ -490,7 +545,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.servicemanagement.v1.IManagedService,
       protos.google.api.servicemanagement.v1.IGetServiceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getService(
@@ -536,7 +591,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.servicemanagement.v1.IManagedService,
       protos.google.api.servicemanagement.v1.IGetServiceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -564,8 +619,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.configId
    *   Required. The id of the service configuration resource.
    *
@@ -577,9 +632,8 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.Service | Service}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.Service|Service}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.get_service_config.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_GetServiceConfig_async
@@ -594,7 +648,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.IGetServiceConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getServiceConfig(
@@ -643,7 +697,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.IGetServiceConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -669,7 +723,7 @@ export class ServiceManagerClient {
    * Creates a new service configuration (version) for a managed service.
    * This method only stores the service configuration. To roll out the service
    * configuration to backend systems please call
-   * {@link google.api.servicemanagement.v1.ServiceManager.CreateServiceRollout|CreateServiceRollout}.
+   * {@link protos.google.api.servicemanagement.v1.ServiceManager.CreateServiceRollout|CreateServiceRollout}.
    *
    * Only the 100 most recent service configurations and ones referenced by
    * existing rollouts are kept for each service. The rest will be deleted
@@ -679,16 +733,15 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {google.api.Service} request.serviceConfig
    *   Required. The service configuration resource.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.Service | Service}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.Service|Service}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.create_service_config.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_CreateServiceConfig_async
@@ -703,7 +756,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.ICreateServiceConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createServiceConfig(
@@ -752,7 +805,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.ICreateServiceConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -775,22 +828,21 @@ export class ServiceManagerClient {
   }
   /**
    * Gets a service configuration
-   * {@link google.api.servicemanagement.v1.Rollout|rollout}.
+   * {@link protos.google.api.servicemanagement.v1.Rollout|rollout}.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.rolloutId
    *   Required. The id of the rollout resource.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.servicemanagement.v1.Rollout | Rollout}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.servicemanagement.v1.Rollout|Rollout}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.get_service_rollout.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_GetServiceRollout_async
@@ -805,7 +857,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.IGetServiceRolloutRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getServiceRollout(
@@ -854,7 +906,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.IGetServiceRolloutRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -894,21 +946,20 @@ export class ServiceManagerClient {
    * @param {google.protobuf.Any} request.newConfig
    *   Required. Service configuration for which we want to generate the report.
    *   For this version of API, the supported types are
-   *   {@link google.api.servicemanagement.v1.ConfigRef|google.api.servicemanagement.v1.ConfigRef},
-   *   {@link google.api.servicemanagement.v1.ConfigSource|google.api.servicemanagement.v1.ConfigSource},
-   *   and {@link google.api.Service|google.api.Service}
+   *   {@link protos.google.api.servicemanagement.v1.ConfigRef|google.api.servicemanagement.v1.ConfigRef},
+   *   {@link protos.google.api.servicemanagement.v1.ConfigSource|google.api.servicemanagement.v1.ConfigSource},
+   *   and {@link protos.google.api.Service|google.api.Service}
    * @param {google.protobuf.Any} [request.oldConfig]
    *   Optional. Service configuration against which the comparison will be done.
    *   For this version of API, the supported types are
-   *   {@link google.api.servicemanagement.v1.ConfigRef|google.api.servicemanagement.v1.ConfigRef},
-   *   {@link google.api.servicemanagement.v1.ConfigSource|google.api.servicemanagement.v1.ConfigSource},
-   *   and {@link google.api.Service|google.api.Service}
+   *   {@link protos.google.api.servicemanagement.v1.ConfigRef|google.api.servicemanagement.v1.ConfigRef},
+   *   {@link protos.google.api.servicemanagement.v1.ConfigSource|google.api.servicemanagement.v1.ConfigSource},
+   *   and {@link protos.google.api.Service|google.api.Service}
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.servicemanagement.v1.GenerateConfigReportResponse | GenerateConfigReportResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.servicemanagement.v1.GenerateConfigReportResponse|GenerateConfigReportResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.generate_config_report.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_GenerateConfigReport_async
@@ -923,7 +974,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.IGenerateConfigReportRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   generateConfigReport(
@@ -972,7 +1023,7 @@ export class ServiceManagerClient {
         | protos.google.api.servicemanagement.v1.IGenerateConfigReportRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1013,8 +1064,7 @@ export class ServiceManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.create_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_CreateService_async
@@ -1029,7 +1079,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createService(
@@ -1082,7 +1132,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1105,8 +1155,7 @@ export class ServiceManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.create_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_CreateService_async
@@ -1138,7 +1187,7 @@ export class ServiceManagerClient {
    * Deletes a managed service. This method will change the service to the
    * `Soft-Delete` state for 30 days. Within this period, service producers may
    * call
-   * {@link google.api.servicemanagement.v1.ServiceManager.UndeleteService|UndeleteService}
+   * {@link protos.google.api.servicemanagement.v1.ServiceManager.UndeleteService|UndeleteService}
    * to restore the service. After 30 days, the service will be permanently
    * deleted.
    *
@@ -1148,16 +1197,15 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.delete_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_DeleteService_async
@@ -1172,7 +1220,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteService(
@@ -1225,7 +1273,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1252,8 +1300,7 @@ export class ServiceManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.delete_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_DeleteService_async
@@ -1293,16 +1340,15 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service. See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements. For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements. For example: `example.googleapis.com`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.undelete_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_UndeleteService_async
@@ -1317,7 +1363,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   undeleteService(
@@ -1370,7 +1416,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1397,8 +1443,7 @@ export class ServiceManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.undelete_service.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_UndeleteService_async
@@ -1434,7 +1479,7 @@ export class ServiceManagerClient {
    * generated service configuration. To rollout the service configuration to
    * other services,
    * please call
-   * {@link google.api.servicemanagement.v1.ServiceManager.CreateServiceRollout|CreateServiceRollout}.
+   * {@link protos.google.api.servicemanagement.v1.ServiceManager.CreateServiceRollout|CreateServiceRollout}.
    *
    * Only the 100 most recent configuration sources and ones referenced by
    * existing service configurtions are kept for each service. The rest will be
@@ -1446,8 +1491,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {google.api.servicemanagement.v1.ConfigSource} request.configSource
    *   Required. The source configuration for the service.
    * @param {boolean} [request.validateOnly]
@@ -1460,8 +1505,7 @@ export class ServiceManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.submit_config_source.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_SubmitConfigSource_async
@@ -1476,7 +1520,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   submitConfigSource(
@@ -1529,7 +1573,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1556,8 +1600,7 @@ export class ServiceManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.submit_config_source.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_SubmitConfigSource_async
@@ -1605,8 +1648,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {google.api.servicemanagement.v1.Rollout} request.rollout
    *   Required. The rollout resource. The `service_name` field is output only.
    * @param {object} [options]
@@ -1615,8 +1658,7 @@ export class ServiceManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.create_service_rollout.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_CreateServiceRollout_async
@@ -1631,7 +1673,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createServiceRollout(
@@ -1684,7 +1726,7 @@ export class ServiceManagerClient {
         protos.google.api.servicemanagement.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1711,8 +1753,7 @@ export class ServiceManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.create_service_rollout.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_CreateServiceRollout_async
@@ -1753,7 +1794,7 @@ export class ServiceManagerClient {
    *   Include services produced by the specified project.
    * @param {number} request.pageSize
    *   The max number of items to include in the response list. Page size is 50
-   *   if not specified. Maximum value is 100.
+   *   if not specified. Maximum value is 500.
    * @param {string} request.pageToken
    *   Token identifying which result to start with; returned by a previous list
    *   call.
@@ -1766,14 +1807,13 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.servicemanagement.v1.ManagedService | ManagedService}.
+   *   The first element of the array is Array of {@link protos.google.api.servicemanagement.v1.ManagedService|ManagedService}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listServicesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServices(
@@ -1783,7 +1823,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.servicemanagement.v1.IManagedService[],
       protos.google.api.servicemanagement.v1.IListServicesRequest | null,
-      protos.google.api.servicemanagement.v1.IListServicesResponse
+      protos.google.api.servicemanagement.v1.IListServicesResponse,
     ]
   >;
   listServices(
@@ -1829,7 +1869,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.servicemanagement.v1.IManagedService[],
       protos.google.api.servicemanagement.v1.IListServicesRequest | null,
-      protos.google.api.servicemanagement.v1.IListServicesResponse
+      protos.google.api.servicemanagement.v1.IListServicesResponse,
     ]
   > | void {
     request = request || {};
@@ -1855,7 +1895,7 @@ export class ServiceManagerClient {
    *   Include services produced by the specified project.
    * @param {number} request.pageSize
    *   The max number of items to include in the response list. Page size is 50
-   *   if not specified. Maximum value is 100.
+   *   if not specified. Maximum value is 500.
    * @param {string} request.pageToken
    *   Token identifying which result to start with; returned by a previous list
    *   call.
@@ -1868,13 +1908,12 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.servicemanagement.v1.ManagedService | ManagedService} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.servicemanagement.v1.ManagedService|ManagedService} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listServicesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServicesStream(
@@ -1905,7 +1944,7 @@ export class ServiceManagerClient {
    *   Include services produced by the specified project.
    * @param {number} request.pageSize
    *   The max number of items to include in the response list. Page size is 50
-   *   if not specified. Maximum value is 100.
+   *   if not specified. Maximum value is 500.
    * @param {string} request.pageToken
    *   Token identifying which result to start with; returned by a previous list
    *   call.
@@ -1918,12 +1957,11 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.servicemanagement.v1.ManagedService | ManagedService}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.servicemanagement.v1.ManagedService|ManagedService}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.list_services.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_ListServices_async
@@ -1953,8 +1991,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.pageToken
    *   The token of the page to retrieve.
    * @param {number} request.pageSize
@@ -1963,14 +2001,13 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.Service | Service}.
+   *   The first element of the array is Array of {@link protos.google.api.Service|Service}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listServiceConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServiceConfigs(
@@ -1980,7 +2017,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.IService[],
       protos.google.api.servicemanagement.v1.IListServiceConfigsRequest | null,
-      protos.google.api.servicemanagement.v1.IListServiceConfigsResponse
+      protos.google.api.servicemanagement.v1.IListServiceConfigsResponse,
     ]
   >;
   listServiceConfigs(
@@ -2026,7 +2063,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.IService[],
       protos.google.api.servicemanagement.v1.IListServiceConfigsRequest | null,
-      protos.google.api.servicemanagement.v1.IListServiceConfigsResponse
+      protos.google.api.servicemanagement.v1.IListServiceConfigsResponse,
     ]
   > | void {
     request = request || {};
@@ -2054,8 +2091,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.pageToken
    *   The token of the page to retrieve.
    * @param {number} request.pageSize
@@ -2064,13 +2101,12 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.Service | Service} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.Service|Service} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listServiceConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServiceConfigsStream(
@@ -2103,8 +2139,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.pageToken
    *   The token of the page to retrieve.
    * @param {number} request.pageSize
@@ -2113,12 +2149,11 @@ export class ServiceManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.Service | Service}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.Service|Service}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.list_service_configs.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_ListServiceConfigs_async
@@ -2152,8 +2187,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.pageToken
    *   The token of the page to retrieve.
    * @param {number} request.pageSize
@@ -2162,23 +2197,24 @@ export class ServiceManagerClient {
    * @param {string} request.filter
    *   Required. Use `filter` to return subset of rollouts.
    *   The following filters are supported:
-   *     -- To limit the results to only those in
-   *        status (google.api.servicemanagement.v1.RolloutStatus) 'SUCCESS',
-   *        use filter='status=SUCCESS'
-   *     -- To limit the results to those in
-   *        status (google.api.servicemanagement.v1.RolloutStatus) 'CANCELLED'
-   *        or 'FAILED', use filter='status=CANCELLED OR status=FAILED'
+   *
+   *    -- By [status]
+   *    [google.api.servicemanagement.v1.Rollout.RolloutStatus]. For example,
+   *    `filter='status=SUCCESS'`
+   *
+   *    -- By [strategy]
+   *    [google.api.servicemanagement.v1.Rollout.strategy]. For example,
+   *    `filter='strategy=TrafficPercentStrategy'`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.servicemanagement.v1.Rollout | Rollout}.
+   *   The first element of the array is Array of {@link protos.google.api.servicemanagement.v1.Rollout|Rollout}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listServiceRolloutsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServiceRollouts(
@@ -2188,7 +2224,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.servicemanagement.v1.IRollout[],
       protos.google.api.servicemanagement.v1.IListServiceRolloutsRequest | null,
-      protos.google.api.servicemanagement.v1.IListServiceRolloutsResponse
+      protos.google.api.servicemanagement.v1.IListServiceRolloutsResponse,
     ]
   >;
   listServiceRollouts(
@@ -2234,7 +2270,7 @@ export class ServiceManagerClient {
     [
       protos.google.api.servicemanagement.v1.IRollout[],
       protos.google.api.servicemanagement.v1.IListServiceRolloutsRequest | null,
-      protos.google.api.servicemanagement.v1.IListServiceRolloutsResponse
+      protos.google.api.servicemanagement.v1.IListServiceRolloutsResponse,
     ]
   > | void {
     request = request || {};
@@ -2262,8 +2298,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.pageToken
    *   The token of the page to retrieve.
    * @param {number} request.pageSize
@@ -2272,22 +2308,23 @@ export class ServiceManagerClient {
    * @param {string} request.filter
    *   Required. Use `filter` to return subset of rollouts.
    *   The following filters are supported:
-   *     -- To limit the results to only those in
-   *        status (google.api.servicemanagement.v1.RolloutStatus) 'SUCCESS',
-   *        use filter='status=SUCCESS'
-   *     -- To limit the results to those in
-   *        status (google.api.servicemanagement.v1.RolloutStatus) 'CANCELLED'
-   *        or 'FAILED', use filter='status=CANCELLED OR status=FAILED'
+   *
+   *    -- By [status]
+   *    [google.api.servicemanagement.v1.Rollout.RolloutStatus]. For example,
+   *    `filter='status=SUCCESS'`
+   *
+   *    -- By [strategy]
+   *    [google.api.servicemanagement.v1.Rollout.strategy]. For example,
+   *    `filter='strategy=TrafficPercentStrategy'`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.servicemanagement.v1.Rollout | Rollout} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.servicemanagement.v1.Rollout|Rollout} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listServiceRolloutsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServiceRolloutsStream(
@@ -2320,8 +2357,8 @@ export class ServiceManagerClient {
    *   The request object that will be sent.
    * @param {string} request.serviceName
    *   Required. The name of the service.  See the
-   *   [overview](https://cloud.google.com/service-infrastructure/docs/overview) for naming requirements.  For
-   *   example: `example.googleapis.com`.
+   *   [overview](https://cloud.google.com/service-management/overview) for naming
+   *   requirements.  For example: `example.googleapis.com`.
    * @param {string} request.pageToken
    *   The token of the page to retrieve.
    * @param {number} request.pageSize
@@ -2330,21 +2367,22 @@ export class ServiceManagerClient {
    * @param {string} request.filter
    *   Required. Use `filter` to return subset of rollouts.
    *   The following filters are supported:
-   *     -- To limit the results to only those in
-   *        status (google.api.servicemanagement.v1.RolloutStatus) 'SUCCESS',
-   *        use filter='status=SUCCESS'
-   *     -- To limit the results to those in
-   *        status (google.api.servicemanagement.v1.RolloutStatus) 'CANCELLED'
-   *        or 'FAILED', use filter='status=CANCELLED OR status=FAILED'
+   *
+   *    -- By [status]
+   *    [google.api.servicemanagement.v1.Rollout.RolloutStatus]. For example,
+   *    `filter='status=SUCCESS'`
+   *
+   *    -- By [strategy]
+   *    [google.api.servicemanagement.v1.Rollout.strategy]. For example,
+   *    `filter='strategy=TrafficPercentStrategy'`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.servicemanagement.v1.Rollout | Rollout}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.servicemanagement.v1.Rollout|Rollout}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/service_manager.list_service_rollouts.js</caption>
    * region_tag:servicemanagement_v1_generated_ServiceManager_ListServiceRollouts_async
@@ -2370,6 +2408,318 @@ export class ServiceManagerClient {
       callSettings
     ) as AsyncIterable<protos.google.api.servicemanagement.v1.IRollout>;
   }
+  /**
+   * Gets the access control policy for a resource. Returns an empty policy
+   * if the resource exists and does not have a policy set.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.resource
+   *   REQUIRED: The resource for which the policy is being requested.
+   *   See the operation documentation for the appropriate value for this field.
+   * @param {Object} [request.options]
+   *   OPTIONAL: A `GetPolicyOptions` object for specifying options to
+   *   `GetIamPolicy`. This field is only used by Cloud IAM.
+   *
+   *   This object should have the same structure as {@link google.iam.v1.GetPolicyOptions | GetPolicyOptions}.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing {@link google.iam.v1.Policy | Policy}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link google.iam.v1.Policy | Policy}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   */
+  getIamPolicy(
+    request: IamProtos.google.iam.v1.GetIamPolicyRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          IamProtos.google.iam.v1.Policy,
+          IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      IamProtos.google.iam.v1.Policy,
+      IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
+    return this.iamClient.getIamPolicy(request, options, callback);
+  }
+
+  /**
+   * Returns permissions that a caller has on the specified resource. If the
+   * resource does not exist, this will return an empty set of
+   * permissions, not a NOT_FOUND error.
+   *
+   * Note: This operation is designed to be used for building
+   * permission-aware UIs and command-line tools, not for authorization
+   * checking. This operation may "fail open" without warning.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.resource
+   *   REQUIRED: The resource for which the policy detail is being requested.
+   *   See the operation documentation for the appropriate value for this field.
+   * @param {string[]} request.permissions
+   *   The set of permissions to check for the `resource`. Permissions with
+   *   wildcards (such as '*' or 'storage.*') are not allowed. For more
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   */
+  setIamPolicy(
+    request: IamProtos.google.iam.v1.SetIamPolicyRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          IamProtos.google.iam.v1.Policy,
+          IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      IamProtos.google.iam.v1.Policy,
+      IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
+    return this.iamClient.setIamPolicy(request, options, callback);
+  }
+
+  /**
+   * Returns permissions that a caller has on the specified resource. If the
+   * resource does not exist, this will return an empty set of
+   * permissions, not a NOT_FOUND error.
+   *
+   * Note: This operation is designed to be used for building
+   * permission-aware UIs and command-line tools, not for authorization
+   * checking. This operation may "fail open" without warning.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.resource
+   *   REQUIRED: The resource for which the policy detail is being requested.
+   *   See the operation documentation for the appropriate value for this field.
+   * @param {string[]} request.permissions
+   *   The set of permissions to check for the `resource`. Permissions with
+   *   wildcards (such as '*' or 'storage.*') are not allowed. For more
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
+   * @param {Object} [options]
+   *   Optional parameters. You can override the default settings for this call, e.g, timeout,
+   *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
+   * @param {function(?Error, ?Object)} [callback]
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
+   *   The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   */
+  testIamPermissions(
+    request: IamProtos.google.iam.v1.TestIamPermissionsRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          IamProtos.google.iam.v1.TestIamPermissionsResponse,
+          IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      IamProtos.google.iam.v1.TestIamPermissionsResponse,
+      IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
+    return this.iamClient.testIamPermissions(request, options, callback);
+  }
+
+  /**
+   * Gets the latest state of a long-running operation.  Clients can use this
+   * method to poll the operation result at intervals as recommended by the API
+   * service.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   *   for the details.
+   * @param {function(?Error, ?Object)=} callback
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing
+   *   {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * @return {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   * {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * const name = '';
+   * const [response] = await client.getOperation({name});
+   * // doThingsWith(response)
+   * ```
+   */
+  getOperation(
+    request: protos.google.longrunning.GetOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.longrunning.Operation,
+          protos.google.longrunning.GetOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.longrunning.Operation,
+      protos.google.longrunning.GetOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<[protos.google.longrunning.Operation]> {
+    return this.operationsClient.getOperation(request, options, callback);
+  }
+  /**
+   * Lists operations that match the specified filter in the request. If the
+   * server doesn't support this method, it returns `UNIMPLEMENTED`. Returns an iterable object.
+   *
+   * For-await-of syntax is used with the iterable to recursively get response element on-demand.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation collection.
+   * @param {string} request.filter - The standard list filter.
+   * @param {number=} request.pageSize -
+   *   The maximum number of resources contained in the underlying API
+   *   response. If page streaming is performed per-resource, this
+   *   parameter does not affect the return value. If page streaming is
+   *   performed per-page, this determines the maximum number of
+   *   resources in a page.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
+   *   details.
+   * @returns {Object}
+   *   An iterable Object that conforms to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | iteration protocols}.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * for await (const response of client.listOperationsAsync(request));
+   * // doThingsWith(response)
+   * ```
+   */
+  listOperationsAsync(
+    request: protos.google.longrunning.ListOperationsRequest,
+    options?: gax.CallOptions
+  ): AsyncIterable<protos.google.longrunning.ListOperationsResponse> {
+    return this.operationsClient.listOperationsAsync(request, options);
+  }
+  /**
+   * Starts asynchronous cancellation on a long-running operation.  The server
+   * makes a best effort to cancel the operation, but success is not
+   * guaranteed.  If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.  Clients can use
+   * {@link Operations.GetOperation} or
+   * other methods to check whether the cancellation succeeded or whether the
+   * operation completed despite cancellation. On successful cancellation,
+   * the operation is not deleted; instead, it becomes an operation with
+   * an {@link Operation.error} value with a {@link google.rpc.Status.code} of
+   * 1, corresponding to `Code.CANCELLED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be cancelled.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
+   * details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.cancelOperation({name: ''});
+   * ```
+   */
+  cancelOperation(
+    request: protos.google.longrunning.CancelOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.CancelOperationRequest,
+          {} | undefined | null
+        >,
+    callback?: Callback<
+      protos.google.longrunning.CancelOperationRequest,
+      protos.google.protobuf.Empty,
+      {} | undefined | null
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.cancelOperation(request, options, callback);
+  }
+
+  /**
+   * Deletes a long-running operation. This method indicates that the client is
+   * no longer interested in the operation result. It does not cancel the
+   * operation. If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be deleted.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   * for the details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.deleteOperation({name: ''});
+   * ```
+   */
+  deleteOperation(
+    request: protos.google.longrunning.DeleteOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.DeleteOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.protobuf.Empty,
+      protos.google.longrunning.DeleteOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.deleteOperation(request, options, callback);
+  }
 
   /**
    * Terminate the gRPC channel and close the client.
@@ -2382,6 +2732,7 @@ export class ServiceManagerClient {
       return this.serviceManagerStub.then(stub => {
         this._terminated = true;
         stub.close();
+        this.iamClient.close();
         this.operationsClient.close();
       });
     }

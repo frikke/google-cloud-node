@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1alpha/alloy_d_b_admin_client_config.json`.
@@ -56,6 +57,8 @@ export class AlloyDBAdminClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -99,8 +102,7 @@ export class AlloyDBAdminClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -108,7 +110,7 @@ export class AlloyDBAdminClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new AlloyDBAdminClient({fallback: 'rest'}, gax);
+   *     const client = new AlloyDBAdminClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -117,8 +119,27 @@ export class AlloyDBAdminClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof AlloyDBAdminClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'alloydb.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -133,7 +154,7 @@ export class AlloyDBAdminClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -158,10 +179,10 @@ export class AlloyDBAdminClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -173,14 +194,14 @@ export class AlloyDBAdminClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -201,6 +222,9 @@ export class AlloyDBAdminClient {
       ),
       connectionInfoPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}/connectionInfo'
+      ),
+      databasePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/clusters/{cluster}/databases/{database}'
       ),
       instancePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}'
@@ -248,6 +272,11 @@ export class AlloyDBAdminClient {
         'nextPageToken',
         'users'
       ),
+      listDatabases: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'databases'
+      ),
     };
 
     const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
@@ -258,7 +287,7 @@ export class AlloyDBAdminClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -303,6 +332,12 @@ export class AlloyDBAdminClient {
     const updateClusterMetadata = protoFilesRoot.lookup(
       '.google.cloud.alloydb.v1alpha.OperationMetadata'
     ) as gax.protobuf.Type;
+    const upgradeClusterResponse = protoFilesRoot.lookup(
+      '.google.cloud.alloydb.v1alpha.UpgradeClusterResponse'
+    ) as gax.protobuf.Type;
+    const upgradeClusterMetadata = protoFilesRoot.lookup(
+      '.google.cloud.alloydb.v1alpha.OperationMetadata'
+    ) as gax.protobuf.Type;
     const deleteClusterResponse = protoFilesRoot.lookup(
       '.google.protobuf.Empty'
     ) as gax.protobuf.Type;
@@ -313,6 +348,12 @@ export class AlloyDBAdminClient {
       '.google.cloud.alloydb.v1alpha.Cluster'
     ) as gax.protobuf.Type;
     const promoteClusterMetadata = protoFilesRoot.lookup(
+      '.google.cloud.alloydb.v1alpha.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const switchoverClusterResponse = protoFilesRoot.lookup(
+      '.google.cloud.alloydb.v1alpha.Cluster'
+    ) as gax.protobuf.Type;
+    const switchoverClusterMetadata = protoFilesRoot.lookup(
       '.google.cloud.alloydb.v1alpha.OperationMetadata'
     ) as gax.protobuf.Type;
     const restoreClusterResponse = protoFilesRoot.lookup(
@@ -405,6 +446,11 @@ export class AlloyDBAdminClient {
         updateClusterResponse.decode.bind(updateClusterResponse),
         updateClusterMetadata.decode.bind(updateClusterMetadata)
       ),
+      upgradeCluster: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        upgradeClusterResponse.decode.bind(upgradeClusterResponse),
+        upgradeClusterMetadata.decode.bind(upgradeClusterMetadata)
+      ),
       deleteCluster: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
         deleteClusterResponse.decode.bind(deleteClusterResponse),
@@ -414,6 +460,11 @@ export class AlloyDBAdminClient {
         this.operationsClient,
         promoteClusterResponse.decode.bind(promoteClusterResponse),
         promoteClusterMetadata.decode.bind(promoteClusterMetadata)
+      ),
+      switchoverCluster: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        switchoverClusterResponse.decode.bind(switchoverClusterResponse),
+        switchoverClusterMetadata.decode.bind(switchoverClusterMetadata)
       ),
       restoreCluster: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
@@ -544,8 +595,10 @@ export class AlloyDBAdminClient {
       'getCluster',
       'createCluster',
       'updateCluster',
+      'upgradeCluster',
       'deleteCluster',
       'promoteCluster',
+      'switchoverCluster',
       'restoreCluster',
       'createSecondaryCluster',
       'listInstances',
@@ -558,6 +611,7 @@ export class AlloyDBAdminClient {
       'failoverInstance',
       'injectFault',
       'restartInstance',
+      'executeSql',
       'listBackups',
       'getBackup',
       'createBackup',
@@ -571,6 +625,7 @@ export class AlloyDBAdminClient {
       'createUser',
       'updateUser',
       'deleteUser',
+      'listDatabases',
     ];
     for (const methodName of alloyDBAdminStubMethods) {
       const callPromise = this.alloyDBAdminStub.then(
@@ -606,19 +661,50 @@ export class AlloyDBAdminClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'alloydb.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'alloydb.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -671,9 +757,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.Cluster | Cluster}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.Cluster|Cluster}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.get_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_GetCluster_async
@@ -685,7 +770,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.ICluster,
       protos.google.cloud.alloydb.v1alpha.IGetClusterRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCluster(
@@ -725,7 +810,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.ICluster,
       protos.google.cloud.alloydb.v1alpha.IGetClusterRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -759,9 +844,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.Instance | Instance}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.Instance|Instance}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.get_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_GetInstance_async
@@ -773,7 +857,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IInstance,
       protos.google.cloud.alloydb.v1alpha.IGetInstanceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getInstance(
@@ -819,7 +903,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IInstance,
       protos.google.cloud.alloydb.v1alpha.IGetInstanceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -841,6 +925,104 @@ export class AlloyDBAdminClient {
     return this.innerApiCalls.getInstance(request, options, callback);
   }
   /**
+   * Executes a SQL statement in a database inside an AlloyDB instance.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} [request.password]
+   *   Optional. The database native user’s password.
+   * @param {string} request.instance
+   *   Required. The instance where the SQL will be executed. For the required
+   *   format, see the comment on the Instance.name field.
+   * @param {string} request.database
+   *   Required. Name of the database where the query will be executed.
+   *   Note - Value provided should be the same as expected from `SELECT
+   *   current_database();` and NOT as a resource reference.
+   * @param {string} request.user
+   *   Required. Database user to be used for executing the SQL.
+   *   Note - Value provided should be the same as expected from
+   *   `SELECT current_user;` and NOT as a resource reference.
+   * @param {string} request.sqlStatement
+   *   Required. SQL statement to execute on database. Any valid statement is
+   *   permitted, including DDL, DML, DQL statements.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.ExecuteSqlResponse|ExecuteSqlResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.execute_sql.js</caption>
+   * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ExecuteSql_async
+   */
+  executeSql(
+    request?: protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlResponse,
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  executeSql(
+    request: protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlResponse,
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  executeSql(
+    request: protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest,
+    callback: Callback<
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlResponse,
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  executeSql(
+    request?: protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.alloydb.v1alpha.IExecuteSqlResponse,
+          | protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlResponse,
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlResponse,
+      protos.google.cloud.alloydb.v1alpha.IExecuteSqlRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        instance: request.instance ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.executeSql(request, options, callback);
+  }
+  /**
    * Gets details of a single Backup.
    *
    * @param {Object} request
@@ -850,9 +1032,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.Backup | Backup}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.Backup|Backup}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.get_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_GetBackup_async
@@ -864,7 +1045,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IBackup,
       protos.google.cloud.alloydb.v1alpha.IGetBackupRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getBackup(
@@ -904,7 +1085,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IBackup,
       protos.google.cloud.alloydb.v1alpha.IGetBackupRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -927,10 +1108,10 @@ export class AlloyDBAdminClient {
   }
   /**
    * Generate a client certificate signed by a Cluster CA.
-   * The sole purpose of this endpoint is to support the Auth Proxy client and
-   * the endpoint's behavior is subject to change without notice, so do not rely
-   * on its behavior remaining constant. Future changes will not break the Auth
-   * Proxy client.
+   * The sole purpose of this endpoint is to support AlloyDB connectors and the
+   * Auth Proxy client. The endpoint's behavior is subject to change without
+   * notice, so do not rely on its behavior remaining constant. Future changes
+   * will not break AlloyDB connectors or the Auth Proxy client.
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -939,20 +1120,21 @@ export class AlloyDBAdminClient {
    *    * projects/{project}/locations/{location}/clusters/{cluster}
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {string} [request.pemCsr]
-   *   Optional. A pem-encoded X.509 certificate signing request (CSR).
+   *   Optional. A pem-encoded X.509 certificate signing request (CSR). It is
+   *   recommended to use public_key instead.
    * @param {google.protobuf.Duration} [request.certDuration]
    *   Optional. An optional hint to the endpoint to generate the client
    *   certificate with the requested duration. The duration can be from 1 hour to
@@ -961,12 +1143,15 @@ export class AlloyDBAdminClient {
    *   default duration.
    * @param {string} [request.publicKey]
    *   Optional. The public key from the client.
+   * @param {boolean} [request.useMetadataExchange]
+   *   Optional. An optional hint to the endpoint to generate a client
+   *   ceritificate that can be used by AlloyDB connectors to exchange additional
+   *   metadata with the server after TLS handshake.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.GenerateClientCertificateResponse | GenerateClientCertificateResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.GenerateClientCertificateResponse|GenerateClientCertificateResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.generate_client_certificate.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_GenerateClientCertificate_async
@@ -981,7 +1166,7 @@ export class AlloyDBAdminClient {
         | protos.google.cloud.alloydb.v1alpha.IGenerateClientCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   generateClientCertificate(
@@ -1030,7 +1215,7 @@ export class AlloyDBAdminClient {
         | protos.google.cloud.alloydb.v1alpha.IGenerateClientCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1065,14 +1250,14 @@ export class AlloyDBAdminClient {
    *   projects/{project}/locations/{location}/clusters/{cluster}/instances/{instance}
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -1080,9 +1265,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.ConnectionInfo | ConnectionInfo}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.ConnectionInfo|ConnectionInfo}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.get_connection_info.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_GetConnectionInfo_async
@@ -1094,7 +1278,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IConnectionInfo,
       protos.google.cloud.alloydb.v1alpha.IGetConnectionInfoRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getConnectionInfo(
@@ -1140,7 +1324,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IConnectionInfo,
       protos.google.cloud.alloydb.v1alpha.IGetConnectionInfoRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1172,9 +1356,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.User | User}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.User|User}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.get_user.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_GetUser_async
@@ -1186,7 +1369,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser,
       protos.google.cloud.alloydb.v1alpha.IGetUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getUser(
@@ -1226,7 +1409,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser,
       protos.google.cloud.alloydb.v1alpha.IGetUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1260,14 +1443,14 @@ export class AlloyDBAdminClient {
    *   Required. The resource being created
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -1278,9 +1461,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.User | User}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.User|User}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_user.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateUser_async
@@ -1292,7 +1474,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser,
       protos.google.cloud.alloydb.v1alpha.ICreateUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createUser(
@@ -1332,7 +1514,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser,
       protos.google.cloud.alloydb.v1alpha.ICreateUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1368,14 +1550,14 @@ export class AlloyDBAdminClient {
    *   Required. The resource being updated
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -1388,9 +1570,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.alloydb.v1alpha.User | User}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.alloydb.v1alpha.User|User}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_user.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateUser_async
@@ -1402,7 +1583,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser,
       protos.google.cloud.alloydb.v1alpha.IUpdateUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateUser(
@@ -1442,7 +1623,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser,
       protos.google.cloud.alloydb.v1alpha.IUpdateUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1473,14 +1654,14 @@ export class AlloyDBAdminClient {
    *   comment on the User.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -1491,9 +1672,8 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_user.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteUser_async
@@ -1505,7 +1685,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.alloydb.v1alpha.IDeleteUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteUser(
@@ -1545,7 +1725,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.alloydb.v1alpha.IDeleteUserRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1581,30 +1761,29 @@ export class AlloyDBAdminClient {
    *   Required. The resource being created
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the create
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateCluster_async
@@ -1619,7 +1798,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCluster(
@@ -1672,7 +1851,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1699,8 +1878,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateCluster_async
@@ -1743,22 +1921,22 @@ export class AlloyDBAdminClient {
    *   Required. The resource being updated
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the update
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {boolean} [request.allowMissing]
    *   Optional. If set to true, update succeeds even if cluster is not found. In
    *   that case, a new cluster is created and `update_mask` is ignored.
@@ -1768,8 +1946,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateCluster_async
@@ -1784,7 +1961,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCluster(
@@ -1837,7 +2014,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1864,8 +2041,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateCluster_async
@@ -1894,6 +2070,167 @@ export class AlloyDBAdminClient {
     >;
   }
   /**
+   * Upgrades a single Cluster.
+   * Imperative only.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The resource name of the cluster.
+   * @param {google.cloud.alloydb.v1alpha.DatabaseVersion} request.version
+   *   Required. The version the cluster is going to be upgraded to.
+   * @param {string} [request.requestId]
+   *   Optional. An optional request ID to identify requests. Specify a unique
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and
+   *   the request times out. If you make the request again with the same request
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
+   *   clients from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
+   * @param {string} [request.etag]
+   *   Optional. The current etag of the Cluster.
+   *   If an etag is provided and does not match the current etag of the Cluster,
+   *   upgrade will be blocked and an ABORTED error will be returned.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.upgrade_cluster.js</caption>
+   * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpgradeCluster_async
+   */
+  upgradeCluster(
+    request?: protos.google.cloud.alloydb.v1alpha.IUpgradeClusterRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.IUpgradeClusterResponse,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  upgradeCluster(
+    request: protos.google.cloud.alloydb.v1alpha.IUpgradeClusterRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.IUpgradeClusterResponse,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  upgradeCluster(
+    request: protos.google.cloud.alloydb.v1alpha.IUpgradeClusterRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.IUpgradeClusterResponse,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  upgradeCluster(
+    request?: protos.google.cloud.alloydb.v1alpha.IUpgradeClusterRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.alloydb.v1alpha.IUpgradeClusterResponse,
+            protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.IUpgradeClusterResponse,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.IUpgradeClusterResponse,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.upgradeCluster(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `upgradeCluster()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.upgrade_cluster.js</caption>
+   * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpgradeCluster_async
+   */
+  async checkUpgradeClusterProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.alloydb.v1alpha.UpgradeClusterResponse,
+      protos.google.cloud.alloydb.v1alpha.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.upgradeCluster,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.alloydb.v1alpha.UpgradeClusterResponse,
+      protos.google.cloud.alloydb.v1alpha.OperationMetadata
+    >;
+  }
+  /**
    * Deletes a single Cluster.
    *
    * @param {Object} request
@@ -1903,14 +2240,14 @@ export class AlloyDBAdminClient {
    *   comment on the Cluster.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -1920,8 +2257,9 @@ export class AlloyDBAdminClient {
    *   If an etag is provided and does not match the current etag of the Cluster,
    *   deletion will be blocked and an ABORTED error will be returned.
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the delete.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {boolean} [request.force]
    *   Optional. Whether to cascade delete child instances for given cluster.
    * @param {object} [options]
@@ -1930,8 +2268,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteCluster_async
@@ -1946,7 +2283,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCluster(
@@ -1999,7 +2336,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2026,8 +2363,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteCluster_async
@@ -2068,9 +2404,9 @@ export class AlloyDBAdminClient {
    *   comment on the Cluster.name field
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
@@ -2085,16 +2421,16 @@ export class AlloyDBAdminClient {
    *   If an etag is provided and does not match the current etag of the Cluster,
    *   deletion will be blocked and an ABORTED error will be returned.
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the delete.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.promote_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_PromoteCluster_async
@@ -2109,7 +2445,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   promoteCluster(
@@ -2162,7 +2498,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2189,8 +2525,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.promote_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_PromoteCluster_async
@@ -2219,6 +2554,163 @@ export class AlloyDBAdminClient {
     >;
   }
   /**
+   * Switches the roles of PRIMARY and SECONDARY clusters without any data loss.
+   * This promotes the SECONDARY cluster to PRIMARY and sets up the original
+   * PRIMARY cluster to replicate from this newly promoted cluster.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the resource. For the required format, see the
+   *   comment on the Cluster.name field
+   * @param {string} [request.requestId]
+   *   Optional. An optional request ID to identify requests. Specify a unique
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and
+   *   the request times out. If you make the request again with the same request
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
+   *   clients from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {boolean} [request.validateOnly]
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.switchover_cluster.js</caption>
+   * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_SwitchoverCluster_async
+   */
+  switchoverCluster(
+    request?: protos.google.cloud.alloydb.v1alpha.ISwitchoverClusterRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.ICluster,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  switchoverCluster(
+    request: protos.google.cloud.alloydb.v1alpha.ISwitchoverClusterRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.ICluster,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  switchoverCluster(
+    request: protos.google.cloud.alloydb.v1alpha.ISwitchoverClusterRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.ICluster,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  switchoverCluster(
+    request?: protos.google.cloud.alloydb.v1alpha.ISwitchoverClusterRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.alloydb.v1alpha.ICluster,
+            protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.ICluster,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.alloydb.v1alpha.ICluster,
+        protos.google.cloud.alloydb.v1alpha.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.switchoverCluster(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `switchoverCluster()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.switchover_cluster.js</caption>
+   * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_SwitchoverCluster_async
+   */
+  async checkSwitchoverClusterProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.alloydb.v1alpha.Cluster,
+      protos.google.cloud.alloydb.v1alpha.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.switchoverCluster,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.alloydb.v1alpha.Cluster,
+      protos.google.cloud.alloydb.v1alpha.OperationMetadata
+    >;
+  }
+  /**
    * Creates a new Cluster in a given project and location, with a volume
    * restored from the provided source, either a backup ID or a point-in-time
    * and a source cluster.
@@ -2239,30 +2731,29 @@ export class AlloyDBAdminClient {
    *   Required. The resource being created
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the import
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.restore_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_RestoreCluster_async
@@ -2277,7 +2768,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   restoreCluster(
@@ -2330,7 +2821,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2357,8 +2848,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.restore_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_RestoreCluster_async
@@ -2401,30 +2891,29 @@ export class AlloyDBAdminClient {
    *   Required. Configuration of the requesting object (the secondary cluster).
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the create
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_secondary_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateSecondaryCluster_async
@@ -2439,7 +2928,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createSecondaryCluster(
@@ -2492,7 +2981,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2523,8 +3012,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_secondary_cluster.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateSecondaryCluster_async
@@ -2566,30 +3054,29 @@ export class AlloyDBAdminClient {
    *   Required. The resource being created
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the create
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateInstance_async
@@ -2604,7 +3091,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createInstance(
@@ -2657,7 +3144,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2684,8 +3171,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateInstance_async
@@ -2727,30 +3213,29 @@ export class AlloyDBAdminClient {
    *   Required. The resource being created
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the create
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_secondary_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateSecondaryInstance_async
@@ -2765,7 +3250,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createSecondaryInstance(
@@ -2818,7 +3303,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2849,8 +3334,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_secondary_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateSecondaryInstance_async
@@ -2898,14 +3382,14 @@ export class AlloyDBAdminClient {
    *   Required. Resources being created.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -2916,8 +3400,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.batch_create_instances.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_BatchCreateInstances_async
@@ -2932,7 +3415,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchCreateInstances(
@@ -2985,7 +3468,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3012,8 +3495,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.batch_create_instances.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_BatchCreateInstances_async
@@ -3056,22 +3538,22 @@ export class AlloyDBAdminClient {
    *   Required. The resource being updated
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the update
-   *   request.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {boolean} [request.allowMissing]
    *   Optional. If set to true, update succeeds even if instance is not found. In
    *   that case, a new instance is created and `update_mask` is ignored.
@@ -3081,8 +3563,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateInstance_async
@@ -3097,7 +3578,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateInstance(
@@ -3150,7 +3631,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3177,8 +3658,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateInstance_async
@@ -3216,14 +3696,14 @@ export class AlloyDBAdminClient {
    *   comment on the Instance.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -3233,16 +3713,16 @@ export class AlloyDBAdminClient {
    *   If an etag is provided and does not match the current etag of the Instance,
    *   deletion will be blocked and an ABORTED error will be returned.
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the delete.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteInstance_async
@@ -3257,7 +3737,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteInstance(
@@ -3310,7 +3790,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3337,8 +3817,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteInstance_async
@@ -3378,29 +3857,29 @@ export class AlloyDBAdminClient {
    *   comment on the Instance.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the failover.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.failover_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_FailoverInstance_async
@@ -3415,7 +3894,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   failoverInstance(
@@ -3468,7 +3947,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3495,8 +3974,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.failover_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_FailoverInstance_async
@@ -3537,30 +4015,29 @@ export class AlloyDBAdminClient {
    *   comment on the Instance.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the fault
-   *   injection.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.inject_fault.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_InjectFault_async
@@ -3575,7 +4052,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   injectFault(
@@ -3628,7 +4105,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3655,8 +4132,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.inject_fault.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_InjectFault_async
@@ -3695,29 +4171,32 @@ export class AlloyDBAdminClient {
    *   comment on the Instance.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
    *   not supported (00000000-0000-0000-0000-000000000000).
    * @param {boolean} [request.validateOnly]
-   *   Optional. If set, performs request validation (e.g. permission checks and
-   *   any other type of validation), but do not actually execute the restart.
+   *   Optional. If set, performs request validation, for example, permission
+   *   checks and any other type of validation, but does not actually execute the
+   *   create request.
+   * @param {string[]} [request.nodeIds]
+   *   Optional. Full name of the nodes as obtained from INSTANCE_VIEW_FULL to
+   *   restart upon. Applicable only to read instances.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.restart_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_RestartInstance_async
@@ -3732,7 +4211,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   restartInstance(
@@ -3785,7 +4264,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3812,8 +4291,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.restart_instance.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_RestartInstance_async
@@ -3854,14 +4332,14 @@ export class AlloyDBAdminClient {
    *   Required. The resource being created
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -3875,8 +4353,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateBackup_async
@@ -3891,7 +4368,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createBackup(
@@ -3944,7 +4421,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3971,8 +4448,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.create_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_CreateBackup_async
@@ -4015,14 +4491,14 @@ export class AlloyDBAdminClient {
    *   Required. The resource being updated
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes since the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -4039,8 +4515,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateBackup_async
@@ -4055,7 +4530,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateBackup(
@@ -4108,7 +4583,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4135,8 +4610,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.update_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_UpdateBackup_async
@@ -4174,14 +4648,14 @@ export class AlloyDBAdminClient {
    *   the Backup.name field.
    * @param {string} [request.requestId]
    *   Optional. An optional request ID to identify requests. Specify a unique
-   *   request ID so that if you must retry your request, the server will know to
-   *   ignore the request if it has already been completed. The server will
-   *   guarantee that for at least 60 minutes after the first request.
+   *   request ID so that if you must retry your request, the server ignores the
+   *   request if it has already been completed. The server guarantees that for at
+   *   least 60 minutes since the first request.
    *
    *   For example, consider a situation where you make an initial request and
    *   the request times out. If you make the request again with the same request
-   *   ID, the server can check if original operation with the same request ID
-   *   was received, and if so, will ignore the second request. This prevents
+   *   ID, the server can check if the original operation with the same request ID
+   *   was received, and if so, ignores the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
    *
    *   The request ID must be a valid UUID with the exception that zero UUID is
@@ -4199,8 +4673,7 @@ export class AlloyDBAdminClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteBackup_async
@@ -4215,7 +4688,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteBackup(
@@ -4268,7 +4741,7 @@ export class AlloyDBAdminClient {
         protos.google.cloud.alloydb.v1alpha.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4295,8 +4768,7 @@ export class AlloyDBAdminClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.delete_backup.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_DeleteBackup_async
@@ -4346,14 +4818,13 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.alloydb.v1alpha.Cluster | Cluster}.
+   *   The first element of the array is Array of {@link protos.google.cloud.alloydb.v1alpha.Cluster|Cluster}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listClustersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listClusters(
@@ -4363,7 +4834,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.ICluster[],
       protos.google.cloud.alloydb.v1alpha.IListClustersRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListClustersResponse
+      protos.google.cloud.alloydb.v1alpha.IListClustersResponse,
     ]
   >;
   listClusters(
@@ -4409,7 +4880,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.ICluster[],
       protos.google.cloud.alloydb.v1alpha.IListClustersRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListClustersResponse
+      protos.google.cloud.alloydb.v1alpha.IListClustersResponse,
     ]
   > | void {
     request = request || {};
@@ -4452,13 +4923,12 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.alloydb.v1alpha.Cluster | Cluster} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.alloydb.v1alpha.Cluster|Cluster} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listClustersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listClustersStream(
@@ -4506,12 +4976,11 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.alloydb.v1alpha.Cluster | Cluster}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.alloydb.v1alpha.Cluster|Cluster}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.list_clusters.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ListClusters_async
@@ -4561,14 +5030,13 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.alloydb.v1alpha.Instance | Instance}.
+   *   The first element of the array is Array of {@link protos.google.cloud.alloydb.v1alpha.Instance|Instance}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listInstancesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listInstances(
@@ -4578,7 +5046,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IInstance[],
       protos.google.cloud.alloydb.v1alpha.IListInstancesRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListInstancesResponse
+      protos.google.cloud.alloydb.v1alpha.IListInstancesResponse,
     ]
   >;
   listInstances(
@@ -4624,7 +5092,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IInstance[],
       protos.google.cloud.alloydb.v1alpha.IListInstancesRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListInstancesResponse
+      protos.google.cloud.alloydb.v1alpha.IListInstancesResponse,
     ]
   > | void {
     request = request || {};
@@ -4669,13 +5137,12 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.alloydb.v1alpha.Instance | Instance} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.alloydb.v1alpha.Instance|Instance} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listInstancesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listInstancesStream(
@@ -4725,12 +5192,11 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.alloydb.v1alpha.Instance | Instance}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.alloydb.v1alpha.Instance|Instance}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.list_instances.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ListInstances_async
@@ -4775,14 +5241,13 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.alloydb.v1alpha.Backup | Backup}.
+   *   The first element of the array is Array of {@link protos.google.cloud.alloydb.v1alpha.Backup|Backup}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listBackupsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBackups(
@@ -4792,7 +5257,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IBackup[],
       protos.google.cloud.alloydb.v1alpha.IListBackupsRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListBackupsResponse
+      protos.google.cloud.alloydb.v1alpha.IListBackupsResponse,
     ]
   >;
   listBackups(
@@ -4838,7 +5303,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IBackup[],
       protos.google.cloud.alloydb.v1alpha.IListBackupsRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListBackupsResponse
+      protos.google.cloud.alloydb.v1alpha.IListBackupsResponse,
     ]
   > | void {
     request = request || {};
@@ -4878,13 +5343,12 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.alloydb.v1alpha.Backup | Backup} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.alloydb.v1alpha.Backup|Backup} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listBackupsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBackupsStream(
@@ -4929,12 +5393,11 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.alloydb.v1alpha.Backup | Backup}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.alloydb.v1alpha.Backup|Backup}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.list_backups.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ListBackups_async
@@ -4981,14 +5444,13 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.alloydb.v1alpha.SupportedDatabaseFlag | SupportedDatabaseFlag}.
+   *   The first element of the array is Array of {@link protos.google.cloud.alloydb.v1alpha.SupportedDatabaseFlag|SupportedDatabaseFlag}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listSupportedDatabaseFlagsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSupportedDatabaseFlags(
@@ -4998,7 +5460,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.ISupportedDatabaseFlag[],
       protos.google.cloud.alloydb.v1alpha.IListSupportedDatabaseFlagsRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListSupportedDatabaseFlagsResponse
+      protos.google.cloud.alloydb.v1alpha.IListSupportedDatabaseFlagsResponse,
     ]
   >;
   listSupportedDatabaseFlags(
@@ -5044,7 +5506,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.ISupportedDatabaseFlag[],
       protos.google.cloud.alloydb.v1alpha.IListSupportedDatabaseFlagsRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListSupportedDatabaseFlagsResponse
+      protos.google.cloud.alloydb.v1alpha.IListSupportedDatabaseFlagsResponse,
     ]
   > | void {
     request = request || {};
@@ -5090,13 +5552,12 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.alloydb.v1alpha.SupportedDatabaseFlag | SupportedDatabaseFlag} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.alloydb.v1alpha.SupportedDatabaseFlag|SupportedDatabaseFlag} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listSupportedDatabaseFlagsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listSupportedDatabaseFlagsStream(
@@ -5143,12 +5604,11 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.alloydb.v1alpha.SupportedDatabaseFlag | SupportedDatabaseFlag}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.alloydb.v1alpha.SupportedDatabaseFlag|SupportedDatabaseFlag}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.list_supported_database_flags.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ListSupportedDatabaseFlags_async
@@ -5193,14 +5653,13 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.alloydb.v1alpha.User | User}.
+   *   The first element of the array is Array of {@link protos.google.cloud.alloydb.v1alpha.User|User}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listUsersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listUsers(
@@ -5210,7 +5669,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser[],
       protos.google.cloud.alloydb.v1alpha.IListUsersRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListUsersResponse
+      protos.google.cloud.alloydb.v1alpha.IListUsersResponse,
     ]
   >;
   listUsers(
@@ -5250,7 +5709,7 @@ export class AlloyDBAdminClient {
     [
       protos.google.cloud.alloydb.v1alpha.IUser[],
       protos.google.cloud.alloydb.v1alpha.IListUsersRequest | null,
-      protos.google.cloud.alloydb.v1alpha.IListUsersResponse
+      protos.google.cloud.alloydb.v1alpha.IListUsersResponse,
     ]
   > | void {
     request = request || {};
@@ -5290,13 +5749,12 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.alloydb.v1alpha.User | User} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.alloydb.v1alpha.User|User} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listUsersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listUsersStream(
@@ -5341,12 +5799,11 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.alloydb.v1alpha.User | User}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.alloydb.v1alpha.User|User}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.list_users.js</caption>
    * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ListUsers_async
@@ -5371,6 +5828,216 @@ export class AlloyDBAdminClient {
       request as {},
       callSettings
     ) as AsyncIterable<protos.google.cloud.alloydb.v1alpha.IUser>;
+  }
+  /**
+   * Lists Databases in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Parent value for ListDatabasesRequest.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of databases to return. The service may return
+   *   fewer than this value. If unspecified, 2000 is the default page_size. The
+   *   max value of page_size will be 4000, values above max will be coerced to
+   *   max.
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListDatabases` call.
+   *   This should be provided to retrieve the subsequent page.
+   *   This field is currently not supported, its value will be ignored if passed.
+   * @param {string} [request.filter]
+   *   Optional. Filtering results.
+   *   This field is currently not supported, its value will be ignored if passed.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.alloydb.v1alpha.Database|Database}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listDatabasesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listDatabases(
+    request?: protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.alloydb.v1alpha.IDatabase[],
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest | null,
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesResponse,
+    ]
+  >;
+  listDatabases(
+    request: protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+      | protos.google.cloud.alloydb.v1alpha.IListDatabasesResponse
+      | null
+      | undefined,
+      protos.google.cloud.alloydb.v1alpha.IDatabase
+    >
+  ): void;
+  listDatabases(
+    request: protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+      | protos.google.cloud.alloydb.v1alpha.IListDatabasesResponse
+      | null
+      | undefined,
+      protos.google.cloud.alloydb.v1alpha.IDatabase
+    >
+  ): void;
+  listDatabases(
+    request?: protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+          | protos.google.cloud.alloydb.v1alpha.IListDatabasesResponse
+          | null
+          | undefined,
+          protos.google.cloud.alloydb.v1alpha.IDatabase
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+      | protos.google.cloud.alloydb.v1alpha.IListDatabasesResponse
+      | null
+      | undefined,
+      protos.google.cloud.alloydb.v1alpha.IDatabase
+    >
+  ): Promise<
+    [
+      protos.google.cloud.alloydb.v1alpha.IDatabase[],
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest | null,
+      protos.google.cloud.alloydb.v1alpha.IListDatabasesResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listDatabases(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Parent value for ListDatabasesRequest.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of databases to return. The service may return
+   *   fewer than this value. If unspecified, 2000 is the default page_size. The
+   *   max value of page_size will be 4000, values above max will be coerced to
+   *   max.
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListDatabases` call.
+   *   This should be provided to retrieve the subsequent page.
+   *   This field is currently not supported, its value will be ignored if passed.
+   * @param {string} [request.filter]
+   *   Optional. Filtering results.
+   *   This field is currently not supported, its value will be ignored if passed.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.alloydb.v1alpha.Database|Database} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listDatabasesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listDatabasesStream(
+    request?: protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listDatabases'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listDatabases.createStream(
+      this.innerApiCalls.listDatabases as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listDatabases`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Parent value for ListDatabasesRequest.
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of databases to return. The service may return
+   *   fewer than this value. If unspecified, 2000 is the default page_size. The
+   *   max value of page_size will be 4000, values above max will be coerced to
+   *   max.
+   * @param {string} [request.pageToken]
+   *   Optional. A page token, received from a previous `ListDatabases` call.
+   *   This should be provided to retrieve the subsequent page.
+   *   This field is currently not supported, its value will be ignored if passed.
+   * @param {string} [request.filter]
+   *   Optional. Filtering results.
+   *   This field is currently not supported, its value will be ignored if passed.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.alloydb.v1alpha.Database|Database}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1alpha/alloy_d_b_admin.list_databases.js</caption>
+   * region_tag:alloydb_v1alpha_generated_AlloyDBAdmin_ListDatabases_async
+   */
+  listDatabasesAsync(
+    request?: protos.google.cloud.alloydb.v1alpha.IListDatabasesRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.alloydb.v1alpha.IDatabase> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listDatabases'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listDatabases.asyncIterate(
+      this.innerApiCalls['listDatabases'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.alloydb.v1alpha.IDatabase>;
   }
   /**
    * Gets the access control policy for a resource. Returns an empty policy
@@ -5411,7 +6078,7 @@ export class AlloyDBAdminClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -5432,8 +6099,7 @@ export class AlloyDBAdminClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -5459,7 +6125,7 @@ export class AlloyDBAdminClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -5480,8 +6146,7 @@ export class AlloyDBAdminClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -5508,7 +6173,7 @@ export class AlloyDBAdminClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -5523,8 +6188,7 @@ export class AlloyDBAdminClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -5570,12 +6234,11 @@ export class AlloyDBAdminClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -5942,6 +6605,73 @@ export class AlloyDBAdminClient {
     return this.pathTemplates.connectionInfoPathTemplate.match(
       connectionInfoName
     ).instance;
+  }
+
+  /**
+   * Return a fully-qualified database resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} cluster
+   * @param {string} database
+   * @returns {string} Resource name string.
+   */
+  databasePath(
+    project: string,
+    location: string,
+    cluster: string,
+    database: string
+  ) {
+    return this.pathTemplates.databasePathTemplate.render({
+      project: project,
+      location: location,
+      cluster: cluster,
+      database: database,
+    });
+  }
+
+  /**
+   * Parse the project from Database resource.
+   *
+   * @param {string} databaseName
+   *   A fully-qualified path representing Database resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDatabaseName(databaseName: string) {
+    return this.pathTemplates.databasePathTemplate.match(databaseName).project;
+  }
+
+  /**
+   * Parse the location from Database resource.
+   *
+   * @param {string} databaseName
+   *   A fully-qualified path representing Database resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDatabaseName(databaseName: string) {
+    return this.pathTemplates.databasePathTemplate.match(databaseName).location;
+  }
+
+  /**
+   * Parse the cluster from Database resource.
+   *
+   * @param {string} databaseName
+   *   A fully-qualified path representing Database resource.
+   * @returns {string} A string representing the cluster.
+   */
+  matchClusterFromDatabaseName(databaseName: string) {
+    return this.pathTemplates.databasePathTemplate.match(databaseName).cluster;
+  }
+
+  /**
+   * Parse the database from Database resource.
+   *
+   * @param {string} databaseName
+   *   A fully-qualified path representing Database resource.
+   * @returns {string} A string representing the database.
+   */
+  matchDatabaseFromDatabaseName(databaseName: string) {
+    return this.pathTemplates.databasePathTemplate.match(databaseName).database;
   }
 
   /**

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 // ** https://github.com/googleapis/gapic-generator-typescript **
 // ** All changes to this file may be overwritten. **
 
-import {GatewayServiceClient} from '@google-cloud/gke-connect-gateway';
+import {GatewayControlClient} from '@google-cloud/gke-connect-gateway';
 
 // check that the client class type name can be used
-function doStuffWithGatewayServiceClient(client: GatewayServiceClient) {
+function doStuffWithGatewayControlClient(client: GatewayControlClient) {
   client.close();
 }
 
 function main() {
   // check that the client instance can be created
-  const gatewayServiceClient = new GatewayServiceClient();
-  doStuffWithGatewayServiceClient(gatewayServiceClient);
+  const gatewayControlClient = new GatewayControlClient();
+  doStuffWithGatewayControlClient(gatewayControlClient);
 }
 
 main();

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/cloud_build_client_config.json`.
@@ -59,6 +60,8 @@ export class CloudBuildClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -100,8 +103,7 @@ export class CloudBuildClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -109,7 +111,7 @@ export class CloudBuildClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CloudBuildClient({fallback: 'rest'}, gax);
+   *     const client = new CloudBuildClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -118,8 +120,27 @@ export class CloudBuildClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof CloudBuildClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'cloudbuild.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -134,7 +155,7 @@ export class CloudBuildClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -159,23 +180,23 @@ export class CloudBuildClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -194,20 +215,32 @@ export class CloudBuildClient {
       locationPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
       ),
+      networkPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/global/networks/{network}'
+      ),
       projectPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}'
       ),
       projectBuildPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/builds/{build}'
       ),
+      projectConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/githubEnterpriseConfigs/{config}'
+      ),
       projectLocationBuildPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/builds/{build}'
+      ),
+      projectLocationConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/githubEnterpriseConfigs/{config}'
       ),
       projectLocationTriggerPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/triggers/{trigger}'
       ),
       projectTriggerPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/triggers/{trigger}'
+      ),
+      repositoryPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/connections/{connection}/repositories/{repository}'
       ),
       secretVersionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/secrets/{secret}/versions/{version}'
@@ -255,7 +288,7 @@ export class CloudBuildClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -465,19 +498,50 @@ export class CloudBuildClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudbuild.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudbuild.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -534,9 +598,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.Build | Build}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.Build|Build}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.get_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_GetBuild_async
@@ -548,7 +611,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuild,
       protos.google.devtools.cloudbuild.v1.IGetBuildRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getBuild(
@@ -588,7 +651,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuild,
       protos.google.devtools.cloudbuild.v1.IGetBuildRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -602,12 +665,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/builds/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        id: request.id ?? '',
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.getBuild(request, options, callback);
   }
@@ -626,9 +700,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.Build | Build}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.Build|Build}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.cancel_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_CancelBuild_async
@@ -640,7 +713,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuild,
       protos.google.devtools.cloudbuild.v1.ICancelBuildRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   cancelBuild(
@@ -686,7 +759,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuild,
       protos.google.devtools.cloudbuild.v1.ICancelBuildRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -700,12 +773,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/builds/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        id: request.id ?? '',
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.cancelBuild(request, options, callback);
   }
@@ -726,9 +810,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.BuildTrigger | BuildTrigger}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.BuildTrigger|BuildTrigger}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.create_build_trigger.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_CreateBuildTrigger_async
@@ -743,7 +826,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.ICreateBuildTriggerRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createBuildTrigger(
@@ -792,7 +875,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.ICreateBuildTriggerRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -806,11 +889,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.createBuildTrigger(request, options, callback);
   }
@@ -831,9 +924,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.BuildTrigger | BuildTrigger}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.BuildTrigger|BuildTrigger}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.get_build_trigger.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_GetBuildTrigger_async
@@ -845,7 +937,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuildTrigger,
       protos.google.devtools.cloudbuild.v1.IGetBuildTriggerRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getBuildTrigger(
@@ -891,7 +983,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuildTrigger,
       protos.google.devtools.cloudbuild.v1.IGetBuildTriggerRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -905,12 +997,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/triggers/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        trigger_id: request.triggerId ?? '',
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.getBuildTrigger(request, options, callback);
   }
@@ -931,9 +1034,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.delete_build_trigger.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_DeleteBuildTrigger_async
@@ -948,7 +1050,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.IDeleteBuildTriggerRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteBuildTrigger(
@@ -997,7 +1099,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.IDeleteBuildTriggerRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1011,12 +1113,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/triggers/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        trigger_id: request.triggerId ?? '',
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.deleteBuildTrigger(request, options, callback);
   }
@@ -1033,12 +1146,15 @@ export class CloudBuildClient {
    *   Required. ID of the `BuildTrigger` to update.
    * @param {google.devtools.cloudbuild.v1.BuildTrigger} request.trigger
    *   Required. `BuildTrigger` to update.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Update mask for the resource. If this is set,
+   *   the server will only update the fields specified in the field mask.
+   *   Otherwise, a full update of the mutable resource fields will be performed.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.BuildTrigger | BuildTrigger}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.BuildTrigger|BuildTrigger}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.update_build_trigger.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_UpdateBuildTrigger_async
@@ -1053,7 +1169,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.IUpdateBuildTriggerRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateBuildTrigger(
@@ -1102,7 +1218,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.IUpdateBuildTriggerRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1116,12 +1232,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.trigger?.resourceName;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/triggers/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        trigger_id: request.triggerId ?? '',
-        'trigger.resource_name': request.trigger!.resourceName ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.updateBuildTrigger(request, options, callback);
   }
@@ -1145,9 +1272,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.ReceiveTriggerWebhookResponse | ReceiveTriggerWebhookResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.ReceiveTriggerWebhookResponse|ReceiveTriggerWebhookResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.receive_trigger_webhook.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_ReceiveTriggerWebhook_async
@@ -1162,7 +1288,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.IReceiveTriggerWebhookRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   receiveTriggerWebhook(
@@ -1211,7 +1337,7 @@ export class CloudBuildClient {
         | protos.google.devtools.cloudbuild.v1.IReceiveTriggerWebhookRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1245,9 +1371,8 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.devtools.cloudbuild.v1.WorkerPool | WorkerPool}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.devtools.cloudbuild.v1.WorkerPool|WorkerPool}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.get_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_GetWorkerPool_async
@@ -1259,7 +1384,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IWorkerPool,
       protos.google.devtools.cloudbuild.v1.IGetWorkerPoolRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getWorkerPool(
@@ -1305,7 +1430,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IWorkerPool,
       protos.google.devtools.cloudbuild.v1.IGetWorkerPoolRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1319,10 +1444,25 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp(
+              'projects/[^/]+/locations/(?<location>[^/]+)/workerPools/[^/]+'
+            )
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.getWorkerPool(request, options, callback);
   }
@@ -1349,8 +1489,7 @@ export class CloudBuildClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.create_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_CreateBuild_async
@@ -1365,7 +1504,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createBuild(
@@ -1418,7 +1557,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1432,11 +1571,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.createBuild(request, options, callback);
   }
@@ -1446,8 +1595,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.create_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_CreateBuild_async
@@ -1496,7 +1644,7 @@ export class CloudBuildClient {
    *
    * For builds that specify `StorageSource`:
    *
-   * * If the original build pulled source from Google Cloud Storage without
+   * * If the original build pulled source from Cloud Storage without
    * specifying the generation of the object, the new build will use the current
    * object, which may be different from the original build source.
    * * If the original build pulled source from Cloud Storage and specified the
@@ -1519,8 +1667,7 @@ export class CloudBuildClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.retry_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_RetryBuild_async
@@ -1535,7 +1682,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   retryBuild(
@@ -1588,7 +1735,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1602,12 +1749,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/builds/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        id: request.id ?? '',
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.retryBuild(request, options, callback);
   }
@@ -1617,8 +1775,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.retry_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_RetryBuild_async
@@ -1667,8 +1824,7 @@ export class CloudBuildClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.approve_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_ApproveBuild_async
@@ -1683,7 +1839,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   approveBuild(
@@ -1736,7 +1892,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1750,10 +1906,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/builds/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.approveBuild(request, options, callback);
   }
@@ -1763,8 +1932,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.approve_build.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_ApproveBuild_async
@@ -1795,6 +1963,12 @@ export class CloudBuildClient {
   /**
    * Runs a `BuildTrigger` at a particular source revision.
    *
+   * To run a regional or global trigger, use the POST request
+   * that includes the location endpoint in the path (ex.
+   * v1/projects/{projectId}/locations/{region}/triggers/{triggerId}:run). The
+   * POST request that does not include the location endpoint in the path can
+   * only be used when running global triggers.
+   *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
@@ -1806,14 +1980,14 @@ export class CloudBuildClient {
    *   Required. ID of the trigger.
    * @param {google.devtools.cloudbuild.v1.RepoSource} request.source
    *   Source to build against this trigger.
+   *   Branch and tag names cannot consist of regular expressions.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.run_build_trigger.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_RunBuildTrigger_async
@@ -1828,7 +2002,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   runBuildTrigger(
@@ -1881,7 +2055,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IBuildOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1895,12 +2069,23 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp('projects/[^/]+/locations/(?<location>[^/]+)/triggers/[^/]+')
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        trigger_id: request.triggerId ?? '',
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.runBuildTrigger(request, options, callback);
   }
@@ -1910,8 +2095,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.run_build_trigger.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_RunBuildTrigger_async
@@ -1954,7 +2138,7 @@ export class CloudBuildClient {
    *   the final component of the resource name.
    *
    *   This value should be 1-63 characters, and valid characters
-   *   are /{@link 0-9|a-z}-/.
+   *   are /{@link protos.0-9|a-z}-/.
    * @param {boolean} request.validateOnly
    *   If set, validate the request and preview the response, but do not actually
    *   post it.
@@ -1964,8 +2148,7 @@ export class CloudBuildClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.create_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_CreateWorkerPool_async
@@ -1980,7 +2163,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.ICreateWorkerPoolOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createWorkerPool(
@@ -2033,7 +2216,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.ICreateWorkerPoolOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2047,10 +2230,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.createWorkerPool(request, options, callback);
   }
@@ -2060,8 +2254,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.create_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_CreateWorkerPool_async
@@ -2098,9 +2291,9 @@ export class CloudBuildClient {
    *   Required. The name of the `WorkerPool` to delete.
    *   Format:
    *   `projects/{project}/locations/{location}/workerPools/{workerPool}`.
-   * @param {string} request.etag
-   *   Optional. If this is provided, it must match the server's etag on the
-   *   workerpool for the request to be processed.
+   * @param {string} [request.etag]
+   *   Optional. If provided, it must match the server's etag on the workerpool
+   *   for the request to be processed.
    * @param {boolean} request.allowMissing
    *   If set to true, and the `WorkerPool` is not found, the request will succeed
    *   but no action will be taken on the server.
@@ -2113,8 +2306,7 @@ export class CloudBuildClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.delete_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_DeleteWorkerPool_async
@@ -2129,7 +2321,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IDeleteWorkerPoolOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteWorkerPool(
@@ -2182,7 +2374,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IDeleteWorkerPoolOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2196,10 +2388,25 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp(
+              'projects/[^/]+/locations/(?<location>[^/]+)/workerPools/[^/]+'
+            )
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        name: request.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.deleteWorkerPool(request, options, callback);
   }
@@ -2209,8 +2416,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.delete_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_DeleteWorkerPool_async
@@ -2259,8 +2465,7 @@ export class CloudBuildClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.update_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_UpdateWorkerPool_async
@@ -2275,7 +2480,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IUpdateWorkerPoolOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateWorkerPool(
@@ -2328,7 +2533,7 @@ export class CloudBuildClient {
         protos.google.devtools.cloudbuild.v1.IUpdateWorkerPoolOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2342,10 +2547,25 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.workerPool?.name;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(
+            RegExp(
+              'projects/[^/]+/locations/(?<location>[^/]+)/workerPools/[^/]+'
+            )
+          );
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        'worker_pool.name': request.workerPool!.name ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.updateWorkerPool(request, options, callback);
   }
@@ -2355,8 +2575,7 @@ export class CloudBuildClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.update_worker_pool.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_UpdateWorkerPool_async
@@ -2414,14 +2633,13 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.devtools.cloudbuild.v1.Build | Build}.
+   *   The first element of the array is Array of {@link protos.google.devtools.cloudbuild.v1.Build|Build}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listBuildsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBuilds(
@@ -2431,7 +2649,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuild[],
       protos.google.devtools.cloudbuild.v1.IListBuildsRequest | null,
-      protos.google.devtools.cloudbuild.v1.IListBuildsResponse
+      protos.google.devtools.cloudbuild.v1.IListBuildsResponse,
     ]
   >;
   listBuilds(
@@ -2477,7 +2695,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuild[],
       protos.google.devtools.cloudbuild.v1.IListBuildsRequest | null,
-      protos.google.devtools.cloudbuild.v1.IListBuildsResponse
+      protos.google.devtools.cloudbuild.v1.IListBuildsResponse,
     ]
   > | void {
     request = request || {};
@@ -2491,11 +2709,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.listBuilds(request, options, callback);
   }
@@ -2526,13 +2754,12 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.devtools.cloudbuild.v1.Build | Build} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.devtools.cloudbuild.v1.Build|Build} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listBuildsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBuildsStream(
@@ -2543,11 +2770,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     const defaultCallSettings = this._defaults['listBuilds'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -2586,12 +2823,11 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.devtools.cloudbuild.v1.Build | Build}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.devtools.cloudbuild.v1.Build|Build}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.list_builds.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_ListBuilds_async
@@ -2604,11 +2840,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     const defaultCallSettings = this._defaults['listBuilds'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -2637,14 +2883,13 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.devtools.cloudbuild.v1.BuildTrigger | BuildTrigger}.
+   *   The first element of the array is Array of {@link protos.google.devtools.cloudbuild.v1.BuildTrigger|BuildTrigger}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listBuildTriggersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBuildTriggers(
@@ -2654,7 +2899,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuildTrigger[],
       protos.google.devtools.cloudbuild.v1.IListBuildTriggersRequest | null,
-      protos.google.devtools.cloudbuild.v1.IListBuildTriggersResponse
+      protos.google.devtools.cloudbuild.v1.IListBuildTriggersResponse,
     ]
   >;
   listBuildTriggers(
@@ -2700,7 +2945,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IBuildTrigger[],
       protos.google.devtools.cloudbuild.v1.IListBuildTriggersRequest | null,
-      protos.google.devtools.cloudbuild.v1.IListBuildTriggersResponse
+      protos.google.devtools.cloudbuild.v1.IListBuildTriggersResponse,
     ]
   > | void {
     request = request || {};
@@ -2714,11 +2959,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.listBuildTriggers(request, options, callback);
   }
@@ -2739,13 +2994,12 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.devtools.cloudbuild.v1.BuildTrigger | BuildTrigger} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.devtools.cloudbuild.v1.BuildTrigger|BuildTrigger} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listBuildTriggersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listBuildTriggersStream(
@@ -2756,11 +3010,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     const defaultCallSettings = this._defaults['listBuildTriggers'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -2789,12 +3053,11 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.devtools.cloudbuild.v1.BuildTrigger | BuildTrigger}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.devtools.cloudbuild.v1.BuildTrigger|BuildTrigger}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.list_build_triggers.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_ListBuildTriggers_async
@@ -2807,11 +3070,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        project_id: request.projectId ?? '',
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     const defaultCallSettings = this._defaults['listBuildTriggers'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -2838,14 +3111,13 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.devtools.cloudbuild.v1.WorkerPool | WorkerPool}.
+   *   The first element of the array is Array of {@link protos.google.devtools.cloudbuild.v1.WorkerPool|WorkerPool}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listWorkerPoolsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listWorkerPools(
@@ -2855,7 +3127,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IWorkerPool[],
       protos.google.devtools.cloudbuild.v1.IListWorkerPoolsRequest | null,
-      protos.google.devtools.cloudbuild.v1.IListWorkerPoolsResponse
+      protos.google.devtools.cloudbuild.v1.IListWorkerPoolsResponse,
     ]
   >;
   listWorkerPools(
@@ -2901,7 +3173,7 @@ export class CloudBuildClient {
     [
       protos.google.devtools.cloudbuild.v1.IWorkerPool[],
       protos.google.devtools.cloudbuild.v1.IListWorkerPoolsRequest | null,
-      protos.google.devtools.cloudbuild.v1.IListWorkerPoolsResponse
+      protos.google.devtools.cloudbuild.v1.IListWorkerPoolsResponse,
     ]
   > | void {
     request = request || {};
@@ -2915,10 +3187,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     this.initialize();
     return this.innerApiCalls.listWorkerPools(request, options, callback);
   }
@@ -2939,13 +3222,12 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.devtools.cloudbuild.v1.WorkerPool | WorkerPool} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.devtools.cloudbuild.v1.WorkerPool|WorkerPool} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listWorkerPoolsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listWorkerPoolsStream(
@@ -2956,10 +3238,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     const defaultCallSettings = this._defaults['listWorkerPools'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -2988,12 +3281,11 @@ export class CloudBuildClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.devtools.cloudbuild.v1.WorkerPool | WorkerPool}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.devtools.cloudbuild.v1.WorkerPool|WorkerPool}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cloud_build.list_worker_pools.js</caption>
    * region_tag:cloudbuild_v1_generated_CloudBuild_ListWorkerPools_async
@@ -3006,10 +3298,21 @@ export class CloudBuildClient {
     options = options || {};
     options.otherArgs = options.otherArgs || {};
     options.otherArgs.headers = options.otherArgs.headers || {};
+    const routingParameter = {};
+    {
+      const fieldValue = request.parent;
+      if (fieldValue !== undefined && fieldValue !== null) {
+        const match = fieldValue
+          .toString()
+          .match(RegExp('projects/[^/]+/locations/(?<location>[^/]+)'));
+        if (match) {
+          const parameterValue = match.groups?.['location'] ?? fieldValue;
+          Object.assign(routingParameter, {location: parameterValue});
+        }
+      }
+    }
     options.otherArgs.headers['x-goog-request-params'] =
-      this._gaxModule.routingHeader.fromParams({
-        parent: request.parent ?? '',
-      });
+      this._gaxModule.routingHeader.fromParams(routingParameter);
     const defaultCallSettings = this._defaults['listWorkerPools'];
     const callSettings = defaultCallSettings.merge(options);
     this.initialize();
@@ -3130,6 +3433,42 @@ export class CloudBuildClient {
   }
 
   /**
+   * Return a fully-qualified network resource name string.
+   *
+   * @param {string} project
+   * @param {string} network
+   * @returns {string} Resource name string.
+   */
+  networkPath(project: string, network: string) {
+    return this.pathTemplates.networkPathTemplate.render({
+      project: project,
+      network: network,
+    });
+  }
+
+  /**
+   * Parse the project from Network resource.
+   *
+   * @param {string} networkName
+   *   A fully-qualified path representing Network resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNetworkName(networkName: string) {
+    return this.pathTemplates.networkPathTemplate.match(networkName).project;
+  }
+
+  /**
+   * Parse the network from Network resource.
+   *
+   * @param {string} networkName
+   *   A fully-qualified path representing Network resource.
+   * @returns {string} A string representing the network.
+   */
+  matchNetworkFromNetworkName(networkName: string) {
+    return this.pathTemplates.networkPathTemplate.match(networkName).network;
+  }
+
+  /**
    * Return a fully-qualified project resource name string.
    *
    * @param {string} project
@@ -3191,6 +3530,44 @@ export class CloudBuildClient {
   }
 
   /**
+   * Return a fully-qualified projectConfig resource name string.
+   *
+   * @param {string} project
+   * @param {string} config
+   * @returns {string} Resource name string.
+   */
+  projectConfigPath(project: string, config: string) {
+    return this.pathTemplates.projectConfigPathTemplate.render({
+      project: project,
+      config: config,
+    });
+  }
+
+  /**
+   * Parse the project from ProjectConfig resource.
+   *
+   * @param {string} projectConfigName
+   *   A fully-qualified path representing project_config resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectConfigName(projectConfigName: string) {
+    return this.pathTemplates.projectConfigPathTemplate.match(projectConfigName)
+      .project;
+  }
+
+  /**
+   * Parse the config from ProjectConfig resource.
+   *
+   * @param {string} projectConfigName
+   *   A fully-qualified path representing project_config resource.
+   * @returns {string} A string representing the config.
+   */
+  matchConfigFromProjectConfigName(projectConfigName: string) {
+    return this.pathTemplates.projectConfigPathTemplate.match(projectConfigName)
+      .config;
+  }
+
+  /**
    * Return a fully-qualified projectLocationBuild resource name string.
    *
    * @param {string} project
@@ -3243,6 +3620,63 @@ export class CloudBuildClient {
     return this.pathTemplates.projectLocationBuildPathTemplate.match(
       projectLocationBuildName
     ).build;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationConfig resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} config
+   * @returns {string} Resource name string.
+   */
+  projectLocationConfigPath(project: string, location: string, config: string) {
+    return this.pathTemplates.projectLocationConfigPathTemplate.render({
+      project: project,
+      location: location,
+      config: config,
+    });
+  }
+
+  /**
+   * Parse the project from ProjectLocationConfig resource.
+   *
+   * @param {string} projectLocationConfigName
+   *   A fully-qualified path representing project_location_config resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationConfigName(projectLocationConfigName: string) {
+    return this.pathTemplates.projectLocationConfigPathTemplate.match(
+      projectLocationConfigName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationConfig resource.
+   *
+   * @param {string} projectLocationConfigName
+   *   A fully-qualified path representing project_location_config resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationConfigName(
+    projectLocationConfigName: string
+  ) {
+    return this.pathTemplates.projectLocationConfigPathTemplate.match(
+      projectLocationConfigName
+    ).location;
+  }
+
+  /**
+   * Parse the config from ProjectLocationConfig resource.
+   *
+   * @param {string} projectLocationConfigName
+   *   A fully-qualified path representing project_location_config resource.
+   * @returns {string} A string representing the config.
+   */
+  matchConfigFromProjectLocationConfigName(projectLocationConfigName: string) {
+    return this.pathTemplates.projectLocationConfigPathTemplate.match(
+      projectLocationConfigName
+    ).config;
   }
 
   /**
@@ -3348,6 +3782,77 @@ export class CloudBuildClient {
     return this.pathTemplates.projectTriggerPathTemplate.match(
       projectTriggerName
     ).trigger;
+  }
+
+  /**
+   * Return a fully-qualified repository resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} connection
+   * @param {string} repository
+   * @returns {string} Resource name string.
+   */
+  repositoryPath(
+    project: string,
+    location: string,
+    connection: string,
+    repository: string
+  ) {
+    return this.pathTemplates.repositoryPathTemplate.render({
+      project: project,
+      location: location,
+      connection: connection,
+      repository: repository,
+    });
+  }
+
+  /**
+   * Parse the project from Repository resource.
+   *
+   * @param {string} repositoryName
+   *   A fully-qualified path representing Repository resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromRepositoryName(repositoryName: string) {
+    return this.pathTemplates.repositoryPathTemplate.match(repositoryName)
+      .project;
+  }
+
+  /**
+   * Parse the location from Repository resource.
+   *
+   * @param {string} repositoryName
+   *   A fully-qualified path representing Repository resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromRepositoryName(repositoryName: string) {
+    return this.pathTemplates.repositoryPathTemplate.match(repositoryName)
+      .location;
+  }
+
+  /**
+   * Parse the connection from Repository resource.
+   *
+   * @param {string} repositoryName
+   *   A fully-qualified path representing Repository resource.
+   * @returns {string} A string representing the connection.
+   */
+  matchConnectionFromRepositoryName(repositoryName: string) {
+    return this.pathTemplates.repositoryPathTemplate.match(repositoryName)
+      .connection;
+  }
+
+  /**
+   * Parse the repository from Repository resource.
+   *
+   * @param {string} repositoryName
+   *   A fully-qualified path representing Repository resource.
+   * @returns {string} A string representing the repository.
+   */
+  matchRepositoryFromRepositoryName(repositoryName: string) {
+    return this.pathTemplates.repositoryPathTemplate.match(repositoryName)
+      .repository;
   }
 
   /**

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,19 +40,20 @@ function main(dataStore, query) {
    */
   // const query = 'abc123'
   /**
-   *  Selects data model of query suggestions for serving. Currently supported
-   *  values:
+   *  Specifies the autocomplete data model. This overrides any model specified
+   *  in the Configuration > Autocomplete section of the Cloud console. Currently
+   *  supported values:
    *  * `document` - Using suggestions generated from user-imported documents.
    *  * `search-history` - Using suggestions generated from the past history of
    *  SearchService.Search google.cloud.discoveryengine.v1.SearchService.Search 
    *  API calls. Do not use it when there is no traffic for Search API.
    *  * `user-event` - Using suggestions generated from user-imported search
    *  events.
+   *  * `document-completable` - Using suggestions taken directly from
+   *  user-imported document fields marked as completable.
    *  Default values:
    *  * `document` is the default model for regular dataStores.
-   *  * `search-history` is the default model for
-   *  IndustryVertical.SITE_SEARCH google.cloud.discoveryengine.v1.IndustryVertical.SITE_SEARCH 
-   *  dataStores.
+   *  * `search-history` is the default model for site search dataStores.
    */
   // const queryModel = 'abc123'
   /**
@@ -69,6 +70,13 @@ function main(dataStore, query) {
    *  characters. Otherwise, an `INVALID_ARGUMENT` error is returned.
    */
   // const userPseudoId = 'abc123'
+  /**
+   *  Indicates if tail suggestions should be returned if there are no
+   *  suggestions that match the full query. Even if set to true, if there are
+   *  suggestions that match the full query, those are returned and no
+   *  tail suggestions are returned.
+   */
+  // const includeTailSuggestions = true
 
   // Imports the Discoveryengine library
   const {CompletionServiceClient} = require('@google-cloud/discoveryengine').v1;

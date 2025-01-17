@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v2/executions_client_config.json`.
@@ -54,6 +55,8 @@ export class ExecutionsClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -96,8 +99,7 @@ export class ExecutionsClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -105,7 +107,7 @@ export class ExecutionsClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new ExecutionsClient({fallback: 'rest'}, gax);
+   *     const client = new ExecutionsClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -114,8 +116,27 @@ export class ExecutionsClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof ExecutionsClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'run.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -130,7 +151,7 @@ export class ExecutionsClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -155,10 +176,10 @@ export class ExecutionsClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -168,14 +189,14 @@ export class ExecutionsClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -230,7 +251,7 @@ export class ExecutionsClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -261,12 +282,23 @@ export class ExecutionsClient {
     const deleteExecutionMetadata = protoFilesRoot.lookup(
       '.google.cloud.run.v2.Execution'
     ) as gax.protobuf.Type;
+    const cancelExecutionResponse = protoFilesRoot.lookup(
+      '.google.cloud.run.v2.Execution'
+    ) as gax.protobuf.Type;
+    const cancelExecutionMetadata = protoFilesRoot.lookup(
+      '.google.cloud.run.v2.Execution'
+    ) as gax.protobuf.Type;
 
     this.descriptors.longrunning = {
       deleteExecution: new this._gaxModule.LongrunningDescriptor(
         this.operationsClient,
         deleteExecutionResponse.decode.bind(deleteExecutionResponse),
         deleteExecutionMetadata.decode.bind(deleteExecutionMetadata)
+      ),
+      cancelExecution: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        cancelExecutionResponse.decode.bind(cancelExecutionResponse),
+        cancelExecutionMetadata.decode.bind(cancelExecutionMetadata)
       ),
     };
 
@@ -323,6 +355,7 @@ export class ExecutionsClient {
       'getExecution',
       'listExecutions',
       'deleteExecution',
+      'cancelExecution',
     ];
     for (const methodName of executionsStubMethods) {
       const callPromise = this.executionsStub.then(
@@ -358,19 +391,50 @@ export class ExecutionsClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'run.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'run.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -417,14 +481,13 @@ export class ExecutionsClient {
    * @param {string} request.name
    *   Required. The full name of the Execution.
    *   Format:
-   *   projects/{project}/locations/{location}/jobs/{job}/executions/{execution},
-   *   where {project} can be project id or number.
+   *   `projects/{project}/locations/{location}/jobs/{job}/executions/{execution}`,
+   *   where `{project}` can be project id or number.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.run.v2.Execution | Execution}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.run.v2.Execution|Execution}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/executions.get_execution.js</caption>
    * region_tag:run_v2_generated_Executions_GetExecution_async
@@ -436,7 +499,7 @@ export class ExecutionsClient {
     [
       protos.google.cloud.run.v2.IExecution,
       protos.google.cloud.run.v2.IGetExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getExecution(
@@ -474,7 +537,7 @@ export class ExecutionsClient {
     [
       protos.google.cloud.run.v2.IExecution,
       protos.google.cloud.run.v2.IGetExecutionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -504,8 +567,8 @@ export class ExecutionsClient {
    * @param {string} request.name
    *   Required. The name of the Execution to delete.
    *   Format:
-   *   projects/{project}/locations/{location}/jobs/{job}/executions/{execution},
-   *   where {project} can be project id or number.
+   *   `projects/{project}/locations/{location}/jobs/{job}/executions/{execution}`,
+   *   where `{project}` can be project id or number.
    * @param {boolean} request.validateOnly
    *   Indicates that the request should be validated without actually
    *   deleting any resources.
@@ -518,8 +581,7 @@ export class ExecutionsClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/executions.delete_execution.js</caption>
    * region_tag:run_v2_generated_Executions_DeleteExecution_async
@@ -534,7 +596,7 @@ export class ExecutionsClient {
         protos.google.cloud.run.v2.IExecution
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteExecution(
@@ -587,7 +649,7 @@ export class ExecutionsClient {
         protos.google.cloud.run.v2.IExecution
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -614,8 +676,7 @@ export class ExecutionsClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/executions.delete_execution.js</caption>
    * region_tag:run_v2_generated_Executions_DeleteExecution_async
@@ -644,15 +705,161 @@ export class ExecutionsClient {
     >;
   }
   /**
-   * Lists Executions from a Job.
+   * Cancels an Execution.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the Execution to cancel.
+   *   Format:
+   *   `projects/{project}/locations/{location}/jobs/{job}/executions/{execution}`,
+   *   where `{project}` can be project id or number.
+   * @param {boolean} request.validateOnly
+   *   Indicates that the request should be validated without actually
+   *   cancelling any resources.
+   * @param {string} request.etag
+   *   A system-generated fingerprint for this version of the resource.
+   *   This may be used to detect modification conflict during updates.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v2/executions.cancel_execution.js</caption>
+   * region_tag:run_v2_generated_Executions_CancelExecution_async
+   */
+  cancelExecution(
+    request?: protos.google.cloud.run.v2.ICancelExecutionRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.run.v2.IExecution,
+        protos.google.cloud.run.v2.IExecution
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  cancelExecution(
+    request: protos.google.cloud.run.v2.ICancelExecutionRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.run.v2.IExecution,
+        protos.google.cloud.run.v2.IExecution
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  cancelExecution(
+    request: protos.google.cloud.run.v2.ICancelExecutionRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.run.v2.IExecution,
+        protos.google.cloud.run.v2.IExecution
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  cancelExecution(
+    request?: protos.google.cloud.run.v2.ICancelExecutionRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.run.v2.IExecution,
+            protos.google.cloud.run.v2.IExecution
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.run.v2.IExecution,
+        protos.google.cloud.run.v2.IExecution
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.run.v2.IExecution,
+        protos.google.cloud.run.v2.IExecution
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.cancelExecution(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `cancelExecution()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v2/executions.cancel_execution.js</caption>
+   * region_tag:run_v2_generated_Executions_CancelExecution_async
+   */
+  async checkCancelExecutionProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.run.v2.Execution,
+      protos.google.cloud.run.v2.Execution
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.cancelExecution,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.run.v2.Execution,
+      protos.google.cloud.run.v2.Execution
+    >;
+  }
+  /**
+   * Lists Executions from a Job. Results are sorted by creation time,
+   * descending.
    *
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The Execution from which the Executions should be listed.
    *   To list all Executions across Jobs, use "-" instead of Job name.
-   *   Format: projects/{project}/locations/{location}/jobs/{job}, where {project}
-   *   can be project id or number.
+   *   Format: `projects/{project}/locations/{location}/jobs/{job}`, where
+   *   `{project}` can be project id or number.
    * @param {number} request.pageSize
    *   Maximum number of Executions to return in this call.
    * @param {string} request.pageToken
@@ -663,14 +870,13 @@ export class ExecutionsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.run.v2.Execution | Execution}.
+   *   The first element of the array is Array of {@link protos.google.cloud.run.v2.Execution|Execution}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listExecutionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listExecutions(
@@ -680,7 +886,7 @@ export class ExecutionsClient {
     [
       protos.google.cloud.run.v2.IExecution[],
       protos.google.cloud.run.v2.IListExecutionsRequest | null,
-      protos.google.cloud.run.v2.IListExecutionsResponse
+      protos.google.cloud.run.v2.IListExecutionsResponse,
     ]
   >;
   listExecutions(
@@ -718,7 +924,7 @@ export class ExecutionsClient {
     [
       protos.google.cloud.run.v2.IExecution[],
       protos.google.cloud.run.v2.IListExecutionsRequest | null,
-      protos.google.cloud.run.v2.IListExecutionsResponse
+      protos.google.cloud.run.v2.IListExecutionsResponse,
     ]
   > | void {
     request = request || {};
@@ -747,8 +953,8 @@ export class ExecutionsClient {
    * @param {string} request.parent
    *   Required. The Execution from which the Executions should be listed.
    *   To list all Executions across Jobs, use "-" instead of Job name.
-   *   Format: projects/{project}/locations/{location}/jobs/{job}, where {project}
-   *   can be project id or number.
+   *   Format: `projects/{project}/locations/{location}/jobs/{job}`, where
+   *   `{project}` can be project id or number.
    * @param {number} request.pageSize
    *   Maximum number of Executions to return in this call.
    * @param {string} request.pageToken
@@ -759,13 +965,12 @@ export class ExecutionsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.run.v2.Execution | Execution} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.run.v2.Execution|Execution} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listExecutionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listExecutionsStream(
@@ -799,8 +1004,8 @@ export class ExecutionsClient {
    * @param {string} request.parent
    *   Required. The Execution from which the Executions should be listed.
    *   To list all Executions across Jobs, use "-" instead of Job name.
-   *   Format: projects/{project}/locations/{location}/jobs/{job}, where {project}
-   *   can be project id or number.
+   *   Format: `projects/{project}/locations/{location}/jobs/{job}`, where
+   *   `{project}` can be project id or number.
    * @param {number} request.pageSize
    *   Maximum number of Executions to return in this call.
    * @param {string} request.pageToken
@@ -811,12 +1016,11 @@ export class ExecutionsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.run.v2.Execution | Execution}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.run.v2.Execution|Execution}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2/executions.list_executions.js</caption>
    * region_tag:run_v2_generated_Executions_ListExecutions_async
@@ -853,8 +1057,7 @@ export class ExecutionsClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -900,12 +1103,11 @@ export class ExecutionsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,13 +43,20 @@ function main() {
   const healthChecksClient = new compute.HealthChecksClient();
   const imageFamilyViewsClient = new compute.ImageFamilyViewsClient();
   const imagesClient = new compute.ImagesClient();
+  const instanceGroupManagerResizeRequestsClient =
+    new compute.InstanceGroupManagerResizeRequestsClient();
   const instanceGroupManagersClient = new compute.InstanceGroupManagersClient();
   const instanceGroupsClient = new compute.InstanceGroupsClient();
   const instancesClient = new compute.InstancesClient();
+  const instanceSettingsServiceClient =
+    new compute.InstanceSettingsServiceClient();
   const instanceTemplatesClient = new compute.InstanceTemplatesClient();
+  const instantSnapshotsClient = new compute.InstantSnapshotsClient();
   const interconnectAttachmentsClient =
     new compute.InterconnectAttachmentsClient();
   const interconnectLocationsClient = new compute.InterconnectLocationsClient();
+  const interconnectRemoteLocationsClient =
+    new compute.InterconnectRemoteLocationsClient();
   const interconnectsClient = new compute.InterconnectsClient();
   const licenseCodesClient = new compute.LicenseCodesClient();
   const licensesClient = new compute.LicensesClient();
@@ -61,6 +68,7 @@ function main() {
   const networkEndpointGroupsClient = new compute.NetworkEndpointGroupsClient();
   const networkFirewallPoliciesClient =
     new compute.NetworkFirewallPoliciesClient();
+  const networkProfilesClient = new compute.NetworkProfilesClient();
   const networksClient = new compute.NetworksClient();
   const nodeGroupsClient = new compute.NodeGroupsClient();
   const nodeTemplatesClient = new compute.NodeTemplatesClient();
@@ -85,6 +93,8 @@ function main() {
   const regionInstancesClient = new compute.RegionInstancesClient();
   const regionInstanceTemplatesClient =
     new compute.RegionInstanceTemplatesClient();
+  const regionInstantSnapshotsClient =
+    new compute.RegionInstantSnapshotsClient();
   const regionNetworkEndpointGroupsClient =
     new compute.RegionNetworkEndpointGroupsClient();
   const regionNetworkFirewallPoliciesClient =
@@ -104,6 +114,7 @@ function main() {
   const regionTargetTcpProxiesClient =
     new compute.RegionTargetTcpProxiesClient();
   const regionUrlMapsClient = new compute.RegionUrlMapsClient();
+  const regionZonesClient = new compute.RegionZonesClient();
   const reservationsClient = new compute.ReservationsClient();
   const resourcePoliciesClient = new compute.ResourcePoliciesClient();
   const routersClient = new compute.RoutersClient();
@@ -111,8 +122,12 @@ function main() {
   const securityPoliciesClient = new compute.SecurityPoliciesClient();
   const serviceAttachmentsClient = new compute.ServiceAttachmentsClient();
   const snapshotsClient = new compute.SnapshotsClient();
+  const snapshotSettingsServiceClient =
+    new compute.SnapshotSettingsServiceClient();
   const sslCertificatesClient = new compute.SslCertificatesClient();
   const sslPoliciesClient = new compute.SslPoliciesClient();
+  const storagePoolsClient = new compute.StoragePoolsClient();
+  const storagePoolTypesClient = new compute.StoragePoolTypesClient();
   const subnetworksClient = new compute.SubnetworksClient();
   const targetGrpcProxiesClient = new compute.TargetGrpcProxiesClient();
   const targetHttpProxiesClient = new compute.TargetHttpProxiesClient();

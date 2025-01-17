@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/livestream_service_client_config.json`.
@@ -58,6 +59,8 @@ export class LivestreamServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -100,8 +103,7 @@ export class LivestreamServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -109,7 +111,7 @@ export class LivestreamServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new LivestreamServiceClient({fallback: 'rest'}, gax);
+   *     const client = new LivestreamServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -118,8 +120,27 @@ export class LivestreamServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof LivestreamServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'livestream.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -134,7 +155,7 @@ export class LivestreamServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -159,10 +180,10 @@ export class LivestreamServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -172,14 +193,14 @@ export class LivestreamServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -192,8 +213,14 @@ export class LivestreamServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      assetPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/assets/{asset}'
+      ),
       channelPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/channels/{channel}'
+      ),
+      clipPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/channels/{channel}/clips/{clip}'
       ),
       eventPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/channels/{channel}/events/{event}'
@@ -203,6 +230,9 @@ export class LivestreamServiceClient {
       ),
       locationPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
+      ),
+      poolPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/pools/{pool}'
       ),
       projectPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}'
@@ -228,6 +258,16 @@ export class LivestreamServiceClient {
         'nextPageToken',
         'events'
       ),
+      listClips: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'clips'
+      ),
+      listAssets: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'assets'
+      ),
     };
 
     const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
@@ -238,7 +278,7 @@ export class LivestreamServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -319,6 +359,36 @@ export class LivestreamServiceClient {
     const updateInputMetadata = protoFilesRoot.lookup(
       '.google.cloud.video.livestream.v1.OperationMetadata'
     ) as gax.protobuf.Type;
+    const createClipResponse = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.Clip'
+    ) as gax.protobuf.Type;
+    const createClipMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteClipResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteClipMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const createAssetResponse = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.Asset'
+    ) as gax.protobuf.Type;
+    const createAssetMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteAssetResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteAssetMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const updatePoolResponse = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.Pool'
+    ) as gax.protobuf.Type;
+    const updatePoolMetadata = protoFilesRoot.lookup(
+      '.google.cloud.video.livestream.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
 
     this.descriptors.longrunning = {
       createChannel: new this._gaxModule.LongrunningDescriptor(
@@ -360,6 +430,31 @@ export class LivestreamServiceClient {
         this.operationsClient,
         updateInputResponse.decode.bind(updateInputResponse),
         updateInputMetadata.decode.bind(updateInputMetadata)
+      ),
+      createClip: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createClipResponse.decode.bind(createClipResponse),
+        createClipMetadata.decode.bind(createClipMetadata)
+      ),
+      deleteClip: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteClipResponse.decode.bind(deleteClipResponse),
+        deleteClipMetadata.decode.bind(deleteClipMetadata)
+      ),
+      createAsset: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createAssetResponse.decode.bind(createAssetResponse),
+        createAssetMetadata.decode.bind(createAssetMetadata)
+      ),
+      deleteAsset: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteAssetResponse.decode.bind(deleteAssetResponse),
+        deleteAssetMetadata.decode.bind(deleteAssetMetadata)
+      ),
+      updatePool: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updatePoolResponse.decode.bind(updatePoolResponse),
+        updatePoolMetadata.decode.bind(updatePoolMetadata)
       ),
     };
 
@@ -430,6 +525,16 @@ export class LivestreamServiceClient {
       'listEvents',
       'getEvent',
       'deleteEvent',
+      'listClips',
+      'getClip',
+      'createClip',
+      'deleteClip',
+      'createAsset',
+      'deleteAsset',
+      'getAsset',
+      'listAssets',
+      'getPool',
+      'updatePool',
     ];
     for (const methodName of livestreamServiceStubMethods) {
       const callPromise = this.livestreamServiceStub.then(
@@ -465,19 +570,50 @@ export class LivestreamServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'livestream.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'livestream.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -527,9 +663,8 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.livestream.v1.Channel | Channel}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Channel|Channel}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.get_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_GetChannel_async
@@ -541,7 +676,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IChannel,
       protos.google.cloud.video.livestream.v1.IGetChannelRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getChannel(
@@ -587,7 +722,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IChannel,
       protos.google.cloud.video.livestream.v1.IGetChannelRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -619,9 +754,8 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.livestream.v1.Input | Input}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Input|Input}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.get_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_GetInput_async
@@ -633,7 +767,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IInput,
       protos.google.cloud.video.livestream.v1.IGetInputRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getInput(
@@ -679,7 +813,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IInput,
       protos.google.cloud.video.livestream.v1.IGetInputRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -731,9 +865,8 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.livestream.v1.Event | Event}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Event|Event}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.create_event.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_CreateEvent_async
@@ -745,7 +878,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IEvent,
       protos.google.cloud.video.livestream.v1.ICreateEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createEvent(
@@ -791,7 +924,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IEvent,
       protos.google.cloud.video.livestream.v1.ICreateEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -823,9 +956,8 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.video.livestream.v1.Event | Event}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Event|Event}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.get_event.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_GetEvent_async
@@ -837,7 +969,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IEvent,
       protos.google.cloud.video.livestream.v1.IGetEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getEvent(
@@ -883,7 +1015,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IEvent,
       protos.google.cloud.video.livestream.v1.IGetEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -929,9 +1061,8 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.delete_event.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_DeleteEvent_async
@@ -943,7 +1074,7 @@ export class LivestreamServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.video.livestream.v1.IDeleteEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteEvent(
@@ -989,7 +1120,7 @@ export class LivestreamServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.video.livestream.v1.IDeleteEventRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1009,6 +1140,279 @@ export class LivestreamServiceClient {
       });
     this.initialize();
     return this.innerApiCalls.deleteEvent(request, options, callback);
+  }
+  /**
+   * Returns the specified clip.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the resource, in the following form:
+   *   `projects/{project}/locations/{location}/channels/{channel}/clips/{clip}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Clip|Clip}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.get_clip.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_GetClip_async
+   */
+  getClip(
+    request?: protos.google.cloud.video.livestream.v1.IGetClipRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IClip,
+      protos.google.cloud.video.livestream.v1.IGetClipRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getClip(
+    request: protos.google.cloud.video.livestream.v1.IGetClipRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.video.livestream.v1.IClip,
+      | protos.google.cloud.video.livestream.v1.IGetClipRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getClip(
+    request: protos.google.cloud.video.livestream.v1.IGetClipRequest,
+    callback: Callback<
+      protos.google.cloud.video.livestream.v1.IClip,
+      | protos.google.cloud.video.livestream.v1.IGetClipRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getClip(
+    request?: protos.google.cloud.video.livestream.v1.IGetClipRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.video.livestream.v1.IClip,
+          | protos.google.cloud.video.livestream.v1.IGetClipRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.video.livestream.v1.IClip,
+      | protos.google.cloud.video.livestream.v1.IGetClipRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IClip,
+      protos.google.cloud.video.livestream.v1.IGetClipRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getClip(request, options, callback);
+  }
+  /**
+   * Returns the specified asset.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the resource, in the following form:
+   *   `projects/{project}/locations/{location}/assets/{asset}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Asset|Asset}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.get_asset.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_GetAsset_async
+   */
+  getAsset(
+    request?: protos.google.cloud.video.livestream.v1.IGetAssetRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IAsset,
+      protos.google.cloud.video.livestream.v1.IGetAssetRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getAsset(
+    request: protos.google.cloud.video.livestream.v1.IGetAssetRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.video.livestream.v1.IAsset,
+      | protos.google.cloud.video.livestream.v1.IGetAssetRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAsset(
+    request: protos.google.cloud.video.livestream.v1.IGetAssetRequest,
+    callback: Callback<
+      protos.google.cloud.video.livestream.v1.IAsset,
+      | protos.google.cloud.video.livestream.v1.IGetAssetRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getAsset(
+    request?: protos.google.cloud.video.livestream.v1.IGetAssetRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.video.livestream.v1.IAsset,
+          | protos.google.cloud.video.livestream.v1.IGetAssetRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.video.livestream.v1.IAsset,
+      | protos.google.cloud.video.livestream.v1.IGetAssetRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IAsset,
+      protos.google.cloud.video.livestream.v1.IGetAssetRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getAsset(request, options, callback);
+  }
+  /**
+   * Returns the specified pool.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the pool resource, in the form of:
+   *   `projects/{project}/locations/{location}/pools/{poolId}`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.video.livestream.v1.Pool|Pool}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.get_pool.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_GetPool_async
+   */
+  getPool(
+    request?: protos.google.cloud.video.livestream.v1.IGetPoolRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IPool,
+      protos.google.cloud.video.livestream.v1.IGetPoolRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getPool(
+    request: protos.google.cloud.video.livestream.v1.IGetPoolRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.video.livestream.v1.IPool,
+      | protos.google.cloud.video.livestream.v1.IGetPoolRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getPool(
+    request: protos.google.cloud.video.livestream.v1.IGetPoolRequest,
+    callback: Callback<
+      protos.google.cloud.video.livestream.v1.IPool,
+      | protos.google.cloud.video.livestream.v1.IGetPoolRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getPool(
+    request?: protos.google.cloud.video.livestream.v1.IGetPoolRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.video.livestream.v1.IPool,
+          | protos.google.cloud.video.livestream.v1.IGetPoolRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.video.livestream.v1.IPool,
+      | protos.google.cloud.video.livestream.v1.IGetPoolRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IPool,
+      protos.google.cloud.video.livestream.v1.IGetPoolRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getPool(request, options, callback);
   }
 
   /**
@@ -1046,8 +1450,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.create_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_CreateChannel_async
@@ -1062,7 +1465,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createChannel(
@@ -1115,7 +1518,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1142,8 +1545,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.create_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_CreateChannel_async
@@ -1204,8 +1606,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.delete_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_DeleteChannel_async
@@ -1220,7 +1621,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteChannel(
@@ -1273,7 +1674,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1300,8 +1701,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.delete_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_DeleteChannel_async
@@ -1377,8 +1777,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.update_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_UpdateChannel_async
@@ -1393,7 +1792,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateChannel(
@@ -1446,7 +1845,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1473,8 +1872,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.update_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_UpdateChannel_async
@@ -1531,8 +1929,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.start_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_StartChannel_async
@@ -1547,7 +1944,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   startChannel(
@@ -1600,7 +1997,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1627,8 +2024,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.start_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_StartChannel_async
@@ -1685,8 +2081,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.stop_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_StopChannel_async
@@ -1701,7 +2096,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   stopChannel(
@@ -1754,7 +2149,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1781,8 +2176,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.stop_channel.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_StopChannel_async
@@ -1844,8 +2238,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.create_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_CreateInput_async
@@ -1860,7 +2253,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createInput(
@@ -1913,7 +2306,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1940,8 +2333,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.create_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_CreateInput_async
@@ -1997,8 +2389,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.delete_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_DeleteInput_async
@@ -2013,7 +2404,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteInput(
@@ -2066,7 +2457,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2093,8 +2484,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.delete_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_DeleteInput_async
@@ -2162,8 +2552,7 @@ export class LivestreamServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.update_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_UpdateInput_async
@@ -2178,7 +2567,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateInput(
@@ -2231,7 +2620,7 @@ export class LivestreamServiceClient {
         protos.google.cloud.video.livestream.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2258,8 +2647,7 @@ export class LivestreamServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.update_input.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_UpdateInput_async
@@ -2288,6 +2676,783 @@ export class LivestreamServiceClient {
     >;
   }
   /**
+   * Creates a clip with the provided clip ID in the specified channel.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent resource name, in the following form:
+   *   `projects/{project}/locations/{location}/channels/{channel}`.
+   * @param {string} request.clipId
+   *   Required. Id of the requesting object in the following form:
+   *
+   *   1. 1 character minimum, 63 characters maximum
+   *   2. Only contains letters, digits, underscores, and hyphens
+   * @param {google.cloud.video.livestream.v1.Clip} request.clip
+   *   Required. The resource being created
+   * @param {string} [request.requestId]
+   *   Optional. An optional request ID to identify requests. Specify a unique
+   *   request ID so that if you must retry your request, the server will know to
+   *   ignore the request if it has already been completed. The server will
+   *   guarantee that for at least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and
+   *   the request times out. If you make the request again with the same request
+   *   ID, the server can check if original operation with the same request ID
+   *   was received, and if so, will ignore the second request. This prevents
+   *   clients from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported (00000000-0000-0000-0000-000000000000).
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.create_clip.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_CreateClip_async
+   */
+  createClip(
+    request?: protos.google.cloud.video.livestream.v1.ICreateClipRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IClip,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createClip(
+    request: protos.google.cloud.video.livestream.v1.ICreateClipRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IClip,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createClip(
+    request: protos.google.cloud.video.livestream.v1.ICreateClipRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IClip,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createClip(
+    request?: protos.google.cloud.video.livestream.v1.ICreateClipRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.video.livestream.v1.IClip,
+            protos.google.cloud.video.livestream.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IClip,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IClip,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createClip(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createClip()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.create_clip.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_CreateClip_async
+   */
+  async checkCreateClipProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.video.livestream.v1.Clip,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createClip,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.video.livestream.v1.Clip,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes the specified clip job resource. This method only deletes the clip
+   * job and does not delete the VOD clip stored in the GCS.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the clip resource, in the form of:
+   *   `projects/{project}/locations/{location}/channels/{channelId}/clips/{clipId}`.
+   * @param {string} [request.requestId]
+   *   Optional. A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server will know to ignore
+   *   the request if it has already been completed. The server will guarantee
+   *   that for at least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported `(00000000-0000-0000-0000-000000000000)`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.delete_clip.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_DeleteClip_async
+   */
+  deleteClip(
+    request?: protos.google.cloud.video.livestream.v1.IDeleteClipRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteClip(
+    request: protos.google.cloud.video.livestream.v1.IDeleteClipRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteClip(
+    request: protos.google.cloud.video.livestream.v1.IDeleteClipRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteClip(
+    request?: protos.google.cloud.video.livestream.v1.IDeleteClipRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.video.livestream.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteClip(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteClip()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.delete_clip.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_DeleteClip_async
+   */
+  async checkDeleteClipProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteClip,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Creates a Asset with the provided unique ID in the specified
+   * region.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent location for the resource, in the form of:
+   *   `projects/{project}/locations/{location}`.
+   * @param {google.cloud.video.livestream.v1.Asset} request.asset
+   *   Required. The asset resource to be created.
+   * @param {string} request.assetId
+   *   Required. The ID of the asset resource to be created.
+   *   This value must be 1-63 characters, begin and end with `[a-z0-9]`,
+   *   could contain dashes (-) in between.
+   * @param {string} request.requestId
+   *   A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server will know to ignore
+   *   the request if it has already been completed. The server will guarantee
+   *   that for at least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported `(00000000-0000-0000-0000-000000000000)`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.create_asset.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_CreateAsset_async
+   */
+  createAsset(
+    request?: protos.google.cloud.video.livestream.v1.ICreateAssetRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IAsset,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createAsset(
+    request: protos.google.cloud.video.livestream.v1.ICreateAssetRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IAsset,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createAsset(
+    request: protos.google.cloud.video.livestream.v1.ICreateAssetRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IAsset,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createAsset(
+    request?: protos.google.cloud.video.livestream.v1.ICreateAssetRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.video.livestream.v1.IAsset,
+            protos.google.cloud.video.livestream.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IAsset,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IAsset,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createAsset(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createAsset()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.create_asset.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_CreateAsset_async
+   */
+  async checkCreateAssetProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.video.livestream.v1.Asset,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createAsset,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.video.livestream.v1.Asset,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes the specified asset if it is not used.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the asset resource, in the form of:
+   *   `projects/{project}/locations/{location}/assets/{assetId}`.
+   * @param {string} request.requestId
+   *   A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server will know to ignore
+   *   the request if it has already been completed. The server will guarantee
+   *   that for at least 60 minutes after the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported `(00000000-0000-0000-0000-000000000000)`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.delete_asset.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_DeleteAsset_async
+   */
+  deleteAsset(
+    request?: protos.google.cloud.video.livestream.v1.IDeleteAssetRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteAsset(
+    request: protos.google.cloud.video.livestream.v1.IDeleteAssetRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteAsset(
+    request: protos.google.cloud.video.livestream.v1.IDeleteAssetRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteAsset(
+    request?: protos.google.cloud.video.livestream.v1.IDeleteAssetRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.video.livestream.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteAsset(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteAsset()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.delete_asset.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_DeleteAsset_async
+   */
+  async checkDeleteAssetProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteAsset,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Updates the specified pool.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Field mask is used to specify the fields to be overwritten in the Pool
+   *   resource by the update. You can only update the following fields:
+   *
+   *   * `networkConfig`
+   *
+   *   The fields specified in the update_mask are relative to the resource, not
+   *   the full request. A field will be overwritten if it is in the mask.
+   * @param {google.cloud.video.livestream.v1.Pool} request.pool
+   *   Required. The pool resource to be updated.
+   * @param {string} request.requestId
+   *   A request ID to identify requests. Specify a unique request ID
+   *   so that if you must retry your request, the server will know to ignore
+   *   the request if it has already been completed. The server will guarantee
+   *   that for at least 60 minutes since the first request.
+   *
+   *   For example, consider a situation where you make an initial request and the
+   *   request times out. If you make the request again with the same request ID,
+   *   the server can check if original operation with the same request ID was
+   *   received, and if so, will ignore the second request. This prevents clients
+   *   from accidentally creating duplicate commitments.
+   *
+   *   The request ID must be a valid UUID with the exception that zero UUID is
+   *   not supported `(00000000-0000-0000-0000-000000000000)`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.update_pool.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_UpdatePool_async
+   */
+  updatePool(
+    request?: protos.google.cloud.video.livestream.v1.IUpdatePoolRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IPool,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updatePool(
+    request: protos.google.cloud.video.livestream.v1.IUpdatePoolRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IPool,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updatePool(
+    request: protos.google.cloud.video.livestream.v1.IUpdatePoolRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IPool,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updatePool(
+    request?: protos.google.cloud.video.livestream.v1.IUpdatePoolRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.video.livestream.v1.IPool,
+            protos.google.cloud.video.livestream.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IPool,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.video.livestream.v1.IPool,
+        protos.google.cloud.video.livestream.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'pool.name': request.pool!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updatePool(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `updatePool()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.update_pool.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_UpdatePool_async
+   */
+  async checkUpdatePoolProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.video.livestream.v1.Pool,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updatePool,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.video.livestream.v1.Pool,
+      protos.google.cloud.video.livestream.v1.OperationMetadata
+    >;
+  }
+  /**
    * Returns a list of all channels in the specified region.
    *
    * @param {Object} request
@@ -2299,7 +3464,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListChannelsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListChannelsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2311,14 +3476,13 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.livestream.v1.Channel | Channel}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.livestream.v1.Channel|Channel}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listChannelsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listChannels(
@@ -2328,7 +3492,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IChannel[],
       protos.google.cloud.video.livestream.v1.IListChannelsRequest | null,
-      protos.google.cloud.video.livestream.v1.IListChannelsResponse
+      protos.google.cloud.video.livestream.v1.IListChannelsResponse,
     ]
   >;
   listChannels(
@@ -2374,7 +3538,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IChannel[],
       protos.google.cloud.video.livestream.v1.IListChannelsRequest | null,
-      protos.google.cloud.video.livestream.v1.IListChannelsResponse
+      protos.google.cloud.video.livestream.v1.IListChannelsResponse,
     ]
   > | void {
     request = request || {};
@@ -2407,7 +3571,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListChannelsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListChannelsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2419,13 +3583,12 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.livestream.v1.Channel | Channel} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.livestream.v1.Channel|Channel} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listChannelsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listChannelsStream(
@@ -2463,7 +3626,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListChannelsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListChannelsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2475,12 +3638,11 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.livestream.v1.Channel | Channel}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.livestream.v1.Channel|Channel}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.list_channels.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_ListChannels_async
@@ -2518,7 +3680,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListInputsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListInputsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2530,14 +3692,13 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.livestream.v1.Input | Input}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.livestream.v1.Input|Input}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listInputsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listInputs(
@@ -2547,7 +3708,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IInput[],
       protos.google.cloud.video.livestream.v1.IListInputsRequest | null,
-      protos.google.cloud.video.livestream.v1.IListInputsResponse
+      protos.google.cloud.video.livestream.v1.IListInputsResponse,
     ]
   >;
   listInputs(
@@ -2593,7 +3754,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IInput[],
       protos.google.cloud.video.livestream.v1.IListInputsRequest | null,
-      protos.google.cloud.video.livestream.v1.IListInputsResponse
+      protos.google.cloud.video.livestream.v1.IListInputsResponse,
     ]
   > | void {
     request = request || {};
@@ -2626,7 +3787,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListInputsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListInputsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2638,13 +3799,12 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.livestream.v1.Input | Input} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.livestream.v1.Input|Input} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listInputsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listInputsStream(
@@ -2682,7 +3842,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListInputsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListInputsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2694,12 +3854,11 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.livestream.v1.Input | Input}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.livestream.v1.Input|Input}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.list_inputs.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_ListInputs_async
@@ -2737,7 +3896,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListEventsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListEventsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2749,14 +3908,13 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.video.livestream.v1.Event | Event}.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.livestream.v1.Event|Event}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listEventsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEvents(
@@ -2766,7 +3924,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IEvent[],
       protos.google.cloud.video.livestream.v1.IListEventsRequest | null,
-      protos.google.cloud.video.livestream.v1.IListEventsResponse
+      protos.google.cloud.video.livestream.v1.IListEventsResponse,
     ]
   >;
   listEvents(
@@ -2812,7 +3970,7 @@ export class LivestreamServiceClient {
     [
       protos.google.cloud.video.livestream.v1.IEvent[],
       protos.google.cloud.video.livestream.v1.IListEventsRequest | null,
-      protos.google.cloud.video.livestream.v1.IListEventsResponse
+      protos.google.cloud.video.livestream.v1.IListEventsResponse,
     ]
   > | void {
     request = request || {};
@@ -2845,7 +4003,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListEventsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListEventsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2857,13 +4015,12 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.video.livestream.v1.Event | Event} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.livestream.v1.Event|Event} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listEventsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEventsStream(
@@ -2901,7 +4058,7 @@ export class LivestreamServiceClient {
    *   The maximum number of items to return. If unspecified, server
    *   will pick an appropriate default. Server may return fewer items than
    *   requested. A caller should only rely on response's
-   *   {@link google.cloud.video.livestream.v1.ListEventsResponse.next_page_token|next_page_token}
+   *   {@link protos.google.cloud.video.livestream.v1.ListEventsResponse.next_page_token|next_page_token}
    *   to determine if there are more items left to be queried.
    * @param {string} request.pageToken
    *   The next_page_token value returned from a previous List request, if any.
@@ -2913,12 +4070,11 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.video.livestream.v1.Event | Event}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.video.livestream.v1.Event|Event}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/livestream_service.list_events.js</caption>
    * region_tag:livestream_v1_generated_LivestreamService_ListEvents_async
@@ -2945,6 +4101,411 @@ export class LivestreamServiceClient {
     ) as AsyncIterable<protos.google.cloud.video.livestream.v1.IEvent>;
   }
   /**
+   * Returns a list of all clips in the specified channel.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Parent value for ListClipsRequest
+   * @param {number} request.pageSize
+   *   Requested page size. Server may return fewer items than requested.
+   *   If unspecified, server will pick an appropriate default.
+   * @param {string} request.pageToken
+   *   A token identifying a page of results the server should return.
+   * @param {string} request.filter
+   *   Filtering results
+   * @param {string} request.orderBy
+   *   Hint for how to order the results
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.livestream.v1.Clip|Clip}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listClipsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listClips(
+    request?: protos.google.cloud.video.livestream.v1.IListClipsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IClip[],
+      protos.google.cloud.video.livestream.v1.IListClipsRequest | null,
+      protos.google.cloud.video.livestream.v1.IListClipsResponse,
+    ]
+  >;
+  listClips(
+    request: protos.google.cloud.video.livestream.v1.IListClipsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.video.livestream.v1.IListClipsRequest,
+      | protos.google.cloud.video.livestream.v1.IListClipsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.livestream.v1.IClip
+    >
+  ): void;
+  listClips(
+    request: protos.google.cloud.video.livestream.v1.IListClipsRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.video.livestream.v1.IListClipsRequest,
+      | protos.google.cloud.video.livestream.v1.IListClipsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.livestream.v1.IClip
+    >
+  ): void;
+  listClips(
+    request?: protos.google.cloud.video.livestream.v1.IListClipsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.video.livestream.v1.IListClipsRequest,
+          | protos.google.cloud.video.livestream.v1.IListClipsResponse
+          | null
+          | undefined,
+          protos.google.cloud.video.livestream.v1.IClip
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.video.livestream.v1.IListClipsRequest,
+      | protos.google.cloud.video.livestream.v1.IListClipsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.livestream.v1.IClip
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IClip[],
+      protos.google.cloud.video.livestream.v1.IListClipsRequest | null,
+      protos.google.cloud.video.livestream.v1.IListClipsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listClips(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Parent value for ListClipsRequest
+   * @param {number} request.pageSize
+   *   Requested page size. Server may return fewer items than requested.
+   *   If unspecified, server will pick an appropriate default.
+   * @param {string} request.pageToken
+   *   A token identifying a page of results the server should return.
+   * @param {string} request.filter
+   *   Filtering results
+   * @param {string} request.orderBy
+   *   Hint for how to order the results
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.livestream.v1.Clip|Clip} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listClipsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listClipsStream(
+    request?: protos.google.cloud.video.livestream.v1.IListClipsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listClips'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listClips.createStream(
+      this.innerApiCalls.listClips as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listClips`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Parent value for ListClipsRequest
+   * @param {number} request.pageSize
+   *   Requested page size. Server may return fewer items than requested.
+   *   If unspecified, server will pick an appropriate default.
+   * @param {string} request.pageToken
+   *   A token identifying a page of results the server should return.
+   * @param {string} request.filter
+   *   Filtering results
+   * @param {string} request.orderBy
+   *   Hint for how to order the results
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.video.livestream.v1.Clip|Clip}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.list_clips.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_ListClips_async
+   */
+  listClipsAsync(
+    request?: protos.google.cloud.video.livestream.v1.IListClipsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.video.livestream.v1.IClip> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listClips'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listClips.asyncIterate(
+      this.innerApiCalls['listClips'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.video.livestream.v1.IClip>;
+  }
+  /**
+   * Returns a list of all assets in the specified region.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent location for the resource, in the form of:
+   *   `projects/{project}/locations/{location}`.
+   * @param {number} request.pageSize
+   *   Requested page size. Server may return fewer items than requested.
+   *   If unspecified, server will pick an appropriate default.
+   * @param {string} request.pageToken
+   *   A token identifying a page of results the server should return.
+   * @param {string} request.filter
+   *   Filtering results
+   * @param {string} request.orderBy
+   *   Hint for how to order the results
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.video.livestream.v1.Asset|Asset}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listAssetsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAssets(
+    request?: protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IAsset[],
+      protos.google.cloud.video.livestream.v1.IListAssetsRequest | null,
+      protos.google.cloud.video.livestream.v1.IListAssetsResponse,
+    ]
+  >;
+  listAssets(
+    request: protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+      | protos.google.cloud.video.livestream.v1.IListAssetsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.livestream.v1.IAsset
+    >
+  ): void;
+  listAssets(
+    request: protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+      | protos.google.cloud.video.livestream.v1.IListAssetsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.livestream.v1.IAsset
+    >
+  ): void;
+  listAssets(
+    request?: protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+          | protos.google.cloud.video.livestream.v1.IListAssetsResponse
+          | null
+          | undefined,
+          protos.google.cloud.video.livestream.v1.IAsset
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+      | protos.google.cloud.video.livestream.v1.IListAssetsResponse
+      | null
+      | undefined,
+      protos.google.cloud.video.livestream.v1.IAsset
+    >
+  ): Promise<
+    [
+      protos.google.cloud.video.livestream.v1.IAsset[],
+      protos.google.cloud.video.livestream.v1.IListAssetsRequest | null,
+      protos.google.cloud.video.livestream.v1.IListAssetsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listAssets(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent location for the resource, in the form of:
+   *   `projects/{project}/locations/{location}`.
+   * @param {number} request.pageSize
+   *   Requested page size. Server may return fewer items than requested.
+   *   If unspecified, server will pick an appropriate default.
+   * @param {string} request.pageToken
+   *   A token identifying a page of results the server should return.
+   * @param {string} request.filter
+   *   Filtering results
+   * @param {string} request.orderBy
+   *   Hint for how to order the results
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.video.livestream.v1.Asset|Asset} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listAssetsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listAssetsStream(
+    request?: protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAssets'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAssets.createStream(
+      this.innerApiCalls.listAssets as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listAssets`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent location for the resource, in the form of:
+   *   `projects/{project}/locations/{location}`.
+   * @param {number} request.pageSize
+   *   Requested page size. Server may return fewer items than requested.
+   *   If unspecified, server will pick an appropriate default.
+   * @param {string} request.pageToken
+   *   A token identifying a page of results the server should return.
+   * @param {string} request.filter
+   *   Filtering results
+   * @param {string} request.orderBy
+   *   Hint for how to order the results
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.video.livestream.v1.Asset|Asset}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/livestream_service.list_assets.js</caption>
+   * region_tag:livestream_v1_generated_LivestreamService_ListAssets_async
+   */
+  listAssetsAsync(
+    request?: protos.google.cloud.video.livestream.v1.IListAssetsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.video.livestream.v1.IAsset> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listAssets'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listAssets.asyncIterate(
+      this.innerApiCalls['listAssets'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.video.livestream.v1.IAsset>;
+  }
+  /**
    * Gets information about a location.
    *
    * @param {Object} request
@@ -2955,8 +4516,7 @@ export class LivestreamServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -3002,12 +4562,11 @@ export class LivestreamServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -3204,6 +4763,55 @@ export class LivestreamServiceClient {
   // --------------------
 
   /**
+   * Return a fully-qualified asset resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} asset
+   * @returns {string} Resource name string.
+   */
+  assetPath(project: string, location: string, asset: string) {
+    return this.pathTemplates.assetPathTemplate.render({
+      project: project,
+      location: location,
+      asset: asset,
+    });
+  }
+
+  /**
+   * Parse the project from Asset resource.
+   *
+   * @param {string} assetName
+   *   A fully-qualified path representing Asset resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAssetName(assetName: string) {
+    return this.pathTemplates.assetPathTemplate.match(assetName).project;
+  }
+
+  /**
+   * Parse the location from Asset resource.
+   *
+   * @param {string} assetName
+   *   A fully-qualified path representing Asset resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromAssetName(assetName: string) {
+    return this.pathTemplates.assetPathTemplate.match(assetName).location;
+  }
+
+  /**
+   * Parse the asset from Asset resource.
+   *
+   * @param {string} assetName
+   *   A fully-qualified path representing Asset resource.
+   * @returns {string} A string representing the asset.
+   */
+  matchAssetFromAssetName(assetName: string) {
+    return this.pathTemplates.assetPathTemplate.match(assetName).asset;
+  }
+
+  /**
    * Return a fully-qualified channel resource name string.
    *
    * @param {string} project
@@ -3250,6 +4858,68 @@ export class LivestreamServiceClient {
    */
   matchChannelFromChannelName(channelName: string) {
     return this.pathTemplates.channelPathTemplate.match(channelName).channel;
+  }
+
+  /**
+   * Return a fully-qualified clip resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} channel
+   * @param {string} clip
+   * @returns {string} Resource name string.
+   */
+  clipPath(project: string, location: string, channel: string, clip: string) {
+    return this.pathTemplates.clipPathTemplate.render({
+      project: project,
+      location: location,
+      channel: channel,
+      clip: clip,
+    });
+  }
+
+  /**
+   * Parse the project from Clip resource.
+   *
+   * @param {string} clipName
+   *   A fully-qualified path representing Clip resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromClipName(clipName: string) {
+    return this.pathTemplates.clipPathTemplate.match(clipName).project;
+  }
+
+  /**
+   * Parse the location from Clip resource.
+   *
+   * @param {string} clipName
+   *   A fully-qualified path representing Clip resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromClipName(clipName: string) {
+    return this.pathTemplates.clipPathTemplate.match(clipName).location;
+  }
+
+  /**
+   * Parse the channel from Clip resource.
+   *
+   * @param {string} clipName
+   *   A fully-qualified path representing Clip resource.
+   * @returns {string} A string representing the channel.
+   */
+  matchChannelFromClipName(clipName: string) {
+    return this.pathTemplates.clipPathTemplate.match(clipName).channel;
+  }
+
+  /**
+   * Parse the clip from Clip resource.
+   *
+   * @param {string} clipName
+   *   A fully-qualified path representing Clip resource.
+   * @returns {string} A string representing the clip.
+   */
+  matchClipFromClipName(clipName: string) {
+    return this.pathTemplates.clipPathTemplate.match(clipName).clip;
   }
 
   /**
@@ -3397,6 +5067,55 @@ export class LivestreamServiceClient {
    */
   matchLocationFromLocationName(locationName: string) {
     return this.pathTemplates.locationPathTemplate.match(locationName).location;
+  }
+
+  /**
+   * Return a fully-qualified pool resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} pool
+   * @returns {string} Resource name string.
+   */
+  poolPath(project: string, location: string, pool: string) {
+    return this.pathTemplates.poolPathTemplate.render({
+      project: project,
+      location: location,
+      pool: pool,
+    });
+  }
+
+  /**
+   * Parse the project from Pool resource.
+   *
+   * @param {string} poolName
+   *   A fully-qualified path representing Pool resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromPoolName(poolName: string) {
+    return this.pathTemplates.poolPathTemplate.match(poolName).project;
+  }
+
+  /**
+   * Parse the location from Pool resource.
+   *
+   * @param {string} poolName
+   *   A fully-qualified path representing Pool resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromPoolName(poolName: string) {
+    return this.pathTemplates.poolPathTemplate.match(poolName).location;
+  }
+
+  /**
+   * Parse the pool from Pool resource.
+   *
+   * @param {string} poolName
+   *   A fully-qualified path representing Pool resource.
+   * @returns {string} A string representing the pool.
+   */
+  matchPoolFromPoolName(poolName: string) {
+    return this.pathTemplates.poolPathTemplate.match(poolName).pool;
   }
 
   /**

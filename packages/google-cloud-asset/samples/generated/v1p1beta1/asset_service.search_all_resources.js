@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ function main(scope) {
    *  Optional. A list of asset types that this request searches for. If empty,
    *  it will search all the supported asset types.
    */
-  // const assetTypes = 'abc123'
+  // const assetTypes = ['abc','def']
   /**
    *  Optional. The page size for search result pagination. Page size is capped
    *  at 500 even if a larger value is given. If set to zero, server will pick an
@@ -82,7 +82,7 @@ function main(scope) {
     };
 
     // Run request
-    const iterable = await assetClient.searchAllResourcesAsync(request);
+    const iterable = assetClient.searchAllResourcesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

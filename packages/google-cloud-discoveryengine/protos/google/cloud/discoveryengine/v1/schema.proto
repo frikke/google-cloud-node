@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ message Schema {
   // Schema representation. One of
   // [struct_schema][google.cloud.discoveryengine.v1.Schema.struct_schema] or
   // [json_schema][google.cloud.discoveryengine.v1.Schema.json_schema] should be
-  // provided otherwise an INVALID_ARGUMENT error is thrown.
+  // provided otherwise an `INVALID_ARGUMENT` error is thrown.
   oneof schema {
     // The structured representation of the schema.
     google.protobuf.Struct struct_schema = 2;

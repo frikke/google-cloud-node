@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ function main(parent, backup, backupId) {
   /**
    *  Required. The backup's project and location, in the format
    *  `projects/{project_id}/locations/{location}`. In Filestore,
-   *  backup locations map to GCP regions, for example **us-west1**.
+   *  backup locations map to Google Cloud regions, for example **us-west1**.
    */
   // const parent = 'abc123'
   /**

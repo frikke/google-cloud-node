@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/certificate_manager_client_config.json`.
@@ -79,6 +80,8 @@ export class CertificateManagerClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -121,8 +124,7 @@ export class CertificateManagerClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -130,7 +132,7 @@ export class CertificateManagerClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CertificateManagerClient({fallback: 'rest'}, gax);
+   *     const client = new CertificateManagerClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -139,8 +141,27 @@ export class CertificateManagerClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof CertificateManagerClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'certificatemanager.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -155,7 +176,7 @@ export class CertificateManagerClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -180,10 +201,10 @@ export class CertificateManagerClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -193,14 +214,14 @@ export class CertificateManagerClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -230,6 +251,9 @@ export class CertificateManagerClient {
       ),
       locationPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
+      ),
+      trustConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/trustConfigs/{trust_config}'
       ),
     };
 
@@ -262,6 +286,11 @@ export class CertificateManagerClient {
         'nextPageToken',
         'certificateIssuanceConfigs'
       ),
+      listTrustConfigs: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'trustConfigs'
+      ),
     };
 
     const protoFilesRoot = this._gaxModule.protobuf.Root.fromJSON(jsonProtos);
@@ -272,7 +301,7 @@ export class CertificateManagerClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -389,6 +418,24 @@ export class CertificateManagerClient {
     const deleteCertificateIssuanceConfigMetadata = protoFilesRoot.lookup(
       '.google.cloud.certificatemanager.v1.OperationMetadata'
     ) as gax.protobuf.Type;
+    const createTrustConfigResponse = protoFilesRoot.lookup(
+      '.google.cloud.certificatemanager.v1.TrustConfig'
+    ) as gax.protobuf.Type;
+    const createTrustConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.certificatemanager.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const updateTrustConfigResponse = protoFilesRoot.lookup(
+      '.google.cloud.certificatemanager.v1.TrustConfig'
+    ) as gax.protobuf.Type;
+    const updateTrustConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.certificatemanager.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
+    const deleteTrustConfigResponse = protoFilesRoot.lookup(
+      '.google.protobuf.Empty'
+    ) as gax.protobuf.Type;
+    const deleteTrustConfigMetadata = protoFilesRoot.lookup(
+      '.google.cloud.certificatemanager.v1.OperationMetadata'
+    ) as gax.protobuf.Type;
 
     this.descriptors.longrunning = {
       createCertificate: new this._gaxModule.LongrunningDescriptor(
@@ -495,6 +542,21 @@ export class CertificateManagerClient {
             deleteCertificateIssuanceConfigMetadata
           )
         ),
+      createTrustConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        createTrustConfigResponse.decode.bind(createTrustConfigResponse),
+        createTrustConfigMetadata.decode.bind(createTrustConfigMetadata)
+      ),
+      updateTrustConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        updateTrustConfigResponse.decode.bind(updateTrustConfigResponse),
+        updateTrustConfigMetadata.decode.bind(updateTrustConfigMetadata)
+      ),
+      deleteTrustConfig: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        deleteTrustConfigResponse.decode.bind(deleteTrustConfigResponse),
+        deleteTrustConfigMetadata.decode.bind(deleteTrustConfigMetadata)
+      ),
     };
 
     // Put together the default options sent with requests.
@@ -572,6 +634,11 @@ export class CertificateManagerClient {
       'getCertificateIssuanceConfig',
       'createCertificateIssuanceConfig',
       'deleteCertificateIssuanceConfig',
+      'listTrustConfigs',
+      'getTrustConfig',
+      'createTrustConfig',
+      'updateTrustConfig',
+      'deleteTrustConfig',
     ];
     for (const methodName of certificateManagerStubMethods) {
       const callPromise = this.certificateManagerStub.then(
@@ -607,19 +674,50 @@ export class CertificateManagerClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'certificatemanager.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'certificatemanager.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -669,9 +767,8 @@ export class CertificateManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.certificatemanager.v1.Certificate | Certificate}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.certificatemanager.v1.Certificate|Certificate}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.get_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_GetCertificate_async
@@ -686,7 +783,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificate(
@@ -735,7 +832,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -767,9 +864,8 @@ export class CertificateManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.certificatemanager.v1.CertificateMap | CertificateMap}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.certificatemanager.v1.CertificateMap|CertificateMap}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.get_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_GetCertificateMap_async
@@ -784,7 +880,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateMapRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificateMap(
@@ -833,7 +929,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateMapRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -865,9 +961,8 @@ export class CertificateManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.certificatemanager.v1.CertificateMapEntry | CertificateMapEntry}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.certificatemanager.v1.CertificateMapEntry|CertificateMapEntry}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.get_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_GetCertificateMapEntry_async
@@ -882,7 +977,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateMapEntryRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificateMapEntry(
@@ -931,7 +1026,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateMapEntryRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -967,9 +1062,8 @@ export class CertificateManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.certificatemanager.v1.DnsAuthorization | DnsAuthorization}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.certificatemanager.v1.DnsAuthorization|DnsAuthorization}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.get_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_GetDnsAuthorization_async
@@ -984,7 +1078,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetDnsAuthorizationRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getDnsAuthorization(
@@ -1033,7 +1127,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetDnsAuthorizationRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1065,9 +1159,8 @@ export class CertificateManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.certificatemanager.v1.CertificateIssuanceConfig | CertificateIssuanceConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.certificatemanager.v1.CertificateIssuanceConfig|CertificateIssuanceConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.get_certificate_issuance_config.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_GetCertificateIssuanceConfig_async
@@ -1082,7 +1175,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateIssuanceConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCertificateIssuanceConfig(
@@ -1131,7 +1224,7 @@ export class CertificateManagerClient {
         | protos.google.cloud.certificatemanager.v1.IGetCertificateIssuanceConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1156,6 +1249,103 @@ export class CertificateManagerClient {
       callback
     );
   }
+  /**
+   * Gets details of a single TrustConfig.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. A name of the TrustConfig to describe. Must be in the format
+   *   `projects/* /locations/* /trustConfigs/*`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.certificatemanager.v1.TrustConfig|TrustConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.get_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_GetTrustConfig_async
+   */
+  getTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.certificatemanager.v1.ITrustConfig,
+      (
+        | protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  >;
+  getTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.certificatemanager.v1.ITrustConfig,
+      | protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest,
+    callback: Callback<
+      protos.google.cloud.certificatemanager.v1.ITrustConfig,
+      | protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.certificatemanager.v1.ITrustConfig,
+          | protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.certificatemanager.v1.ITrustConfig,
+      | protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.certificatemanager.v1.ITrustConfig,
+      (
+        | protos.google.cloud.certificatemanager.v1.IGetTrustConfigRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getTrustConfig(request, options, callback);
+  }
 
   /**
    * Creates a new Certificate in a given project and location.
@@ -1175,8 +1365,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificate_async
@@ -1191,7 +1380,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificate(
@@ -1244,7 +1433,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1271,8 +1460,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificate_async
@@ -1317,8 +1505,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateCertificate_async
@@ -1333,7 +1520,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificate(
@@ -1386,7 +1573,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1413,8 +1600,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateCertificate_async
@@ -1456,8 +1642,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificate_async
@@ -1472,7 +1657,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCertificate(
@@ -1525,7 +1710,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1552,8 +1737,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificate_async
@@ -1599,8 +1783,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificateMap_async
@@ -1615,7 +1798,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificateMap(
@@ -1668,7 +1851,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1695,8 +1878,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificateMap_async
@@ -1741,8 +1923,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateCertificateMap_async
@@ -1757,7 +1938,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificateMap(
@@ -1810,7 +1991,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1837,8 +2018,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateCertificateMap_async
@@ -1882,8 +2062,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificateMap_async
@@ -1898,7 +2077,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCertificateMap(
@@ -1951,7 +2130,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1978,8 +2157,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate_map.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificateMap_async
@@ -2025,8 +2203,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificateMapEntry_async
@@ -2041,7 +2218,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificateMapEntry(
@@ -2094,7 +2271,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2125,8 +2302,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificateMapEntry_async
@@ -2171,8 +2347,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateCertificateMapEntry_async
@@ -2187,7 +2362,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCertificateMapEntry(
@@ -2240,7 +2415,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2271,8 +2446,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateCertificateMapEntry_async
@@ -2314,8 +2488,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificateMapEntry_async
@@ -2330,7 +2503,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCertificateMapEntry(
@@ -2383,7 +2556,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2414,8 +2587,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate_map_entry.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificateMapEntry_async
@@ -2461,8 +2633,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateDnsAuthorization_async
@@ -2477,7 +2648,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createDnsAuthorization(
@@ -2530,7 +2701,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2561,8 +2732,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateDnsAuthorization_async
@@ -2607,8 +2777,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateDnsAuthorization_async
@@ -2623,7 +2792,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateDnsAuthorization(
@@ -2676,7 +2845,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2707,8 +2876,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.update_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateDnsAuthorization_async
@@ -2750,8 +2918,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteDnsAuthorization_async
@@ -2766,7 +2933,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteDnsAuthorization(
@@ -2819,7 +2986,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2850,8 +3017,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_dns_authorization.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteDnsAuthorization_async
@@ -2897,8 +3063,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate_issuance_config.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificateIssuanceConfig_async
@@ -2913,7 +3078,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCertificateIssuanceConfig(
@@ -2966,7 +3131,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2997,8 +3162,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.create_certificate_issuance_config.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_CreateCertificateIssuanceConfig_async
@@ -3040,8 +3204,7 @@ export class CertificateManagerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate_issuance_config.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificateIssuanceConfig_async
@@ -3056,7 +3219,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCertificateIssuanceConfig(
@@ -3109,7 +3272,7 @@ export class CertificateManagerClient {
         protos.google.cloud.certificatemanager.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3140,8 +3303,7 @@ export class CertificateManagerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.delete_certificate_issuance_config.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteCertificateIssuanceConfig_async
@@ -3170,6 +3332,429 @@ export class CertificateManagerClient {
     >;
   }
   /**
+   * Creates a new TrustConfig in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent resource of the TrustConfig. Must be in the format
+   *   `projects/* /locations/*`.
+   * @param {string} request.trustConfigId
+   *   Required. A user-provided name of the TrustConfig. Must match the regexp
+   *   `[a-z0-9-]{1,63}`.
+   * @param {google.cloud.certificatemanager.v1.TrustConfig} request.trustConfig
+   *   Required. A definition of the TrustConfig to create.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.create_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_CreateTrustConfig_async
+   */
+  createTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.ICreateTrustConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  createTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.ICreateTrustConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.ICreateTrustConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.ICreateTrustConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.certificatemanager.v1.ITrustConfig,
+            protos.google.cloud.certificatemanager.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createTrustConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `createTrustConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.create_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_CreateTrustConfig_async
+   */
+  async checkCreateTrustConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.certificatemanager.v1.TrustConfig,
+      protos.google.cloud.certificatemanager.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.createTrustConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.certificatemanager.v1.TrustConfig,
+      protos.google.cloud.certificatemanager.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Updates a TrustConfig.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {google.cloud.certificatemanager.v1.TrustConfig} request.trustConfig
+   *   Required. A definition of the TrustConfig to update.
+   * @param {google.protobuf.FieldMask} request.updateMask
+   *   Required. The update mask applies to the resource. For the `FieldMask`
+   *   definition, see
+   *   https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.update_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateTrustConfig_async
+   */
+  updateTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.IUpdateTrustConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  updateTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.IUpdateTrustConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.IUpdateTrustConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  updateTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.IUpdateTrustConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.certificatemanager.v1.ITrustConfig,
+            protos.google.cloud.certificatemanager.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.certificatemanager.v1.ITrustConfig,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        'trust_config.name': request.trustConfig!.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.updateTrustConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `updateTrustConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.update_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_UpdateTrustConfig_async
+   */
+  async checkUpdateTrustConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.certificatemanager.v1.TrustConfig,
+      protos.google.cloud.certificatemanager.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.updateTrustConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.certificatemanager.v1.TrustConfig,
+      protos.google.cloud.certificatemanager.v1.OperationMetadata
+    >;
+  }
+  /**
+   * Deletes a single TrustConfig.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. A name of the TrustConfig to delete. Must be in the format
+   *   `projects/* /locations/* /trustConfigs/*`.
+   * @param {string} request.etag
+   *   The current etag of the TrustConfig.
+   *   If an etag is provided and does not match the current etag of the resource,
+   *   deletion will be blocked and an ABORTED error will be returned.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.delete_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteTrustConfig_async
+   */
+  deleteTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.IDeleteTrustConfigRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.IDeleteTrustConfigRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteTrustConfig(
+    request: protos.google.cloud.certificatemanager.v1.IDeleteTrustConfigRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteTrustConfig(
+    request?: protos.google.cloud.certificatemanager.v1.IDeleteTrustConfigRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.protobuf.IEmpty,
+            protos.google.cloud.certificatemanager.v1.IOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.protobuf.IEmpty,
+        protos.google.cloud.certificatemanager.v1.IOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteTrustConfig(request, options, callback);
+  }
+  /**
+   * Check the status of the long running operation returned by `deleteTrustConfig()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.delete_trust_config.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_DeleteTrustConfig_async
+   */
+  async checkDeleteTrustConfigProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.certificatemanager.v1.OperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.deleteTrustConfig,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.protobuf.Empty,
+      protos.google.cloud.certificatemanager.v1.OperationMetadata
+    >;
+  }
+  /**
    * Lists Certificates in a given project and location.
    *
    * @param {Object} request
@@ -3188,18 +3773,17 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate field names used to specify the order of the returned
    *   results. The default sorting order is ascending. To specify descending
-   *   order for a field, add a suffix " desc".
+   *   order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.certificatemanager.v1.Certificate | Certificate}.
+   *   The first element of the array is Array of {@link protos.google.cloud.certificatemanager.v1.Certificate|Certificate}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificates(
@@ -3209,7 +3793,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificate[],
       protos.google.cloud.certificatemanager.v1.IListCertificatesRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificatesResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificatesResponse,
     ]
   >;
   listCertificates(
@@ -3255,7 +3839,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificate[],
       protos.google.cloud.certificatemanager.v1.IListCertificatesRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificatesResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificatesResponse,
     ]
   > | void {
     request = request || {};
@@ -3295,17 +3879,16 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate field names used to specify the order of the returned
    *   results. The default sorting order is ascending. To specify descending
-   *   order for a field, add a suffix " desc".
+   *   order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.certificatemanager.v1.Certificate | Certificate} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.certificatemanager.v1.Certificate|Certificate} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificatesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificatesStream(
@@ -3350,16 +3933,15 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate field names used to specify the order of the returned
    *   results. The default sorting order is ascending. To specify descending
-   *   order for a field, add a suffix " desc".
+   *   order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.certificatemanager.v1.Certificate | Certificate}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.certificatemanager.v1.Certificate|Certificate}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.list_certificates.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_ListCertificates_async
@@ -3404,18 +3986,17 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Map field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.certificatemanager.v1.CertificateMap | CertificateMap}.
+   *   The first element of the array is Array of {@link protos.google.cloud.certificatemanager.v1.CertificateMap|CertificateMap}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificateMapsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateMaps(
@@ -3425,7 +4006,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificateMap[],
       protos.google.cloud.certificatemanager.v1.IListCertificateMapsRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificateMapsResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificateMapsResponse,
     ]
   >;
   listCertificateMaps(
@@ -3471,7 +4052,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificateMap[],
       protos.google.cloud.certificatemanager.v1.IListCertificateMapsRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificateMapsResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificateMapsResponse,
     ]
   > | void {
     request = request || {};
@@ -3511,17 +4092,16 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Map field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.certificatemanager.v1.CertificateMap | CertificateMap} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.certificatemanager.v1.CertificateMap|CertificateMap} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificateMapsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateMapsStream(
@@ -3566,16 +4146,15 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Map field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.certificatemanager.v1.CertificateMap | CertificateMap}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.certificatemanager.v1.CertificateMap|CertificateMap}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.list_certificate_maps.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_ListCertificateMaps_async
@@ -3625,18 +4204,17 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Map Entry field names used to specify
    *   the order of the returned results. The default sorting order is ascending.
-   *   To specify descending order for a field, add a suffix " desc".
+   *   To specify descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.certificatemanager.v1.CertificateMapEntry | CertificateMapEntry}.
+   *   The first element of the array is Array of {@link protos.google.cloud.certificatemanager.v1.CertificateMapEntry|CertificateMapEntry}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificateMapEntriesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateMapEntries(
@@ -3646,7 +4224,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificateMapEntry[],
       protos.google.cloud.certificatemanager.v1.IListCertificateMapEntriesRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificateMapEntriesResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificateMapEntriesResponse,
     ]
   >;
   listCertificateMapEntries(
@@ -3692,7 +4270,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificateMapEntry[],
       protos.google.cloud.certificatemanager.v1.IListCertificateMapEntriesRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificateMapEntriesResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificateMapEntriesResponse,
     ]
   > | void {
     request = request || {};
@@ -3741,17 +4319,16 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Map Entry field names used to specify
    *   the order of the returned results. The default sorting order is ascending.
-   *   To specify descending order for a field, add a suffix " desc".
+   *   To specify descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.certificatemanager.v1.CertificateMapEntry | CertificateMapEntry} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.certificatemanager.v1.CertificateMapEntry|CertificateMapEntry} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificateMapEntriesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateMapEntriesStream(
@@ -3801,16 +4378,15 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Map Entry field names used to specify
    *   the order of the returned results. The default sorting order is ascending.
-   *   To specify descending order for a field, add a suffix " desc".
+   *   To specify descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.certificatemanager.v1.CertificateMapEntry | CertificateMapEntry}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.certificatemanager.v1.CertificateMapEntry|CertificateMapEntry}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.list_certificate_map_entries.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_ListCertificateMapEntries_async
@@ -3855,18 +4431,17 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Dns Authorization field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.certificatemanager.v1.DnsAuthorization | DnsAuthorization}.
+   *   The first element of the array is Array of {@link protos.google.cloud.certificatemanager.v1.DnsAuthorization|DnsAuthorization}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listDnsAuthorizationsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDnsAuthorizations(
@@ -3876,7 +4451,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.IDnsAuthorization[],
       protos.google.cloud.certificatemanager.v1.IListDnsAuthorizationsRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListDnsAuthorizationsResponse
+      protos.google.cloud.certificatemanager.v1.IListDnsAuthorizationsResponse,
     ]
   >;
   listDnsAuthorizations(
@@ -3922,7 +4497,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.IDnsAuthorization[],
       protos.google.cloud.certificatemanager.v1.IListDnsAuthorizationsRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListDnsAuthorizationsResponse
+      protos.google.cloud.certificatemanager.v1.IListDnsAuthorizationsResponse,
     ]
   > | void {
     request = request || {};
@@ -3962,17 +4537,16 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Dns Authorization field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.certificatemanager.v1.DnsAuthorization | DnsAuthorization} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.certificatemanager.v1.DnsAuthorization|DnsAuthorization} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listDnsAuthorizationsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDnsAuthorizationsStream(
@@ -4017,16 +4591,15 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Dns Authorization field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.certificatemanager.v1.DnsAuthorization | DnsAuthorization}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.certificatemanager.v1.DnsAuthorization|DnsAuthorization}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.list_dns_authorizations.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_ListDnsAuthorizations_async
@@ -4072,18 +4645,17 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Config field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.certificatemanager.v1.CertificateIssuanceConfig | CertificateIssuanceConfig}.
+   *   The first element of the array is Array of {@link protos.google.cloud.certificatemanager.v1.CertificateIssuanceConfig|CertificateIssuanceConfig}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCertificateIssuanceConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateIssuanceConfigs(
@@ -4093,7 +4665,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificateIssuanceConfig[],
       protos.google.cloud.certificatemanager.v1.IListCertificateIssuanceConfigsRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificateIssuanceConfigsResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificateIssuanceConfigsResponse,
     ]
   >;
   listCertificateIssuanceConfigs(
@@ -4139,7 +4711,7 @@ export class CertificateManagerClient {
     [
       protos.google.cloud.certificatemanager.v1.ICertificateIssuanceConfig[],
       protos.google.cloud.certificatemanager.v1.IListCertificateIssuanceConfigsRequest | null,
-      protos.google.cloud.certificatemanager.v1.IListCertificateIssuanceConfigsResponse
+      protos.google.cloud.certificatemanager.v1.IListCertificateIssuanceConfigsResponse,
     ]
   > | void {
     request = request || {};
@@ -4184,17 +4756,16 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Config field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.certificatemanager.v1.CertificateIssuanceConfig | CertificateIssuanceConfig} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.certificatemanager.v1.CertificateIssuanceConfig|CertificateIssuanceConfig} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCertificateIssuanceConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCertificateIssuanceConfigsStream(
@@ -4241,16 +4812,15 @@ export class CertificateManagerClient {
    * @param {string} request.orderBy
    *   A list of Certificate Config field names used to specify the order of the
    *   returned results. The default sorting order is ascending. To specify
-   *   descending order for a field, add a suffix " desc".
+   *   descending order for a field, add a suffix `" desc"`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.certificatemanager.v1.CertificateIssuanceConfig | CertificateIssuanceConfig}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.certificatemanager.v1.CertificateIssuanceConfig|CertificateIssuanceConfig}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/certificate_manager.list_certificate_issuance_configs.js</caption>
    * region_tag:certificatemanager_v1_generated_CertificateManager_ListCertificateIssuanceConfigs_async
@@ -4278,6 +4848,219 @@ export class CertificateManagerClient {
     ) as AsyncIterable<protos.google.cloud.certificatemanager.v1.ICertificateIssuanceConfig>;
   }
   /**
+   * Lists TrustConfigs in a given project and location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project and location from which the TrustConfigs should be
+   *   listed, specified in the format `projects/* /locations/*`.
+   * @param {number} request.pageSize
+   *   Maximum number of TrustConfigs to return per call.
+   * @param {string} request.pageToken
+   *   The value returned by the last `ListTrustConfigsResponse`. Indicates
+   *   that this is a continuation of a prior `ListTrustConfigs` call, and that
+   *   the system should return the next page of data.
+   * @param {string} request.filter
+   *   Filter expression to restrict the TrustConfigs returned.
+   * @param {string} request.orderBy
+   *   A list of TrustConfig field names used to specify the order of the
+   *   returned results. The default sorting order is ascending. To specify
+   *   descending order for a field, add a suffix `" desc"`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.certificatemanager.v1.TrustConfig|TrustConfig}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listTrustConfigsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listTrustConfigs(
+    request?: protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.certificatemanager.v1.ITrustConfig[],
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest | null,
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsResponse,
+    ]
+  >;
+  listTrustConfigs(
+    request: protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+      | protos.google.cloud.certificatemanager.v1.IListTrustConfigsResponse
+      | null
+      | undefined,
+      protos.google.cloud.certificatemanager.v1.ITrustConfig
+    >
+  ): void;
+  listTrustConfigs(
+    request: protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+      | protos.google.cloud.certificatemanager.v1.IListTrustConfigsResponse
+      | null
+      | undefined,
+      protos.google.cloud.certificatemanager.v1.ITrustConfig
+    >
+  ): void;
+  listTrustConfigs(
+    request?: protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+          | protos.google.cloud.certificatemanager.v1.IListTrustConfigsResponse
+          | null
+          | undefined,
+          protos.google.cloud.certificatemanager.v1.ITrustConfig
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+      | protos.google.cloud.certificatemanager.v1.IListTrustConfigsResponse
+      | null
+      | undefined,
+      protos.google.cloud.certificatemanager.v1.ITrustConfig
+    >
+  ): Promise<
+    [
+      protos.google.cloud.certificatemanager.v1.ITrustConfig[],
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest | null,
+      protos.google.cloud.certificatemanager.v1.IListTrustConfigsResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listTrustConfigs(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project and location from which the TrustConfigs should be
+   *   listed, specified in the format `projects/* /locations/*`.
+   * @param {number} request.pageSize
+   *   Maximum number of TrustConfigs to return per call.
+   * @param {string} request.pageToken
+   *   The value returned by the last `ListTrustConfigsResponse`. Indicates
+   *   that this is a continuation of a prior `ListTrustConfigs` call, and that
+   *   the system should return the next page of data.
+   * @param {string} request.filter
+   *   Filter expression to restrict the TrustConfigs returned.
+   * @param {string} request.orderBy
+   *   A list of TrustConfig field names used to specify the order of the
+   *   returned results. The default sorting order is ascending. To specify
+   *   descending order for a field, add a suffix `" desc"`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.certificatemanager.v1.TrustConfig|TrustConfig} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listTrustConfigsAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listTrustConfigsStream(
+    request?: protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listTrustConfigs'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listTrustConfigs.createStream(
+      this.innerApiCalls.listTrustConfigs as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listTrustConfigs`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The project and location from which the TrustConfigs should be
+   *   listed, specified in the format `projects/* /locations/*`.
+   * @param {number} request.pageSize
+   *   Maximum number of TrustConfigs to return per call.
+   * @param {string} request.pageToken
+   *   The value returned by the last `ListTrustConfigsResponse`. Indicates
+   *   that this is a continuation of a prior `ListTrustConfigs` call, and that
+   *   the system should return the next page of data.
+   * @param {string} request.filter
+   *   Filter expression to restrict the TrustConfigs returned.
+   * @param {string} request.orderBy
+   *   A list of TrustConfig field names used to specify the order of the
+   *   returned results. The default sorting order is ascending. To specify
+   *   descending order for a field, add a suffix `" desc"`.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.certificatemanager.v1.TrustConfig|TrustConfig}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/certificate_manager.list_trust_configs.js</caption>
+   * region_tag:certificatemanager_v1_generated_CertificateManager_ListTrustConfigs_async
+   */
+  listTrustConfigsAsync(
+    request?: protos.google.cloud.certificatemanager.v1.IListTrustConfigsRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.certificatemanager.v1.ITrustConfig> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listTrustConfigs'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listTrustConfigs.asyncIterate(
+      this.innerApiCalls['listTrustConfigs'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.certificatemanager.v1.ITrustConfig>;
+  }
+  /**
    * Gets information about a location.
    *
    * @param {Object} request
@@ -4288,8 +5071,7 @@ export class CertificateManagerClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -4335,12 +5117,11 @@ export class CertificateManagerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -4884,6 +5665,58 @@ export class CertificateManagerClient {
    */
   matchLocationFromLocationName(locationName: string) {
     return this.pathTemplates.locationPathTemplate.match(locationName).location;
+  }
+
+  /**
+   * Return a fully-qualified trustConfig resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} trust_config
+   * @returns {string} Resource name string.
+   */
+  trustConfigPath(project: string, location: string, trustConfig: string) {
+    return this.pathTemplates.trustConfigPathTemplate.render({
+      project: project,
+      location: location,
+      trust_config: trustConfig,
+    });
+  }
+
+  /**
+   * Parse the project from TrustConfig resource.
+   *
+   * @param {string} trustConfigName
+   *   A fully-qualified path representing TrustConfig resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromTrustConfigName(trustConfigName: string) {
+    return this.pathTemplates.trustConfigPathTemplate.match(trustConfigName)
+      .project;
+  }
+
+  /**
+   * Parse the location from TrustConfig resource.
+   *
+   * @param {string} trustConfigName
+   *   A fully-qualified path representing TrustConfig resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromTrustConfigName(trustConfigName: string) {
+    return this.pathTemplates.trustConfigPathTemplate.match(trustConfigName)
+      .location;
+  }
+
+  /**
+   * Parse the trust_config from TrustConfig resource.
+   *
+   * @param {string} trustConfigName
+   *   A fully-qualified path representing TrustConfig resource.
+   * @returns {string} A string representing the trust_config.
+   */
+  matchTrustConfigFromTrustConfigName(trustConfigName: string) {
+    return this.pathTemplates.trustConfigPathTemplate.match(trustConfigName)
+      .trust_config;
   }
 
   /**

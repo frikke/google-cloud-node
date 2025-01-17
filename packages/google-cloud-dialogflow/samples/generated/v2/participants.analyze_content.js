@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,6 +42,10 @@ function main(participant) {
    *  An input event to send to Dialogflow.
    */
   // const eventInput = {}
+  /**
+   *  An input representing the selection of a suggestion.
+   */
+  // const suggestionInput = {}
   /**
    *  Speech synthesis configuration.
    *  The speech synthesis settings for a virtual agent that may be configured

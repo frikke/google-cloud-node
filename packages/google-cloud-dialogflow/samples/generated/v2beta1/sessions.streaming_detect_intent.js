@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,10 +58,10 @@ function main(session, queryInput) {
   // const queryParams = {}
   /**
    *  Required. The input specification. It can be set to:
-   *  1.  an audio config which instructs the speech recognizer how to process
-   *      the speech audio,
-   *  2.  a conversational query in the form of text, or
-   *  3.  an event that specifies which intent to trigger.
+   *  1. an audio config which instructs the speech recognizer how to process
+   *  the speech audio,
+   *  2. a conversational query in the form of text, or
+   *  3. an event that specifies which intent to trigger.
    */
   // const queryInput = {}
   /**
@@ -97,7 +97,7 @@ function main(session, queryInput) {
    *  `query_input` was set to a streaming input audio config. The complete audio
    *  over all streaming messages must not exceed 1 minute.
    */
-  // const inputAudio = 'Buffer.from('string')'
+  // const inputAudio = Buffer.from('string')
   /**
    *  If true, `StreamingDetectIntentResponse.debugging_info` will get populated.
    */
@@ -122,7 +122,7 @@ function main(session, queryInput) {
     stream.on('error', (err) => { throw(err) });
     stream.on('end', () => { /* API call completed */ });
     stream.write(request);
-    stream.end(); 
+    stream.end();
   }
 
   callStreamingDetectIntent();

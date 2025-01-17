@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ function main(name, targetDomainName, targetDnsIpAddresses) {
    *  Required. The target DNS server IP addresses to resolve the remote domain involved
    *  in the trust.
    */
-  // const targetDnsIpAddresses = 'abc123'
+  // const targetDnsIpAddresses = ['abc','def']
 
   // Imports the Managedidentities library
   const {ManagedIdentitiesServiceClient} = require('@google-cloud/managed-identities').v1;

@@ -1,7 +1,7 @@
 {
     "clientLibrary": {
         "name": "nodejs-confidentialcomputing",
-        "version": "0.1.0",
+        "version": "1.7.0",
         "language": "TYPESCRIPT",
         "apis": [
             {
@@ -66,7 +66,7 @@
             "segments": [
                 {
                     "start": 25,
-                    "end": 66,
+                    "end": 75,
                     "type": "FULL"
                 }
             ],
@@ -86,6 +86,14 @@
                     {
                         "name": "tpm_attestation",
                         "type": ".google.cloud.confidentialcomputing.v1.TpmAttestation"
+                    },
+                    {
+                        "name": "confidential_space_info",
+                        "type": ".google.cloud.confidentialcomputing.v1.ConfidentialSpaceInfo"
+                    },
+                    {
+                        "name": "token_options",
+                        "type": ".google.cloud.confidentialcomputing.v1.TokenOptions"
                     }
                 ],
                 "resultType": ".google.cloud.confidentialcomputing.v1.VerifyAttestationResponse",

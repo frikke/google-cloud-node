@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,6 +34,15 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
+   *  Optional. Set the scope of the budgets to be returned, in the format of the
+   *  resource name. The scope of a budget is the cost that it tracks, such as
+   *  costs for a single project, or the costs for all projects in a folder. Only
+   *  project scope (in the format of "projects/project-id" or "projects/123") is
+   *  supported in this field. When this field is set to a project's resource
+   *  name, the budgets returned are tracking the costs for that project.
+   */
+  // const scope = 'abc123'
+  /**
    *  Optional. The maximum number of budgets to return per page.
    *  The default and maximum value are 100.
    */
@@ -58,7 +67,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await budgetsClient.listBudgetsAsync(request);
+    const iterable = budgetsClient.listBudgetsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

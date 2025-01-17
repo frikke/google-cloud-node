@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ function main(name, etag) {
    */
   // const name = 'abc123'
   /**
-   *  Optional. State properties user wish to include with this state.  Full replace of the
-   *  current state_metadata.
+   *  Optional. State properties user wish to include with this state.  Full
+   *  replace of the current state_metadata.
    */
-  // const stateMetadata = 1234
+  // const stateMetadata = [1,2,3,4]
   /**
    *  Required. Fingerprint of the Insight. Provides optimistic locking.
    */

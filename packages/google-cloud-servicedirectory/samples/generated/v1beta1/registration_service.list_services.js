@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  Optional. The maximum number of items to return.
+   *  Optional. The maximum number of items to return. The default value is 100.
    */
   // const pageSize = 1234
   /**
@@ -66,6 +66,9 @@ function main(parent) {
    *  *   `doesnotexist.foo=bar` returns an empty list. Note that service
    *      doesn't have a field called "doesnotexist". Since the filter does not
    *      match any services, it returns no results
+   *  *   `attributes.managed_registration=true` returns services that are
+   *  managed
+   *      by a GCP product or service
    *  For more information about filtering, see
    *  API Filtering (https://aip.dev/160).
    */
@@ -94,7 +97,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await servicedirectoryClient.listServicesAsync(request);
+    const iterable = servicedirectoryClient.listServicesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

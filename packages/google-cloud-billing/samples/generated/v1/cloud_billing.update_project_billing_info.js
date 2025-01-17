@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,8 +35,9 @@ function main(name) {
    */
   // const name = 'abc123'
   /**
-   *  The new billing information for the project. Read-only fields are ignored;
-   *  thus, you can leave empty all fields except `billing_account_name`.
+   *  The new billing information for the project. Output-only fields are
+   *  ignored; thus, you can leave empty all fields except
+   *  `billing_account_name`.
    */
   // const projectBillingInfo = {}
 

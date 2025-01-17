@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,12 +55,12 @@ function main(participant) {
    *  is set in the first message. The complete audio over all streaming
    *  messages must not exceed 1 minute.
    */
-  // const inputAudio = 'Buffer.from('string')'
+  // const inputAudio = Buffer.from('string')
   /**
    *  The UTF-8 encoded natural language text to be processed. Must be sent if
    *  `text_config` is set in the first message. Text length must not exceed
    *  256 bytes for virtual agent interactions. The `input_text` field can be
-   *  only sent once.
+   *  only sent once, and would cancel the speech recognition if any ongoing.
    */
   // const inputText = 'abc123'
   /**
@@ -85,6 +85,25 @@ function main(participant) {
    *  CX agent.
    */
   // const cxParameters = {}
+  /**
+   *  Optional. Enable full bidirectional streaming. You can keep streaming the
+   *  audio until timeout, and there's no need to half close the stream to get
+   *  the response.
+   *  Restrictions:
+   *  - Timeout: 3 mins.
+   *  - Audio Encoding: only supports
+   *  AudioEncoding.AUDIO_ENCODING_LINEAR_16 google.cloud.dialogflow.v2.AudioEncoding.AUDIO_ENCODING_LINEAR_16 
+   *  and
+   *  AudioEncoding.AUDIO_ENCODING_MULAW google.cloud.dialogflow.v2.AudioEncoding.AUDIO_ENCODING_MULAW 
+   *  - Lifecycle: conversation should be in `Assist Stage`, go to
+   *    Conversations.CreateConversation google.cloud.dialogflow.v2.Conversations.CreateConversation 
+   *    for more information.
+   *  InvalidArgument Error will be returned if the one of restriction checks
+   *  failed.
+   *  You can find more details in
+   *  https://cloud.google.com/agent-assist/docs/extended-streaming
+   */
+  // const enableExtendedStreaming = true
   /**
    *  Enable partial virtual agent responses. If this flag is not enabled,
    *  response stream still contains only one final response even if some
@@ -116,7 +135,7 @@ function main(participant) {
     stream.on('error', (err) => { throw(err) });
     stream.on('end', () => { /* API call completed */ });
     stream.write(request);
-    stream.end(); 
+    stream.end();
   }
 
   callStreamingAnalyzeContent();

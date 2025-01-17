@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function main(parent, entitlements) {
   /**
    *  Required. The entitlements to transfer to Google.
    */
-  // const entitlements = 1234
+  // const entitlements = [1,2,3,4]
   /**
    *  Optional. You can specify an optional unique request ID, and if you need to
    *  retry your request, the server will know to ignore the request if it's

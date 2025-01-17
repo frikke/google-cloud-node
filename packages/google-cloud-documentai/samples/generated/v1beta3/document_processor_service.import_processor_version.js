@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,9 +29,17 @@ function main(parent) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  The source processor version to import from.
+   *  The source processor version to import from. The source processor version
+   *  and destination processor need to be in the same environment and region.
+   *  Note that ProcessorVersions with `model_type` `MODEL_TYPE_LLM` are not
+   *  supported.
    */
   // const processorVersionSource = 'abc123'
+  /**
+   *  The source processor version to import from. It can be from a different
+   *  environment and region than the destination processor.
+   */
+  // const externalProcessorVersionSource = {}
   /**
    *  Required. The destination processor name to create the processor version
    *  in. Format:

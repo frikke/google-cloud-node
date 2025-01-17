@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function main(parent, entitlements) {
   /**
    *  Required. The new entitlements to create or transfer.
    */
-  // const entitlements = 1234
+  // const entitlements = [1,2,3,4]
   /**
    *  The super admin of the resold customer generates this token to
    *  authorize a reseller to access their Cloud Identity and purchase

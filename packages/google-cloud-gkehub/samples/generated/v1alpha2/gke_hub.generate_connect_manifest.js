@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ function main(name) {
    *  supported by the proxy. This will direct the connect agent's outbound
    *  traffic through a HTTP(S) proxy.
    */
-  // const proxy = 'Buffer.from('string')'
+  // const proxy = Buffer.from('string')
   /**
    *  Optional. The Connect agent version to use. Defaults to the most current version.
    */
@@ -65,7 +65,7 @@ function main(name) {
   /**
    *  Optional. The image pull secret content for the registry, if not public.
    */
-  // const imagePullSecretContent = 'Buffer.from('string')'
+  // const imagePullSecretContent = Buffer.from('string')
 
   // Imports the Gkehub library
   const {GkeHubClient} = require('@google-cloud/gke-hub').v1alpha2;

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ const DocumentSchemaServiceClient = v1.DocumentSchemaServiceClient;
 type DocumentSchemaServiceClient = v1.DocumentSchemaServiceClient;
 const DocumentServiceClient = v1.DocumentServiceClient;
 type DocumentServiceClient = v1.DocumentServiceClient;
+const PipelineServiceClient = v1.PipelineServiceClient;
+type PipelineServiceClient = v1.PipelineServiceClient;
 const RuleSetServiceClient = v1.RuleSetServiceClient;
 type RuleSetServiceClient = v1.RuleSetServiceClient;
 const SynonymSetServiceClient = v1.SynonymSetServiceClient;
@@ -34,6 +36,7 @@ export {
   DocumentLinkServiceClient,
   DocumentSchemaServiceClient,
   DocumentServiceClient,
+  PipelineServiceClient,
   RuleSetServiceClient,
   SynonymSetServiceClient,
 };
@@ -42,6 +45,7 @@ export default {
   DocumentLinkServiceClient,
   DocumentSchemaServiceClient,
   DocumentServiceClient,
+  PipelineServiceClient,
   RuleSetServiceClient,
   SynonymSetServiceClient,
 };

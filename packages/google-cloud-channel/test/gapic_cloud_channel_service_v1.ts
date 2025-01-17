@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -161,16 +161,64 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.CloudChannelServiceClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        cloudchannelserviceModule.v1.CloudChannelServiceClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client =
+        new cloudchannelserviceModule.v1.CloudChannelServiceClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'cloudchannel.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        cloudchannelserviceModule.v1.CloudChannelServiceClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client =
+        new cloudchannelserviceModule.v1.CloudChannelServiceClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process !== 'undefined' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          cloudchannelserviceModule.v1.CloudChannelServiceClient.servicePath;
+        assert.strictEqual(servicePath, 'cloudchannel.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          cloudchannelserviceModule.v1.CloudChannelServiceClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'cloudchannel.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {universeDomain: 'example.com'}
+      );
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudchannel.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {universe_domain: 'example.com'}
+      );
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'cloudchannel.example.com');
+    });
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new cloudchannelserviceModule.v1.CloudChannelServiceClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -2436,9 +2484,8 @@ describe('v1.CloudChannelServiceClient', () => {
       );
       client.innerApiCalls.createChannelPartnerRepricingConfig =
         stubSimpleCall(expectedResponse);
-      const [response] = await client.createChannelPartnerRepricingConfig(
-        request
-      );
+      const [response] =
+        await client.createChannelPartnerRepricingConfig(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (
         client.innerApiCalls.createChannelPartnerRepricingConfig as SinonStub
@@ -2584,9 +2631,8 @@ describe('v1.CloudChannelServiceClient', () => {
       );
       client.innerApiCalls.updateChannelPartnerRepricingConfig =
         stubSimpleCall(expectedResponse);
-      const [response] = await client.updateChannelPartnerRepricingConfig(
-        request
-      );
+      const [response] =
+        await client.updateChannelPartnerRepricingConfig(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (
         client.innerApiCalls.updateChannelPartnerRepricingConfig as SinonStub
@@ -2734,9 +2780,8 @@ describe('v1.CloudChannelServiceClient', () => {
       );
       client.innerApiCalls.deleteChannelPartnerRepricingConfig =
         stubSimpleCall(expectedResponse);
-      const [response] = await client.deleteChannelPartnerRepricingConfig(
-        request
-      );
+      const [response] =
+        await client.deleteChannelPartnerRepricingConfig(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (
         client.innerApiCalls.deleteChannelPartnerRepricingConfig as SinonStub
@@ -2993,6 +3038,151 @@ describe('v1.CloudChannelServiceClient', () => {
       const expectedError = new Error('The client has already been closed.');
       client.close();
       await assert.rejects(client.lookupOffer(request), expectedError);
+    });
+  });
+
+  describe('queryEligibleBillingAccounts', () => {
+    it('invokes queryEligibleBillingAccounts without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest',
+        ['customer']
+      );
+      request.customer = defaultValue1;
+      const expectedHeaderRequestParams = `customer=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.channel.v1.QueryEligibleBillingAccountsResponse()
+      );
+      client.innerApiCalls.queryEligibleBillingAccounts =
+        stubSimpleCall(expectedResponse);
+      const [response] = await client.queryEligibleBillingAccounts(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.queryEligibleBillingAccounts as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.queryEligibleBillingAccounts as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes queryEligibleBillingAccounts without error using callback', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest',
+        ['customer']
+      );
+      request.customer = defaultValue1;
+      const expectedHeaderRequestParams = `customer=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.channel.v1.QueryEligibleBillingAccountsResponse()
+      );
+      client.innerApiCalls.queryEligibleBillingAccounts =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.queryEligibleBillingAccounts(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.channel.v1.IQueryEligibleBillingAccountsResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.queryEligibleBillingAccounts as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.queryEligibleBillingAccounts as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes queryEligibleBillingAccounts with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest',
+        ['customer']
+      );
+      request.customer = defaultValue1;
+      const expectedHeaderRequestParams = `customer=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.queryEligibleBillingAccounts = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.queryEligibleBillingAccounts(request),
+        expectedError
+      );
+      const actualRequest = (
+        client.innerApiCalls.queryEligibleBillingAccounts as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.queryEligibleBillingAccounts as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes queryEligibleBillingAccounts with closed client', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.QueryEligibleBillingAccountsRequest',
+        ['customer']
+      );
+      request.customer = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(
+        client.queryEligibleBillingAccounts(request),
+        expectedError
+      );
     });
   });
 
@@ -5716,9 +5906,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listCustomers.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -5767,9 +5957,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listCustomers.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -5812,9 +6002,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listCustomers.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -5854,9 +6044,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listCustomers.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -6031,9 +6221,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listEntitlements.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -6082,9 +6272,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listEntitlements.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -6127,9 +6317,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listEntitlements.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -6169,9 +6359,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listEntitlements.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -6365,9 +6555,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listTransferableSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -6416,9 +6606,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listTransferableSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -6467,9 +6657,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listTransferableSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -6509,9 +6699,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listTransferableSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -7659,9 +7849,8 @@ describe('v1.CloudChannelServiceClient', () => {
       ];
       client.innerApiCalls.listChannelPartnerRepricingConfigs =
         stubSimpleCall(expectedResponse);
-      const [response] = await client.listChannelPartnerRepricingConfigs(
-        request
-      );
+      const [response] =
+        await client.listChannelPartnerRepricingConfigs(request);
       assert.deepStrictEqual(response, expectedResponse);
       const actualRequest = (
         client.innerApiCalls.listChannelPartnerRepricingConfigs as SinonStub
@@ -7999,6 +8188,660 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (
           client.descriptors.page.listChannelPartnerRepricingConfigs
+            .asyncIterate as SinonStub
+        )
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
+      );
+    });
+  });
+
+  describe('listSkuGroups', () => {
+    it('invokes listSkuGroups without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+      ];
+      client.innerApiCalls.listSkuGroups = stubSimpleCall(expectedResponse);
+      const [response] = await client.listSkuGroups(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.listSkuGroups as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listSkuGroups as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes listSkuGroups without error using callback', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+      ];
+      client.innerApiCalls.listSkuGroups =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.listSkuGroups(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.channel.v1.ISkuGroup[] | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.listSkuGroups as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listSkuGroups as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes listSkuGroups with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.listSkuGroups = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.listSkuGroups(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.listSkuGroups as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listSkuGroups as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes listSkuGroupsStream without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+      ];
+      client.descriptors.page.listSkuGroups.createStream =
+        stubPageStreamingCall(expectedResponse);
+      const stream = client.listSkuGroupsStream(request);
+      const promise = new Promise((resolve, reject) => {
+        const responses: protos.google.cloud.channel.v1.SkuGroup[] = [];
+        stream.on(
+          'data',
+          (response: protos.google.cloud.channel.v1.SkuGroup) => {
+            responses.push(response);
+          }
+        );
+        stream.on('end', () => {
+          resolve(responses);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const responses = await promise;
+      assert.deepStrictEqual(responses, expectedResponse);
+      assert(
+        (client.descriptors.page.listSkuGroups.createStream as SinonStub)
+          .getCall(0)
+          .calledWith(client.innerApiCalls.listSkuGroups, request)
+      );
+      assert(
+        (client.descriptors.page.listSkuGroups.createStream as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
+      );
+    });
+
+    it('invokes listSkuGroupsStream with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.descriptors.page.listSkuGroups.createStream =
+        stubPageStreamingCall(undefined, expectedError);
+      const stream = client.listSkuGroupsStream(request);
+      const promise = new Promise((resolve, reject) => {
+        const responses: protos.google.cloud.channel.v1.SkuGroup[] = [];
+        stream.on(
+          'data',
+          (response: protos.google.cloud.channel.v1.SkuGroup) => {
+            responses.push(response);
+          }
+        );
+        stream.on('end', () => {
+          resolve(responses);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+      assert(
+        (client.descriptors.page.listSkuGroups.createStream as SinonStub)
+          .getCall(0)
+          .calledWith(client.innerApiCalls.listSkuGroups, request)
+      );
+      assert(
+        (client.descriptors.page.listSkuGroups.createStream as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
+      );
+    });
+
+    it('uses async iteration with listSkuGroups without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.SkuGroup()),
+      ];
+      client.descriptors.page.listSkuGroups.asyncIterate =
+        stubAsyncIterationCall(expectedResponse);
+      const responses: protos.google.cloud.channel.v1.ISkuGroup[] = [];
+      const iterable = client.listSkuGroupsAsync(request);
+      for await (const resource of iterable) {
+        responses.push(resource!);
+      }
+      assert.deepStrictEqual(responses, expectedResponse);
+      assert.deepStrictEqual(
+        (
+          client.descriptors.page.listSkuGroups.asyncIterate as SinonStub
+        ).getCall(0).args[1],
+        request
+      );
+      assert(
+        (client.descriptors.page.listSkuGroups.asyncIterate as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
+      );
+    });
+
+    it('uses async iteration with listSkuGroups with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupsRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupsRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.descriptors.page.listSkuGroups.asyncIterate =
+        stubAsyncIterationCall(undefined, expectedError);
+      const iterable = client.listSkuGroupsAsync(request);
+      await assert.rejects(async () => {
+        const responses: protos.google.cloud.channel.v1.ISkuGroup[] = [];
+        for await (const resource of iterable) {
+          responses.push(resource!);
+        }
+      });
+      assert.deepStrictEqual(
+        (
+          client.descriptors.page.listSkuGroups.asyncIterate as SinonStub
+        ).getCall(0).args[1],
+        request
+      );
+      assert(
+        (client.descriptors.page.listSkuGroups.asyncIterate as SinonStub)
+          .getCall(0)
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
+      );
+    });
+  });
+
+  describe('listSkuGroupBillableSkus', () => {
+    it('invokes listSkuGroupBillableSkus without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+      ];
+      client.innerApiCalls.listSkuGroupBillableSkus =
+        stubSimpleCall(expectedResponse);
+      const [response] = await client.listSkuGroupBillableSkus(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.listSkuGroupBillableSkus as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listSkuGroupBillableSkus as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes listSkuGroupBillableSkus without error using callback', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+      ];
+      client.innerApiCalls.listSkuGroupBillableSkus =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.listSkuGroupBillableSkus(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.channel.v1.IBillableSku[] | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.listSkuGroupBillableSkus as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listSkuGroupBillableSkus as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes listSkuGroupBillableSkus with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.listSkuGroupBillableSkus = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.listSkuGroupBillableSkus(request),
+        expectedError
+      );
+      const actualRequest = (
+        client.innerApiCalls.listSkuGroupBillableSkus as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.listSkuGroupBillableSkus as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes listSkuGroupBillableSkusStream without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+      ];
+      client.descriptors.page.listSkuGroupBillableSkus.createStream =
+        stubPageStreamingCall(expectedResponse);
+      const stream = client.listSkuGroupBillableSkusStream(request);
+      const promise = new Promise((resolve, reject) => {
+        const responses: protos.google.cloud.channel.v1.BillableSku[] = [];
+        stream.on(
+          'data',
+          (response: protos.google.cloud.channel.v1.BillableSku) => {
+            responses.push(response);
+          }
+        );
+        stream.on('end', () => {
+          resolve(responses);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const responses = await promise;
+      assert.deepStrictEqual(responses, expectedResponse);
+      assert(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .createStream as SinonStub
+        )
+          .getCall(0)
+          .calledWith(client.innerApiCalls.listSkuGroupBillableSkus, request)
+      );
+      assert(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .createStream as SinonStub
+        )
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
+      );
+    });
+
+    it('invokes listSkuGroupBillableSkusStream with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.descriptors.page.listSkuGroupBillableSkus.createStream =
+        stubPageStreamingCall(undefined, expectedError);
+      const stream = client.listSkuGroupBillableSkusStream(request);
+      const promise = new Promise((resolve, reject) => {
+        const responses: protos.google.cloud.channel.v1.BillableSku[] = [];
+        stream.on(
+          'data',
+          (response: protos.google.cloud.channel.v1.BillableSku) => {
+            responses.push(response);
+          }
+        );
+        stream.on('end', () => {
+          resolve(responses);
+        });
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+      assert(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .createStream as SinonStub
+        )
+          .getCall(0)
+          .calledWith(client.innerApiCalls.listSkuGroupBillableSkus, request)
+      );
+      assert(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .createStream as SinonStub
+        )
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
+      );
+    });
+
+    it('uses async iteration with listSkuGroupBillableSkus without error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = [
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+        generateSampleMessage(new protos.google.cloud.channel.v1.BillableSku()),
+      ];
+      client.descriptors.page.listSkuGroupBillableSkus.asyncIterate =
+        stubAsyncIterationCall(expectedResponse);
+      const responses: protos.google.cloud.channel.v1.IBillableSku[] = [];
+      const iterable = client.listSkuGroupBillableSkusAsync(request);
+      for await (const resource of iterable) {
+        responses.push(resource!);
+      }
+      assert.deepStrictEqual(responses, expectedResponse);
+      assert.deepStrictEqual(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .asyncIterate as SinonStub
+        ).getCall(0).args[1],
+        request
+      );
+      assert(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .asyncIterate as SinonStub
+        )
+          .getCall(0)
+          .args[2].otherArgs.headers['x-goog-request-params'].includes(
+            expectedHeaderRequestParams
+          )
+      );
+    });
+
+    it('uses async iteration with listSkuGroupBillableSkus with error', async () => {
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.channel.v1.ListSkuGroupBillableSkusRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.descriptors.page.listSkuGroupBillableSkus.asyncIterate =
+        stubAsyncIterationCall(undefined, expectedError);
+      const iterable = client.listSkuGroupBillableSkusAsync(request);
+      await assert.rejects(async () => {
+        const responses: protos.google.cloud.channel.v1.IBillableSku[] = [];
+        for await (const resource of iterable) {
+          responses.push(resource!);
+        }
+      });
+      assert.deepStrictEqual(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
+            .asyncIterate as SinonStub
+        ).getCall(0).args[1],
+        request
+      );
+      assert(
+        (
+          client.descriptors.page.listSkuGroupBillableSkus
             .asyncIterate as SinonStub
         )
           .getCall(0)
@@ -8396,9 +9239,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -8446,9 +9289,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -8490,9 +9333,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -8533,9 +9376,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -8707,9 +9550,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listOffers.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -8757,9 +9600,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listOffers.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -8802,9 +9645,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listOffers.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -8846,9 +9689,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listOffers.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -9042,9 +9885,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listPurchasableSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -9093,9 +9936,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listPurchasableSkus.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -9144,9 +9987,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listPurchasableSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -9186,9 +10029,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listPurchasableSkus.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -9709,9 +10552,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSubscribers.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -9757,9 +10600,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSubscribers.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -9798,9 +10641,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSubscribers.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -9840,9 +10683,9 @@ describe('v1.CloudChannelServiceClient', () => {
       assert(
         (client.descriptors.page.listSubscribers.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -10541,6 +11384,61 @@ describe('v1.CloudChannelServiceClient', () => {
   });
 
   describe('Path templates', () => {
+    describe('billingAccount', () => {
+      const fakePath = '/rendered/path/billingAccount';
+      const expectedParameters = {
+        account: 'accountValue',
+        billing_account: 'billingAccountValue',
+      };
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      client.pathTemplates.billingAccountPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.billingAccountPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('billingAccountPath', () => {
+        const result = client.billingAccountPath(
+          'accountValue',
+          'billingAccountValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.billingAccountPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchAccountFromBillingAccountName', () => {
+        const result = client.matchAccountFromBillingAccountName(fakePath);
+        assert.strictEqual(result, 'accountValue');
+        assert(
+          (client.pathTemplates.billingAccountPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchBillingAccountFromBillingAccountName', () => {
+        const result =
+          client.matchBillingAccountFromBillingAccountName(fakePath);
+        assert.strictEqual(result, 'billingAccountValue');
+        assert(
+          (client.pathTemplates.billingAccountPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('channelPartnerLink', () => {
       const fakePath = '/rendered/path/channelPartnerLink';
       const expectedParameters = {
@@ -11126,6 +12024,57 @@ describe('v1.CloudChannelServiceClient', () => {
         assert.strictEqual(result, 'skuValue');
         assert(
           (client.pathTemplates.skuPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('skuGroup', () => {
+      const fakePath = '/rendered/path/skuGroup';
+      const expectedParameters = {
+        account: 'accountValue',
+        sku_group: 'skuGroupValue',
+      };
+      const client = new cloudchannelserviceModule.v1.CloudChannelServiceClient(
+        {
+          credentials: {client_email: 'bogus', private_key: 'bogus'},
+          projectId: 'bogus',
+        }
+      );
+      client.initialize();
+      client.pathTemplates.skuGroupPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.skuGroupPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('skuGroupPath', () => {
+        const result = client.skuGroupPath('accountValue', 'skuGroupValue');
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.skuGroupPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchAccountFromSkuGroupName', () => {
+        const result = client.matchAccountFromSkuGroupName(fakePath);
+        assert.strictEqual(result, 'accountValue');
+        assert(
+          (client.pathTemplates.skuGroupPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchSkuGroupFromSkuGroupName', () => {
+        const result = client.matchSkuGroupFromSkuGroupName(fakePath);
+        assert.strictEqual(result, 'skuGroupValue');
+        assert(
+          (client.pathTemplates.skuGroupPathTemplate.match as SinonStub)
             .getCall(-1)
             .calledWith(fakePath)
         );

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ function main(requests) {
    *  Required. The list of file annotation requests. Right now we support only
    *  one AnnotateFileRequest in BatchAnnotateFilesRequest.
    */
-  // const requests = 1234
+  // const requests = [1,2,3,4]
 
   // Imports the Vision library
   const {ImageAnnotatorClient} = require('@google-cloud/vision').v1p4beta1;

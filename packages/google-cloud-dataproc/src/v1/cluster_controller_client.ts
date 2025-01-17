@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/cluster_controller_client_config.json`.
@@ -55,6 +56,8 @@ export class ClusterControllerClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -97,8 +100,7 @@ export class ClusterControllerClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -106,7 +108,7 @@ export class ClusterControllerClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new ClusterControllerClient({fallback: 'rest'}, gax);
+   *     const client = new ClusterControllerClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -115,8 +117,27 @@ export class ClusterControllerClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof ClusterControllerClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'dataproc.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -131,7 +152,7 @@ export class ClusterControllerClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -156,24 +177,24 @@ export class ClusterControllerClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -188,6 +209,9 @@ export class ClusterControllerClient {
     this.pathTemplates = {
       batchPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/batches/{batch}'
+      ),
+      cryptoKeyPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}'
       ),
       nodeGroupPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/regions/{region}/clusters/{cluster}/nodeGroups/{node_group}'
@@ -211,6 +235,12 @@ export class ClusterControllerClient {
       servicePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/services/{service}'
       ),
+      sessionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/sessions/{session}'
+      ),
+      sessionTemplatePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/sessionTemplates/{template}'
+      ),
     };
 
     // Some of the methods on this service return "paged" results,
@@ -232,7 +262,7 @@ export class ClusterControllerClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -524,19 +554,50 @@ export class ClusterControllerClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dataproc.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'dataproc.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -590,9 +651,8 @@ export class ClusterControllerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.dataproc.v1.Cluster | Cluster}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.dataproc.v1.Cluster|Cluster}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.get_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_GetCluster_async
@@ -604,7 +664,7 @@ export class ClusterControllerClient {
     [
       protos.google.cloud.dataproc.v1.ICluster,
       protos.google.cloud.dataproc.v1.IGetClusterRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCluster(
@@ -642,7 +702,7 @@ export class ClusterControllerClient {
     [
       protos.google.cloud.dataproc.v1.ICluster,
       protos.google.cloud.dataproc.v1.IGetClusterRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -668,7 +728,7 @@ export class ClusterControllerClient {
 
   /**
    * Creates a cluster in a project. The returned
-   * {@link google.longrunning.Operation.metadata|Operation.metadata} will be
+   * {@link protos.google.longrunning.Operation.metadata|Operation.metadata} will be
    * [ClusterOperationMetadata](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#clusteroperationmetadata).
    *
    * @param {Object} request
@@ -685,7 +745,7 @@ export class ClusterControllerClient {
    *   two
    *   [CreateClusterRequest](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.CreateClusterRequest)s
    *   with the same id, then the second request will be ignored and the
-   *   first {@link google.longrunning.Operation|google.longrunning.Operation} created
+   *   first {@link protos.google.longrunning.Operation|google.longrunning.Operation} created
    *   and stored in the backend is returned.
    *
    *   It is recommended to always set this value to a
@@ -701,8 +761,7 @@ export class ClusterControllerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.create_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_CreateCluster_async
@@ -717,7 +776,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCluster(
@@ -770,7 +829,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -798,8 +857,7 @@ export class ClusterControllerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.create_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_CreateCluster_async
@@ -829,10 +887,10 @@ export class ClusterControllerClient {
   }
   /**
    * Updates a cluster in a project. The returned
-   * {@link google.longrunning.Operation.metadata|Operation.metadata} will be
+   * {@link protos.google.longrunning.Operation.metadata|Operation.metadata} will be
    * [ClusterOperationMetadata](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#clusteroperationmetadata).
    * The cluster must be in a
-   * {@link google.cloud.dataproc.v1.ClusterStatus.State|`RUNNING`} state or an error
+   * {@link protos.google.cloud.dataproc.v1.ClusterStatus.State|`RUNNING`} state or an error
    * is returned.
    *
    * @param {Object} request
@@ -913,7 +971,7 @@ export class ClusterControllerClient {
    *   receives two
    *   [UpdateClusterRequest](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.UpdateClusterRequest)s
    *   with the same id, then the second request will be ignored and the
-   *   first {@link google.longrunning.Operation|google.longrunning.Operation} created
+   *   first {@link protos.google.longrunning.Operation|google.longrunning.Operation} created
    *   and stored in the backend is returned.
    *
    *   It is recommended to always set this value to a
@@ -927,8 +985,7 @@ export class ClusterControllerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.update_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_UpdateCluster_async
@@ -943,7 +1000,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCluster(
@@ -996,7 +1053,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1025,8 +1082,7 @@ export class ClusterControllerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.update_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_UpdateCluster_async
@@ -1074,7 +1130,7 @@ export class ClusterControllerClient {
    *   receives two
    *   [StopClusterRequest](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.StopClusterRequest)s
    *   with the same id, then the second request will be ignored and the
-   *   first {@link google.longrunning.Operation|google.longrunning.Operation} created
+   *   first {@link protos.google.longrunning.Operation|google.longrunning.Operation} created
    *   and stored in the backend is returned.
    *
    *   Recommendation: Set this value to a
@@ -1088,8 +1144,7 @@ export class ClusterControllerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.stop_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_StopCluster_async
@@ -1104,7 +1159,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   stopCluster(
@@ -1157,7 +1212,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1186,8 +1241,7 @@ export class ClusterControllerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.stop_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_StopCluster_async
@@ -1235,7 +1289,7 @@ export class ClusterControllerClient {
    *   receives two
    *   [StartClusterRequest](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.StartClusterRequest)s
    *   with the same id, then the second request will be ignored and the
-   *   first {@link google.longrunning.Operation|google.longrunning.Operation} created
+   *   first {@link protos.google.longrunning.Operation|google.longrunning.Operation} created
    *   and stored in the backend is returned.
    *
    *   Recommendation: Set this value to a
@@ -1249,8 +1303,7 @@ export class ClusterControllerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.start_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_StartCluster_async
@@ -1265,7 +1318,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   startCluster(
@@ -1318,7 +1371,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1347,8 +1400,7 @@ export class ClusterControllerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.start_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_StartCluster_async
@@ -1378,7 +1430,7 @@ export class ClusterControllerClient {
   }
   /**
    * Deletes a cluster in a project. The returned
-   * {@link google.longrunning.Operation.metadata|Operation.metadata} will be
+   * {@link protos.google.longrunning.Operation.metadata|Operation.metadata} will be
    * [ClusterOperationMetadata](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#clusteroperationmetadata).
    *
    * @param {Object} request
@@ -1398,7 +1450,7 @@ export class ClusterControllerClient {
    *   receives two
    *   [DeleteClusterRequest](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.DeleteClusterRequest)s
    *   with the same id, then the second request will be ignored and the
-   *   first {@link google.longrunning.Operation|google.longrunning.Operation} created
+   *   first {@link protos.google.longrunning.Operation|google.longrunning.Operation} created
    *   and stored in the backend is returned.
    *
    *   It is recommended to always set this value to a
@@ -1412,8 +1464,7 @@ export class ClusterControllerClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.delete_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_DeleteCluster_async
@@ -1428,7 +1479,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCluster(
@@ -1481,7 +1532,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1510,8 +1561,7 @@ export class ClusterControllerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.delete_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_DeleteCluster_async
@@ -1541,10 +1591,10 @@ export class ClusterControllerClient {
   }
   /**
    * Gets cluster diagnostic information. The returned
-   * {@link google.longrunning.Operation.metadata|Operation.metadata} will be
+   * {@link protos.google.longrunning.Operation.metadata|Operation.metadata} will be
    * [ClusterOperationMetadata](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#clusteroperationmetadata).
    * After the operation completes,
-   * {@link google.longrunning.Operation.response|Operation.response}
+   * {@link protos.google.longrunning.Operation.response|Operation.response}
    * contains
    * [DiagnoseClusterResults](https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#diagnoseclusterresults).
    *
@@ -1557,14 +1607,29 @@ export class ClusterControllerClient {
    *   Required. The Dataproc region in which to handle the request.
    * @param {string} request.clusterName
    *   Required. The cluster name.
+   * @param {string} [request.tarballGcsDir]
+   *   Optional. (Optional) The output Cloud Storage directory for the diagnostic
+   *   tarball. If not specified, a task-specific directory in the cluster's
+   *   staging bucket will be used.
+   * @param {google.cloud.dataproc.v1.DiagnoseClusterRequest.TarballAccess} [request.tarballAccess]
+   *   Optional. (Optional) The access type to the diagnostic tarball. If not
+   *   specified, falls back to default access of the bucket
+   * @param {google.type.Interval} [request.diagnosisInterval]
+   *   Optional. Time interval in which diagnosis should be carried out on the
+   *   cluster.
+   * @param {string[]} [request.jobs]
+   *   Optional. Specifies a list of jobs on which diagnosis is to be performed.
+   *   Format: projects/{project}/regions/{region}/jobs/{job}
+   * @param {string[]} [request.yarnApplicationIds]
+   *   Optional. Specifies a list of yarn applications on which diagnosis is to be
+   *   performed.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.diagnose_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_DiagnoseCluster_async
@@ -1579,7 +1644,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   diagnoseCluster(
@@ -1632,7 +1697,7 @@ export class ClusterControllerClient {
         protos.google.cloud.dataproc.v1.IClusterOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1661,8 +1726,7 @@ export class ClusterControllerClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.diagnose_cluster.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_DiagnoseCluster_async
@@ -1709,12 +1773,12 @@ export class ClusterControllerClient {
    *   where **field** is one of `status.state`, `clusterName`, or `labels.[KEY]`,
    *   and `[KEY]` is a label key. **value** can be `*` to match all values.
    *   `status.state` can be one of the following: `ACTIVE`, `INACTIVE`,
-   *   `CREATING`, `RUNNING`, `ERROR`, `DELETING`, or `UPDATING`. `ACTIVE`
-   *   contains the `CREATING`, `UPDATING`, and `RUNNING` states. `INACTIVE`
-   *   contains the `DELETING` and `ERROR` states.
-   *   `clusterName` is the name of the cluster provided at creation time.
-   *   Only the logical `AND` operator is supported; space-separated items are
-   *   treated as having an implicit `AND` operator.
+   *   `CREATING`, `RUNNING`, `ERROR`, `DELETING`, `UPDATING`, `STOPPING`, or
+   *   `STOPPED`. `ACTIVE` contains the `CREATING`, `UPDATING`, and `RUNNING`
+   *   states. `INACTIVE` contains the `DELETING`, `ERROR`, `STOPPING`, and
+   *   `STOPPED` states. `clusterName` is the name of the cluster provided at
+   *   creation time. Only the logical `AND` operator is supported;
+   *   space-separated items are treated as having an implicit `AND` operator.
    *
    *   Example filter:
    *
@@ -1727,14 +1791,13 @@ export class ClusterControllerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.dataproc.v1.Cluster | Cluster}.
+   *   The first element of the array is Array of {@link protos.google.cloud.dataproc.v1.Cluster|Cluster}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listClustersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listClusters(
@@ -1744,7 +1807,7 @@ export class ClusterControllerClient {
     [
       protos.google.cloud.dataproc.v1.ICluster[],
       protos.google.cloud.dataproc.v1.IListClustersRequest | null,
-      protos.google.cloud.dataproc.v1.IListClustersResponse
+      protos.google.cloud.dataproc.v1.IListClustersResponse,
     ]
   >;
   listClusters(
@@ -1784,7 +1847,7 @@ export class ClusterControllerClient {
     [
       protos.google.cloud.dataproc.v1.ICluster[],
       protos.google.cloud.dataproc.v1.IListClustersRequest | null,
-      protos.google.cloud.dataproc.v1.IListClustersResponse
+      protos.google.cloud.dataproc.v1.IListClustersResponse,
     ]
   > | void {
     request = request || {};
@@ -1825,12 +1888,12 @@ export class ClusterControllerClient {
    *   where **field** is one of `status.state`, `clusterName`, or `labels.[KEY]`,
    *   and `[KEY]` is a label key. **value** can be `*` to match all values.
    *   `status.state` can be one of the following: `ACTIVE`, `INACTIVE`,
-   *   `CREATING`, `RUNNING`, `ERROR`, `DELETING`, or `UPDATING`. `ACTIVE`
-   *   contains the `CREATING`, `UPDATING`, and `RUNNING` states. `INACTIVE`
-   *   contains the `DELETING` and `ERROR` states.
-   *   `clusterName` is the name of the cluster provided at creation time.
-   *   Only the logical `AND` operator is supported; space-separated items are
-   *   treated as having an implicit `AND` operator.
+   *   `CREATING`, `RUNNING`, `ERROR`, `DELETING`, `UPDATING`, `STOPPING`, or
+   *   `STOPPED`. `ACTIVE` contains the `CREATING`, `UPDATING`, and `RUNNING`
+   *   states. `INACTIVE` contains the `DELETING`, `ERROR`, `STOPPING`, and
+   *   `STOPPED` states. `clusterName` is the name of the cluster provided at
+   *   creation time. Only the logical `AND` operator is supported;
+   *   space-separated items are treated as having an implicit `AND` operator.
    *
    *   Example filter:
    *
@@ -1843,13 +1906,12 @@ export class ClusterControllerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.dataproc.v1.Cluster | Cluster} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.dataproc.v1.Cluster|Cluster} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listClustersAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listClustersStream(
@@ -1895,12 +1957,12 @@ export class ClusterControllerClient {
    *   where **field** is one of `status.state`, `clusterName`, or `labels.[KEY]`,
    *   and `[KEY]` is a label key. **value** can be `*` to match all values.
    *   `status.state` can be one of the following: `ACTIVE`, `INACTIVE`,
-   *   `CREATING`, `RUNNING`, `ERROR`, `DELETING`, or `UPDATING`. `ACTIVE`
-   *   contains the `CREATING`, `UPDATING`, and `RUNNING` states. `INACTIVE`
-   *   contains the `DELETING` and `ERROR` states.
-   *   `clusterName` is the name of the cluster provided at creation time.
-   *   Only the logical `AND` operator is supported; space-separated items are
-   *   treated as having an implicit `AND` operator.
+   *   `CREATING`, `RUNNING`, `ERROR`, `DELETING`, `UPDATING`, `STOPPING`, or
+   *   `STOPPED`. `ACTIVE` contains the `CREATING`, `UPDATING`, and `RUNNING`
+   *   states. `INACTIVE` contains the `DELETING`, `ERROR`, `STOPPING`, and
+   *   `STOPPED` states. `clusterName` is the name of the cluster provided at
+   *   creation time. Only the logical `AND` operator is supported;
+   *   space-separated items are treated as having an implicit `AND` operator.
    *
    *   Example filter:
    *
@@ -1913,12 +1975,11 @@ export class ClusterControllerClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.dataproc.v1.Cluster | Cluster}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.dataproc.v1.Cluster|Cluster}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/cluster_controller.list_clusters.js</caption>
    * region_tag:dataproc_v1_generated_ClusterController_ListClusters_async
@@ -1984,7 +2045,7 @@ export class ClusterControllerClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -2005,8 +2066,7 @@ export class ClusterControllerClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -2032,7 +2092,7 @@ export class ClusterControllerClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -2053,8 +2113,7 @@ export class ClusterControllerClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -2081,7 +2140,7 @@ export class ClusterControllerClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -2311,6 +2370,77 @@ export class ClusterControllerClient {
    */
   matchBatchFromBatchName(batchName: string) {
     return this.pathTemplates.batchPathTemplate.match(batchName).batch;
+  }
+
+  /**
+   * Return a fully-qualified cryptoKey resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} key_ring
+   * @param {string} crypto_key
+   * @returns {string} Resource name string.
+   */
+  cryptoKeyPath(
+    project: string,
+    location: string,
+    keyRing: string,
+    cryptoKey: string
+  ) {
+    return this.pathTemplates.cryptoKeyPathTemplate.render({
+      project: project,
+      location: location,
+      key_ring: keyRing,
+      crypto_key: cryptoKey,
+    });
+  }
+
+  /**
+   * Parse the project from CryptoKey resource.
+   *
+   * @param {string} cryptoKeyName
+   *   A fully-qualified path representing CryptoKey resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromCryptoKeyName(cryptoKeyName: string) {
+    return this.pathTemplates.cryptoKeyPathTemplate.match(cryptoKeyName)
+      .project;
+  }
+
+  /**
+   * Parse the location from CryptoKey resource.
+   *
+   * @param {string} cryptoKeyName
+   *   A fully-qualified path representing CryptoKey resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromCryptoKeyName(cryptoKeyName: string) {
+    return this.pathTemplates.cryptoKeyPathTemplate.match(cryptoKeyName)
+      .location;
+  }
+
+  /**
+   * Parse the key_ring from CryptoKey resource.
+   *
+   * @param {string} cryptoKeyName
+   *   A fully-qualified path representing CryptoKey resource.
+   * @returns {string} A string representing the key_ring.
+   */
+  matchKeyRingFromCryptoKeyName(cryptoKeyName: string) {
+    return this.pathTemplates.cryptoKeyPathTemplate.match(cryptoKeyName)
+      .key_ring;
+  }
+
+  /**
+   * Parse the crypto_key from CryptoKey resource.
+   *
+   * @param {string} cryptoKeyName
+   *   A fully-qualified path representing CryptoKey resource.
+   * @returns {string} A string representing the crypto_key.
+   */
+  matchCryptoKeyFromCryptoKeyName(cryptoKeyName: string) {
+    return this.pathTemplates.cryptoKeyPathTemplate.match(cryptoKeyName)
+      .crypto_key;
   }
 
   /**
@@ -2696,6 +2826,110 @@ export class ClusterControllerClient {
    */
   matchServiceFromServiceName(serviceName: string) {
     return this.pathTemplates.servicePathTemplate.match(serviceName).service;
+  }
+
+  /**
+   * Return a fully-qualified session resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} session
+   * @returns {string} Resource name string.
+   */
+  sessionPath(project: string, location: string, session: string) {
+    return this.pathTemplates.sessionPathTemplate.render({
+      project: project,
+      location: location,
+      session: session,
+    });
+  }
+
+  /**
+   * Parse the project from Session resource.
+   *
+   * @param {string} sessionName
+   *   A fully-qualified path representing Session resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromSessionName(sessionName: string) {
+    return this.pathTemplates.sessionPathTemplate.match(sessionName).project;
+  }
+
+  /**
+   * Parse the location from Session resource.
+   *
+   * @param {string} sessionName
+   *   A fully-qualified path representing Session resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromSessionName(sessionName: string) {
+    return this.pathTemplates.sessionPathTemplate.match(sessionName).location;
+  }
+
+  /**
+   * Parse the session from Session resource.
+   *
+   * @param {string} sessionName
+   *   A fully-qualified path representing Session resource.
+   * @returns {string} A string representing the session.
+   */
+  matchSessionFromSessionName(sessionName: string) {
+    return this.pathTemplates.sessionPathTemplate.match(sessionName).session;
+  }
+
+  /**
+   * Return a fully-qualified sessionTemplate resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} template
+   * @returns {string} Resource name string.
+   */
+  sessionTemplatePath(project: string, location: string, template: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.render({
+      project: project,
+      location: location,
+      template: template,
+    });
+  }
+
+  /**
+   * Parse the project from SessionTemplate resource.
+   *
+   * @param {string} sessionTemplateName
+   *   A fully-qualified path representing SessionTemplate resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromSessionTemplateName(sessionTemplateName: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.match(
+      sessionTemplateName
+    ).project;
+  }
+
+  /**
+   * Parse the location from SessionTemplate resource.
+   *
+   * @param {string} sessionTemplateName
+   *   A fully-qualified path representing SessionTemplate resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromSessionTemplateName(sessionTemplateName: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.match(
+      sessionTemplateName
+    ).location;
+  }
+
+  /**
+   * Parse the template from SessionTemplate resource.
+   *
+   * @param {string} sessionTemplateName
+   *   A fully-qualified path representing SessionTemplate resource.
+   * @returns {string} A string representing the template.
+   */
+  matchTemplateFromSessionTemplateName(sessionTemplateName: string) {
+    return this.pathTemplates.sessionTemplatePathTemplate.match(
+      sessionTemplateName
+    ).template;
   }
 
   /**

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ function main() {
    *  ReportResponse.report_errors google.api.servicecontrol.v1.ReportResponse.report_errors 
    *  for partial failure behavior.
    */
-  // const operations = 1234
+  // const operations = [1,2,3,4]
   /**
    *  Specifies which version of service config should be used to process the
    *  request.

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,11 +29,11 @@ function main(parent) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The project and location for which to retrieve backup information,
-   *  in the format `projects/{project_id}/locations/{location}`.
-   *  In Filestore, backup locations map to GCP regions,
-   *  for example **us-west1**.
-   *  To retrieve backup information for all locations, use "-" for the
+   *  Required. The project and location for which to retrieve backup
+   *  information, in the format `projects/{project_id}/locations/{location}`. In
+   *  Filestore, backup locations map to Google Cloud regions, for example
+   *  **us-west1**. To retrieve backup information for all locations, use "-" for
+   *  the
    *  `{location}` value.
    */
   // const parent = 'abc123'
@@ -68,7 +68,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await filestoreClient.listBackupsAsync(request);
+    const iterable = filestoreClient.listBackupsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

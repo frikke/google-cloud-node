@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ function main(name) {
   /**
    *  Nodes to which the instance-level parameter group is applied.
    */
-  // const nodeIds = 'abc123'
+  // const nodeIds = ['abc','def']
   /**
    *  Whether to apply instance-level parameter group to all nodes. If set to
    *  true, users are restricted from specifying individual nodes, and

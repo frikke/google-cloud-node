@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  The maximum number of results per page that should be returned.
+   *  The maximum number of results per page to return.
    */
   // const pageSize = 1234
   /**
@@ -41,7 +41,7 @@ function main(parent) {
    */
   // const pageToken = 'abc123'
   /**
-   *  An expression that filters the results listed in the response.
+   *  An expression that filters the list of results.
    */
   // const filter = 'abc123'
   /**
@@ -62,7 +62,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await networkconnectivityClient.listHubsAsync(request);
+    const iterable = networkconnectivityClient.listHubsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

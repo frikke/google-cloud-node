@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,10 +44,12 @@ function main(parent) {
    *      * `labels.key=value` - key:value equality
    *      * `labels.key:* or labels:key - key existence
    *      * A key including a space must be quoted. `labels."a key"`.
+   *    * `base_model_name` only supports =
    *  Some examples:
    *    * `model=1234`
    *    * `displayName="myDisplayName"`
    *    * `labels.myKey="myValue"`
+   *    * `baseModelName="text-bison"`
    */
   // const filter = 'abc123'
   /**
@@ -91,7 +93,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await aiplatformClient.listModelsAsync(request);
+    const iterable = aiplatformClient.listModelsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ function main(parent, tagTemplate) {
    *  `ReconcileTagsRequest`.
    *  The sole entry and each of its columns must be mentioned at most once.
    */
-  // const tags = 1234
+  // const tags = [1,2,3,4]
 
   // Imports the Datacatalog library
   const {DataCatalogClient} = require('@google-cloud/datacatalog').v1;

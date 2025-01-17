@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ function main(parent) {
    * TODO(developer): Uncomment these variables before running the sample.
    */
   /**
-   *  Required. The Cloud resource that parents the constraint. Must be in one of
-   *  the following forms:
+   *  Required. The Google Cloud resource that parents the constraint. Must be in
+   *  one of the following forms:
    *  * `projects/{project_number}`
    *  * `projects/{project_id}`
    *  * `folders/{folder_id}`
@@ -62,7 +62,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await orgpolicyClient.listConstraintsAsync(request);
+    const iterable = orgpolicyClient.listConstraintsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

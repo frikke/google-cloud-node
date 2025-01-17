@@ -45,12 +45,15 @@
   * [Cloud_channel_service.list_products](#cloud_channel_service.list_products)
   * [Cloud_channel_service.list_purchasable_offers](#cloud_channel_service.list_purchasable_offers)
   * [Cloud_channel_service.list_purchasable_skus](#cloud_channel_service.list_purchasable_skus)
+  * [Cloud_channel_service.list_sku_group_billable_skus](#cloud_channel_service.list_sku_group_billable_skus)
+  * [Cloud_channel_service.list_sku_groups](#cloud_channel_service.list_sku_groups)
   * [Cloud_channel_service.list_skus](#cloud_channel_service.list_skus)
   * [Cloud_channel_service.list_subscribers](#cloud_channel_service.list_subscribers)
   * [Cloud_channel_service.list_transferable_offers](#cloud_channel_service.list_transferable_offers)
   * [Cloud_channel_service.list_transferable_skus](#cloud_channel_service.list_transferable_skus)
   * [Cloud_channel_service.lookup_offer](#cloud_channel_service.lookup_offer)
   * [Cloud_channel_service.provision_cloud_identity](#cloud_channel_service.provision_cloud_identity)
+  * [Cloud_channel_service.query_eligible_billing_accounts](#cloud_channel_service.query_eligible_billing_accounts)
   * [Cloud_channel_service.register_subscriber](#cloud_channel_service.register_subscriber)
   * [Cloud_channel_service.start_paid_service](#cloud_channel_service.start_paid_service)
   * [Cloud_channel_service.suspend_entitlement](#cloud_channel_service.suspend_entitlement)
@@ -639,6 +642,40 @@ __Usage:__
 
 
 
+### Cloud_channel_service.list_sku_group_billable_skus
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_sku_group_billable_skus.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_sku_group_billable_skus.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_sku_group_billable_skus.js`
+
+
+-----
+
+
+
+
+### Cloud_channel_service.list_sku_groups
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_sku_groups.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_sku_groups.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_sku_groups.js`
+
+
+-----
+
+
+
+
 ### Cloud_channel_service.list_skus
 
 View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.list_skus.js).
@@ -734,6 +771,23 @@ __Usage:__
 
 
 `node packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.provision_cloud_identity.js`
+
+
+-----
+
+
+
+
+### Cloud_channel_service.query_eligible_billing_accounts
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.query_eligible_billing_accounts.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.query_eligible_billing_accounts.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-channel/samples/generated/v1/cloud_channel_service.query_eligible_billing_accounts.js`
 
 
 -----

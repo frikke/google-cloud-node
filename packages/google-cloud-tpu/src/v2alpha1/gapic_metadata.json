@@ -65,6 +65,11 @@
                 "updateNode"
               ]
             },
+            "PerformMaintenance": {
+              "methods": [
+                "performMaintenance"
+              ]
+            },
             "CreateQueuedResource": {
               "methods": [
                 "createQueuedResource"
@@ -73,6 +78,16 @@
             "DeleteQueuedResource": {
               "methods": [
                 "deleteQueuedResource"
+              ]
+            },
+            "ResetQueuedResource": {
+              "methods": [
+                "resetQueuedResource"
+              ]
+            },
+            "PerformMaintenanceQueuedResource": {
+              "methods": [
+                "performMaintenanceQueuedResource"
               ]
             },
             "SimulateMaintenanceEvent": {
@@ -106,6 +121,13 @@
                 "listRuntimeVersions",
                 "listRuntimeVersionsStream",
                 "listRuntimeVersionsAsync"
+              ]
+            },
+            "ListReservations": {
+              "methods": [
+                "listReservations",
+                "listReservationsStream",
+                "listReservationsAsync"
               ]
             }
           }
@@ -168,6 +190,11 @@
                 "updateNode"
               ]
             },
+            "PerformMaintenance": {
+              "methods": [
+                "performMaintenance"
+              ]
+            },
             "CreateQueuedResource": {
               "methods": [
                 "createQueuedResource"
@@ -176,6 +203,16 @@
             "DeleteQueuedResource": {
               "methods": [
                 "deleteQueuedResource"
+              ]
+            },
+            "ResetQueuedResource": {
+              "methods": [
+                "resetQueuedResource"
+              ]
+            },
+            "PerformMaintenanceQueuedResource": {
+              "methods": [
+                "performMaintenanceQueuedResource"
               ]
             },
             "SimulateMaintenanceEvent": {
@@ -209,6 +246,13 @@
                 "listRuntimeVersions",
                 "listRuntimeVersionsStream",
                 "listRuntimeVersionsAsync"
+              ]
+            },
+            "ListReservations": {
+              "methods": [
+                "listReservations",
+                "listReservationsStream",
+                "listReservationsAsync"
               ]
             }
           }

@@ -4,32 +4,16 @@ on:
       - main
 name: continuous
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [14]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 7.32.2
-      - run: node --version
-      - run: ci/run_conditional_tests.sh
-        name: Check lint
-        env:
-          BUILD_TYPE: continuous
-          TEST_TYPE: lint
   units:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [12, 14, 16, 18]
+        node: [14, 16, 18, 20]
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
         with:
-          version: ^6.24.1
+          version: ^7.0.0
       - run: node --version
       - run: ci/run_conditional_tests.sh
         name: Run unit tests

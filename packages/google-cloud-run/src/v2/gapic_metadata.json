@@ -5,6 +5,30 @@
   "protoPackage": "google.cloud.run.v2",
   "libraryPackage": "@google-cloud/run",
   "services": {
+    "Builds": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "BuildsClient",
+          "rpcs": {
+            "SubmitBuild": {
+              "methods": [
+                "submitBuild"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "BuildsClient",
+          "rpcs": {
+            "SubmitBuild": {
+              "methods": [
+                "submitBuild"
+              ]
+            }
+          }
+        }
+      }
+    },
     "Executions": {
       "clients": {
         "grpc": {
@@ -18,6 +42,11 @@
             "DeleteExecution": {
               "methods": [
                 "deleteExecution"
+              ]
+            },
+            "CancelExecution": {
+              "methods": [
+                "cancelExecution"
               ]
             },
             "ListExecutions": {
@@ -40,6 +69,11 @@
             "DeleteExecution": {
               "methods": [
                 "deleteExecution"
+              ]
+            },
+            "CancelExecution": {
+              "methods": [
+                "cancelExecution"
               ]
             },
             "ListExecutions": {

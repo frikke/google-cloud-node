@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1beta1/service_usage_client_config.json`.
@@ -52,6 +53,8 @@ export class ServiceUsageClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -92,8 +95,7 @@ export class ServiceUsageClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -101,7 +103,7 @@ export class ServiceUsageClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new ServiceUsageClient({fallback: 'rest'}, gax);
+   *     const client = new ServiceUsageClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -110,8 +112,27 @@ export class ServiceUsageClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof ServiceUsageClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'serviceusage.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -126,7 +147,7 @@ export class ServiceUsageClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -151,23 +172,23 @@ export class ServiceUsageClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -210,7 +231,7 @@ export class ServiceUsageClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -486,19 +507,50 @@ export class ServiceUsageClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'serviceusage.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'serviceusage.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -555,9 +607,8 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.serviceusage.v1beta1.Service | Service}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.serviceusage.v1beta1.Service|Service}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.get_service.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_GetService_async
@@ -570,7 +621,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IService,
       protos.google.api.serviceusage.v1beta1.IGetServiceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getService(
@@ -616,7 +667,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IService,
       protos.google.api.serviceusage.v1beta1.IGetServiceRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -657,9 +708,8 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.serviceusage.v1beta1.ConsumerQuotaMetric | ConsumerQuotaMetric}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.serviceusage.v1beta1.ConsumerQuotaMetric|ConsumerQuotaMetric}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.get_consumer_quota_metric.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_GetConsumerQuotaMetric_async
@@ -674,7 +724,7 @@ export class ServiceUsageClient {
         | protos.google.api.serviceusage.v1beta1.IGetConsumerQuotaMetricRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getConsumerQuotaMetric(
@@ -723,7 +773,7 @@ export class ServiceUsageClient {
         | protos.google.api.serviceusage.v1beta1.IGetConsumerQuotaMetricRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -763,9 +813,8 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.api.serviceusage.v1beta1.ConsumerQuotaLimit | ConsumerQuotaLimit}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.api.serviceusage.v1beta1.ConsumerQuotaLimit|ConsumerQuotaLimit}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.get_consumer_quota_limit.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_GetConsumerQuotaLimit_async
@@ -780,7 +829,7 @@ export class ServiceUsageClient {
         | protos.google.api.serviceusage.v1beta1.IGetConsumerQuotaLimitRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getConsumerQuotaLimit(
@@ -829,7 +878,7 @@ export class ServiceUsageClient {
         | protos.google.api.serviceusage.v1beta1.IGetConsumerQuotaLimitRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -876,8 +925,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.enable_service.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_EnableService_async
@@ -893,7 +941,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   enableService(
@@ -946,7 +994,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -978,8 +1026,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.enable_service.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_EnableService_async
@@ -1040,8 +1087,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.disable_service.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_DisableService_async
@@ -1057,7 +1103,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   disableService(
@@ -1110,7 +1156,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1142,8 +1188,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.disable_service.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_DisableService_async
@@ -1215,8 +1260,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.batch_enable_services.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_BatchEnableServices_async
@@ -1232,7 +1276,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   batchEnableServices(
@@ -1285,7 +1329,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1317,8 +1361,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.batch_enable_services.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_BatchEnableServices_async
@@ -1385,8 +1428,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.create_admin_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_CreateAdminOverride_async
@@ -1401,7 +1443,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createAdminOverride(
@@ -1454,7 +1496,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1481,8 +1523,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.create_admin_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_CreateAdminOverride_async
@@ -1541,8 +1582,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.update_admin_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_UpdateAdminOverride_async
@@ -1557,7 +1597,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateAdminOverride(
@@ -1610,7 +1650,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1637,8 +1677,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.update_admin_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_UpdateAdminOverride_async
@@ -1691,8 +1730,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.delete_admin_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_DeleteAdminOverride_async
@@ -1707,7 +1745,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteAdminOverride(
@@ -1760,7 +1798,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1787,8 +1825,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.delete_admin_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_DeleteAdminOverride_async
@@ -1845,8 +1882,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.import_admin_overrides.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ImportAdminOverrides_async
@@ -1861,7 +1897,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IImportAdminOverridesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   importAdminOverrides(
@@ -1914,7 +1950,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IImportAdminOverridesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1941,8 +1977,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.import_admin_overrides.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ImportAdminOverrides_async
@@ -2002,8 +2037,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.create_consumer_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_CreateConsumerOverride_async
@@ -2018,7 +2052,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createConsumerOverride(
@@ -2071,7 +2105,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2102,8 +2136,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.create_consumer_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_CreateConsumerOverride_async
@@ -2162,8 +2195,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.update_consumer_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_UpdateConsumerOverride_async
@@ -2178,7 +2210,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateConsumerOverride(
@@ -2231,7 +2263,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2262,8 +2294,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.update_consumer_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_UpdateConsumerOverride_async
@@ -2316,8 +2347,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.delete_consumer_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_DeleteConsumerOverride_async
@@ -2332,7 +2362,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteConsumerOverride(
@@ -2385,7 +2415,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2416,8 +2446,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.delete_consumer_override.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_DeleteConsumerOverride_async
@@ -2474,8 +2503,7 @@ export class ServiceUsageClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.import_consumer_overrides.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ImportConsumerOverrides_async
@@ -2490,7 +2518,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IImportConsumerOverridesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   importConsumerOverrides(
@@ -2543,7 +2571,7 @@ export class ServiceUsageClient {
         protos.google.api.serviceusage.v1beta1.IImportConsumerOverridesMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2574,8 +2602,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.import_consumer_overrides.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ImportConsumerOverrides_async
@@ -2611,19 +2638,20 @@ export class ServiceUsageClient {
    * @param {string} request.parent
    *   Name of the consumer and service to generate an identity for.
    *
-   *   The `GenerateServiceIdentity` methods currently only support projects.
+   *   The `GenerateServiceIdentity` methods currently support projects, folders,
+   *   organizations.
    *
-   *   An example name would be:
-   *   `projects/123/services/example.googleapis.com` where `123` is the
-   *   project number.
+   *   Example parents would be:
+   *   `projects/123/services/example.googleapis.com`
+   *   `folders/123/services/example.googleapis.com`
+   *   `organizations/123/services/example.googleapis.com`
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.generate_service_identity.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_GenerateServiceIdentity_async
@@ -2638,7 +2666,7 @@ export class ServiceUsageClient {
         protos.google.protobuf.IEmpty
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   generateServiceIdentity(
@@ -2691,7 +2719,7 @@ export class ServiceUsageClient {
         protos.google.protobuf.IEmpty
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2722,8 +2750,7 @@ export class ServiceUsageClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.generate_service_identity.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_GenerateServiceIdentity_async
@@ -2781,14 +2808,13 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.serviceusage.v1beta1.Service | Service}.
+   *   The first element of the array is Array of {@link protos.google.api.serviceusage.v1beta1.Service|Service}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listServicesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @deprecated ListServices is deprecated and may be removed in a future version.
    */
@@ -2799,7 +2825,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IService[],
       protos.google.api.serviceusage.v1beta1.IListServicesRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListServicesResponse
+      protos.google.api.serviceusage.v1beta1.IListServicesResponse,
     ]
   >;
   listServices(
@@ -2845,7 +2871,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IService[],
       protos.google.api.serviceusage.v1beta1.IListServicesRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListServicesResponse
+      protos.google.api.serviceusage.v1beta1.IListServicesResponse,
     ]
   > | void {
     request = request || {};
@@ -2895,13 +2921,12 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.serviceusage.v1beta1.Service | Service} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.serviceusage.v1beta1.Service|Service} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listServicesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @deprecated ListServices is deprecated and may be removed in a future version.
    */
@@ -2957,12 +2982,11 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.serviceusage.v1beta1.Service | Service}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.serviceusage.v1beta1.Service|Service}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.list_services.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ListServices_async
@@ -3020,14 +3044,13 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.serviceusage.v1beta1.ConsumerQuotaMetric | ConsumerQuotaMetric}.
+   *   The first element of the array is Array of {@link protos.google.api.serviceusage.v1beta1.ConsumerQuotaMetric|ConsumerQuotaMetric}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listConsumerQuotaMetricsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConsumerQuotaMetrics(
@@ -3037,7 +3060,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IConsumerQuotaMetric[],
       protos.google.api.serviceusage.v1beta1.IListConsumerQuotaMetricsRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListConsumerQuotaMetricsResponse
+      protos.google.api.serviceusage.v1beta1.IListConsumerQuotaMetricsResponse,
     ]
   >;
   listConsumerQuotaMetrics(
@@ -3083,7 +3106,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IConsumerQuotaMetric[],
       protos.google.api.serviceusage.v1beta1.IListConsumerQuotaMetricsRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListConsumerQuotaMetricsResponse
+      protos.google.api.serviceusage.v1beta1.IListConsumerQuotaMetricsResponse,
     ]
   > | void {
     request = request || {};
@@ -3130,13 +3153,12 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.serviceusage.v1beta1.ConsumerQuotaMetric | ConsumerQuotaMetric} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.serviceusage.v1beta1.ConsumerQuotaMetric|ConsumerQuotaMetric} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listConsumerQuotaMetricsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConsumerQuotaMetricsStream(
@@ -3184,12 +3206,11 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.serviceusage.v1beta1.ConsumerQuotaMetric | ConsumerQuotaMetric}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.serviceusage.v1beta1.ConsumerQuotaMetric|ConsumerQuotaMetric}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.list_consumer_quota_metrics.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ListConsumerQuotaMetrics_async
@@ -3234,14 +3255,13 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.serviceusage.v1beta1.QuotaOverride | QuotaOverride}.
+   *   The first element of the array is Array of {@link protos.google.api.serviceusage.v1beta1.QuotaOverride|QuotaOverride}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listAdminOverridesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listAdminOverrides(
@@ -3251,7 +3271,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IQuotaOverride[],
       protos.google.api.serviceusage.v1beta1.IListAdminOverridesRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListAdminOverridesResponse
+      protos.google.api.serviceusage.v1beta1.IListAdminOverridesResponse,
     ]
   >;
   listAdminOverrides(
@@ -3297,7 +3317,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IQuotaOverride[],
       protos.google.api.serviceusage.v1beta1.IListAdminOverridesRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListAdminOverridesResponse
+      protos.google.api.serviceusage.v1beta1.IListAdminOverridesResponse,
     ]
   > | void {
     request = request || {};
@@ -3337,13 +3357,12 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.serviceusage.v1beta1.QuotaOverride | QuotaOverride} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.serviceusage.v1beta1.QuotaOverride|QuotaOverride} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listAdminOverridesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listAdminOverridesStream(
@@ -3388,12 +3407,11 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.serviceusage.v1beta1.QuotaOverride | QuotaOverride}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.serviceusage.v1beta1.QuotaOverride|QuotaOverride}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.list_admin_overrides.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ListAdminOverrides_async
@@ -3438,14 +3456,13 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.api.serviceusage.v1beta1.QuotaOverride | QuotaOverride}.
+   *   The first element of the array is Array of {@link protos.google.api.serviceusage.v1beta1.QuotaOverride|QuotaOverride}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listConsumerOverridesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConsumerOverrides(
@@ -3455,7 +3472,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IQuotaOverride[],
       protos.google.api.serviceusage.v1beta1.IListConsumerOverridesRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListConsumerOverridesResponse
+      protos.google.api.serviceusage.v1beta1.IListConsumerOverridesResponse,
     ]
   >;
   listConsumerOverrides(
@@ -3501,7 +3518,7 @@ export class ServiceUsageClient {
     [
       protos.google.api.serviceusage.v1beta1.IQuotaOverride[],
       protos.google.api.serviceusage.v1beta1.IListConsumerOverridesRequest | null,
-      protos.google.api.serviceusage.v1beta1.IListConsumerOverridesResponse
+      protos.google.api.serviceusage.v1beta1.IListConsumerOverridesResponse,
     ]
   > | void {
     request = request || {};
@@ -3541,13 +3558,12 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.api.serviceusage.v1beta1.QuotaOverride | QuotaOverride} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.api.serviceusage.v1beta1.QuotaOverride|QuotaOverride} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listConsumerOverridesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConsumerOverridesStream(
@@ -3592,12 +3608,11 @@ export class ServiceUsageClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.api.serviceusage.v1beta1.QuotaOverride | QuotaOverride}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.api.serviceusage.v1beta1.QuotaOverride|QuotaOverride}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/service_usage.list_consumer_overrides.js</caption>
    * region_tag:serviceusage_v1beta1_generated_ServiceUsage_ListConsumerOverrides_async
@@ -3622,6 +3637,180 @@ export class ServiceUsageClient {
       request as {},
       callSettings
     ) as AsyncIterable<protos.google.api.serviceusage.v1beta1.IQuotaOverride>;
+  }
+  /**
+   * Gets the latest state of a long-running operation.  Clients can use this
+   * method to poll the operation result at intervals as recommended by the API
+   * service.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   *   for the details.
+   * @param {function(?Error, ?Object)=} callback
+   *   The function which will be called with the result of the API call.
+   *
+   *   The second parameter to the callback is an object representing
+   *   {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * @return {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   * {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * The promise has a method named "cancel" which cancels the ongoing API call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * const name = '';
+   * const [response] = await client.getOperation({name});
+   * // doThingsWith(response)
+   * ```
+   */
+  getOperation(
+    request: protos.google.longrunning.GetOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.longrunning.Operation,
+          protos.google.longrunning.GetOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.longrunning.Operation,
+      protos.google.longrunning.GetOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<[protos.google.longrunning.Operation]> {
+    return this.operationsClient.getOperation(request, options, callback);
+  }
+  /**
+   * Lists operations that match the specified filter in the request. If the
+   * server doesn't support this method, it returns `UNIMPLEMENTED`. Returns an iterable object.
+   *
+   * For-await-of syntax is used with the iterable to recursively get response element on-demand.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation collection.
+   * @param {string} request.filter - The standard list filter.
+   * @param {number=} request.pageSize -
+   *   The maximum number of resources contained in the underlying API
+   *   response. If page streaming is performed per-resource, this
+   *   parameter does not affect the return value. If page streaming is
+   *   performed per-page, this determines the maximum number of
+   *   resources in a page.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
+   *   details.
+   * @returns {Object}
+   *   An iterable Object that conforms to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | iteration protocols}.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * for await (const response of client.listOperationsAsync(request));
+   * // doThingsWith(response)
+   * ```
+   */
+  listOperationsAsync(
+    request: protos.google.longrunning.ListOperationsRequest,
+    options?: gax.CallOptions
+  ): AsyncIterable<protos.google.longrunning.ListOperationsResponse> {
+    return this.operationsClient.listOperationsAsync(request, options);
+  }
+  /**
+   * Starts asynchronous cancellation on a long-running operation.  The server
+   * makes a best effort to cancel the operation, but success is not
+   * guaranteed.  If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.  Clients can use
+   * {@link Operations.GetOperation} or
+   * other methods to check whether the cancellation succeeded or whether the
+   * operation completed despite cancellation. On successful cancellation,
+   * the operation is not deleted; instead, it becomes an operation with
+   * an {@link Operation.error} value with a {@link google.rpc.Status.code} of
+   * 1, corresponding to `Code.CANCELLED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be cancelled.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
+   * details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.cancelOperation({name: ''});
+   * ```
+   */
+  cancelOperation(
+    request: protos.google.longrunning.CancelOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.CancelOperationRequest,
+          {} | undefined | null
+        >,
+    callback?: Callback<
+      protos.google.longrunning.CancelOperationRequest,
+      protos.google.protobuf.Empty,
+      {} | undefined | null
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.cancelOperation(request, options, callback);
+  }
+
+  /**
+   * Deletes a long-running operation. This method indicates that the client is
+   * no longer interested in the operation result. It does not cancel the
+   * operation. If the server doesn't support this method, it returns
+   * `google.rpc.Code.UNIMPLEMENTED`.
+   *
+   * @param {Object} request - The request object that will be sent.
+   * @param {string} request.name - The name of the operation resource to be deleted.
+   * @param {Object=} options
+   *   Optional parameters. You can override the default settings for this call,
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   * for the details.
+   * @param {function(?Error)=} callback
+   *   The function which will be called with the result of the API call.
+   * @return {Promise} - The promise which resolves when API call finishes.
+   *   The promise has a method named "cancel" which cancels the ongoing API
+   * call.
+   *
+   * @example
+   * ```
+   * const client = longrunning.operationsClient();
+   * await client.deleteOperation({name: ''});
+   * ```
+   */
+  deleteOperation(
+    request: protos.google.longrunning.DeleteOperationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          protos.google.protobuf.Empty,
+          protos.google.longrunning.DeleteOperationRequest,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.protobuf.Empty,
+      protos.google.longrunning.DeleteOperationRequest,
+      {} | null | undefined
+    >
+  ): Promise<protos.google.protobuf.Empty> {
+    return this.operationsClient.deleteOperation(request, options, callback);
   }
 
   /**

@@ -110,6 +110,11 @@
                 "createConversionEvent"
               ]
             },
+            "UpdateConversionEvent": {
+              "methods": [
+                "updateConversionEvent"
+              ]
+            },
             "GetConversionEvent": {
               "methods": [
                 "getConversionEvent"
@@ -118,6 +123,26 @@
             "DeleteConversionEvent": {
               "methods": [
                 "deleteConversionEvent"
+              ]
+            },
+            "CreateKeyEvent": {
+              "methods": [
+                "createKeyEvent"
+              ]
+            },
+            "UpdateKeyEvent": {
+              "methods": [
+                "updateKeyEvent"
+              ]
+            },
+            "GetKeyEvent": {
+              "methods": [
+                "getKeyEvent"
+              ]
+            },
+            "DeleteKeyEvent": {
+              "methods": [
+                "deleteKeyEvent"
               ]
             },
             "CreateCustomDimension": {
@@ -249,6 +274,13 @@
                 "listConversionEvents",
                 "listConversionEventsStream",
                 "listConversionEventsAsync"
+              ]
+            },
+            "ListKeyEvents": {
+              "methods": [
+                "listKeyEvents",
+                "listKeyEventsStream",
+                "listKeyEventsAsync"
               ]
             },
             "ListCustomDimensions": {
@@ -377,6 +409,11 @@
                 "createConversionEvent"
               ]
             },
+            "UpdateConversionEvent": {
+              "methods": [
+                "updateConversionEvent"
+              ]
+            },
             "GetConversionEvent": {
               "methods": [
                 "getConversionEvent"
@@ -385,6 +422,26 @@
             "DeleteConversionEvent": {
               "methods": [
                 "deleteConversionEvent"
+              ]
+            },
+            "CreateKeyEvent": {
+              "methods": [
+                "createKeyEvent"
+              ]
+            },
+            "UpdateKeyEvent": {
+              "methods": [
+                "updateKeyEvent"
+              ]
+            },
+            "GetKeyEvent": {
+              "methods": [
+                "getKeyEvent"
+              ]
+            },
+            "DeleteKeyEvent": {
+              "methods": [
+                "deleteKeyEvent"
               ]
             },
             "CreateCustomDimension": {
@@ -516,6 +573,13 @@
                 "listConversionEvents",
                 "listConversionEventsStream",
                 "listConversionEventsAsync"
+              ]
+            },
+            "ListKeyEvents": {
+              "methods": [
+                "listKeyEvents",
+                "listKeyEventsStream",
+                "listKeyEventsAsync"
               ]
             },
             "ListCustomDimensions": {

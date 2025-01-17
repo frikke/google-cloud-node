@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -157,7 +157,7 @@ function main(parent, requestMetadata) {
    *  * `count(numeric_custom_attribute"some-numeric-custom-attribute",
    *    bucket(MIN, 0, "negative"), bucket(0, MAX, "non-negative"))`
    */
-  // const histogramQueries = 1234
+  // const histogramQueries = [1,2,3,4]
   /**
    *  The desired job attributes returned for jobs in the search response.
    *  Defaults to
@@ -303,6 +303,13 @@ function main(parent, requestMetadata) {
    *  if no value is specified.
    */
   // const keywordMatchMode = {}
+  /**
+   *  Optional. The relevance threshold of the search results.
+   *  Default to Google defined threshold, leveraging a balance of
+   *  precision and recall to deliver both highly accurate results and
+   *  comprehensive coverage of relevant information.
+   */
+  // const relevanceThreshold = {}
 
   // Imports the Talent library
   const {JobServiceClient} = require('@google-cloud/talent').v4;

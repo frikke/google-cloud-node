@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/policy_based_routing_service_client_config.json`.
@@ -57,6 +58,8 @@ export class PolicyBasedRoutingServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -100,8 +103,7 @@ export class PolicyBasedRoutingServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -109,7 +111,7 @@ export class PolicyBasedRoutingServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new PolicyBasedRoutingServiceClient({fallback: 'rest'}, gax);
+   *     const client = new PolicyBasedRoutingServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -119,8 +121,27 @@ export class PolicyBasedRoutingServiceClient {
     // Ensure that options include all the required fields.
     const staticMembers = this
       .constructor as typeof PolicyBasedRoutingServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'networkconnectivity.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -135,7 +156,7 @@ export class PolicyBasedRoutingServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -160,10 +181,10 @@ export class PolicyBasedRoutingServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -175,14 +196,14 @@ export class PolicyBasedRoutingServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -195,8 +216,14 @@ export class PolicyBasedRoutingServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      groupPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/global/hubs/{hub}/groups/{group}'
+      ),
       hubPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/global/hubs/{hub}'
+      ),
+      hubRoutePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/global/hubs/{hub}/routeTables/{route_table}/routes/{route}'
       ),
       locationPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
@@ -205,7 +232,10 @@ export class PolicyBasedRoutingServiceClient {
         'projects/{project}/global/networks/{resource_id}'
       ),
       policyBasedRoutePathTemplate: new this._gaxModule.PathTemplate(
-        'projects/{project}/{location}/global/PolicyBasedRoutes/{policy_based_route}'
+        'projects/{project}/locations/global/PolicyBasedRoutes/{policy_based_route}'
+      ),
+      routeTablePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/global/hubs/{hub}/routeTables/{route_table}'
       ),
       spokePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/spokes/{spoke}'
@@ -231,7 +261,7 @@ export class PolicyBasedRoutingServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -247,19 +277,13 @@ export class PolicyBasedRoutingServiceClient {
           get: '/v1/{resource=projects/*/locations/global/hubs/*}:getIamPolicy',
           additional_bindings: [
             {
+              get: '/v1/{resource=projects/*/locations/global/hubs/*/groups/*}:getIamPolicy',
+            },
+            {
               get: '/v1/{resource=projects/*/locations/*/spokes/*}:getIamPolicy',
             },
             {
               get: '/v1/{resource=projects/*/locations/global/policyBasedRoutes/*}:getIamPolicy',
-            },
-            {
-              get: '/v1/{resource=projects/*/locations/*/serviceConnectionMaps/*}:getIamPolicy',
-            },
-            {
-              get: '/v1/{resource=projects/*/locations/*/serviceConnectionPolicies/*}:getIamPolicy',
-            },
-            {
-              get: '/v1/{resource=projects/*/locations/*/serviceClasses/*}:getIamPolicy',
             },
           ],
         },
@@ -269,23 +293,15 @@ export class PolicyBasedRoutingServiceClient {
           body: '*',
           additional_bindings: [
             {
+              post: '/v1/{resource=projects/*/locations/global/hubs/*/groups/*}:setIamPolicy',
+              body: '*',
+            },
+            {
               post: '/v1/{resource=projects/*/locations/*/spokes/*}:setIamPolicy',
               body: '*',
             },
             {
               post: '/v1/{resource=projects/*/locations/global/policyBasedRoutes/*}:setIamPolicy',
-              body: '*',
-            },
-            {
-              post: '/v1/{resource=projects/*/locations/*/serviceConnectionMaps/*}:setIamPolicy',
-              body: '*',
-            },
-            {
-              post: '/v1/{resource=projects/*/locations/*/serviceConnectionPolicies/*}:setIamPolicy',
-              body: '*',
-            },
-            {
-              post: '/v1/{resource=projects/*/locations/*/serviceClasses/*}:setIamPolicy',
               body: '*',
             },
           ],
@@ -296,23 +312,15 @@ export class PolicyBasedRoutingServiceClient {
           body: '*',
           additional_bindings: [
             {
+              post: '/v1/{resource=projects/*/locations/global/hubs/*/groups/*}:testIamPermissions',
+              body: '*',
+            },
+            {
               post: '/v1/{resource=projects/*/locations/*/spokes/*}:testIamPermissions',
               body: '*',
             },
             {
               post: '/v1/{resource=projects/*/locations/global/policyBasedRoutes/*}:testIamPermissions',
-              body: '*',
-            },
-            {
-              post: '/v1/{resource=projects/*/locations/*/serviceConnectionMaps/*}:testIamPermissions',
-              body: '*',
-            },
-            {
-              post: '/v1/{resource=projects/*/locations/*/serviceConnectionPolicies/*}:testIamPermissions',
-              body: '*',
-            },
-            {
-              post: '/v1/{resource=projects/*/locations/*/serviceClasses/*}:testIamPermissions',
               body: '*',
             },
           ],
@@ -463,19 +471,50 @@ export class PolicyBasedRoutingServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'networkconnectivity.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'networkconnectivity.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -524,9 +563,8 @@ export class PolicyBasedRoutingServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [PolicyBasedRoute]{@link google.cloud.networkconnectivity.v1.PolicyBasedRoute}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.networkconnectivity.v1.PolicyBasedRoute|PolicyBasedRoute}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/policy_based_routing_service.get_policy_based_route.js</caption>
    * region_tag:networkconnectivity_v1_generated_PolicyBasedRoutingService_GetPolicyBasedRoute_async
@@ -541,7 +579,7 @@ export class PolicyBasedRoutingServiceClient {
         | protos.google.cloud.networkconnectivity.v1.IGetPolicyBasedRouteRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getPolicyBasedRoute(
@@ -590,7 +628,7 @@ export class PolicyBasedRoutingServiceClient {
         | protos.google.cloud.networkconnectivity.v1.IGetPolicyBasedRouteRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -619,18 +657,18 @@ export class PolicyBasedRoutingServiceClient {
    *   The request object that will be sent.
    * @param {string} request.parent
    *   Required. The parent resource's name of the PolicyBasedRoute.
-   * @param {string} [request.policyBasedRouteId]
-   *   Optional. Unique id for the Policy Based Route to create.
+   * @param {string} request.policyBasedRouteId
+   *   Required. Unique id for the Policy Based Route to create.
    * @param {google.cloud.networkconnectivity.v1.PolicyBasedRoute} request.policyBasedRoute
    *   Required. Initial values for a new Policy Based Route.
    * @param {string} [request.requestId]
-   *   Optional. An optional request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes since the first request.
+   *   Optional. An optional request ID to identify requests. Specify a unique
+   *   request ID so that if you must retry your request, the server will know to
+   *   ignore the request if it has already been completed. The server will
+   *   guarantee that for at least 60 minutes since the first request.
    *
-   *   For example, consider a situation where you make an initial request and t
-   *   he request times out. If you make the request again with the same request
+   *   For example, consider a situation where you make an initial request and
+   *   the request times out. If you make the request again with the same request
    *   ID, the server can check if original operation with the same request ID
    *   was received, and if so, will ignore the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
@@ -643,8 +681,7 @@ export class PolicyBasedRoutingServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/policy_based_routing_service.create_policy_based_route.js</caption>
    * region_tag:networkconnectivity_v1_generated_PolicyBasedRoutingService_CreatePolicyBasedRoute_async
@@ -659,7 +696,7 @@ export class PolicyBasedRoutingServiceClient {
         protos.google.cloud.networkconnectivity.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createPolicyBasedRoute(
@@ -712,7 +749,7 @@ export class PolicyBasedRoutingServiceClient {
         protos.google.cloud.networkconnectivity.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -743,8 +780,7 @@ export class PolicyBasedRoutingServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/policy_based_routing_service.create_policy_based_route.js</caption>
    * region_tag:networkconnectivity_v1_generated_PolicyBasedRoutingService_CreatePolicyBasedRoute_async
@@ -780,13 +816,13 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string} request.name
    *   Required. Name of the PolicyBasedRoute resource to delete.
    * @param {string} [request.requestId]
-   *   Optional. An optional request ID to identify requests. Specify a unique request ID
-   *   so that if you must retry your request, the server will know to ignore
-   *   the request if it has already been completed. The server will guarantee
-   *   that for at least 60 minutes after the first request.
+   *   Optional. An optional request ID to identify requests. Specify a unique
+   *   request ID so that if you must retry your request, the server will know to
+   *   ignore the request if it has already been completed. The server will
+   *   guarantee that for at least 60 minutes after the first request.
    *
-   *   For example, consider a situation where you make an initial request and t
-   *   he request times out. If you make the request again with the same request
+   *   For example, consider a situation where you make an initial request and
+   *   the request times out. If you make the request again with the same request
    *   ID, the server can check if original operation with the same request ID
    *   was received, and if so, will ignore the second request. This prevents
    *   clients from accidentally creating duplicate commitments.
@@ -799,8 +835,7 @@ export class PolicyBasedRoutingServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/policy_based_routing_service.delete_policy_based_route.js</caption>
    * region_tag:networkconnectivity_v1_generated_PolicyBasedRoutingService_DeletePolicyBasedRoute_async
@@ -815,7 +850,7 @@ export class PolicyBasedRoutingServiceClient {
         protos.google.cloud.networkconnectivity.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deletePolicyBasedRoute(
@@ -868,7 +903,7 @@ export class PolicyBasedRoutingServiceClient {
         protos.google.cloud.networkconnectivity.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -899,8 +934,7 @@ export class PolicyBasedRoutingServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/policy_based_routing_service.delete_policy_based_route.js</caption>
    * region_tag:networkconnectivity_v1_generated_PolicyBasedRoutingService_DeletePolicyBasedRoute_async
@@ -946,14 +980,13 @@ export class PolicyBasedRoutingServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of [PolicyBasedRoute]{@link google.cloud.networkconnectivity.v1.PolicyBasedRoute}.
+   *   The first element of the array is Array of {@link protos.google.cloud.networkconnectivity.v1.PolicyBasedRoute|PolicyBasedRoute}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listPolicyBasedRoutesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listPolicyBasedRoutes(
@@ -963,7 +996,7 @@ export class PolicyBasedRoutingServiceClient {
     [
       protos.google.cloud.networkconnectivity.v1.IPolicyBasedRoute[],
       protos.google.cloud.networkconnectivity.v1.IListPolicyBasedRoutesRequest | null,
-      protos.google.cloud.networkconnectivity.v1.IListPolicyBasedRoutesResponse
+      protos.google.cloud.networkconnectivity.v1.IListPolicyBasedRoutesResponse,
     ]
   >;
   listPolicyBasedRoutes(
@@ -1009,7 +1042,7 @@ export class PolicyBasedRoutingServiceClient {
     [
       protos.google.cloud.networkconnectivity.v1.IPolicyBasedRoute[],
       protos.google.cloud.networkconnectivity.v1.IListPolicyBasedRoutesRequest | null,
-      protos.google.cloud.networkconnectivity.v1.IListPolicyBasedRoutesResponse
+      protos.google.cloud.networkconnectivity.v1.IListPolicyBasedRoutesResponse,
     ]
   > | void {
     request = request || {};
@@ -1048,13 +1081,12 @@ export class PolicyBasedRoutingServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing [PolicyBasedRoute]{@link google.cloud.networkconnectivity.v1.PolicyBasedRoute} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.networkconnectivity.v1.PolicyBasedRoute|PolicyBasedRoute} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listPolicyBasedRoutesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listPolicyBasedRoutesStream(
@@ -1098,12 +1130,11 @@ export class PolicyBasedRoutingServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   [PolicyBasedRoute]{@link google.cloud.networkconnectivity.v1.PolicyBasedRoute}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.networkconnectivity.v1.PolicyBasedRoute|PolicyBasedRoute}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/policy_based_routing_service.list_policy_based_routes.js</caption>
    * region_tag:networkconnectivity_v1_generated_PolicyBasedRoutingService_ListPolicyBasedRoutes_async
@@ -1142,16 +1173,16 @@ export class PolicyBasedRoutingServiceClient {
    *   OPTIONAL: A `GetPolicyOptions` object for specifying options to
    *   `GetIamPolicy`. This field is only used by Cloud IAM.
    *
-   *   This object should have the same structure as [GetPolicyOptions]{@link google.iam.v1.GetPolicyOptions}
+   *   This object should have the same structure as {@link google.iam.v1.GetPolicyOptions | GetPolicyOptions}.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
-   *   The second parameter to the callback is an object representing [Policy]{@link google.iam.v1.Policy}.
+   *   The second parameter to the callback is an object representing {@link google.iam.v1.Policy | Policy}.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [Policy]{@link google.iam.v1.Policy}.
+   *   The first element of the array is an object representing {@link google.iam.v1.Policy | Policy}.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
    */
   getIamPolicy(
@@ -1168,7 +1199,7 @@ export class PolicyBasedRoutingServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -1189,17 +1220,16 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
-   *   The second parameter to the callback is an object representing [TestIamPermissionsResponse]{@link google.iam.v1.TestIamPermissionsResponse}.
+   *   The second parameter to the callback is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [TestIamPermissionsResponse]{@link google.iam.v1.TestIamPermissionsResponse}.
+   *   The first element of the array is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
    */
   setIamPolicy(
@@ -1216,7 +1246,7 @@ export class PolicyBasedRoutingServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -1237,17 +1267,16 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
-   *   retries, paginations, etc. See [gax.CallOptions]{@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html} for the details.
+   *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
    * @param {function(?Error, ?Object)} [callback]
    *   The function which will be called with the result of the API call.
    *
-   *   The second parameter to the callback is an object representing [TestIamPermissionsResponse]{@link google.iam.v1.TestIamPermissionsResponse}.
+   *   The second parameter to the callback is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [TestIamPermissionsResponse]{@link google.iam.v1.TestIamPermissionsResponse}.
+   *   The first element of the array is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
    *   The promise has a method named "cancel" which cancels the ongoing API call.
    *
    */
@@ -1265,7 +1294,7 @@ export class PolicyBasedRoutingServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -1277,11 +1306,10 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string} request.name
    *   Resource name for the location.
    * @param {object} [options]
-   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing [Location]{@link google.cloud.location.Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1327,12 +1355,11 @@ export class PolicyBasedRoutingServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   [Location]{@link google.cloud.location.Location}. The API will be called under the hood as needed, once per the page,
+   *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1358,20 +1385,18 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string} request.name - The name of the operation resource.
    * @param {Object=} options
    *   Optional parameters. You can override the default settings for this call,
-   *   e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
-   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
-   *   details.
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   *   for the details.
    * @param {function(?Error, ?Object)=} callback
    *   The function which will be called with the result of the API call.
    *
    *   The second parameter to the callback is an object representing
-   * [google.longrunning.Operation]{@link
-   * external:"google.longrunning.Operation"}.
+   *   {@link google.longrunning.Operation | google.longrunning.Operation}.
    * @return {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
-   * [google.longrunning.Operation]{@link
-   * external:"google.longrunning.Operation"}. The promise has a method named
-   * "cancel" which cancels the ongoing API call.
+   * {@link google.longrunning.Operation | google.longrunning.Operation}.
+   * The promise has a method named "cancel" which cancels the ongoing API call.
    *
    * @example
    * ```
@@ -1415,11 +1440,11 @@ export class PolicyBasedRoutingServiceClient {
    *   resources in a page.
    * @param {Object=} options
    *   Optional parameters. You can override the default settings for this call,
-   *   e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
-   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
+   *   e.g, timeout, retries, paginations, etc. See {@link
+   *   https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
    *   details.
    * @returns {Object}
-   *   An iterable Object that conforms to @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols.
+   *   An iterable Object that conforms to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | iteration protocols}.
    *
    * @example
    * ```
@@ -1450,8 +1475,8 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string} request.name - The name of the operation resource to be cancelled.
    * @param {Object=} options
    *   Optional parameters. You can override the default settings for this call,
-   * e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
-   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions} for the
    * details.
    * @param {function(?Error)=} callback
    *   The function which will be called with the result of the API call.
@@ -1493,9 +1518,9 @@ export class PolicyBasedRoutingServiceClient {
    * @param {string} request.name - The name of the operation resource to be deleted.
    * @param {Object=} options
    *   Optional parameters. You can override the default settings for this call,
-   * e.g, timeout, retries, paginations, etc. See [gax.CallOptions]{@link
-   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions} for the
-   * details.
+   * e.g, timeout, retries, paginations, etc. See {@link
+   * https://googleapis.github.io/gax-nodejs/global.html#CallOptions | gax.CallOptions}
+   * for the details.
    * @param {function(?Error)=} callback
    *   The function which will be called with the result of the API call.
    * @return {Promise} - The promise which resolves when API call finishes.
@@ -1531,6 +1556,55 @@ export class PolicyBasedRoutingServiceClient {
   // --------------------
 
   /**
+   * Return a fully-qualified group resource name string.
+   *
+   * @param {string} project
+   * @param {string} hub
+   * @param {string} group
+   * @returns {string} Resource name string.
+   */
+  groupPath(project: string, hub: string, group: string) {
+    return this.pathTemplates.groupPathTemplate.render({
+      project: project,
+      hub: hub,
+      group: group,
+    });
+  }
+
+  /**
+   * Parse the project from Group resource.
+   *
+   * @param {string} groupName
+   *   A fully-qualified path representing Group resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromGroupName(groupName: string) {
+    return this.pathTemplates.groupPathTemplate.match(groupName).project;
+  }
+
+  /**
+   * Parse the hub from Group resource.
+   *
+   * @param {string} groupName
+   *   A fully-qualified path representing Group resource.
+   * @returns {string} A string representing the hub.
+   */
+  matchHubFromGroupName(groupName: string) {
+    return this.pathTemplates.groupPathTemplate.match(groupName).hub;
+  }
+
+  /**
+   * Parse the group from Group resource.
+   *
+   * @param {string} groupName
+   *   A fully-qualified path representing Group resource.
+   * @returns {string} A string representing the group.
+   */
+  matchGroupFromGroupName(groupName: string) {
+    return this.pathTemplates.groupPathTemplate.match(groupName).group;
+  }
+
+  /**
    * Return a fully-qualified hub resource name string.
    *
    * @param {string} project
@@ -1564,6 +1638,74 @@ export class PolicyBasedRoutingServiceClient {
    */
   matchHubFromHubName(hubName: string) {
     return this.pathTemplates.hubPathTemplate.match(hubName).hub;
+  }
+
+  /**
+   * Return a fully-qualified hubRoute resource name string.
+   *
+   * @param {string} project
+   * @param {string} hub
+   * @param {string} route_table
+   * @param {string} route
+   * @returns {string} Resource name string.
+   */
+  hubRoutePath(
+    project: string,
+    hub: string,
+    routeTable: string,
+    route: string
+  ) {
+    return this.pathTemplates.hubRoutePathTemplate.render({
+      project: project,
+      hub: hub,
+      route_table: routeTable,
+      route: route,
+    });
+  }
+
+  /**
+   * Parse the project from HubRoute resource.
+   *
+   * @param {string} hubRouteName
+   *   A fully-qualified path representing HubRoute resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromHubRouteName(hubRouteName: string) {
+    return this.pathTemplates.hubRoutePathTemplate.match(hubRouteName).project;
+  }
+
+  /**
+   * Parse the hub from HubRoute resource.
+   *
+   * @param {string} hubRouteName
+   *   A fully-qualified path representing HubRoute resource.
+   * @returns {string} A string representing the hub.
+   */
+  matchHubFromHubRouteName(hubRouteName: string) {
+    return this.pathTemplates.hubRoutePathTemplate.match(hubRouteName).hub;
+  }
+
+  /**
+   * Parse the route_table from HubRoute resource.
+   *
+   * @param {string} hubRouteName
+   *   A fully-qualified path representing HubRoute resource.
+   * @returns {string} A string representing the route_table.
+   */
+  matchRouteTableFromHubRouteName(hubRouteName: string) {
+    return this.pathTemplates.hubRoutePathTemplate.match(hubRouteName)
+      .route_table;
+  }
+
+  /**
+   * Parse the route from HubRoute resource.
+   *
+   * @param {string} hubRouteName
+   *   A fully-qualified path representing HubRoute resource.
+   * @returns {string} A string representing the route.
+   */
+  matchRouteFromHubRouteName(hubRouteName: string) {
+    return this.pathTemplates.hubRoutePathTemplate.match(hubRouteName).route;
   }
 
   /**
@@ -1643,18 +1785,12 @@ export class PolicyBasedRoutingServiceClient {
    * Return a fully-qualified policyBasedRoute resource name string.
    *
    * @param {string} project
-   * @param {string} location
    * @param {string} policy_based_route
    * @returns {string} Resource name string.
    */
-  policyBasedRoutePath(
-    project: string,
-    location: string,
-    policyBasedRoute: string
-  ) {
+  policyBasedRoutePath(project: string, policyBasedRoute: string) {
     return this.pathTemplates.policyBasedRoutePathTemplate.render({
       project: project,
-      location: location,
       policy_based_route: policyBasedRoute,
     });
   }
@@ -1673,19 +1809,6 @@ export class PolicyBasedRoutingServiceClient {
   }
 
   /**
-   * Parse the location from PolicyBasedRoute resource.
-   *
-   * @param {string} policyBasedRouteName
-   *   A fully-qualified path representing PolicyBasedRoute resource.
-   * @returns {string} A string representing the location.
-   */
-  matchLocationFromPolicyBasedRouteName(policyBasedRouteName: string) {
-    return this.pathTemplates.policyBasedRoutePathTemplate.match(
-      policyBasedRouteName
-    ).location;
-  }
-
-  /**
    * Parse the policy_based_route from PolicyBasedRoute resource.
    *
    * @param {string} policyBasedRouteName
@@ -1696,6 +1819,57 @@ export class PolicyBasedRoutingServiceClient {
     return this.pathTemplates.policyBasedRoutePathTemplate.match(
       policyBasedRouteName
     ).policy_based_route;
+  }
+
+  /**
+   * Return a fully-qualified routeTable resource name string.
+   *
+   * @param {string} project
+   * @param {string} hub
+   * @param {string} route_table
+   * @returns {string} Resource name string.
+   */
+  routeTablePath(project: string, hub: string, routeTable: string) {
+    return this.pathTemplates.routeTablePathTemplate.render({
+      project: project,
+      hub: hub,
+      route_table: routeTable,
+    });
+  }
+
+  /**
+   * Parse the project from RouteTable resource.
+   *
+   * @param {string} routeTableName
+   *   A fully-qualified path representing RouteTable resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromRouteTableName(routeTableName: string) {
+    return this.pathTemplates.routeTablePathTemplate.match(routeTableName)
+      .project;
+  }
+
+  /**
+   * Parse the hub from RouteTable resource.
+   *
+   * @param {string} routeTableName
+   *   A fully-qualified path representing RouteTable resource.
+   * @returns {string} A string representing the hub.
+   */
+  matchHubFromRouteTableName(routeTableName: string) {
+    return this.pathTemplates.routeTablePathTemplate.match(routeTableName).hub;
+  }
+
+  /**
+   * Parse the route_table from RouteTable resource.
+   *
+   * @param {string} routeTableName
+   *   A fully-qualified path representing RouteTable resource.
+   * @returns {string} A string representing the route_table.
+   */
+  matchRouteTableFromRouteTableName(routeTableName: string) {
+    return this.pathTemplates.routeTablePathTemplate.match(routeTableName)
+      .route_table;
   }
 
   /**

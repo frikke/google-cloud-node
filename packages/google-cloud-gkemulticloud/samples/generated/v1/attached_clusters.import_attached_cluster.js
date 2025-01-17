@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -54,9 +54,13 @@ function main(parent, fleetMembership, platformVersion, distribution) {
   // const platformVersion = 'abc123'
   /**
    *  Required. The Kubernetes distribution of the underlying attached cluster.
-   *  Supported values: "eks", "aks".
+   *  Supported values: "eks", "aks", "generic".
    */
   // const distribution = 'abc123'
+  /**
+   *  Optional. Proxy configuration for outbound HTTP(S) traffic.
+   */
+  // const proxyConfig = {}
 
   // Imports the Gkemulticloud library
   const {AttachedClustersClient} = require('@google-cloud/gkemulticloud').v1;

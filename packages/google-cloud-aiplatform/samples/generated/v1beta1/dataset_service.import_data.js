@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ function main(name, importConfigs) {
    *  Required. The desired input locations. The contents of all input locations
    *  will be imported in one batch.
    */
-  // const importConfigs = 1234
+  // const importConfigs = [1,2,3,4]
 
   // Imports the Aiplatform library
   const {DatasetServiceClient} = require('@google-cloud/aiplatform').v1beta1;

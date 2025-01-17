@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -43,16 +43,16 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  Optional. The maximum number of results to return from this request.  Non-positive
-   *  values are ignored. If not specified, the server will determine the number
-   *  of results to return.
+   *  Optional. The maximum number of results to return from this request.
+   *  Non-positive values are ignored. If not specified, the server will
+   *  determine the number of results to return.
    */
   // const pageSize = 1234
   /**
-   *  Optional. If present, retrieves the next batch of results from the preceding call to
-   *  this method. `page_token` must be the value of `next_page_token` from the
-   *  previous response. The values of other method parameters must be identical
-   *  to those in the previous call.
+   *  Optional. If present, retrieves the next batch of results from the
+   *  preceding call to this method. `page_token` must be the value of
+   *  `next_page_token` from the previous response. The values of other method
+   *  parameters must be identical to those in the previous call.
    */
   // const pageToken = 'abc123'
   /**
@@ -84,7 +84,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await recommenderClient.listRecommendationsAsync(request);
+    const iterable = recommenderClient.listRecommendationsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

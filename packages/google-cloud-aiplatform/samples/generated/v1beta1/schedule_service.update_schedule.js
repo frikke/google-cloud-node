@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ function main(schedule, updateMask) {
    *  Required. The Schedule which replaces the resource on the server.
    *  The following restrictions will be applied:
    *    * The scheduled request type cannot be changed.
+   *    * The non-empty fields cannot be unset.
    *    * The output_only fields will be ignored if specified.
    */
   // const schedule = {}

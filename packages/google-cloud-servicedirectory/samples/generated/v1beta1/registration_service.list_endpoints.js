@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ function main(parent) {
    */
   // const parent = 'abc123'
   /**
-   *  Optional. The maximum number of items to return.
+   *  Optional. The maximum number of items to return. The default value is 100.
    */
   // const pageSize = 1234
   /**
@@ -46,8 +46,8 @@ function main(parent) {
    *  Optional. The filter to list results by.
    *  General `filter` string syntax:
    *  `<field> <operator> <value> (<logical connector>)`
-   *  *   `<field>` can be `name`, `address`, `port`, or `metadata.<key>` for map
-   *      field
+   *  *   `<field>` can be `name`, `address`, `port`, `metadata.<key>` for map
+   *      field, or `attributes.<field>` for attributes field
    *  *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *      means `HAS`, and is roughly the same as `=`
    *  *   `<value>` must be the same data type as field
@@ -69,6 +69,8 @@ function main(parent) {
    *  *   `doesnotexist.foo=bar` returns an empty list. Note that endpoint
    *      doesn't have a field called "doesnotexist". Since the filter does not
    *      match any endpoints, it returns no results
+   *  *   `attributes.kubernetes_resource_type=KUBERNETES_RESOURCE_TYPE_CLUSTER_
+   *      IP` returns endpoints with the corresponding kubernetes_resource_type
    *  For more information about filtering, see
    *  API Filtering (https://aip.dev/160).
    */
@@ -97,7 +99,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await servicedirectoryClient.listEndpointsAsync(request);
+    const iterable = servicedirectoryClient.listEndpointsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

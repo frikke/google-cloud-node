@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,18 +20,24 @@ import * as v2 from './v2';
 import * as v2alpha from './v2alpha';
 import * as v2beta from './v2beta';
 
+const AnalyticsServiceClient = v2beta.AnalyticsServiceClient;
+type AnalyticsServiceClient = v2beta.AnalyticsServiceClient;
 const CatalogServiceClient = v2beta.CatalogServiceClient;
 type CatalogServiceClient = v2beta.CatalogServiceClient;
 const CompletionServiceClient = v2beta.CompletionServiceClient;
 type CompletionServiceClient = v2beta.CompletionServiceClient;
 const ControlServiceClient = v2beta.ControlServiceClient;
 type ControlServiceClient = v2beta.ControlServiceClient;
+const GenerativeQuestionServiceClient = v2beta.GenerativeQuestionServiceClient;
+type GenerativeQuestionServiceClient = v2beta.GenerativeQuestionServiceClient;
 const ModelServiceClient = v2beta.ModelServiceClient;
 type ModelServiceClient = v2beta.ModelServiceClient;
 const PredictionServiceClient = v2beta.PredictionServiceClient;
 type PredictionServiceClient = v2beta.PredictionServiceClient;
 const ProductServiceClient = v2beta.ProductServiceClient;
 type ProductServiceClient = v2beta.ProductServiceClient;
+const ProjectServiceClient = v2beta.ProjectServiceClient;
+type ProjectServiceClient = v2beta.ProjectServiceClient;
 const SearchServiceClient = v2beta.SearchServiceClient;
 type SearchServiceClient = v2beta.SearchServiceClient;
 const ServingConfigServiceClient = v2beta.ServingConfigServiceClient;
@@ -43,12 +49,15 @@ export {
   v2,
   v2alpha,
   v2beta,
+  AnalyticsServiceClient,
   CatalogServiceClient,
   CompletionServiceClient,
   ControlServiceClient,
+  GenerativeQuestionServiceClient,
   ModelServiceClient,
   PredictionServiceClient,
   ProductServiceClient,
+  ProjectServiceClient,
   SearchServiceClient,
   ServingConfigServiceClient,
   UserEventServiceClient,
@@ -57,12 +66,15 @@ export default {
   v2,
   v2alpha,
   v2beta,
+  AnalyticsServiceClient,
   CatalogServiceClient,
   CompletionServiceClient,
   ControlServiceClient,
+  GenerativeQuestionServiceClient,
   ModelServiceClient,
   PredictionServiceClient,
   ProductServiceClient,
+  ProjectServiceClient,
   SearchServiceClient,
   ServingConfigServiceClient,
   UserEventServiceClient,

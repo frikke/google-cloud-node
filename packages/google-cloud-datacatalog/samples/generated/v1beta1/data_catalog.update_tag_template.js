@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,10 +33,11 @@ function main(tagTemplate) {
    */
   // const tagTemplate = {}
   /**
-   *  The field mask specifies the parts of the template to overwrite.
-   *  Allowed fields:
-   *    * `display_name`
-   *  If absent or empty, all of the allowed fields above will be updated.
+   *  Names of fields whose values to overwrite on a tag template. Currently,
+   *  only `display_name` can be overwritten.
+   *  In general, if this parameter is absent or empty, all modifiable fields
+   *  are overwritten. If such fields are non-required and omitted in the
+   *  request body, their values are emptied.
    */
   // const updateMask = {}
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -61,11 +61,15 @@ function main(parent) {
    *  * `stateInfo.state`
    *  * `insightSubtype`
    *  * `severity`
+   *  * `targetResources`
    *  Examples:
    *  * `stateInfo.state = ACTIVE OR stateInfo.state = DISMISSED`
    *  * `insightSubtype = PERMISSIONS_USAGE`
    *  * `severity = CRITICAL OR severity = HIGH`
+   *  * `targetResources :
+   *  //compute.googleapis.com/projects/1234/zones/us-central1-a/instances/instance-1`
    *  * `stateInfo.state = ACTIVE AND (severity = CRITICAL OR severity = HIGH)`
+   *  The max allowed filter length is 500 characters.
    *  (These expressions are based on the filter language described at
    *  https://google.aip.dev/160)
    */
@@ -84,7 +88,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await recommenderClient.listInsightsAsync(request);
+    const iterable = recommenderClient.listInsightsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

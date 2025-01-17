@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,12 +37,12 @@ function main(parent) {
    *  A list of device numeric IDs. If empty, this field is ignored. Maximum
    *  IDs: 10,000.
    */
-  // const deviceNumIds = 1234
+  // const deviceNumIds = [1,2,3,4]
   /**
    *  A list of device string IDs. For example, `['device0', 'device12']`.
    *  If empty, this field is ignored. Maximum IDs: 10,000
    */
-  // const deviceIds = 'abc123'
+  // const deviceIds = ['abc','def']
   /**
    *  The fields of the `Device` resource to be returned in the response. The
    *  fields `id` and `num_id` are always returned, along with any
@@ -81,7 +81,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await iotClient.listDevicesAsync(request);
+    const iterable = iotClient.listDevicesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,28 +40,40 @@ function main(name) {
   /**
    *  The input config for each single document in the batch process.
    */
-  // const inputConfigs = 1234
+  // const inputConfigs = [1,2,3,4]
   /**
    *  The overall output config for batch process.
    */
   // const outputConfig = {}
   /**
-   *  The input documents for batch process.
+   *  The input documents for the
+   *  BatchProcessDocuments google.cloud.documentai.v1beta3.DocumentProcessorService.BatchProcessDocuments 
+   *  method.
    */
   // const inputDocuments = {}
   /**
-   *  The overall output config for batch process.
+   *  The output configuration for the
+   *  BatchProcessDocuments google.cloud.documentai.v1beta3.DocumentProcessorService.BatchProcessDocuments 
+   *  method.
    */
   // const documentOutputConfig = {}
   /**
-   *  Whether Human Review feature should be skipped for this request. Default to
-   *  false.
+   *  Whether human review should be skipped for this request. Default to
+   *  `false`.
    */
   // const skipHumanReview = true
   /**
    *  Inference-time options for the process API
    */
   // const processOptions = {}
+  /**
+   *  Optional. The labels with user-defined metadata for the request.
+   *  Label keys and values can be no longer than 63 characters
+   *  (Unicode codepoints) and can only contain lowercase letters, numeric
+   *  characters, underscores, and dashes. International characters are allowed.
+   *  Label values are optional. Label keys must start with a letter.
+   */
+  // const labels = [1,2,3,4]
 
   // Imports the Documentai library
   const {DocumentProcessorServiceClient} = require('@google-cloud/documentai').v1beta3;

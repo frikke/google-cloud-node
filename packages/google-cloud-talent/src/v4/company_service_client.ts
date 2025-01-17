@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v4/company_service_client_config.json`.
@@ -50,6 +51,8 @@ export class CompanyServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -90,8 +93,7 @@ export class CompanyServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -99,7 +101,7 @@ export class CompanyServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new CompanyServiceClient({fallback: 'rest'}, gax);
+   *     const client = new CompanyServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -108,8 +110,27 @@ export class CompanyServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof CompanyServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'jobs.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -124,7 +145,7 @@ export class CompanyServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -149,23 +170,23 @@ export class CompanyServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -287,19 +308,50 @@ export class CompanyServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'jobs.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'jobs.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -356,9 +408,8 @@ export class CompanyServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.talent.v4.Company | Company}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.talent.v4.Company|Company}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v4/company_service.create_company.js</caption>
    * region_tag:jobs_v4_generated_CompanyService_CreateCompany_async
@@ -370,7 +421,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany,
       protos.google.cloud.talent.v4.ICreateCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createCompany(
@@ -410,7 +461,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany,
       protos.google.cloud.talent.v4.ICreateCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -445,9 +496,8 @@ export class CompanyServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.talent.v4.Company | Company}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.talent.v4.Company|Company}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v4/company_service.get_company.js</caption>
    * region_tag:jobs_v4_generated_CompanyService_GetCompany_async
@@ -459,7 +509,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany,
       protos.google.cloud.talent.v4.IGetCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getCompany(
@@ -497,7 +547,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany,
       protos.google.cloud.talent.v4.IGetCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -529,20 +579,19 @@ export class CompanyServiceClient {
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Strongly recommended for the best service experience.
    *
-   *   If {@link google.cloud.talent.v4.UpdateCompanyRequest.update_mask|update_mask}
+   *   If {@link protos.google.cloud.talent.v4.UpdateCompanyRequest.update_mask|update_mask}
    *   is provided, only the specified fields in
-   *   {@link google.cloud.talent.v4.UpdateCompanyRequest.company|company} are updated.
+   *   {@link protos.google.cloud.talent.v4.UpdateCompanyRequest.company|company} are updated.
    *   Otherwise all the fields are updated.
    *
    *   A field mask to specify the company fields to be updated. Only
-   *   top level fields of {@link google.cloud.talent.v4.Company|Company} are
+   *   top level fields of {@link protos.google.cloud.talent.v4.Company|Company} are
    *   supported.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.talent.v4.Company | Company}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.talent.v4.Company|Company}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v4/company_service.update_company.js</caption>
    * region_tag:jobs_v4_generated_CompanyService_UpdateCompany_async
@@ -554,7 +603,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany,
       protos.google.cloud.talent.v4.IUpdateCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateCompany(
@@ -594,7 +643,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany,
       protos.google.cloud.talent.v4.IUpdateCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -630,9 +679,8 @@ export class CompanyServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v4/company_service.delete_company.js</caption>
    * region_tag:jobs_v4_generated_CompanyService_DeleteCompany_async
@@ -644,7 +692,7 @@ export class CompanyServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.talent.v4.IDeleteCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteCompany(
@@ -684,7 +732,7 @@ export class CompanyServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.talent.v4.IDeleteCompanyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -727,19 +775,18 @@ export class CompanyServiceClient {
    *   Defaults to false.
    *
    *   If true, at most
-   *   {@link google.cloud.talent.v4.ListCompaniesRequest.page_size|page_size} of
+   *   {@link protos.google.cloud.talent.v4.ListCompaniesRequest.page_size|page_size} of
    *   companies are fetched, among which only those with open jobs are returned.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.talent.v4.Company | Company}.
+   *   The first element of the array is Array of {@link protos.google.cloud.talent.v4.Company|Company}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listCompaniesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCompanies(
@@ -749,7 +796,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany[],
       protos.google.cloud.talent.v4.IListCompaniesRequest | null,
-      protos.google.cloud.talent.v4.IListCompaniesResponse
+      protos.google.cloud.talent.v4.IListCompaniesResponse,
     ]
   >;
   listCompanies(
@@ -789,7 +836,7 @@ export class CompanyServiceClient {
     [
       protos.google.cloud.talent.v4.ICompany[],
       protos.google.cloud.talent.v4.IListCompaniesRequest | null,
-      protos.google.cloud.talent.v4.IListCompaniesResponse
+      protos.google.cloud.talent.v4.IListCompaniesResponse,
     ]
   > | void {
     request = request || {};
@@ -831,18 +878,17 @@ export class CompanyServiceClient {
    *   Defaults to false.
    *
    *   If true, at most
-   *   {@link google.cloud.talent.v4.ListCompaniesRequest.page_size|page_size} of
+   *   {@link protos.google.cloud.talent.v4.ListCompaniesRequest.page_size|page_size} of
    *   companies are fetched, among which only those with open jobs are returned.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.talent.v4.Company | Company} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.talent.v4.Company|Company} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listCompaniesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listCompaniesStream(
@@ -889,17 +935,16 @@ export class CompanyServiceClient {
    *   Defaults to false.
    *
    *   If true, at most
-   *   {@link google.cloud.talent.v4.ListCompaniesRequest.page_size|page_size} of
+   *   {@link protos.google.cloud.talent.v4.ListCompaniesRequest.page_size|page_size} of
    *   companies are fetched, among which only those with open jobs are returned.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.talent.v4.Company | Company}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.talent.v4.Company|Company}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v4/company_service.list_companies.js</caption>
    * region_tag:jobs_v4_generated_CompanyService_ListCompanies_async

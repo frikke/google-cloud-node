@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,16 +51,6 @@ function main(parent) {
    */
   // const solvingMode = {}
   /**
-   *  Truncates the number of validation errors returned. These errors are
-   *  typically attached to an INVALID_ARGUMENT error payload as a BadRequest
-   *  error detail (https://cloud.google.com/apis/design/errors#error_details),
-   *  unless solving_mode=VALIDATE_ONLY: see the
-   *  OptimizeToursResponse.validation_errors google.cloud.optimization.v1.OptimizeToursResponse.validation_errors 
-   *  field.
-   *  This defaults to 100 and is capped at 10,000.
-   */
-  // const maxValidationErrors = 1234
-  /**
    *  Search mode used to solve the request.
    */
   // const searchMode = {}
@@ -91,7 +81,7 @@ function main(parent) {
    *  necessarily returned and an error indicating infeasibility may be returned
    *  instead.
    */
-  // const injectedFirstSolutionRoutes = 1234
+  // const injectedFirstSolutionRoutes = [1,2,3,4]
   /**
    *  Constrain the optimization algorithm to find a final solution that is
    *  similar to a previous solution. For example, this may be used to freeze
@@ -116,7 +106,7 @@ function main(parent) {
    *  Polylines are still populated between all visits in all non-empty routes
    *  regardless of whether the related shipments or vehicles are ignored.
    */
-  // const refreshDetailsRoutes = 1234
+  // const refreshDetailsRoutes = [1,2,3,4]
   /**
    *  If true:
    *    * uses
@@ -220,6 +210,16 @@ function main(parent) {
    *  meters/seconds.
    */
   // const geodesicMetersPerSecond = 1234
+  /**
+   *  Truncates the number of validation errors returned. These errors are
+   *  typically attached to an INVALID_ARGUMENT error payload as a BadRequest
+   *  error detail (https://cloud.google.com/apis/design/errors#error_details),
+   *  unless solving_mode=VALIDATE_ONLY: see the
+   *  OptimizeToursResponse.validation_errors google.cloud.optimization.v1.OptimizeToursResponse.validation_errors 
+   *  field.
+   *  This defaults to 100 and is capped at 10,000.
+   */
+  // const maxValidationErrors = 1234
   /**
    *  Label that may be used to identify this request, reported back in the
    *  OptimizeToursResponse.request_label google.cloud.optimization.v1.OptimizeToursResponse.request_label.

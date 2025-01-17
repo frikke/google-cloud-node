@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import type {
 
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1p2beta1/asset_service_client_config.json`.
@@ -48,6 +49,8 @@ export class AssetServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -88,8 +91,7 @@ export class AssetServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -97,7 +99,7 @@ export class AssetServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new AssetServiceClient({fallback: 'rest'}, gax);
+   *     const client = new AssetServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -106,8 +108,27 @@ export class AssetServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof AssetServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'cloudasset.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -122,7 +143,7 @@ export class AssetServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -147,23 +168,23 @@ export class AssetServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -176,6 +197,12 @@ export class AssetServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      accessLevelPathTemplate: new this._gaxModule.PathTemplate(
+        'accessPolicies/{access_policy}/accessLevels/{access_level}'
+      ),
+      accessPolicyPathTemplate: new this._gaxModule.PathTemplate(
+        'accessPolicies/{access_policy}'
+      ),
       folderFeedPathTemplate: new this._gaxModule.PathTemplate(
         'folders/{folder}/feeds/{feed}'
       ),
@@ -184,6 +211,9 @@ export class AssetServiceClient {
       ),
       projectFeedPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/feeds/{feed}'
+      ),
+      servicePerimeterPathTemplate: new this._gaxModule.PathTemplate(
+        'accessPolicies/{access_policy}/servicePerimeters/{service_perimeter}'
       ),
     };
 
@@ -274,19 +304,50 @@ export class AssetServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudasset.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'cloudasset.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -335,23 +396,21 @@ export class AssetServiceClient {
    *   Required. The name of the project/folder/organization where this feed
    *   should be created in. It can only be an organization number (such as
    *   "organizations/123"), a folder number (such as "folders/123"), a project ID
-   *   (such as "projects/my-project-id")", or a project number (such as
+   *   (such as "projects/my-project-id"), or a project number (such as
    *   "projects/12345").
    * @param {string} request.feedId
    *   Required. This is the client-assigned asset feed identifier and it needs to
    *   be unique under a specific parent project/folder/organization.
    * @param {google.cloud.asset.v1p2beta1.Feed} request.feed
-   *   Required. The feed details. The field `name` must be empty and it will be generated
-   *   in the format of:
-   *   projects/project_number/feeds/feed_id
+   *   Required. The feed details. The field `name` must be empty and it will be
+   *   generated in the format of: projects/project_number/feeds/feed_id
    *   folders/folder_number/feeds/feed_id
    *   organizations/organization_number/feeds/feed_id
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1p2beta1.Feed | Feed}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1p2beta1.Feed|Feed}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1p2beta1/asset_service.create_feed.js</caption>
    * region_tag:cloudasset_v1p2beta1_generated_AssetService_CreateFeed_async
@@ -363,7 +422,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IFeed,
       protos.google.cloud.asset.v1p2beta1.ICreateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createFeed(
@@ -403,7 +462,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IFeed,
       protos.google.cloud.asset.v1p2beta1.ICreateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -437,9 +496,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1p2beta1.Feed | Feed}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1p2beta1.Feed|Feed}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1p2beta1/asset_service.get_feed.js</caption>
    * region_tag:cloudasset_v1p2beta1_generated_AssetService_GetFeed_async
@@ -451,7 +509,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IFeed,
       protos.google.cloud.asset.v1p2beta1.IGetFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getFeed(
@@ -491,7 +549,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IFeed,
       protos.google.cloud.asset.v1p2beta1.IGetFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -524,9 +582,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1p2beta1.ListFeedsResponse | ListFeedsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1p2beta1.ListFeedsResponse|ListFeedsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1p2beta1/asset_service.list_feeds.js</caption>
    * region_tag:cloudasset_v1p2beta1_generated_AssetService_ListFeeds_async
@@ -538,7 +595,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IListFeedsResponse,
       protos.google.cloud.asset.v1p2beta1.IListFeedsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   listFeeds(
@@ -578,7 +635,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IListFeedsResponse,
       protos.google.cloud.asset.v1p2beta1.IListFeedsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -605,8 +662,8 @@ export class AssetServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {google.cloud.asset.v1p2beta1.Feed} request.feed
-   *   Required. The new values of feed details. It must match an existing feed and the
-   *   field `name` must be in the format of:
+   *   Required. The new values of feed details. It must match an existing feed
+   *   and the field `name` must be in the format of:
    *   projects/project_number/feeds/feed_id or
    *   folders/folder_number/feeds/feed_id or
    *   organizations/organization_number/feeds/feed_id.
@@ -617,9 +674,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.asset.v1p2beta1.Feed | Feed}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.asset.v1p2beta1.Feed|Feed}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1p2beta1/asset_service.update_feed.js</caption>
    * region_tag:cloudasset_v1p2beta1_generated_AssetService_UpdateFeed_async
@@ -631,7 +687,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IFeed,
       protos.google.cloud.asset.v1p2beta1.IUpdateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateFeed(
@@ -671,7 +727,7 @@ export class AssetServiceClient {
     [
       protos.google.cloud.asset.v1p2beta1.IFeed,
       protos.google.cloud.asset.v1p2beta1.IUpdateFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -705,9 +761,8 @@ export class AssetServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1p2beta1/asset_service.delete_feed.js</caption>
    * region_tag:cloudasset_v1p2beta1_generated_AssetService_DeleteFeed_async
@@ -719,7 +774,7 @@ export class AssetServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.asset.v1p2beta1.IDeleteFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteFeed(
@@ -759,7 +814,7 @@ export class AssetServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.asset.v1p2beta1.IDeleteFeedRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -784,6 +839,68 @@ export class AssetServiceClient {
   // --------------------
   // -- Path templates --
   // --------------------
+
+  /**
+   * Return a fully-qualified accessLevel resource name string.
+   *
+   * @param {string} access_policy
+   * @param {string} access_level
+   * @returns {string} Resource name string.
+   */
+  accessLevelPath(accessPolicy: string, accessLevel: string) {
+    return this.pathTemplates.accessLevelPathTemplate.render({
+      access_policy: accessPolicy,
+      access_level: accessLevel,
+    });
+  }
+
+  /**
+   * Parse the access_policy from AccessLevel resource.
+   *
+   * @param {string} accessLevelName
+   *   A fully-qualified path representing AccessLevel resource.
+   * @returns {string} A string representing the access_policy.
+   */
+  matchAccessPolicyFromAccessLevelName(accessLevelName: string) {
+    return this.pathTemplates.accessLevelPathTemplate.match(accessLevelName)
+      .access_policy;
+  }
+
+  /**
+   * Parse the access_level from AccessLevel resource.
+   *
+   * @param {string} accessLevelName
+   *   A fully-qualified path representing AccessLevel resource.
+   * @returns {string} A string representing the access_level.
+   */
+  matchAccessLevelFromAccessLevelName(accessLevelName: string) {
+    return this.pathTemplates.accessLevelPathTemplate.match(accessLevelName)
+      .access_level;
+  }
+
+  /**
+   * Return a fully-qualified accessPolicy resource name string.
+   *
+   * @param {string} access_policy
+   * @returns {string} Resource name string.
+   */
+  accessPolicyPath(accessPolicy: string) {
+    return this.pathTemplates.accessPolicyPathTemplate.render({
+      access_policy: accessPolicy,
+    });
+  }
+
+  /**
+   * Parse the access_policy from AccessPolicy resource.
+   *
+   * @param {string} accessPolicyName
+   *   A fully-qualified path representing AccessPolicy resource.
+   * @returns {string} A string representing the access_policy.
+   */
+  matchAccessPolicyFromAccessPolicyName(accessPolicyName: string) {
+    return this.pathTemplates.accessPolicyPathTemplate.match(accessPolicyName)
+      .access_policy;
+  }
 
   /**
    * Return a fully-qualified folderFeed resource name string.
@@ -898,6 +1015,46 @@ export class AssetServiceClient {
   matchFeedFromProjectFeedName(projectFeedName: string) {
     return this.pathTemplates.projectFeedPathTemplate.match(projectFeedName)
       .feed;
+  }
+
+  /**
+   * Return a fully-qualified servicePerimeter resource name string.
+   *
+   * @param {string} access_policy
+   * @param {string} service_perimeter
+   * @returns {string} Resource name string.
+   */
+  servicePerimeterPath(accessPolicy: string, servicePerimeter: string) {
+    return this.pathTemplates.servicePerimeterPathTemplate.render({
+      access_policy: accessPolicy,
+      service_perimeter: servicePerimeter,
+    });
+  }
+
+  /**
+   * Parse the access_policy from ServicePerimeter resource.
+   *
+   * @param {string} servicePerimeterName
+   *   A fully-qualified path representing ServicePerimeter resource.
+   * @returns {string} A string representing the access_policy.
+   */
+  matchAccessPolicyFromServicePerimeterName(servicePerimeterName: string) {
+    return this.pathTemplates.servicePerimeterPathTemplate.match(
+      servicePerimeterName
+    ).access_policy;
+  }
+
+  /**
+   * Parse the service_perimeter from ServicePerimeter resource.
+   *
+   * @param {string} servicePerimeterName
+   *   A fully-qualified path representing ServicePerimeter resource.
+   * @returns {string} A string representing the service_perimeter.
+   */
+  matchServicePerimeterFromServicePerimeterName(servicePerimeterName: string) {
+    return this.pathTemplates.servicePerimeterPathTemplate.match(
+      servicePerimeterName
+    ).service_perimeter;
   }
 
   /**

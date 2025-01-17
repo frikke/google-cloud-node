@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,10 +25,13 @@ import type {
   ClientOptions,
   PaginationCallback,
   GaxCall,
+  LocationsClient,
+  LocationProtos,
 } from 'google-gax';
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1beta1/registration_service_client_config.json`.
@@ -42,15 +45,15 @@ const version = require('../../../package.json').version;
  *  resource model:
  *
  *  - The API has a collection of
- *  {@link google.cloud.servicedirectory.v1beta1.Namespace|Namespace}
+ *  {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace}
  *  resources, named `projects/* /locations/* /namespaces/*`.
  *
  *  - Each Namespace has a collection of
- *  {@link google.cloud.servicedirectory.v1beta1.Service|Service} resources, named
+ *  {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service} resources, named
  *  `projects/* /locations/* /namespaces/* /services/*`.
  *
  *  - Each Service has a collection of
- *  {@link google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}
+ *  {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}
  *  resources, named
  *  `projects/* /locations/* /namespaces/* /services/* /endpoints/*`.
  * @class
@@ -64,6 +67,8 @@ export class RegistrationServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -73,6 +78,7 @@ export class RegistrationServiceClient {
   };
   warn: (code: string, message: string, warnType?: string) => void;
   innerApiCalls: {[name: string]: Function};
+  locationsClient: LocationsClient;
   pathTemplates: {[name: string]: gax.PathTemplate};
   registrationServiceStub?: Promise<{[name: string]: Function}>;
 
@@ -104,8 +110,7 @@ export class RegistrationServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -113,7 +118,7 @@ export class RegistrationServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new RegistrationServiceClient({fallback: 'rest'}, gax);
+   *     const client = new RegistrationServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -122,8 +127,27 @@ export class RegistrationServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof RegistrationServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'servicedirectory.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -138,7 +162,7 @@ export class RegistrationServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -163,23 +187,27 @@ export class RegistrationServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
+    this.locationsClient = new this._gaxModule.LocationsClient(
+      this._gaxGrpc,
+      opts
+    );
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -328,19 +356,50 @@ export class RegistrationServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'servicedirectory.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'servicedirectory.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -400,9 +459,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Namespace | Namespace}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.create_namespace.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_CreateNamespace_async
@@ -417,7 +475,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.ICreateNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createNamespace(
@@ -466,7 +524,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.ICreateNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -497,9 +555,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Namespace | Namespace}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.get_namespace.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_GetNamespace_async
@@ -514,7 +571,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IGetNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getNamespace(
@@ -563,7 +620,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IGetNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -596,9 +653,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Namespace | Namespace}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.update_namespace.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_UpdateNamespace_async
@@ -613,7 +669,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IUpdateNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateNamespace(
@@ -662,7 +718,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IUpdateNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -694,9 +750,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.delete_namespace.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_DeleteNamespace_async
@@ -711,7 +766,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IDeleteNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteNamespace(
@@ -760,7 +815,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IDeleteNamespaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -801,9 +856,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Service | Service}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.create_service.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_CreateService_async
@@ -818,7 +872,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.ICreateServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createService(
@@ -867,7 +921,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.ICreateServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -898,9 +952,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Service | Service}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.get_service.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_GetService_async
@@ -915,7 +968,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IGetServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getService(
@@ -964,7 +1017,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IGetServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -997,9 +1050,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Service | Service}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.update_service.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_UpdateService_async
@@ -1014,7 +1066,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IUpdateServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateService(
@@ -1063,7 +1115,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IUpdateServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1095,9 +1147,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.delete_service.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_DeleteService_async
@@ -1112,7 +1163,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IDeleteServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteService(
@@ -1161,7 +1212,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IDeleteServiceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1202,9 +1253,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Endpoint | Endpoint}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.create_endpoint.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_CreateEndpoint_async
@@ -1219,7 +1269,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.ICreateEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createEndpoint(
@@ -1268,7 +1318,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.ICreateEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1299,9 +1349,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Endpoint | Endpoint}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.get_endpoint.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_GetEndpoint_async
@@ -1316,7 +1365,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IGetEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getEndpoint(
@@ -1365,7 +1414,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IGetEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1398,9 +1447,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.servicedirectory.v1beta1.Endpoint | Endpoint}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.update_endpoint.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_UpdateEndpoint_async
@@ -1415,7 +1463,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IUpdateEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateEndpoint(
@@ -1464,7 +1512,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IUpdateEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1495,9 +1543,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.delete_endpoint.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_DeleteEndpoint_async
@@ -1512,7 +1559,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IDeleteEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteEndpoint(
@@ -1561,7 +1608,7 @@ export class RegistrationServiceClient {
         | protos.google.cloud.servicedirectory.v1beta1.IDeleteEndpointRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1583,7 +1630,7 @@ export class RegistrationServiceClient {
     return this.innerApiCalls.deleteEndpoint(request, options, callback);
   }
   /**
-   * Gets the IAM Policy for a resource (namespace or service only).
+   * Gets the IAM Policy for a resource
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1596,9 +1643,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.iam.v1.Policy | Policy}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.iam.v1.Policy|Policy}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.get_iam_policy.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_GetIamPolicy_async
@@ -1610,7 +1656,7 @@ export class RegistrationServiceClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.IGetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getIamPolicy(
@@ -1648,7 +1694,7 @@ export class RegistrationServiceClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.IGetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1670,7 +1716,7 @@ export class RegistrationServiceClient {
     return this.innerApiCalls.getIamPolicy(request, options, callback);
   }
   /**
-   * Sets the IAM Policy for a resource (namespace or service only).
+   * Sets the IAM Policy for a resource
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1691,9 +1737,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.iam.v1.Policy | Policy}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.iam.v1.Policy|Policy}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.set_iam_policy.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_SetIamPolicy_async
@@ -1705,7 +1750,7 @@ export class RegistrationServiceClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.ISetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   setIamPolicy(
@@ -1743,7 +1788,7 @@ export class RegistrationServiceClient {
     [
       protos.google.iam.v1.IPolicy,
       protos.google.iam.v1.ISetIamPolicyRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1765,7 +1810,8 @@ export class RegistrationServiceClient {
     return this.innerApiCalls.setIamPolicy(request, options, callback);
   }
   /**
-   * Tests IAM permissions for a resource (namespace or service only).
+   * Tests IAM permissions for a resource (namespace, service  or
+   * service workload only).
    *
    * @param {Object} request
    *   The request object that will be sent.
@@ -1780,9 +1826,8 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.iam.v1.TestIamPermissionsResponse | TestIamPermissionsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.iam.v1.TestIamPermissionsResponse|TestIamPermissionsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.test_iam_permissions.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_TestIamPermissions_async
@@ -1794,7 +1839,7 @@ export class RegistrationServiceClient {
     [
       protos.google.iam.v1.ITestIamPermissionsResponse,
       protos.google.iam.v1.ITestIamPermissionsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   testIamPermissions(
@@ -1832,7 +1877,7 @@ export class RegistrationServiceClient {
     [
       protos.google.iam.v1.ITestIamPermissionsResponse,
       protos.google.iam.v1.ITestIamPermissionsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1860,19 +1905,21 @@ export class RegistrationServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The resource name of the project and location whose namespaces you'd like
-   *   to list.
+   *   Required. The resource name of the project and location whose namespaces
+   *   you'd like to list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
-   *   Optional. The next_page_token value returned from a previous List request, if any.
+   *   Optional. The next_page_token value returned from a previous List request,
+   *   if any.
    * @param {string} [request.filter]
    *   Optional. The filter to list results by.
    *
    *   General `filter` string syntax:
    *   `<field> <operator> <value> (<logical connector>)`
    *
-   *   *   `<field>` can be `name` or `labels.<key>` for map field
+   *   *   `<field>` can be `name`, `labels.<key>` for map field, or
+   *   `attributes.<field>` for attributes field
    *   *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *       means `HAS`, and is roughly the same as `=`
    *   *   `<value>` must be the same data type as field
@@ -1891,6 +1938,8 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that namespace
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any namespaces, it returns no results
+   *   *   `attributes.managed_registration=true` returns namespaces that are
+   *       managed by a GCP product or service
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -1908,14 +1957,13 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.servicedirectory.v1beta1.Namespace | Namespace}.
+   *   The first element of the array is Array of {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listNamespacesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listNamespaces(
@@ -1925,7 +1973,7 @@ export class RegistrationServiceClient {
     [
       protos.google.cloud.servicedirectory.v1beta1.INamespace[],
       protos.google.cloud.servicedirectory.v1beta1.IListNamespacesRequest | null,
-      protos.google.cloud.servicedirectory.v1beta1.IListNamespacesResponse
+      protos.google.cloud.servicedirectory.v1beta1.IListNamespacesResponse,
     ]
   >;
   listNamespaces(
@@ -1971,7 +2019,7 @@ export class RegistrationServiceClient {
     [
       protos.google.cloud.servicedirectory.v1beta1.INamespace[],
       protos.google.cloud.servicedirectory.v1beta1.IListNamespacesRequest | null,
-      protos.google.cloud.servicedirectory.v1beta1.IListNamespacesResponse
+      protos.google.cloud.servicedirectory.v1beta1.IListNamespacesResponse,
     ]
   > | void {
     request = request || {};
@@ -1998,19 +2046,21 @@ export class RegistrationServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The resource name of the project and location whose namespaces you'd like
-   *   to list.
+   *   Required. The resource name of the project and location whose namespaces
+   *   you'd like to list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
-   *   Optional. The next_page_token value returned from a previous List request, if any.
+   *   Optional. The next_page_token value returned from a previous List request,
+   *   if any.
    * @param {string} [request.filter]
    *   Optional. The filter to list results by.
    *
    *   General `filter` string syntax:
    *   `<field> <operator> <value> (<logical connector>)`
    *
-   *   *   `<field>` can be `name` or `labels.<key>` for map field
+   *   *   `<field>` can be `name`, `labels.<key>` for map field, or
+   *   `attributes.<field>` for attributes field
    *   *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *       means `HAS`, and is roughly the same as `=`
    *   *   `<value>` must be the same data type as field
@@ -2029,6 +2079,8 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that namespace
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any namespaces, it returns no results
+   *   *   `attributes.managed_registration=true` returns namespaces that are
+   *       managed by a GCP product or service
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2046,13 +2098,12 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.servicedirectory.v1beta1.Namespace | Namespace} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listNamespacesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listNamespacesStream(
@@ -2084,19 +2135,21 @@ export class RegistrationServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Required. The resource name of the project and location whose namespaces you'd like
-   *   to list.
+   *   Required. The resource name of the project and location whose namespaces
+   *   you'd like to list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
-   *   Optional. The next_page_token value returned from a previous List request, if any.
+   *   Optional. The next_page_token value returned from a previous List request,
+   *   if any.
    * @param {string} [request.filter]
    *   Optional. The filter to list results by.
    *
    *   General `filter` string syntax:
    *   `<field> <operator> <value> (<logical connector>)`
    *
-   *   *   `<field>` can be `name` or `labels.<key>` for map field
+   *   *   `<field>` can be `name`, `labels.<key>` for map field, or
+   *   `attributes.<field>` for attributes field
    *   *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *       means `HAS`, and is roughly the same as `=`
    *   *   `<value>` must be the same data type as field
@@ -2115,6 +2168,8 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that namespace
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any namespaces, it returns no results
+   *   *   `attributes.managed_registration=true` returns namespaces that are
+   *       managed by a GCP product or service
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2132,12 +2187,11 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.servicedirectory.v1beta1.Namespace | Namespace}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.servicedirectory.v1beta1.Namespace|Namespace}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.list_namespaces.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_ListNamespaces_async
@@ -2172,7 +2226,7 @@ export class RegistrationServiceClient {
    *   Required. The resource name of the namespace whose services you'd
    *   like to list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
    *   Optional. The next_page_token value returned from a previous List request,
    *   if any.
@@ -2204,6 +2258,9 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that service
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any services, it returns no results
+   *   *   `attributes.managed_registration=true` returns services that are
+   *   managed
+   *       by a GCP product or service
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2221,14 +2278,13 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.servicedirectory.v1beta1.Service | Service}.
+   *   The first element of the array is Array of {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listServicesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServices(
@@ -2238,7 +2294,7 @@ export class RegistrationServiceClient {
     [
       protos.google.cloud.servicedirectory.v1beta1.IService[],
       protos.google.cloud.servicedirectory.v1beta1.IListServicesRequest | null,
-      protos.google.cloud.servicedirectory.v1beta1.IListServicesResponse
+      protos.google.cloud.servicedirectory.v1beta1.IListServicesResponse,
     ]
   >;
   listServices(
@@ -2284,7 +2340,7 @@ export class RegistrationServiceClient {
     [
       protos.google.cloud.servicedirectory.v1beta1.IService[],
       protos.google.cloud.servicedirectory.v1beta1.IListServicesRequest | null,
-      protos.google.cloud.servicedirectory.v1beta1.IListServicesResponse
+      protos.google.cloud.servicedirectory.v1beta1.IListServicesResponse,
     ]
   > | void {
     request = request || {};
@@ -2314,7 +2370,7 @@ export class RegistrationServiceClient {
    *   Required. The resource name of the namespace whose services you'd
    *   like to list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
    *   Optional. The next_page_token value returned from a previous List request,
    *   if any.
@@ -2346,6 +2402,9 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that service
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any services, it returns no results
+   *   *   `attributes.managed_registration=true` returns services that are
+   *   managed
+   *       by a GCP product or service
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2363,13 +2422,12 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.servicedirectory.v1beta1.Service | Service} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listServicesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServicesStream(
@@ -2404,7 +2462,7 @@ export class RegistrationServiceClient {
    *   Required. The resource name of the namespace whose services you'd
    *   like to list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
    *   Optional. The next_page_token value returned from a previous List request,
    *   if any.
@@ -2436,6 +2494,9 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that service
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any services, it returns no results
+   *   *   `attributes.managed_registration=true` returns services that are
+   *   managed
+   *       by a GCP product or service
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2453,12 +2514,11 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.servicedirectory.v1beta1.Service | Service}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.servicedirectory.v1beta1.Service|Service}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.list_services.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_ListServices_async
@@ -2493,7 +2553,7 @@ export class RegistrationServiceClient {
    *   Required. The resource name of the service whose endpoints you'd like to
    *   list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
    *   Optional. The next_page_token value returned from a previous List request,
    *   if any.
@@ -2503,8 +2563,8 @@ export class RegistrationServiceClient {
    *   General `filter` string syntax:
    *   `<field> <operator> <value> (<logical connector>)`
    *
-   *   *   `<field>` can be `name`, `address`, `port`, or `metadata.<key>` for map
-   *       field
+   *   *   `<field>` can be `name`, `address`, `port`, `metadata.<key>` for map
+   *       field, or `attributes.<field>` for attributes field
    *   *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *       means `HAS`, and is roughly the same as `=`
    *   *   `<value>` must be the same data type as field
@@ -2528,6 +2588,8 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that endpoint
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any endpoints, it returns no results
+   *   *   `attributes.kubernetes_resource_type=KUBERNETES_RESOURCE_TYPE_CLUSTER_
+   *       IP` returns endpoints with the corresponding kubernetes_resource_type
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2545,14 +2607,13 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.servicedirectory.v1beta1.Endpoint | Endpoint}.
+   *   The first element of the array is Array of {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listEndpointsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEndpoints(
@@ -2562,7 +2623,7 @@ export class RegistrationServiceClient {
     [
       protos.google.cloud.servicedirectory.v1beta1.IEndpoint[],
       protos.google.cloud.servicedirectory.v1beta1.IListEndpointsRequest | null,
-      protos.google.cloud.servicedirectory.v1beta1.IListEndpointsResponse
+      protos.google.cloud.servicedirectory.v1beta1.IListEndpointsResponse,
     ]
   >;
   listEndpoints(
@@ -2608,7 +2669,7 @@ export class RegistrationServiceClient {
     [
       protos.google.cloud.servicedirectory.v1beta1.IEndpoint[],
       protos.google.cloud.servicedirectory.v1beta1.IListEndpointsRequest | null,
-      protos.google.cloud.servicedirectory.v1beta1.IListEndpointsResponse
+      protos.google.cloud.servicedirectory.v1beta1.IListEndpointsResponse,
     ]
   > | void {
     request = request || {};
@@ -2638,7 +2699,7 @@ export class RegistrationServiceClient {
    *   Required. The resource name of the service whose endpoints you'd like to
    *   list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
    *   Optional. The next_page_token value returned from a previous List request,
    *   if any.
@@ -2648,8 +2709,8 @@ export class RegistrationServiceClient {
    *   General `filter` string syntax:
    *   `<field> <operator> <value> (<logical connector>)`
    *
-   *   *   `<field>` can be `name`, `address`, `port`, or `metadata.<key>` for map
-   *       field
+   *   *   `<field>` can be `name`, `address`, `port`, `metadata.<key>` for map
+   *       field, or `attributes.<field>` for attributes field
    *   *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *       means `HAS`, and is roughly the same as `=`
    *   *   `<value>` must be the same data type as field
@@ -2673,6 +2734,8 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that endpoint
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any endpoints, it returns no results
+   *   *   `attributes.kubernetes_resource_type=KUBERNETES_RESOURCE_TYPE_CLUSTER_
+   *       IP` returns endpoints with the corresponding kubernetes_resource_type
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2690,13 +2753,12 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.servicedirectory.v1beta1.Endpoint | Endpoint} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listEndpointsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listEndpointsStream(
@@ -2731,7 +2793,7 @@ export class RegistrationServiceClient {
    *   Required. The resource name of the service whose endpoints you'd like to
    *   list.
    * @param {number} [request.pageSize]
-   *   Optional. The maximum number of items to return.
+   *   Optional. The maximum number of items to return. The default value is 100.
    * @param {string} [request.pageToken]
    *   Optional. The next_page_token value returned from a previous List request,
    *   if any.
@@ -2741,8 +2803,8 @@ export class RegistrationServiceClient {
    *   General `filter` string syntax:
    *   `<field> <operator> <value> (<logical connector>)`
    *
-   *   *   `<field>` can be `name`, `address`, `port`, or `metadata.<key>` for map
-   *       field
+   *   *   `<field>` can be `name`, `address`, `port`, `metadata.<key>` for map
+   *       field, or `attributes.<field>` for attributes field
    *   *   `<operator>` can be `<`, `>`, `<=`, `>=`, `!=`, `=`, `:`. Of which `:`
    *       means `HAS`, and is roughly the same as `=`
    *   *   `<value>` must be the same data type as field
@@ -2766,6 +2828,8 @@ export class RegistrationServiceClient {
    *   *   `doesnotexist.foo=bar` returns an empty list. Note that endpoint
    *       doesn't have a field called "doesnotexist". Since the filter does not
    *       match any endpoints, it returns no results
+   *   *   `attributes.kubernetes_resource_type=KUBERNETES_RESOURCE_TYPE_CLUSTER_
+   *       IP` returns endpoints with the corresponding kubernetes_resource_type
    *
    *   For more information about filtering, see
    *   [API Filtering](https://aip.dev/160).
@@ -2783,12 +2847,11 @@ export class RegistrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.servicedirectory.v1beta1.Endpoint | Endpoint}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.servicedirectory.v1beta1.Endpoint|Endpoint}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/registration_service.list_endpoints.js</caption>
    * region_tag:servicedirectory_v1beta1_generated_RegistrationService_ListEndpoints_async
@@ -2814,6 +2877,84 @@ export class RegistrationServiceClient {
       callSettings
     ) as AsyncIterable<protos.google.cloud.servicedirectory.v1beta1.IEndpoint>;
   }
+  /**
+   * Gets information about a location.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Resource name for the location.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example
+   * ```
+   * const [response] = await client.getLocation(request);
+   * ```
+   */
+  getLocation(
+    request: LocationProtos.google.cloud.location.IGetLocationRequest,
+    options?:
+      | gax.CallOptions
+      | Callback<
+          LocationProtos.google.cloud.location.ILocation,
+          | LocationProtos.google.cloud.location.IGetLocationRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LocationProtos.google.cloud.location.ILocation,
+      | LocationProtos.google.cloud.location.IGetLocationRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<LocationProtos.google.cloud.location.ILocation> {
+    return this.locationsClient.getLocation(request, options, callback);
+  }
+
+  /**
+   * Lists information about the supported locations for this service. Returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   The resource that owns the locations collection, if applicable.
+   * @param {string} request.filter
+   *   The standard list filter.
+   * @param {number} request.pageSize
+   *   The standard list page size.
+   * @param {string} request.pageToken
+   *   The standard list page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example
+   * ```
+   * const iterable = client.listLocationsAsync(request);
+   * for await (const response of iterable) {
+   *   // process response
+   * }
+   * ```
+   */
+  listLocationsAsync(
+    request: LocationProtos.google.cloud.location.IListLocationsRequest,
+    options?: CallOptions
+  ): AsyncIterable<LocationProtos.google.cloud.location.ILocation> {
+    return this.locationsClient.listLocationsAsync(request, options);
+  }
+
   // --------------------
   // -- Path templates --
   // --------------------
@@ -3066,6 +3207,7 @@ export class RegistrationServiceClient {
       return this.registrationServiceStub.then(stub => {
         this._terminated = true;
         stub.close();
+        this.locationsClient.close();
       });
     }
     return Promise.resolve();

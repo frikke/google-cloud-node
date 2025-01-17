@@ -1,4 +1,7 @@
 {
+  "options": {
+    "syntax": "proto3"
+  },
   "nested": {
     "google": {
       "nested": {
@@ -142,6 +145,284 @@
                                     }
                                   ]
                                 },
+                                "ExecuteAirflowCommand": {
+                                  "requestType": "ExecuteAirflowCommandRequest",
+                                  "responseType": "ExecuteAirflowCommandResponse",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{environment=projects/*/locations/*/environments/*}:executeAirflowCommand",
+                                    "(google.api.http).body": "*"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{environment=projects/*/locations/*/environments/*}:executeAirflowCommand",
+                                        "body": "*"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "StopAirflowCommand": {
+                                  "requestType": "StopAirflowCommandRequest",
+                                  "responseType": "StopAirflowCommandResponse",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{environment=projects/*/locations/*/environments/*}:stopAirflowCommand",
+                                    "(google.api.http).body": "*"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{environment=projects/*/locations/*/environments/*}:stopAirflowCommand",
+                                        "body": "*"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "PollAirflowCommand": {
+                                  "requestType": "PollAirflowCommandRequest",
+                                  "responseType": "PollAirflowCommandResponse",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{environment=projects/*/locations/*/environments/*}:pollAirflowCommand",
+                                    "(google.api.http).body": "*"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{environment=projects/*/locations/*/environments/*}:pollAirflowCommand",
+                                        "body": "*"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "ListWorkloads": {
+                                  "requestType": "ListWorkloadsRequest",
+                                  "responseType": "ListWorkloadsResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1/{parent=projects/*/locations/*/environments/*}/workloads",
+                                    "(google.api.method_signature)": "parent"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1/{parent=projects/*/locations/*/environments/*}/workloads"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent"
+                                    }
+                                  ]
+                                },
+                                "CheckUpgrade": {
+                                  "requestType": "CheckUpgradeRequest",
+                                  "responseType": "google.longrunning.Operation",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{environment=projects/*/locations/*/environments/*}:checkUpgrade",
+                                    "(google.api.http).body": "*",
+                                    "(google.longrunning.operation_info).response_type": "google.cloud.orchestration.airflow.service.v1.CheckUpgradeResponse",
+                                    "(google.longrunning.operation_info).metadata_type": "google.cloud.orchestration.airflow.service.v1.OperationMetadata"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{environment=projects/*/locations/*/environments/*}:checkUpgrade",
+                                        "body": "*"
+                                      }
+                                    },
+                                    {
+                                      "(google.longrunning.operation_info)": {
+                                        "response_type": "google.cloud.orchestration.airflow.service.v1.CheckUpgradeResponse",
+                                        "metadata_type": "google.cloud.orchestration.airflow.service.v1.OperationMetadata"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "CreateUserWorkloadsSecret": {
+                                  "requestType": "CreateUserWorkloadsSecretRequest",
+                                  "responseType": "UserWorkloadsSecret",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets",
+                                    "(google.api.http).body": "user_workloads_secret",
+                                    "(google.api.method_signature)": "parent,user_workloads_secret"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets",
+                                        "body": "user_workloads_secret"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent,user_workloads_secret"
+                                    }
+                                  ]
+                                },
+                                "GetUserWorkloadsSecret": {
+                                  "requestType": "GetUserWorkloadsSecretRequest",
+                                  "responseType": "UserWorkloadsSecret",
+                                  "options": {
+                                    "(google.api.http).get": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
+                                "ListUserWorkloadsSecrets": {
+                                  "requestType": "ListUserWorkloadsSecretsRequest",
+                                  "responseType": "ListUserWorkloadsSecretsResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets",
+                                    "(google.api.method_signature)": "parent"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent"
+                                    }
+                                  ]
+                                },
+                                "UpdateUserWorkloadsSecret": {
+                                  "requestType": "UpdateUserWorkloadsSecretRequest",
+                                  "responseType": "UserWorkloadsSecret",
+                                  "options": {
+                                    "(google.api.http).put": "/v1/{user_workloads_secret.name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                    "(google.api.http).body": "user_workloads_secret",
+                                    "(google.api.method_signature)": "user_workloads_secret"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "put": "/v1/{user_workloads_secret.name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                        "body": "user_workloads_secret"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "user_workloads_secret"
+                                    }
+                                  ]
+                                },
+                                "DeleteUserWorkloadsSecret": {
+                                  "requestType": "DeleteUserWorkloadsSecretRequest",
+                                  "responseType": "google.protobuf.Empty",
+                                  "options": {
+                                    "(google.api.http).delete": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "delete": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
+                                "CreateUserWorkloadsConfigMap": {
+                                  "requestType": "CreateUserWorkloadsConfigMapRequest",
+                                  "responseType": "UserWorkloadsConfigMap",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps",
+                                    "(google.api.http).body": "user_workloads_config_map",
+                                    "(google.api.method_signature)": "parent,user_workloads_config_map"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps",
+                                        "body": "user_workloads_config_map"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent,user_workloads_config_map"
+                                    }
+                                  ]
+                                },
+                                "GetUserWorkloadsConfigMap": {
+                                  "requestType": "GetUserWorkloadsConfigMapRequest",
+                                  "responseType": "UserWorkloadsConfigMap",
+                                  "options": {
+                                    "(google.api.http).get": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
+                                "ListUserWorkloadsConfigMaps": {
+                                  "requestType": "ListUserWorkloadsConfigMapsRequest",
+                                  "responseType": "ListUserWorkloadsConfigMapsResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps",
+                                    "(google.api.method_signature)": "parent"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent"
+                                    }
+                                  ]
+                                },
+                                "UpdateUserWorkloadsConfigMap": {
+                                  "requestType": "UpdateUserWorkloadsConfigMapRequest",
+                                  "responseType": "UserWorkloadsConfigMap",
+                                  "options": {
+                                    "(google.api.http).put": "/v1/{user_workloads_config_map.name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                    "(google.api.http).body": "user_workloads_config_map",
+                                    "(google.api.method_signature)": "user_workloads_config_map"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "put": "/v1/{user_workloads_config_map.name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                        "body": "user_workloads_config_map"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "user_workloads_config_map"
+                                    }
+                                  ]
+                                },
+                                "DeleteUserWorkloadsConfigMap": {
+                                  "requestType": "DeleteUserWorkloadsConfigMapRequest",
+                                  "responseType": "google.protobuf.Empty",
+                                  "options": {
+                                    "(google.api.http).delete": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "delete": "/v1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
                                 "SaveSnapshot": {
                                   "requestType": "SaveSnapshotRequest",
                                   "responseType": "google.longrunning.Operation",
@@ -186,6 +467,44 @@
                                       "(google.longrunning.operation_info)": {
                                         "response_type": "google.cloud.orchestration.airflow.service.v1.LoadSnapshotResponse",
                                         "metadata_type": "google.cloud.orchestration.airflow.service.v1.OperationMetadata"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "DatabaseFailover": {
+                                  "requestType": "DatabaseFailoverRequest",
+                                  "responseType": "google.longrunning.Operation",
+                                  "options": {
+                                    "(google.api.http).post": "/v1/{environment=projects/*/locations/*/environments/*}:databaseFailover",
+                                    "(google.api.http).body": "*",
+                                    "(google.longrunning.operation_info).response_type": "google.cloud.orchestration.airflow.service.v1.DatabaseFailoverResponse",
+                                    "(google.longrunning.operation_info).metadata_type": "google.cloud.orchestration.airflow.service.v1.OperationMetadata"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1/{environment=projects/*/locations/*/environments/*}:databaseFailover",
+                                        "body": "*"
+                                      }
+                                    },
+                                    {
+                                      "(google.longrunning.operation_info)": {
+                                        "response_type": "google.cloud.orchestration.airflow.service.v1.DatabaseFailoverResponse",
+                                        "metadata_type": "google.cloud.orchestration.airflow.service.v1.OperationMetadata"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "FetchDatabaseProperties": {
+                                  "requestType": "FetchDatabasePropertiesRequest",
+                                  "responseType": "FetchDatabasePropertiesResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1/{environment=projects/*/locations/*/environments/*}:fetchDatabaseProperties"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1/{environment=projects/*/locations/*/environments/*}:fetchDatabaseProperties"
                                       }
                                     }
                                   ]
@@ -265,6 +584,503 @@
                                 }
                               }
                             },
+                            "ExecuteAirflowCommandRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "command": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "subcommand": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "parameters": {
+                                  "rule": "repeated",
+                                  "type": "string",
+                                  "id": 4
+                                }
+                              }
+                            },
+                            "ExecuteAirflowCommandResponse": {
+                              "fields": {
+                                "executionId": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "pod": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "podNamespace": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "error": {
+                                  "type": "string",
+                                  "id": 4
+                                }
+                              }
+                            },
+                            "StopAirflowCommandRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "executionId": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "pod": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "podNamespace": {
+                                  "type": "string",
+                                  "id": 4
+                                },
+                                "force": {
+                                  "type": "bool",
+                                  "id": 5
+                                }
+                              }
+                            },
+                            "StopAirflowCommandResponse": {
+                              "fields": {
+                                "isDone": {
+                                  "type": "bool",
+                                  "id": 1
+                                },
+                                "output": {
+                                  "rule": "repeated",
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "PollAirflowCommandRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "executionId": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "pod": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "podNamespace": {
+                                  "type": "string",
+                                  "id": 4
+                                },
+                                "nextLineNumber": {
+                                  "type": "int32",
+                                  "id": 5
+                                }
+                              }
+                            },
+                            "PollAirflowCommandResponse": {
+                              "fields": {
+                                "output": {
+                                  "rule": "repeated",
+                                  "type": "Line",
+                                  "id": 1
+                                },
+                                "outputEnd": {
+                                  "type": "bool",
+                                  "id": 2
+                                },
+                                "exitInfo": {
+                                  "type": "ExitInfo",
+                                  "id": 3
+                                }
+                              },
+                              "nested": {
+                                "Line": {
+                                  "fields": {
+                                    "lineNumber": {
+                                      "type": "int32",
+                                      "id": 1
+                                    },
+                                    "content": {
+                                      "type": "string",
+                                      "id": 2
+                                    }
+                                  }
+                                },
+                                "ExitInfo": {
+                                  "fields": {
+                                    "exitCode": {
+                                      "type": "int32",
+                                      "id": 1
+                                    },
+                                    "error": {
+                                      "type": "string",
+                                      "id": 2
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "CreateUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "userWorkloadsSecret": {
+                                  "type": "UserWorkloadsSecret",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED"
+                                  }
+                                }
+                              }
+                            },
+                            "GetUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsSecret"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsSecretsRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "pageSize": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "pageToken": {
+                                  "type": "string",
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "UpdateUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "userWorkloadsSecret": {
+                                  "type": "UserWorkloadsSecret",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "DeleteUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsSecret"
+                                  }
+                                }
+                              }
+                            },
+                            "CreateUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "userWorkloadsConfigMap": {
+                                  "type": "UserWorkloadsConfigMap",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED"
+                                  }
+                                }
+                              }
+                            },
+                            "GetUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsConfigMap"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsConfigMapsRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "pageSize": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "pageToken": {
+                                  "type": "string",
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "UpdateUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "userWorkloadsConfigMap": {
+                                  "type": "UserWorkloadsConfigMap",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "DeleteUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsConfigMap"
+                                  }
+                                }
+                              }
+                            },
+                            "UserWorkloadsSecret": {
+                              "options": {
+                                "(google.api.resource).type": "composer.googleapis.com/UserWorkloadsSecret",
+                                "(google.api.resource).pattern": "projects/{project}/locations/{location}/environments/{environment}/userWorkloadsSecrets/{user_workloads_secret}",
+                                "(google.api.resource).plural": "userWorkloadsSecrets",
+                                "(google.api.resource).singular": "userWorkloadsSecret"
+                              },
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "IDENTIFIER"
+                                  }
+                                },
+                                "data": {
+                                  "keyType": "string",
+                                  "type": "string",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsSecretsResponse": {
+                              "fields": {
+                                "userWorkloadsSecrets": {
+                                  "rule": "repeated",
+                                  "type": "UserWorkloadsSecret",
+                                  "id": 1
+                                },
+                                "nextPageToken": {
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "UserWorkloadsConfigMap": {
+                              "options": {
+                                "(google.api.resource).type": "composer.googleapis.com/UserWorkloadsConfigMap",
+                                "(google.api.resource).pattern": "projects/{project}/locations/{location}/environments/{environment}/userWorkloadsConfigMaps/{user_workloads_config_map}",
+                                "(google.api.resource).plural": "userWorkloadsConfigMaps",
+                                "(google.api.resource).singular": "userWorkloadsConfigMap"
+                              },
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "IDENTIFIER"
+                                  }
+                                },
+                                "data": {
+                                  "keyType": "string",
+                                  "type": "string",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsConfigMapsResponse": {
+                              "fields": {
+                                "userWorkloadsConfigMaps": {
+                                  "rule": "repeated",
+                                  "type": "UserWorkloadsConfigMap",
+                                  "id": 1
+                                },
+                                "nextPageToken": {
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "ListWorkloadsRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "pageSize": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "pageToken": {
+                                  "type": "string",
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "filter": {
+                                  "type": "string",
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "ListWorkloadsResponse": {
+                              "fields": {
+                                "workloads": {
+                                  "rule": "repeated",
+                                  "type": "ComposerWorkload",
+                                  "id": 1
+                                },
+                                "nextPageToken": {
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              },
+                              "nested": {
+                                "ComposerWorkload": {
+                                  "fields": {
+                                    "name": {
+                                      "type": "string",
+                                      "id": 1
+                                    },
+                                    "type": {
+                                      "type": "ComposerWorkloadType",
+                                      "id": 2
+                                    },
+                                    "status": {
+                                      "type": "ComposerWorkloadStatus",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    }
+                                  }
+                                },
+                                "ComposerWorkloadType": {
+                                  "values": {
+                                    "COMPOSER_WORKLOAD_TYPE_UNSPECIFIED": 0,
+                                    "CELERY_WORKER": 1,
+                                    "KUBERNETES_WORKER": 2,
+                                    "KUBERNETES_OPERATOR_POD": 3,
+                                    "SCHEDULER": 4,
+                                    "DAG_PROCESSOR": 5,
+                                    "TRIGGERER": 6,
+                                    "WEB_SERVER": 7,
+                                    "REDIS": 8
+                                  }
+                                },
+                                "ComposerWorkloadStatus": {
+                                  "fields": {
+                                    "state": {
+                                      "type": "ComposerWorkloadState",
+                                      "id": 1,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    },
+                                    "statusMessage": {
+                                      "type": "string",
+                                      "id": 2,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    },
+                                    "detailedStatusMessage": {
+                                      "type": "string",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    }
+                                  }
+                                },
+                                "ComposerWorkloadState": {
+                                  "values": {
+                                    "COMPOSER_WORKLOAD_STATE_UNSPECIFIED": 0,
+                                    "PENDING": 1,
+                                    "OK": 2,
+                                    "WARNING": 3,
+                                    "ERROR": 4,
+                                    "SUCCEEDED": 5,
+                                    "FAILED": 6
+                                  }
+                                }
+                              }
+                            },
                             "SaveSnapshotRequest": {
                               "fields": {
                                 "environment": {
@@ -316,6 +1132,56 @@
                             "LoadSnapshotResponse": {
                               "fields": {}
                             },
+                            "DatabaseFailoverRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                }
+                              }
+                            },
+                            "DatabaseFailoverResponse": {
+                              "fields": {}
+                            },
+                            "FetchDatabasePropertiesRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                }
+                              }
+                            },
+                            "FetchDatabasePropertiesResponse": {
+                              "fields": {
+                                "primaryGceZone": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "secondaryGceZone": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "isFailoverReplicaAvailable": {
+                                  "type": "bool",
+                                  "id": 3
+                                }
+                              }
+                            },
+                            "StorageConfig": {
+                              "fields": {
+                                "bucket": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
                             "EnvironmentConfig": {
                               "fields": {
                                 "gkeCluster": {
@@ -332,15 +1198,24 @@
                                 },
                                 "softwareConfig": {
                                   "type": "SoftwareConfig",
-                                  "id": 4
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "nodeConfig": {
                                   "type": "NodeConfig",
-                                  "id": 5
+                                  "id": 5,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "privateEnvironmentConfig": {
                                   "type": "PrivateEnvironmentConfig",
-                                  "id": 7
+                                  "id": 7,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "webServerNetworkAccessControl": {
                                   "type": "WebServerNetworkAccessControl",
@@ -415,6 +1290,20 @@
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
+                                },
+                                "resilienceMode": {
+                                  "type": "ResilienceMode",
+                                  "id": 19,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "dataRetentionConfig": {
+                                  "type": "DataRetentionConfig",
+                                  "id": 21,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 }
                               },
                               "nested": {
@@ -424,6 +1313,12 @@
                                     "ENVIRONMENT_SIZE_SMALL": 1,
                                     "ENVIRONMENT_SIZE_MEDIUM": 2,
                                     "ENVIRONMENT_SIZE_LARGE": 3
+                                  }
+                                },
+                                "ResilienceMode": {
+                                  "values": {
+                                    "RESILIENCE_MODE_UNSPECIFIED": 0,
+                                    "HIGH_RESILIENCE": 1
                                   }
                                 }
                               }
@@ -459,6 +1354,13 @@
                                 "machineType": {
                                   "type": "string",
                                   "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "zone": {
+                                  "type": "string",
+                                  "id": 2,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -516,7 +1418,10 @@
                               "fields": {
                                 "imageVersion": {
                                   "type": "string",
-                                  "id": 1
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "airflowConfigOverrides": {
                                   "keyType": "string",
@@ -542,6 +1447,29 @@
                                   "id": 7,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "cloudDataLineageIntegration": {
+                                  "type": "CloudDataLineageIntegration",
+                                  "id": 8,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "webServerPluginsMode": {
+                                  "type": "WebServerPluginsMode",
+                                  "id": 10,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              },
+                              "nested": {
+                                "WebServerPluginsMode": {
+                                  "values": {
+                                    "WEB_SERVER_PLUGINS_MODE_UNSPECIFIED": 0,
+                                    "PLUGINS_DISABLED": 1,
+                                    "PLUGINS_ENABLED": 2
                                   }
                                 }
                               }
@@ -611,11 +1539,17 @@
                                 },
                                 "network": {
                                   "type": "string",
-                                  "id": 3
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "subnetwork": {
                                   "type": "string",
-                                  "id": 4
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "diskSizeGb": {
                                   "type": "int32",
@@ -628,7 +1562,10 @@
                                 },
                                 "serviceAccount": {
                                   "type": "string",
-                                  "id": 7
+                                  "id": 7,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "tags": {
                                   "rule": "repeated",
@@ -645,6 +1582,20 @@
                                 "enableIpMasqAgent": {
                                   "type": "bool",
                                   "id": 11,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "composerNetworkAttachment": {
+                                  "type": "string",
+                                  "id": 12,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "composerInternalIpv4CidrBlock": {
+                                  "type": "string",
+                                  "id": 13,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -701,6 +1652,13 @@
                                 "enablePrivateEnvironment": {
                                   "type": "bool",
                                   "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "enablePrivateBuildsOnly": {
+                                  "type": "bool",
+                                  "id": 11,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -789,6 +1747,20 @@
                                 "worker": {
                                   "type": "WorkerResource",
                                   "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "triggerer": {
+                                  "type": "TriggererResource",
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "dagProcessor": {
+                                  "type": "DagProcessorResource",
+                                  "id": 5,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -890,6 +1862,63 @@
                                       }
                                     }
                                   }
+                                },
+                                "TriggererResource": {
+                                  "fields": {
+                                    "count": {
+                                      "type": "int32",
+                                      "id": 1,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "cpu": {
+                                      "type": "float",
+                                      "id": 2,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "memoryGb": {
+                                      "type": "float",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    }
+                                  }
+                                },
+                                "DagProcessorResource": {
+                                  "fields": {
+                                    "cpu": {
+                                      "type": "float",
+                                      "id": 1,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "memoryGb": {
+                                      "type": "float",
+                                      "id": 2,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "storageGb": {
+                                      "type": "float",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "count": {
+                                      "type": "int32",
+                                      "id": 4,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    }
+                                  }
                                 }
                               }
                             },
@@ -963,6 +1992,17 @@
                                 }
                               }
                             },
+                            "CloudDataLineageIntegration": {
+                              "fields": {
+                                "enabled": {
+                                  "type": "bool",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
                             "Environment": {
                               "options": {
                                 "(google.api.resource).type": "composer.googleapis.com/Environment",
@@ -971,11 +2011,17 @@
                               "fields": {
                                 "name": {
                                   "type": "string",
-                                  "id": 1
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "IDENTIFIER"
+                                  }
                                 },
                                 "config": {
                                   "type": "EnvironmentConfig",
-                                  "id": 2
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "uuid": {
                                   "type": "string",
@@ -996,7 +2042,31 @@
                                 "labels": {
                                   "keyType": "string",
                                   "type": "string",
-                                  "id": 7
+                                  "id": 7,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "satisfiesPzs": {
+                                  "type": "bool",
+                                  "id": 8,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                  }
+                                },
+                                "satisfiesPzi": {
+                                  "type": "bool",
+                                  "id": 10,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                  }
+                                },
+                                "storageConfig": {
+                                  "type": "StorageConfig",
+                                  "id": 9,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 }
                               },
                               "nested": {
@@ -1008,6 +2078,24 @@
                                     "UPDATING": 3,
                                     "DELETING": 4,
                                     "ERROR": 5
+                                  }
+                                }
+                              }
+                            },
+                            "CheckUpgradeRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED"
+                                  }
+                                },
+                                "imageVersion": {
+                                  "type": "string",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
                                   }
                                 }
                               }
@@ -1051,6 +2139,71 @@
                                     "CONFLICT_RESULT_UNSPECIFIED": 0,
                                     "CONFLICT": 1,
                                     "NO_CONFLICT": 2
+                                  }
+                                }
+                              }
+                            },
+                            "DataRetentionConfig": {
+                              "fields": {
+                                "airflowMetadataRetentionConfig": {
+                                  "type": "AirflowMetadataRetentionPolicyConfig",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "taskLogsRetentionConfig": {
+                                  "type": "TaskLogsRetentionConfig",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "TaskLogsRetentionConfig": {
+                              "fields": {
+                                "storageMode": {
+                                  "type": "TaskLogsStorageMode",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              },
+                              "nested": {
+                                "TaskLogsStorageMode": {
+                                  "values": {
+                                    "TASK_LOGS_STORAGE_MODE_UNSPECIFIED": 0,
+                                    "CLOUD_LOGGING_AND_CLOUD_STORAGE": 1,
+                                    "CLOUD_LOGGING_ONLY": 2
+                                  }
+                                }
+                              }
+                            },
+                            "AirflowMetadataRetentionPolicyConfig": {
+                              "fields": {
+                                "retentionMode": {
+                                  "type": "RetentionMode",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "retentionDays": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              },
+                              "nested": {
+                                "RetentionMode": {
+                                  "values": {
+                                    "RETENTION_MODE_UNSPECIFIED": 0,
+                                    "RETENTION_MODE_ENABLED": 1,
+                                    "RETENTION_MODE_DISABLED": 2
                                   }
                                 }
                               }
@@ -1104,7 +2257,8 @@
                                     "UPDATE": 3,
                                     "CHECK": 4,
                                     "SAVE_SNAPSHOT": 5,
-                                    "LOAD_SNAPSHOT": 6
+                                    "LOAD_SNAPSHOT": 6,
+                                    "DATABASE_FAILOVER": 7
                                   }
                                 }
                               }
@@ -1379,6 +2533,260 @@
                                     }
                                   ]
                                 },
+                                "ExecuteAirflowCommand": {
+                                  "requestType": "ExecuteAirflowCommandRequest",
+                                  "responseType": "ExecuteAirflowCommandResponse",
+                                  "options": {
+                                    "(google.api.http).post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:executeAirflowCommand",
+                                    "(google.api.http).body": "*"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:executeAirflowCommand",
+                                        "body": "*"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "StopAirflowCommand": {
+                                  "requestType": "StopAirflowCommandRequest",
+                                  "responseType": "StopAirflowCommandResponse",
+                                  "options": {
+                                    "(google.api.http).post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:stopAirflowCommand",
+                                    "(google.api.http).body": "*"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:stopAirflowCommand",
+                                        "body": "*"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "PollAirflowCommand": {
+                                  "requestType": "PollAirflowCommandRequest",
+                                  "responseType": "PollAirflowCommandResponse",
+                                  "options": {
+                                    "(google.api.http).post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:pollAirflowCommand",
+                                    "(google.api.http).body": "*"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:pollAirflowCommand",
+                                        "body": "*"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "ListWorkloads": {
+                                  "requestType": "ListWorkloadsRequest",
+                                  "responseType": "ListWorkloadsResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1beta1/{parent=projects/*/locations/*/environments/*}/workloads",
+                                    "(google.api.method_signature)": "parent"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1beta1/{parent=projects/*/locations/*/environments/*}/workloads"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent"
+                                    }
+                                  ]
+                                },
+                                "CreateUserWorkloadsSecret": {
+                                  "requestType": "CreateUserWorkloadsSecretRequest",
+                                  "responseType": "UserWorkloadsSecret",
+                                  "options": {
+                                    "(google.api.http).post": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets",
+                                    "(google.api.http).body": "user_workloads_secret",
+                                    "(google.api.method_signature)": "parent,user_workloads_secret"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets",
+                                        "body": "user_workloads_secret"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent,user_workloads_secret"
+                                    }
+                                  ]
+                                },
+                                "GetUserWorkloadsSecret": {
+                                  "requestType": "GetUserWorkloadsSecretRequest",
+                                  "responseType": "UserWorkloadsSecret",
+                                  "options": {
+                                    "(google.api.http).get": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
+                                "ListUserWorkloadsSecrets": {
+                                  "requestType": "ListUserWorkloadsSecretsRequest",
+                                  "responseType": "ListUserWorkloadsSecretsResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets",
+                                    "(google.api.method_signature)": "parent"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsSecrets"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent"
+                                    }
+                                  ]
+                                },
+                                "UpdateUserWorkloadsSecret": {
+                                  "requestType": "UpdateUserWorkloadsSecretRequest",
+                                  "responseType": "UserWorkloadsSecret",
+                                  "options": {
+                                    "(google.api.http).put": "/v1beta1/{user_workloads_secret.name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                    "(google.api.http).body": "user_workloads_secret",
+                                    "(google.api.method_signature)": "user_workloads_secret"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "put": "/v1beta1/{user_workloads_secret.name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                        "body": "user_workloads_secret"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "user_workloads_secret"
+                                    }
+                                  ]
+                                },
+                                "DeleteUserWorkloadsSecret": {
+                                  "requestType": "DeleteUserWorkloadsSecretRequest",
+                                  "responseType": "google.protobuf.Empty",
+                                  "options": {
+                                    "(google.api.http).delete": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "delete": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsSecrets/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
+                                "CreateUserWorkloadsConfigMap": {
+                                  "requestType": "CreateUserWorkloadsConfigMapRequest",
+                                  "responseType": "UserWorkloadsConfigMap",
+                                  "options": {
+                                    "(google.api.http).post": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps",
+                                    "(google.api.http).body": "user_workloads_config_map",
+                                    "(google.api.method_signature)": "parent,user_workloads_config_map"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps",
+                                        "body": "user_workloads_config_map"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent,user_workloads_config_map"
+                                    }
+                                  ]
+                                },
+                                "GetUserWorkloadsConfigMap": {
+                                  "requestType": "GetUserWorkloadsConfigMapRequest",
+                                  "responseType": "UserWorkloadsConfigMap",
+                                  "options": {
+                                    "(google.api.http).get": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
+                                "ListUserWorkloadsConfigMaps": {
+                                  "requestType": "ListUserWorkloadsConfigMapsRequest",
+                                  "responseType": "ListUserWorkloadsConfigMapsResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps",
+                                    "(google.api.method_signature)": "parent"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1beta1/{parent=projects/*/locations/*/environments/*}/userWorkloadsConfigMaps"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "parent"
+                                    }
+                                  ]
+                                },
+                                "UpdateUserWorkloadsConfigMap": {
+                                  "requestType": "UpdateUserWorkloadsConfigMapRequest",
+                                  "responseType": "UserWorkloadsConfigMap",
+                                  "options": {
+                                    "(google.api.http).put": "/v1beta1/{user_workloads_config_map.name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                    "(google.api.http).body": "user_workloads_config_map",
+                                    "(google.api.method_signature)": "user_workloads_config_map"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "put": "/v1beta1/{user_workloads_config_map.name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                        "body": "user_workloads_config_map"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "user_workloads_config_map"
+                                    }
+                                  ]
+                                },
+                                "DeleteUserWorkloadsConfigMap": {
+                                  "requestType": "DeleteUserWorkloadsConfigMapRequest",
+                                  "responseType": "google.protobuf.Empty",
+                                  "options": {
+                                    "(google.api.http).delete": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}",
+                                    "(google.api.method_signature)": "name"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "delete": "/v1beta1/{name=projects/*/locations/*/environments/*/userWorkloadsConfigMaps/*}"
+                                      }
+                                    },
+                                    {
+                                      "(google.api.method_signature)": "name"
+                                    }
+                                  ]
+                                },
                                 "SaveSnapshot": {
                                   "requestType": "SaveSnapshotRequest",
                                   "responseType": "google.longrunning.Operation",
@@ -1423,6 +2831,44 @@
                                       "(google.longrunning.operation_info)": {
                                         "response_type": "google.cloud.orchestration.airflow.service.v1beta1.LoadSnapshotResponse",
                                         "metadata_type": "google.cloud.orchestration.airflow.service.v1beta1.OperationMetadata"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "DatabaseFailover": {
+                                  "requestType": "DatabaseFailoverRequest",
+                                  "responseType": "google.longrunning.Operation",
+                                  "options": {
+                                    "(google.api.http).post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:databaseFailover",
+                                    "(google.api.http).body": "*",
+                                    "(google.longrunning.operation_info).response_type": "google.cloud.orchestration.airflow.service.v1beta1.DatabaseFailoverResponse",
+                                    "(google.longrunning.operation_info).metadata_type": "google.cloud.orchestration.airflow.service.v1beta1.OperationMetadata"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "post": "/v1beta1/{environment=projects/*/locations/*/environments/*}:databaseFailover",
+                                        "body": "*"
+                                      }
+                                    },
+                                    {
+                                      "(google.longrunning.operation_info)": {
+                                        "response_type": "google.cloud.orchestration.airflow.service.v1beta1.DatabaseFailoverResponse",
+                                        "metadata_type": "google.cloud.orchestration.airflow.service.v1beta1.OperationMetadata"
+                                      }
+                                    }
+                                  ]
+                                },
+                                "FetchDatabaseProperties": {
+                                  "requestType": "FetchDatabasePropertiesRequest",
+                                  "responseType": "FetchDatabasePropertiesResponse",
+                                  "options": {
+                                    "(google.api.http).get": "/v1beta1/{environment=projects/*/locations/*/environments/*}:fetchDatabaseProperties"
+                                  },
+                                  "parsedOptions": [
+                                    {
+                                      "(google.api.http)": {
+                                        "get": "/v1beta1/{environment=projects/*/locations/*/environments/*}:fetchDatabaseProperties"
                                       }
                                     }
                                   ]
@@ -1513,6 +2959,27 @@
                                 }
                               }
                             },
+                            "ExecuteAirflowCommandRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "command": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "subcommand": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "parameters": {
+                                  "rule": "repeated",
+                                  "type": "string",
+                                  "id": 4
+                                }
+                              }
+                            },
                             "ExecuteAirflowCommandResponse": {
                               "fields": {
                                 "executionId": {
@@ -1530,6 +2997,67 @@
                                 "error": {
                                   "type": "string",
                                   "id": 4
+                                }
+                              }
+                            },
+                            "StopAirflowCommandRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "executionId": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "pod": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "podNamespace": {
+                                  "type": "string",
+                                  "id": 4
+                                },
+                                "force": {
+                                  "type": "bool",
+                                  "id": 5
+                                }
+                              }
+                            },
+                            "StopAirflowCommandResponse": {
+                              "fields": {
+                                "isDone": {
+                                  "type": "bool",
+                                  "id": 1
+                                },
+                                "output": {
+                                  "rule": "repeated",
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "PollAirflowCommandRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "executionId": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "pod": {
+                                  "type": "string",
+                                  "id": 3
+                                },
+                                "podNamespace": {
+                                  "type": "string",
+                                  "id": 4
+                                },
+                                "nextLineNumber": {
+                                  "type": "int32",
+                                  "id": 5
                                 }
                               }
                             },
@@ -1572,6 +3100,358 @@
                                       "type": "string",
                                       "id": 2
                                     }
+                                  }
+                                }
+                              }
+                            },
+                            "CreateUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "userWorkloadsSecret": {
+                                  "type": "UserWorkloadsSecret",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED"
+                                  }
+                                }
+                              }
+                            },
+                            "GetUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsSecret"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsSecretsRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "pageSize": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "pageToken": {
+                                  "type": "string",
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "UpdateUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "userWorkloadsSecret": {
+                                  "type": "UserWorkloadsSecret",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "DeleteUserWorkloadsSecretRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsSecret"
+                                  }
+                                }
+                              }
+                            },
+                            "CreateUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "userWorkloadsConfigMap": {
+                                  "type": "UserWorkloadsConfigMap",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED"
+                                  }
+                                }
+                              }
+                            },
+                            "GetUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsConfigMap"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsConfigMapsRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "pageSize": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "pageToken": {
+                                  "type": "string",
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "UpdateUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "userWorkloadsConfigMap": {
+                                  "type": "UserWorkloadsConfigMap",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "DeleteUserWorkloadsConfigMapRequest": {
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/UserWorkloadsConfigMap"
+                                  }
+                                }
+                              }
+                            },
+                            "UserWorkloadsSecret": {
+                              "options": {
+                                "(google.api.resource).type": "composer.googleapis.com/UserWorkloadsSecret",
+                                "(google.api.resource).pattern": "projects/{project}/locations/{location}/environments/{environment}/userWorkloadsSecrets/{user_workloads_secret}",
+                                "(google.api.resource).plural": "userWorkloadsSecrets",
+                                "(google.api.resource).singular": "userWorkloadsSecret"
+                              },
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "IDENTIFIER"
+                                  }
+                                },
+                                "data": {
+                                  "keyType": "string",
+                                  "type": "string",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsSecretsResponse": {
+                              "fields": {
+                                "userWorkloadsSecrets": {
+                                  "rule": "repeated",
+                                  "type": "UserWorkloadsSecret",
+                                  "id": 1
+                                },
+                                "nextPageToken": {
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "UserWorkloadsConfigMap": {
+                              "options": {
+                                "(google.api.resource).type": "composer.googleapis.com/UserWorkloadsConfigMap",
+                                "(google.api.resource).pattern": "projects/{project}/locations/{location}/environments/{environment}/userWorkloadsConfigMaps/{user_workloads_config_map}",
+                                "(google.api.resource).plural": "userWorkloadsConfigMaps",
+                                "(google.api.resource).singular": "userWorkloadsConfigMap"
+                              },
+                              "fields": {
+                                "name": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "IDENTIFIER"
+                                  }
+                                },
+                                "data": {
+                                  "keyType": "string",
+                                  "type": "string",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "ListUserWorkloadsConfigMapsResponse": {
+                              "fields": {
+                                "userWorkloadsConfigMaps": {
+                                  "rule": "repeated",
+                                  "type": "UserWorkloadsConfigMap",
+                                  "id": 1
+                                },
+                                "nextPageToken": {
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              }
+                            },
+                            "ListWorkloadsRequest": {
+                              "fields": {
+                                "parent": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                },
+                                "pageSize": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "pageToken": {
+                                  "type": "string",
+                                  "id": 3,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "filter": {
+                                  "type": "string",
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "ListWorkloadsResponse": {
+                              "fields": {
+                                "workloads": {
+                                  "rule": "repeated",
+                                  "type": "ComposerWorkload",
+                                  "id": 1
+                                },
+                                "nextPageToken": {
+                                  "type": "string",
+                                  "id": 2
+                                }
+                              },
+                              "nested": {
+                                "ComposerWorkload": {
+                                  "fields": {
+                                    "name": {
+                                      "type": "string",
+                                      "id": 1
+                                    },
+                                    "type": {
+                                      "type": "ComposerWorkloadType",
+                                      "id": 2
+                                    },
+                                    "status": {
+                                      "type": "ComposerWorkloadStatus",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    }
+                                  }
+                                },
+                                "ComposerWorkloadType": {
+                                  "values": {
+                                    "COMPOSER_WORKLOAD_TYPE_UNSPECIFIED": 0,
+                                    "CELERY_WORKER": 1,
+                                    "KUBERNETES_WORKER": 2,
+                                    "KUBERNETES_OPERATOR_POD": 3,
+                                    "SCHEDULER": 4,
+                                    "DAG_PROCESSOR": 5,
+                                    "TRIGGERER": 6,
+                                    "WEB_SERVER": 7,
+                                    "REDIS": 8
+                                  }
+                                },
+                                "ComposerWorkloadStatus": {
+                                  "fields": {
+                                    "state": {
+                                      "type": "ComposerWorkloadState",
+                                      "id": 1,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    },
+                                    "statusMessage": {
+                                      "type": "string",
+                                      "id": 2,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    },
+                                    "detailedStatusMessage": {
+                                      "type": "string",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                      }
+                                    }
+                                  }
+                                },
+                                "ComposerWorkloadState": {
+                                  "values": {
+                                    "COMPOSER_WORKLOAD_STATE_UNSPECIFIED": 0,
+                                    "PENDING": 1,
+                                    "OK": 2,
+                                    "WARNING": 3,
+                                    "ERROR": 4,
+                                    "SUCCEEDED": 5,
+                                    "FAILED": 6
                                   }
                                 }
                               }
@@ -1627,6 +3507,45 @@
                             "LoadSnapshotResponse": {
                               "fields": {}
                             },
+                            "DatabaseFailoverRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1
+                                }
+                              }
+                            },
+                            "DatabaseFailoverResponse": {
+                              "fields": {}
+                            },
+                            "FetchDatabasePropertiesRequest": {
+                              "fields": {
+                                "environment": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "REQUIRED",
+                                    "(google.api.resource_reference).type": "composer.googleapis.com/Environment"
+                                  }
+                                }
+                              }
+                            },
+                            "FetchDatabasePropertiesResponse": {
+                              "fields": {
+                                "primaryGceZone": {
+                                  "type": "string",
+                                  "id": 1
+                                },
+                                "secondaryGceZone": {
+                                  "type": "string",
+                                  "id": 2
+                                },
+                                "isFailoverReplicaAvailable": {
+                                  "type": "bool",
+                                  "id": 3
+                                }
+                              }
+                            },
                             "EnvironmentConfig": {
                               "fields": {
                                 "gkeCluster": {
@@ -1649,15 +3568,24 @@
                                 },
                                 "softwareConfig": {
                                   "type": "SoftwareConfig",
-                                  "id": 4
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "nodeConfig": {
                                   "type": "NodeConfig",
-                                  "id": 5
+                                  "id": 5,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "privateEnvironmentConfig": {
                                   "type": "PrivateEnvironmentConfig",
-                                  "id": 7
+                                  "id": 7,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "webServerNetworkAccessControl": {
                                   "type": "WebServerNetworkAccessControl",
@@ -1735,6 +3663,20 @@
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
+                                },
+                                "dataRetentionConfig": {
+                                  "type": "DataRetentionConfig",
+                                  "id": 19,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "resilienceMode": {
+                                  "type": "ResilienceMode",
+                                  "id": 20,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 }
                               },
                               "nested": {
@@ -1744,6 +3686,12 @@
                                     "ENVIRONMENT_SIZE_SMALL": 1,
                                     "ENVIRONMENT_SIZE_MEDIUM": 2,
                                     "ENVIRONMENT_SIZE_LARGE": 3
+                                  }
+                                },
+                                "ResilienceMode": {
+                                  "values": {
+                                    "RESILIENCE_MODE_UNSPECIFIED": 0,
+                                    "HIGH_RESILIENCE": 1
                                   }
                                 }
                               }
@@ -1778,7 +3726,10 @@
                               "fields": {
                                 "imageVersion": {
                                   "type": "string",
-                                  "id": 1
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "airflowConfigOverrides": {
                                   "keyType": "string",
@@ -1823,6 +3774,22 @@
                                   "id": 8,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "webServerPluginsMode": {
+                                  "type": "WebServerPluginsMode",
+                                  "id": 10,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              },
+                              "nested": {
+                                "WebServerPluginsMode": {
+                                  "values": {
+                                    "WEB_SERVER_PLUGINS_MODE_UNSPECIFIED": 0,
+                                    "PLUGINS_DISABLED": 1,
+                                    "PLUGINS_ENABLED": 2
                                   }
                                 }
                               }
@@ -1946,6 +3913,20 @@
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
+                                },
+                                "composerNetworkAttachment": {
+                                  "type": "string",
+                                  "id": 12,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "composerInternalIpv4CidrBlock": {
+                                  "type": "string",
+                                  "id": 13,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 }
                               }
                             },
@@ -1999,6 +3980,13 @@
                                 "enablePrivateEnvironment": {
                                   "type": "bool",
                                   "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "enablePrivateBuildsOnly": {
+                                  "type": "bool",
+                                  "id": 11,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -2073,6 +4061,13 @@
                                 "machineType": {
                                   "type": "string",
                                   "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "zone": {
+                                  "type": "string",
+                                  "id": 2,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -2152,6 +4147,13 @@
                                 "triggerer": {
                                   "type": "TriggererResource",
                                   "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "dagProcessor": {
+                                  "type": "DagProcessorResource",
+                                  "id": 5,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -2278,6 +4280,122 @@
                                       }
                                     }
                                   }
+                                },
+                                "DagProcessorResource": {
+                                  "fields": {
+                                    "cpu": {
+                                      "type": "float",
+                                      "id": 1,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "memoryGb": {
+                                      "type": "float",
+                                      "id": 2,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "storageGb": {
+                                      "type": "float",
+                                      "id": 3,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    },
+                                    "count": {
+                                      "type": "int32",
+                                      "id": 4,
+                                      "options": {
+                                        "(google.api.field_behavior)": "OPTIONAL"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "DataRetentionConfig": {
+                              "fields": {
+                                "airflowDatabaseRetentionDays": {
+                                  "type": "int32",
+                                  "id": 1,
+                                  "options": {
+                                    "deprecated": true,
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "taskLogsRetentionConfig": {
+                                  "type": "TaskLogsRetentionConfig",
+                                  "id": 4,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "airflowMetadataRetentionConfig": {
+                                  "type": "AirflowMetadataRetentionPolicyConfig",
+                                  "id": 5,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              }
+                            },
+                            "TaskLogsRetentionConfig": {
+                              "fields": {
+                                "storageMode": {
+                                  "type": "TaskLogsStorageMode",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              },
+                              "nested": {
+                                "TaskLogsStorageMode": {
+                                  "values": {
+                                    "TASK_LOGS_STORAGE_MODE_UNSPECIFIED": 0,
+                                    "CLOUD_LOGGING_AND_CLOUD_STORAGE": 1,
+                                    "CLOUD_LOGGING_ONLY": 2
+                                  }
+                                }
+                              }
+                            },
+                            "AirflowMetadataRetentionPolicyConfig": {
+                              "fields": {
+                                "retentionMode": {
+                                  "type": "RetentionMode",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "retentionDays": {
+                                  "type": "int32",
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                }
+                              },
+                              "nested": {
+                                "RetentionMode": {
+                                  "values": {
+                                    "RETENTION_MODE_UNSPECIFIED": 0,
+                                    "RETENTION_MODE_ENABLED": 1,
+                                    "RETENTION_MODE_DISABLED": 2
+                                  }
+                                }
+                              }
+                            },
+                            "StorageConfig": {
+                              "fields": {
+                                "bucket": {
+                                  "type": "string",
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 }
                               }
                             },
@@ -2370,11 +4488,17 @@
                               "fields": {
                                 "name": {
                                   "type": "string",
-                                  "id": 1
+                                  "id": 1,
+                                  "options": {
+                                    "(google.api.field_behavior)": "IDENTIFIER"
+                                  }
                                 },
                                 "config": {
                                   "type": "EnvironmentConfig",
-                                  "id": 2
+                                  "id": 2,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
                                 },
                                 "uuid": {
                                   "type": "string",
@@ -2405,6 +4529,27 @@
                                   "keyType": "string",
                                   "type": "string",
                                   "id": 7,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OPTIONAL"
+                                  }
+                                },
+                                "satisfiesPzs": {
+                                  "type": "bool",
+                                  "id": 8,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                  }
+                                },
+                                "satisfiesPzi": {
+                                  "type": "bool",
+                                  "id": 10,
+                                  "options": {
+                                    "(google.api.field_behavior)": "OUTPUT_ONLY"
+                                  }
+                                },
+                                "storageConfig": {
+                                  "type": "StorageConfig",
+                                  "id": 9,
                                   "options": {
                                     "(google.api.field_behavior)": "OPTIONAL"
                                   }
@@ -2523,7 +4668,8 @@
                                     "UPDATE": 3,
                                     "CHECK": 4,
                                     "SAVE_SNAPSHOT": 5,
-                                    "LOAD_SNAPSHOT": 6
+                                    "LOAD_SNAPSHOT": 6,
+                                    "DATABASE_FAILOVER": 7
                                   }
                                 }
                               }
@@ -2739,6 +4885,285 @@
               "id": 1050,
               "extend": "google.protobuf.ServiceOptions"
             },
+            "CommonLanguageSettings": {
+              "fields": {
+                "referenceDocsUri": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "destinations": {
+                  "rule": "repeated",
+                  "type": "ClientLibraryDestination",
+                  "id": 2
+                }
+              }
+            },
+            "ClientLibrarySettings": {
+              "fields": {
+                "version": {
+                  "type": "string",
+                  "id": 1
+                },
+                "launchStage": {
+                  "type": "LaunchStage",
+                  "id": 2
+                },
+                "restNumericEnums": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "javaSettings": {
+                  "type": "JavaSettings",
+                  "id": 21
+                },
+                "cppSettings": {
+                  "type": "CppSettings",
+                  "id": 22
+                },
+                "phpSettings": {
+                  "type": "PhpSettings",
+                  "id": 23
+                },
+                "pythonSettings": {
+                  "type": "PythonSettings",
+                  "id": 24
+                },
+                "nodeSettings": {
+                  "type": "NodeSettings",
+                  "id": 25
+                },
+                "dotnetSettings": {
+                  "type": "DotnetSettings",
+                  "id": 26
+                },
+                "rubySettings": {
+                  "type": "RubySettings",
+                  "id": 27
+                },
+                "goSettings": {
+                  "type": "GoSettings",
+                  "id": 28
+                }
+              }
+            },
+            "Publishing": {
+              "fields": {
+                "methodSettings": {
+                  "rule": "repeated",
+                  "type": "MethodSettings",
+                  "id": 2
+                },
+                "newIssueUri": {
+                  "type": "string",
+                  "id": 101
+                },
+                "documentationUri": {
+                  "type": "string",
+                  "id": 102
+                },
+                "apiShortName": {
+                  "type": "string",
+                  "id": 103
+                },
+                "githubLabel": {
+                  "type": "string",
+                  "id": 104
+                },
+                "codeownerGithubTeams": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 105
+                },
+                "docTagPrefix": {
+                  "type": "string",
+                  "id": 106
+                },
+                "organization": {
+                  "type": "ClientLibraryOrganization",
+                  "id": 107
+                },
+                "librarySettings": {
+                  "rule": "repeated",
+                  "type": "ClientLibrarySettings",
+                  "id": 109
+                },
+                "protoReferenceDocumentationUri": {
+                  "type": "string",
+                  "id": 110
+                }
+              }
+            },
+            "JavaSettings": {
+              "fields": {
+                "libraryPackage": {
+                  "type": "string",
+                  "id": 1
+                },
+                "serviceClassNames": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 2
+                },
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 3
+                }
+              }
+            },
+            "CppSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "PhpSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "PythonSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "NodeSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "DotnetSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                },
+                "renamedServices": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 2
+                },
+                "renamedResources": {
+                  "keyType": "string",
+                  "type": "string",
+                  "id": 3
+                },
+                "ignoredResources": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 4
+                },
+                "forcedNamespaceAliases": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 5
+                },
+                "handwrittenSignatures": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 6
+                }
+              }
+            },
+            "RubySettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "GoSettings": {
+              "fields": {
+                "common": {
+                  "type": "CommonLanguageSettings",
+                  "id": 1
+                }
+              }
+            },
+            "MethodSettings": {
+              "fields": {
+                "selector": {
+                  "type": "string",
+                  "id": 1
+                },
+                "longRunning": {
+                  "type": "LongRunning",
+                  "id": 2
+                },
+                "autoPopulatedFields": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 3
+                }
+              },
+              "nested": {
+                "LongRunning": {
+                  "fields": {
+                    "initialPollDelay": {
+                      "type": "google.protobuf.Duration",
+                      "id": 1
+                    },
+                    "pollDelayMultiplier": {
+                      "type": "float",
+                      "id": 2
+                    },
+                    "maxPollDelay": {
+                      "type": "google.protobuf.Duration",
+                      "id": 3
+                    },
+                    "totalPollTimeout": {
+                      "type": "google.protobuf.Duration",
+                      "id": 4
+                    }
+                  }
+                }
+              }
+            },
+            "ClientLibraryOrganization": {
+              "values": {
+                "CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED": 0,
+                "CLOUD": 1,
+                "ADS": 2,
+                "PHOTOS": 3,
+                "STREET_VIEW": 4,
+                "SHOPPING": 5,
+                "GEO": 6,
+                "GENERATIVE_AI": 7
+              }
+            },
+            "ClientLibraryDestination": {
+              "values": {
+                "CLIENT_LIBRARY_DESTINATION_UNSPECIFIED": 0,
+                "GITHUB": 10,
+                "PACKAGE_MANAGER": 20
+              }
+            },
+            "LaunchStage": {
+              "values": {
+                "LAUNCH_STAGE_UNSPECIFIED": 0,
+                "UNIMPLEMENTED": 6,
+                "PRELAUNCH": 7,
+                "EARLY_ACCESS": 1,
+                "ALPHA": 2,
+                "BETA": 3,
+                "GA": 4,
+                "DEPRECATED": 5
+              }
+            },
             "fieldBehavior": {
               "rule": "repeated",
               "type": "google.api.FieldBehavior",
@@ -2754,7 +5179,8 @@
                 "INPUT_ONLY": 4,
                 "IMMUTABLE": 5,
                 "UNORDERED_LIST": 6,
-                "NON_EMPTY_DEFAULT": 7
+                "NON_EMPTY_DEFAULT": 7,
+                "IDENTIFIER": 8
               }
             },
             "resourceReference": {
@@ -2856,6 +5282,21 @@
                 }
               }
             },
+            "Edition": {
+              "values": {
+                "EDITION_UNKNOWN": 0,
+                "EDITION_PROTO2": 998,
+                "EDITION_PROTO3": 999,
+                "EDITION_2023": 1000,
+                "EDITION_2024": 1001,
+                "EDITION_1_TEST_ONLY": 1,
+                "EDITION_2_TEST_ONLY": 2,
+                "EDITION_99997_TEST_ONLY": 99997,
+                "EDITION_99998_TEST_ONLY": 99998,
+                "EDITION_99999_TEST_ONLY": 99999,
+                "EDITION_MAX": 2147483647
+              }
+            },
             "FileDescriptorProto": {
               "fields": {
                 "name": {
@@ -2920,8 +5361,8 @@
                   "id": 12
                 },
                 "edition": {
-                  "type": "string",
-                  "id": 13
+                  "type": "Edition",
+                  "id": 14
                 }
               }
             },
@@ -3013,6 +5454,26 @@
                   "rule": "repeated",
                   "type": "UninterpretedOption",
                   "id": 999
+                },
+                "declaration": {
+                  "rule": "repeated",
+                  "type": "Declaration",
+                  "id": 2,
+                  "options": {
+                    "retention": "RETENTION_SOURCE"
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 50
+                },
+                "verification": {
+                  "type": "VerificationState",
+                  "id": 3,
+                  "options": {
+                    "default": "UNVERIFIED",
+                    "retention": "RETENTION_SOURCE"
+                  }
                 }
               },
               "extensions": [
@@ -3020,7 +5481,45 @@
                   1000,
                   536870911
                 ]
-              ]
+              ],
+              "nested": {
+                "Declaration": {
+                  "fields": {
+                    "number": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "fullName": {
+                      "type": "string",
+                      "id": 2
+                    },
+                    "type": {
+                      "type": "string",
+                      "id": 3
+                    },
+                    "reserved": {
+                      "type": "bool",
+                      "id": 5
+                    },
+                    "repeated": {
+                      "type": "bool",
+                      "id": 6
+                    }
+                  },
+                  "reserved": [
+                    [
+                      4,
+                      4
+                    ]
+                  ]
+                },
+                "VerificationState": {
+                  "values": {
+                    "DECLARATION": 0,
+                    "UNVERIFIED": 1
+                  }
+                }
+              }
             },
             "FieldDescriptorProto": {
               "fields": {
@@ -3095,8 +5594,8 @@
                 "Label": {
                   "values": {
                     "LABEL_OPTIONAL": 1,
-                    "LABEL_REQUIRED": 2,
-                    "LABEL_REPEATED": 3
+                    "LABEL_REPEATED": 3,
+                    "LABEL_REQUIRED": 2
                   }
                 }
               }
@@ -3284,13 +5783,6 @@
                     "default": false
                   }
                 },
-                "phpGenericServices": {
-                  "type": "bool",
-                  "id": 42,
-                  "options": {
-                    "default": false
-                  }
-                },
                 "deprecated": {
                   "type": "bool",
                   "id": 23,
@@ -3333,6 +5825,10 @@
                   "type": "string",
                   "id": 45
                 },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 50
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -3346,6 +5842,10 @@
                 ]
               ],
               "reserved": [
+                [
+                  42,
+                  42
+                ],
                 [
                   38,
                   38
@@ -3387,6 +5887,17 @@
                 "mapEntry": {
                   "type": "bool",
                   "id": 7
+                },
+                "deprecatedLegacyJsonFieldConflicts": {
+                  "type": "bool",
+                  "id": 11,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 12
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -3471,6 +5982,34 @@
                     "default": false
                   }
                 },
+                "debugRedact": {
+                  "type": "bool",
+                  "id": 16,
+                  "options": {
+                    "default": false
+                  }
+                },
+                "retention": {
+                  "type": "OptionRetention",
+                  "id": 17
+                },
+                "targets": {
+                  "rule": "repeated",
+                  "type": "OptionTargetType",
+                  "id": 19,
+                  "options": {
+                    "packed": false
+                  }
+                },
+                "editionDefaults": {
+                  "rule": "repeated",
+                  "type": "EditionDefault",
+                  "id": 20
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 21
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -3487,6 +6026,10 @@
                 [
                   4,
                   4
+                ],
+                [
+                  18,
+                  18
                 ]
               ],
               "nested": {
@@ -3503,11 +6046,48 @@
                     "JS_STRING": 1,
                     "JS_NUMBER": 2
                   }
+                },
+                "OptionRetention": {
+                  "values": {
+                    "RETENTION_UNKNOWN": 0,
+                    "RETENTION_RUNTIME": 1,
+                    "RETENTION_SOURCE": 2
+                  }
+                },
+                "OptionTargetType": {
+                  "values": {
+                    "TARGET_TYPE_UNKNOWN": 0,
+                    "TARGET_TYPE_FILE": 1,
+                    "TARGET_TYPE_EXTENSION_RANGE": 2,
+                    "TARGET_TYPE_MESSAGE": 3,
+                    "TARGET_TYPE_FIELD": 4,
+                    "TARGET_TYPE_ONEOF": 5,
+                    "TARGET_TYPE_ENUM": 6,
+                    "TARGET_TYPE_ENUM_ENTRY": 7,
+                    "TARGET_TYPE_SERVICE": 8,
+                    "TARGET_TYPE_METHOD": 9
+                  }
+                },
+                "EditionDefault": {
+                  "fields": {
+                    "edition": {
+                      "type": "Edition",
+                      "id": 3
+                    },
+                    "value": {
+                      "type": "string",
+                      "id": 2
+                    }
+                  }
                 }
               }
             },
             "OneofOptions": {
               "fields": {
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 1
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -3533,6 +6113,17 @@
                   "options": {
                     "default": false
                   }
+                },
+                "deprecatedLegacyJsonFieldConflicts": {
+                  "type": "bool",
+                  "id": 6,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 7
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -3562,6 +6153,17 @@
                     "default": false
                   }
                 },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 2
+                },
+                "debugRedact": {
+                  "type": "bool",
+                  "id": 3,
+                  "options": {
+                    "default": false
+                  }
+                },
                 "uninterpretedOption": {
                   "rule": "repeated",
                   "type": "UninterpretedOption",
@@ -3577,6 +6179,10 @@
             },
             "ServiceOptions": {
               "fields": {
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 34
+                },
                 "deprecated": {
                   "type": "bool",
                   "id": 33,
@@ -3612,6 +6218,10 @@
                   "options": {
                     "default": "IDEMPOTENCY_UNKNOWN"
                   }
+                },
+                "features": {
+                  "type": "FeatureSet",
+                  "id": 35
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -3678,6 +6288,166 @@
                     "isExtension": {
                       "rule": "required",
                       "type": "bool",
+                      "id": 2
+                    }
+                  }
+                }
+              }
+            },
+            "FeatureSet": {
+              "fields": {
+                "fieldPresence": {
+                  "type": "FieldPresence",
+                  "id": 1,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_2023",
+                    "edition_defaults.value": "EXPLICIT"
+                  }
+                },
+                "enumType": {
+                  "type": "EnumType",
+                  "id": 2,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "OPEN"
+                  }
+                },
+                "repeatedFieldEncoding": {
+                  "type": "RepeatedFieldEncoding",
+                  "id": 3,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "PACKED"
+                  }
+                },
+                "utf8Validation": {
+                  "type": "Utf8Validation",
+                  "id": 4,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "VERIFY"
+                  }
+                },
+                "messageEncoding": {
+                  "type": "MessageEncoding",
+                  "id": 5,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO2",
+                    "edition_defaults.value": "LENGTH_PREFIXED"
+                  }
+                },
+                "jsonFormat": {
+                  "type": "JsonFormat",
+                  "id": 6,
+                  "options": {
+                    "retention": "RETENTION_RUNTIME",
+                    "targets": "TARGET_TYPE_FILE",
+                    "edition_defaults.edition": "EDITION_PROTO3",
+                    "edition_defaults.value": "ALLOW"
+                  }
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  1000
+                ],
+                [
+                  1001,
+                  1001
+                ],
+                [
+                  9995,
+                  9999
+                ]
+              ],
+              "reserved": [
+                [
+                  999,
+                  999
+                ]
+              ],
+              "nested": {
+                "FieldPresence": {
+                  "values": {
+                    "FIELD_PRESENCE_UNKNOWN": 0,
+                    "EXPLICIT": 1,
+                    "IMPLICIT": 2,
+                    "LEGACY_REQUIRED": 3
+                  }
+                },
+                "EnumType": {
+                  "values": {
+                    "ENUM_TYPE_UNKNOWN": 0,
+                    "OPEN": 1,
+                    "CLOSED": 2
+                  }
+                },
+                "RepeatedFieldEncoding": {
+                  "values": {
+                    "REPEATED_FIELD_ENCODING_UNKNOWN": 0,
+                    "PACKED": 1,
+                    "EXPANDED": 2
+                  }
+                },
+                "Utf8Validation": {
+                  "values": {
+                    "UTF8_VALIDATION_UNKNOWN": 0,
+                    "VERIFY": 2,
+                    "NONE": 3
+                  }
+                },
+                "MessageEncoding": {
+                  "values": {
+                    "MESSAGE_ENCODING_UNKNOWN": 0,
+                    "LENGTH_PREFIXED": 1,
+                    "DELIMITED": 2
+                  }
+                },
+                "JsonFormat": {
+                  "values": {
+                    "JSON_FORMAT_UNKNOWN": 0,
+                    "ALLOW": 1,
+                    "LEGACY_BEST_EFFORT": 2
+                  }
+                }
+              }
+            },
+            "FeatureSetDefaults": {
+              "fields": {
+                "defaults": {
+                  "rule": "repeated",
+                  "type": "FeatureSetEditionDefault",
+                  "id": 1
+                },
+                "minimumEdition": {
+                  "type": "Edition",
+                  "id": 4
+                },
+                "maximumEdition": {
+                  "type": "Edition",
+                  "id": 5
+                }
+              },
+              "nested": {
+                "FeatureSetEditionDefault": {
+                  "fields": {
+                    "edition": {
+                      "type": "Edition",
+                      "id": 3
+                    },
+                    "features": {
+                      "type": "FeatureSet",
                       "id": 2
                     }
                   }
@@ -3767,6 +6537,18 @@
                 }
               }
             },
+            "Duration": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            },
             "Timestamp": {
               "fields": {
                 "seconds": {
@@ -3791,18 +6573,6 @@
                 }
               }
             },
-            "Duration": {
-              "fields": {
-                "seconds": {
-                  "type": "int64",
-                  "id": 1
-                },
-                "nanos": {
-                  "type": "int32",
-                  "id": 2
-                }
-              }
-            },
             "Empty": {
               "fields": {}
             },
@@ -3821,7 +6591,7 @@
           "options": {
             "cc_enable_arenas": true,
             "csharp_namespace": "Google.LongRunning",
-            "go_package": "google.golang.org/genproto/googleapis/longrunning;longrunning",
+            "go_package": "cloud.google.com/go/longrunning/autogen/longrunningpb;longrunningpb",
             "java_multiple_files": true,
             "java_outer_classname": "OperationsProto",
             "java_package": "com.google.longrunning",

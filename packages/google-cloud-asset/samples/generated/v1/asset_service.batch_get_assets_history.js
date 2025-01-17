@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ function main(parent) {
    *  The request becomes a no-op if the asset name list is empty, and the max
    *  size of the asset name list is 100 in one request.
    */
-  // const assetNames = 'abc123'
+  // const assetNames = ['abc','def']
   /**
    *  Optional. The content type.
    */
@@ -74,7 +74,7 @@ function main(parent) {
    *  Inventory (https://cloud.google.com/asset-inventory/docs/overview) for all
    *  supported asset types and relationship types.
    */
-  // const relationshipTypes = 'abc123'
+  // const relationshipTypes = ['abc','def']
 
   // Imports the Asset library
   const {AssetServiceClient} = require('@google-cloud/asset').v1;

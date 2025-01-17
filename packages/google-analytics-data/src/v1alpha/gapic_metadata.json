@@ -14,6 +14,77 @@
               "methods": [
                 "runFunnelReport"
               ]
+            },
+            "QueryAudienceList": {
+              "methods": [
+                "queryAudienceList"
+              ]
+            },
+            "SheetExportAudienceList": {
+              "methods": [
+                "sheetExportAudienceList"
+              ]
+            },
+            "GetAudienceList": {
+              "methods": [
+                "getAudienceList"
+              ]
+            },
+            "CreateRecurringAudienceList": {
+              "methods": [
+                "createRecurringAudienceList"
+              ]
+            },
+            "GetRecurringAudienceList": {
+              "methods": [
+                "getRecurringAudienceList"
+              ]
+            },
+            "GetPropertyQuotasSnapshot": {
+              "methods": [
+                "getPropertyQuotasSnapshot"
+              ]
+            },
+            "QueryReportTask": {
+              "methods": [
+                "queryReportTask"
+              ]
+            },
+            "GetReportTask": {
+              "methods": [
+                "getReportTask"
+              ]
+            },
+            "CreateAudienceList": {
+              "methods": [
+                "createAudienceList"
+              ]
+            },
+            "CreateReportTask": {
+              "methods": [
+                "createReportTask"
+              ]
+            },
+            "ListAudienceLists": {
+              "methods": [
+                "listAudienceLists",
+                "listAudienceListsStream",
+                "listAudienceListsAsync"
+              ]
+            },
+            "ListRecurringAudienceLists": {
+              "methods": [
+                "listRecurringAudienceLists",
+                "listRecurringAudienceListsStream",
+                "listRecurringAudienceListsAsync"
+              ]
+            },
+            "ListReportTasks": {
+              "methods": [
+                "listReportTasks",
+                "listReportTasksStream",
+                "listReportTasksAsync"
+              ]
             }
           }
         },
@@ -23,6 +94,77 @@
             "RunFunnelReport": {
               "methods": [
                 "runFunnelReport"
+              ]
+            },
+            "QueryAudienceList": {
+              "methods": [
+                "queryAudienceList"
+              ]
+            },
+            "SheetExportAudienceList": {
+              "methods": [
+                "sheetExportAudienceList"
+              ]
+            },
+            "GetAudienceList": {
+              "methods": [
+                "getAudienceList"
+              ]
+            },
+            "CreateRecurringAudienceList": {
+              "methods": [
+                "createRecurringAudienceList"
+              ]
+            },
+            "GetRecurringAudienceList": {
+              "methods": [
+                "getRecurringAudienceList"
+              ]
+            },
+            "GetPropertyQuotasSnapshot": {
+              "methods": [
+                "getPropertyQuotasSnapshot"
+              ]
+            },
+            "QueryReportTask": {
+              "methods": [
+                "queryReportTask"
+              ]
+            },
+            "GetReportTask": {
+              "methods": [
+                "getReportTask"
+              ]
+            },
+            "CreateAudienceList": {
+              "methods": [
+                "createAudienceList"
+              ]
+            },
+            "CreateReportTask": {
+              "methods": [
+                "createReportTask"
+              ]
+            },
+            "ListAudienceLists": {
+              "methods": [
+                "listAudienceLists",
+                "listAudienceListsStream",
+                "listAudienceListsAsync"
+              ]
+            },
+            "ListRecurringAudienceLists": {
+              "methods": [
+                "listRecurringAudienceLists",
+                "listRecurringAudienceListsStream",
+                "listRecurringAudienceListsAsync"
+              ]
+            },
+            "ListReportTasks": {
+              "methods": [
+                "listReportTasks",
+                "listReportTasksStream",
+                "listReportTasksAsync"
               ]
             }
           }

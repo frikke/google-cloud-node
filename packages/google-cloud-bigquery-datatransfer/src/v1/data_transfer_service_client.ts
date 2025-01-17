@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/data_transfer_service_client_config.json`.
@@ -52,6 +53,8 @@ export class DataTransferServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -93,8 +96,7 @@ export class DataTransferServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -102,7 +104,7 @@ export class DataTransferServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new DataTransferServiceClient({fallback: 'rest'}, gax);
+   *     const client = new DataTransferServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -111,8 +113,27 @@ export class DataTransferServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof DataTransferServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'bigquerydatatransfer.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -127,7 +148,7 @@ export class DataTransferServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -152,10 +173,10 @@ export class DataTransferServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -165,14 +186,14 @@ export class DataTransferServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -302,6 +323,7 @@ export class DataTransferServiceClient {
       'listTransferLogs',
       'checkValidCreds',
       'enrollDataSources',
+      'unenrollDataSources',
     ];
     for (const methodName of dataTransferServiceStubMethods) {
       const callPromise = this.dataTransferServiceStub.then(
@@ -334,19 +356,50 @@ export class DataTransferServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'bigquerydatatransfer.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'bigquerydatatransfer.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -397,9 +450,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.DataSource | DataSource}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.DataSource|DataSource}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.get_data_source.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_GetDataSource_async
@@ -414,7 +466,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IGetDataSourceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getDataSource(
@@ -463,7 +515,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IGetDataSourceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -498,14 +550,18 @@ export class DataTransferServiceClient {
    * @param {google.cloud.bigquery.datatransfer.v1.TransferConfig} request.transferConfig
    *   Required. Data transfer configuration to create.
    * @param {string} request.authorizationCode
+   *   Deprecated: Authorization code was required when
+   *   `transferConfig.dataSourceId` is 'youtube_channel' but it is no longer used
+   *   in any data sources. Use `version_info` instead.
+   *
    *   Optional OAuth2 authorization code to use with this transfer configuration.
    *   This is required only if `transferConfig.dataSourceId` is 'youtube_channel'
    *   and new credentials are needed, as indicated by `CheckValidCreds`. In order
    *   to obtain authorization_code, make a request to the following URL:
    *   <pre class="prettyprint" suppresswarning="true">
-   *   https://www.gstatic.com/bigquerydatatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=authorization_code&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
+   *   https://bigquery.cloud.google.com/datatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=authorization_code&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
    *   </pre>
-   *   * The <var>client_id</var> is the OAuth client_id of the a data source as
+   *   * The <var>client_id</var> is the OAuth client_id of the data source as
    *   returned by ListDataSources method.
    *   * <var>data_source_scopes</var> are the scopes returned by ListDataSources
    *   method.
@@ -513,14 +569,15 @@ export class DataTransferServiceClient {
    *   Note that this should not be set when `service_account_name` is used to
    *   create the transfer config.
    * @param {string} request.versionInfo
-   *   Optional version info. This is required only if
-   *   `transferConfig.dataSourceId` is not 'youtube_channel' and new credentials
+   *   Optional version info. This parameter replaces `authorization_code` which
+   *   is no longer used in any data sources. This is required only if
+   *   `transferConfig.dataSourceId` is 'youtube_channel' *or* new credentials
    *   are needed, as indicated by `CheckValidCreds`. In order to obtain version
    *   info, make a request to the following URL:
    *   <pre class="prettyprint" suppresswarning="true">
-   *   https://www.gstatic.com/bigquerydatatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=version_info&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
+   *   https://bigquery.cloud.google.com/datatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=version_info&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
    *   </pre>
-   *   * The <var>client_id</var> is the OAuth client_id of the a data source as
+   *   * The <var>client_id</var> is the OAuth client_id of the data source as
    *   returned by ListDataSources method.
    *   * <var>data_source_scopes</var> are the scopes returned by ListDataSources
    *   method.
@@ -540,9 +597,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferConfig | TransferConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferConfig|TransferConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.create_transfer_config.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_CreateTransferConfig_async
@@ -557,7 +613,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.ICreateTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createTransferConfig(
@@ -606,7 +662,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.ICreateTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -636,14 +692,18 @@ export class DataTransferServiceClient {
    * @param {google.cloud.bigquery.datatransfer.v1.TransferConfig} request.transferConfig
    *   Required. Data transfer configuration to create.
    * @param {string} request.authorizationCode
+   *   Deprecated: Authorization code was required when
+   *   `transferConfig.dataSourceId` is 'youtube_channel' but it is no longer used
+   *   in any data sources. Use `version_info` instead.
+   *
    *   Optional OAuth2 authorization code to use with this transfer configuration.
    *   This is required only if `transferConfig.dataSourceId` is 'youtube_channel'
    *   and new credentials are needed, as indicated by `CheckValidCreds`. In order
    *   to obtain authorization_code, make a request to the following URL:
    *   <pre class="prettyprint" suppresswarning="true">
-   *   https://www.gstatic.com/bigquerydatatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=authorization_code&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
+   *   https://bigquery.cloud.google.com/datatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=authorization_code&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
    *   </pre>
-   *   * The <var>client_id</var> is the OAuth client_id of the a data source as
+   *   * The <var>client_id</var> is the OAuth client_id of the data source as
    *   returned by ListDataSources method.
    *   * <var>data_source_scopes</var> are the scopes returned by ListDataSources
    *   method.
@@ -653,14 +713,15 @@ export class DataTransferServiceClient {
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Required. Required list of fields to be updated in this request.
    * @param {string} request.versionInfo
-   *   Optional version info. This is required only if
-   *   `transferConfig.dataSourceId` is not 'youtube_channel' and new credentials
+   *   Optional version info. This parameter replaces `authorization_code` which
+   *   is no longer used in any data sources. This is required only if
+   *   `transferConfig.dataSourceId` is 'youtube_channel' *or* new credentials
    *   are needed, as indicated by `CheckValidCreds`. In order to obtain version
    *   info, make a request to the following URL:
    *   <pre class="prettyprint" suppresswarning="true">
-   *   https://www.gstatic.com/bigquerydatatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=version_info&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
+   *   https://bigquery.cloud.google.com/datatransfer/oauthz/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=version_info&client_id=<var>client_id</var>&scope=<var>data_source_scopes</var>
    *   </pre>
-   *   * The <var>client_id</var> is the OAuth client_id of the a data source as
+   *   * The <var>client_id</var> is the OAuth client_id of the data source as
    *   returned by ListDataSources method.
    *   * <var>data_source_scopes</var> are the scopes returned by ListDataSources
    *   method.
@@ -680,9 +741,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferConfig | TransferConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferConfig|TransferConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.update_transfer_config.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_UpdateTransferConfig_async
@@ -697,7 +757,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IUpdateTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateTransferConfig(
@@ -746,7 +806,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IUpdateTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -780,9 +840,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.delete_transfer_config.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_DeleteTransferConfig_async
@@ -797,7 +856,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IDeleteTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteTransferConfig(
@@ -846,7 +905,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IDeleteTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -879,9 +938,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferConfig | TransferConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferConfig|TransferConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.get_transfer_config.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_GetTransferConfig_async
@@ -896,7 +954,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IGetTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTransferConfig(
@@ -945,7 +1003,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IGetTransferConfigRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -988,9 +1046,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.ScheduleTransferRunsResponse | ScheduleTransferRunsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.ScheduleTransferRunsResponse|ScheduleTransferRunsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.schedule_transfer_runs.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_ScheduleTransferRuns_async
@@ -1006,7 +1063,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IScheduleTransferRunsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   scheduleTransferRuns(
@@ -1055,7 +1112,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IScheduleTransferRunsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1090,20 +1147,24 @@ export class DataTransferServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.parent
-   *   Transfer configuration name in the form:
+   *   Required. Transfer configuration name in the form:
    *   `projects/{project_id}/transferConfigs/{config_id}` or
    *   `projects/{project_id}/locations/{location_id}/transferConfigs/{config_id}`.
    * @param {google.cloud.bigquery.datatransfer.v1.StartManualTransferRunsRequest.TimeRange} request.requestedTimeRange
-   *   Time range for the transfer runs that should be started.
+   *   A time_range start and end timestamp for historical data files or reports
+   *   that are scheduled to be transferred by the scheduled transfer run.
+   *   requested_time_range must be a past time and cannot include future time
+   *   values.
    * @param {google.protobuf.Timestamp} request.requestedRunTime
-   *   Specific run_time for a transfer run to be started. The
-   *   requested_run_time must not be in the future.
+   *   A run_time timestamp for historical data files or reports
+   *   that are scheduled to be transferred by the scheduled transfer run.
+   *   requested_run_time must be a past time and cannot include future time
+   *   values.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.StartManualTransferRunsResponse | StartManualTransferRunsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.StartManualTransferRunsResponse|StartManualTransferRunsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.start_manual_transfer_runs.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_StartManualTransferRuns_async
@@ -1118,7 +1179,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IStartManualTransferRunsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   startManualTransferRuns(
@@ -1167,7 +1228,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IStartManualTransferRunsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1205,9 +1266,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferRun | TransferRun}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferRun|TransferRun}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.get_transfer_run.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_GetTransferRun_async
@@ -1222,7 +1282,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IGetTransferRunRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTransferRun(
@@ -1271,7 +1331,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IGetTransferRunRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1305,9 +1365,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.delete_transfer_run.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_DeleteTransferRun_async
@@ -1322,7 +1381,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IDeleteTransferRunRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteTransferRun(
@@ -1371,7 +1430,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IDeleteTransferRunRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1405,9 +1464,8 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.bigquery.datatransfer.v1.CheckValidCredsResponse | CheckValidCredsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.CheckValidCredsResponse|CheckValidCredsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.check_valid_creds.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_CheckValidCreds_async
@@ -1422,7 +1480,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.ICheckValidCredsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   checkValidCreds(
@@ -1471,7 +1529,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.ICheckValidCredsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1505,16 +1563,16 @@ export class DataTransferServiceClient {
    * @param {Object} request
    *   The request object that will be sent.
    * @param {string} request.name
-   *   The name of the project resource in the form: `projects/{project_id}`
+   *   Required. The name of the project resource in the form:
+   *   `projects/{project_id}`
    * @param {string[]} request.dataSourceIds
    *   Data sources that are enrolled. It is required to provide at least one
    *   data source id.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.enroll_data_sources.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_EnrollDataSources_async
@@ -1529,7 +1587,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IEnrollDataSourcesRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   enrollDataSources(
@@ -1578,7 +1636,7 @@ export class DataTransferServiceClient {
         | protos.google.cloud.bigquery.datatransfer.v1.IEnrollDataSourcesRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1598,6 +1656,110 @@ export class DataTransferServiceClient {
       });
     this.initialize();
     return this.innerApiCalls.enrollDataSources(request, options, callback);
+  }
+  /**
+   * Unenroll data sources in a user project. This allows users to remove
+   * transfer configurations for these data sources. They will no longer appear
+   * in the ListDataSources RPC and will also no longer appear in the [BigQuery
+   * UI](https://console.cloud.google.com/bigquery). Data transfers
+   * configurations of unenrolled data sources will not be scheduled.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. The name of the project resource in the form:
+   *   `projects/{project_id}`
+   * @param {string[]} request.dataSourceIds
+   *   Data sources that are unenrolled. It is required to provide at least one
+   *   data source id.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/data_transfer_service.unenroll_data_sources.js</caption>
+   * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_UnenrollDataSources_async
+   */
+  unenrollDataSources(
+    request?: protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.protobuf.IEmpty,
+      (
+        | protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  >;
+  unenrollDataSources(
+    request: protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.protobuf.IEmpty,
+      | protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  unenrollDataSources(
+    request: protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest,
+    callback: Callback<
+      protos.google.protobuf.IEmpty,
+      | protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  unenrollDataSources(
+    request?: protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.protobuf.IEmpty,
+          | protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.protobuf.IEmpty,
+      | protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.protobuf.IEmpty,
+      (
+        | protos.google.cloud.bigquery.datatransfer.v1.IUnenrollDataSourcesRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.unenrollDataSources(request, options, callback);
   }
 
   /**
@@ -1620,14 +1782,13 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.bigquery.datatransfer.v1.DataSource | DataSource}.
+   *   The first element of the array is Array of {@link protos.google.cloud.bigquery.datatransfer.v1.DataSource|DataSource}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listDataSourcesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDataSources(
@@ -1637,7 +1798,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.IDataSource[],
       protos.google.cloud.bigquery.datatransfer.v1.IListDataSourcesRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListDataSourcesResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListDataSourcesResponse,
     ]
   >;
   listDataSources(
@@ -1683,7 +1844,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.IDataSource[],
       protos.google.cloud.bigquery.datatransfer.v1.IListDataSourcesRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListDataSourcesResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListDataSourcesResponse,
     ]
   > | void {
     request = request || {};
@@ -1724,13 +1885,12 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.bigquery.datatransfer.v1.DataSource | DataSource} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.DataSource|DataSource} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listDataSourcesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDataSourcesStream(
@@ -1776,12 +1936,11 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.bigquery.datatransfer.v1.DataSource | DataSource}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.bigquery.datatransfer.v1.DataSource|DataSource}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.list_data_sources.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_ListDataSources_async
@@ -1830,14 +1989,13 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.bigquery.datatransfer.v1.TransferConfig | TransferConfig}.
+   *   The first element of the array is Array of {@link protos.google.cloud.bigquery.datatransfer.v1.TransferConfig|TransferConfig}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTransferConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTransferConfigs(
@@ -1847,7 +2005,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.ITransferConfig[],
       protos.google.cloud.bigquery.datatransfer.v1.IListTransferConfigsRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListTransferConfigsResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListTransferConfigsResponse,
     ]
   >;
   listTransferConfigs(
@@ -1893,7 +2051,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.ITransferConfig[],
       protos.google.cloud.bigquery.datatransfer.v1.IListTransferConfigsRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListTransferConfigsResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListTransferConfigsResponse,
     ]
   > | void {
     request = request || {};
@@ -1936,13 +2094,12 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferConfig | TransferConfig} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferConfig|TransferConfig} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTransferConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTransferConfigsStream(
@@ -1990,12 +2147,11 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.bigquery.datatransfer.v1.TransferConfig | TransferConfig}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.bigquery.datatransfer.v1.TransferConfig|TransferConfig}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.list_transfer_configs.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_ListTransferConfigs_async
@@ -2046,14 +2202,13 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.bigquery.datatransfer.v1.TransferRun | TransferRun}.
+   *   The first element of the array is Array of {@link protos.google.cloud.bigquery.datatransfer.v1.TransferRun|TransferRun}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTransferRunsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTransferRuns(
@@ -2063,7 +2218,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.ITransferRun[],
       protos.google.cloud.bigquery.datatransfer.v1.IListTransferRunsRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListTransferRunsResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListTransferRunsResponse,
     ]
   >;
   listTransferRuns(
@@ -2109,7 +2264,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.ITransferRun[],
       protos.google.cloud.bigquery.datatransfer.v1.IListTransferRunsRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListTransferRunsResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListTransferRunsResponse,
     ]
   > | void {
     request = request || {};
@@ -2155,13 +2310,12 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferRun | TransferRun} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferRun|TransferRun} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTransferRunsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTransferRunsStream(
@@ -2212,12 +2366,11 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.bigquery.datatransfer.v1.TransferRun | TransferRun}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.bigquery.datatransfer.v1.TransferRun|TransferRun}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.list_transfer_runs.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_ListTransferRuns_async
@@ -2266,14 +2419,13 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.bigquery.datatransfer.v1.TransferMessage | TransferMessage}.
+   *   The first element of the array is Array of {@link protos.google.cloud.bigquery.datatransfer.v1.TransferMessage|TransferMessage}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTransferLogsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTransferLogs(
@@ -2283,7 +2435,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.ITransferMessage[],
       protos.google.cloud.bigquery.datatransfer.v1.IListTransferLogsRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListTransferLogsResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListTransferLogsResponse,
     ]
   >;
   listTransferLogs(
@@ -2329,7 +2481,7 @@ export class DataTransferServiceClient {
     [
       protos.google.cloud.bigquery.datatransfer.v1.ITransferMessage[],
       protos.google.cloud.bigquery.datatransfer.v1.IListTransferLogsRequest | null,
-      protos.google.cloud.bigquery.datatransfer.v1.IListTransferLogsResponse
+      protos.google.cloud.bigquery.datatransfer.v1.IListTransferLogsResponse,
     ]
   > | void {
     request = request || {};
@@ -2373,13 +2525,12 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.bigquery.datatransfer.v1.TransferMessage | TransferMessage} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.bigquery.datatransfer.v1.TransferMessage|TransferMessage} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTransferLogsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTransferLogsStream(
@@ -2428,12 +2579,11 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.bigquery.datatransfer.v1.TransferMessage | TransferMessage}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.bigquery.datatransfer.v1.TransferMessage|TransferMessage}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_transfer_service.list_transfer_logs.js</caption>
    * region_tag:bigquerydatatransfer_v1_generated_DataTransferService_ListTransferLogs_async
@@ -2470,8 +2620,7 @@ export class DataTransferServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -2517,12 +2666,11 @@ export class DataTransferServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```

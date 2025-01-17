@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import "google/cloud/dialogflow/cx/v3beta1/page.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
 
-option cc_enable_arenas = true;
 option csharp_namespace = "Google.Cloud.Dialogflow.Cx.V3Beta1";
 option go_package = "cloud.google.com/go/dialogflow/cx/apiv3beta1/cxpb;cxpb";
 option java_multiple_files = true;
@@ -46,6 +45,9 @@ service TransitionRouteGroups {
       returns (ListTransitionRouteGroupsResponse) {
     option (google.api.http) = {
       get: "/v3beta1/{parent=projects/*/locations/*/agents/*/flows/*}/transitionRouteGroups"
+      additional_bindings {
+        get: "/v3beta1/{parent=projects/*/locations/*/agents/*}/transitionRouteGroups"
+      }
     };
     option (google.api.method_signature) = "parent";
   }
@@ -56,6 +58,9 @@ service TransitionRouteGroups {
       returns (TransitionRouteGroup) {
     option (google.api.http) = {
       get: "/v3beta1/{name=projects/*/locations/*/agents/*/flows/*/transitionRouteGroups/*}"
+      additional_bindings {
+        get: "/v3beta1/{name=projects/*/locations/*/agents/*/transitionRouteGroups/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
@@ -72,6 +77,10 @@ service TransitionRouteGroups {
     option (google.api.http) = {
       post: "/v3beta1/{parent=projects/*/locations/*/agents/*/flows/*}/transitionRouteGroups"
       body: "transition_route_group"
+      additional_bindings {
+        post: "/v3beta1/{parent=projects/*/locations/*/agents/*}/transitionRouteGroups"
+        body: "transition_route_group"
+      }
     };
     option (google.api.method_signature) = "parent,transition_route_group";
   }
@@ -87,6 +96,10 @@ service TransitionRouteGroups {
     option (google.api.http) = {
       patch: "/v3beta1/{transition_route_group.name=projects/*/locations/*/agents/*/flows/*/transitionRouteGroups/*}"
       body: "transition_route_group"
+      additional_bindings {
+        patch: "/v3beta1/{transition_route_group.name=projects/*/locations/*/agents/*/transitionRouteGroups/*}"
+        body: "transition_route_group"
+      }
     };
     option (google.api.method_signature) = "transition_route_group,update_mask";
   }
@@ -101,25 +114,33 @@ service TransitionRouteGroups {
       returns (google.protobuf.Empty) {
     option (google.api.http) = {
       delete: "/v3beta1/{name=projects/*/locations/*/agents/*/flows/*/transitionRouteGroups/*}"
+      additional_bindings {
+        delete: "/v3beta1/{name=projects/*/locations/*/agents/*/transitionRouteGroups/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
 }
 
-// An TransitionRouteGroup represents a group of
+// A TransitionRouteGroup represents a group of
 // [`TransitionRoutes`][google.cloud.dialogflow.cx.v3beta1.TransitionRoute] to
 // be used by a [Page][google.cloud.dialogflow.cx.v3beta1.Page].
 message TransitionRouteGroup {
   option (google.api.resource) = {
     type: "dialogflow.googleapis.com/TransitionRouteGroup"
     pattern: "projects/{project}/locations/{location}/agents/{agent}/flows/{flow}/transitionRouteGroups/{transition_route_group}"
+    pattern: "projects/{project}/locations/{location}/agents/{agent}/transitionRouteGroups/{transition_route_group}"
+    plural: "transitionRouteGroups"
+    singular: "transitionRouteGroup"
   };
 
   // The unique identifier of the transition route group.
   // [TransitionRouteGroups.CreateTransitionRouteGroup][google.cloud.dialogflow.cx.v3beta1.TransitionRouteGroups.CreateTransitionRouteGroup]
-  // populates the name automatically. Format: `projects/<Project
-  // ID>/locations/<Location ID>/agents/<Agent ID>/flows/<Flow
-  // ID>/transitionRouteGroups/<Transition Route Group ID>`.
+  // populates the name automatically. Format:
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>/transitionRouteGroups/<TransitionRouteGroupID>`
+  // or
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/transitionRouteGroups/<TransitionRouteGroupID>`
+  // for agent-level groups.
   string name = 1;
 
   // Required. The human-readable name of the transition route group, unique
@@ -135,8 +156,9 @@ message TransitionRouteGroup {
 // [TransitionRouteGroups.ListTransitionRouteGroups][google.cloud.dialogflow.cx.v3beta1.TransitionRouteGroups.ListTransitionRouteGroups].
 message ListTransitionRouteGroupsRequest {
   // Required. The flow to list all transition route groups for.
-  // Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-  // ID>/flows/<Flow ID>`.
+  // Format:
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>`
+  //  or `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -185,8 +207,10 @@ message ListTransitionRouteGroupsResponse {
 message GetTransitionRouteGroupRequest {
   // Required. The name of the
   // [TransitionRouteGroup][google.cloud.dialogflow.cx.v3beta1.TransitionRouteGroup].
-  // Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-  // ID>/flows/<Flow ID>/transitionRouteGroups/<Transition Route Group ID>`.
+  // Format:
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>/transitionRouteGroups/<TransitionRouteGroupID>`
+  // or
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/transitionRouteGroups/<TransitionRouteGroupID>`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -214,8 +238,10 @@ message GetTransitionRouteGroupRequest {
 message CreateTransitionRouteGroupRequest {
   // Required. The flow to create an
   // [TransitionRouteGroup][google.cloud.dialogflow.cx.v3beta1.TransitionRouteGroup]
-  // for. Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent
-  // ID>/flows/<Flow ID>`.
+  // for. Format:
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>`
+  // or `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`
+  // for agent-level groups.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -270,9 +296,10 @@ message UpdateTransitionRouteGroupRequest {
 message DeleteTransitionRouteGroupRequest {
   // Required. The name of the
   // [TransitionRouteGroup][google.cloud.dialogflow.cx.v3beta1.TransitionRouteGroup]
-  // to delete. Format: `projects/<Project ID>/locations/<Location
-  // ID>/agents/<Agent ID>/flows/<Flow ID>/transitionRouteGroups/<Transition
-  // Route Group ID>`.
+  // to delete. Format:
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/flows/<FlowID>/transitionRouteGroups/<TransitionRouteGroupID>`
+  // or
+  // `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>/transitionRouteGroups/<TransitionRouteGroupID>`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {

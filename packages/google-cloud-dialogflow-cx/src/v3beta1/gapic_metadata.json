@@ -40,6 +40,16 @@
                 "getAgentValidationResult"
               ]
             },
+            "GetGenerativeSettings": {
+              "methods": [
+                "getGenerativeSettings"
+              ]
+            },
+            "UpdateGenerativeSettings": {
+              "methods": [
+                "updateGenerativeSettings"
+              ]
+            },
             "ExportAgent": {
               "methods": [
                 "exportAgent"
@@ -90,6 +100,16 @@
             "GetAgentValidationResult": {
               "methods": [
                 "getAgentValidationResult"
+              ]
+            },
+            "GetGenerativeSettings": {
+              "methods": [
+                "getGenerativeSettings"
+              ]
+            },
+            "UpdateGenerativeSettings": {
+              "methods": [
+                "updateGenerativeSettings"
               ]
             },
             "ExportAgent": {
@@ -145,6 +165,54 @@
                 "listChangelogs",
                 "listChangelogsStream",
                 "listChangelogsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ConversationHistory": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "ConversationHistoryClient",
+          "rpcs": {
+            "GetConversation": {
+              "methods": [
+                "getConversation"
+              ]
+            },
+            "DeleteConversation": {
+              "methods": [
+                "deleteConversation"
+              ]
+            },
+            "ListConversations": {
+              "methods": [
+                "listConversations",
+                "listConversationsStream",
+                "listConversationsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "ConversationHistoryClient",
+          "rpcs": {
+            "GetConversation": {
+              "methods": [
+                "getConversation"
+              ]
+            },
+            "DeleteConversation": {
+              "methods": [
+                "deleteConversation"
+              ]
+            },
+            "ListConversations": {
+              "methods": [
+                "listConversations",
+                "listConversationsStream",
+                "listConversationsAsync"
               ]
             }
           }
@@ -214,6 +282,16 @@
                 "deleteEntityType"
               ]
             },
+            "ExportEntityTypes": {
+              "methods": [
+                "exportEntityTypes"
+              ]
+            },
+            "ImportEntityTypes": {
+              "methods": [
+                "importEntityTypes"
+              ]
+            },
             "ListEntityTypes": {
               "methods": [
                 "listEntityTypes",
@@ -244,6 +322,16 @@
             "DeleteEntityType": {
               "methods": [
                 "deleteEntityType"
+              ]
+            },
+            "ExportEntityTypes": {
+              "methods": [
+                "exportEntityTypes"
+              ]
+            },
+            "ImportEntityTypes": {
+              "methods": [
+                "importEntityTypes"
               ]
             },
             "ListEntityTypes": {
@@ -367,6 +455,74 @@
                 "listContinuousTestResults",
                 "listContinuousTestResultsStream",
                 "listContinuousTestResultsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Examples": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "ExamplesClient",
+          "rpcs": {
+            "CreateExample": {
+              "methods": [
+                "createExample"
+              ]
+            },
+            "DeleteExample": {
+              "methods": [
+                "deleteExample"
+              ]
+            },
+            "GetExample": {
+              "methods": [
+                "getExample"
+              ]
+            },
+            "UpdateExample": {
+              "methods": [
+                "updateExample"
+              ]
+            },
+            "ListExamples": {
+              "methods": [
+                "listExamples",
+                "listExamplesStream",
+                "listExamplesAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "ExamplesClient",
+          "rpcs": {
+            "CreateExample": {
+              "methods": [
+                "createExample"
+              ]
+            },
+            "DeleteExample": {
+              "methods": [
+                "deleteExample"
+              ]
+            },
+            "GetExample": {
+              "methods": [
+                "getExample"
+              ]
+            },
+            "UpdateExample": {
+              "methods": [
+                "updateExample"
+              ]
+            },
+            "ListExamples": {
+              "methods": [
+                "listExamples",
+                "listExamplesStream",
+                "listExamplesAsync"
               ]
             }
           }
@@ -579,6 +735,74 @@
         }
       }
     },
+    "Generators": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "GeneratorsClient",
+          "rpcs": {
+            "GetGenerator": {
+              "methods": [
+                "getGenerator"
+              ]
+            },
+            "CreateGenerator": {
+              "methods": [
+                "createGenerator"
+              ]
+            },
+            "UpdateGenerator": {
+              "methods": [
+                "updateGenerator"
+              ]
+            },
+            "DeleteGenerator": {
+              "methods": [
+                "deleteGenerator"
+              ]
+            },
+            "ListGenerators": {
+              "methods": [
+                "listGenerators",
+                "listGeneratorsStream",
+                "listGeneratorsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "GeneratorsClient",
+          "rpcs": {
+            "GetGenerator": {
+              "methods": [
+                "getGenerator"
+              ]
+            },
+            "CreateGenerator": {
+              "methods": [
+                "createGenerator"
+              ]
+            },
+            "UpdateGenerator": {
+              "methods": [
+                "updateGenerator"
+              ]
+            },
+            "DeleteGenerator": {
+              "methods": [
+                "deleteGenerator"
+              ]
+            },
+            "ListGenerators": {
+              "methods": [
+                "listGenerators",
+                "listGeneratorsStream",
+                "listGeneratorsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "Intents": {
       "clients": {
         "grpc": {
@@ -602,6 +826,16 @@
             "DeleteIntent": {
               "methods": [
                 "deleteIntent"
+              ]
+            },
+            "ImportIntents": {
+              "methods": [
+                "importIntents"
+              ]
+            },
+            "ExportIntents": {
+              "methods": [
+                "exportIntents"
               ]
             },
             "ListIntents": {
@@ -634,6 +868,16 @@
             "DeleteIntent": {
               "methods": [
                 "deleteIntent"
+              ]
+            },
+            "ImportIntents": {
+              "methods": [
+                "importIntents"
+              ]
+            },
+            "ExportIntents": {
+              "methods": [
+                "exportIntents"
               ]
             },
             "ListIntents": {
@@ -709,6 +953,118 @@
                 "listPages",
                 "listPagesStream",
                 "listPagesAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Playbooks": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "PlaybooksClient",
+          "rpcs": {
+            "CreatePlaybook": {
+              "methods": [
+                "createPlaybook"
+              ]
+            },
+            "DeletePlaybook": {
+              "methods": [
+                "deletePlaybook"
+              ]
+            },
+            "GetPlaybook": {
+              "methods": [
+                "getPlaybook"
+              ]
+            },
+            "UpdatePlaybook": {
+              "methods": [
+                "updatePlaybook"
+              ]
+            },
+            "CreatePlaybookVersion": {
+              "methods": [
+                "createPlaybookVersion"
+              ]
+            },
+            "GetPlaybookVersion": {
+              "methods": [
+                "getPlaybookVersion"
+              ]
+            },
+            "DeletePlaybookVersion": {
+              "methods": [
+                "deletePlaybookVersion"
+              ]
+            },
+            "ListPlaybooks": {
+              "methods": [
+                "listPlaybooks",
+                "listPlaybooksStream",
+                "listPlaybooksAsync"
+              ]
+            },
+            "ListPlaybookVersions": {
+              "methods": [
+                "listPlaybookVersions",
+                "listPlaybookVersionsStream",
+                "listPlaybookVersionsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "PlaybooksClient",
+          "rpcs": {
+            "CreatePlaybook": {
+              "methods": [
+                "createPlaybook"
+              ]
+            },
+            "DeletePlaybook": {
+              "methods": [
+                "deletePlaybook"
+              ]
+            },
+            "GetPlaybook": {
+              "methods": [
+                "getPlaybook"
+              ]
+            },
+            "UpdatePlaybook": {
+              "methods": [
+                "updatePlaybook"
+              ]
+            },
+            "CreatePlaybookVersion": {
+              "methods": [
+                "createPlaybookVersion"
+              ]
+            },
+            "GetPlaybookVersion": {
+              "methods": [
+                "getPlaybookVersion"
+              ]
+            },
+            "DeletePlaybookVersion": {
+              "methods": [
+                "deletePlaybookVersion"
+              ]
+            },
+            "ListPlaybooks": {
+              "methods": [
+                "listPlaybooks",
+                "listPlaybooksStream",
+                "listPlaybooksAsync"
+              ]
+            },
+            "ListPlaybookVersions": {
+              "methods": [
+                "listPlaybookVersions",
+                "listPlaybookVersionsStream",
+                "listPlaybookVersionsAsync"
               ]
             }
           }
@@ -871,6 +1227,16 @@
                 "fulfillIntent"
               ]
             },
+            "SubmitAnswerFeedback": {
+              "methods": [
+                "submitAnswerFeedback"
+              ]
+            },
+            "ServerStreamingDetectIntent": {
+              "methods": [
+                "serverStreamingDetectIntent"
+              ]
+            },
             "StreamingDetectIntent": {
               "methods": [
                 "streamingDetectIntent"
@@ -894,6 +1260,11 @@
             "FulfillIntent": {
               "methods": [
                 "fulfillIntent"
+              ]
+            },
+            "SubmitAnswerFeedback": {
+              "methods": [
+                "submitAnswerFeedback"
               ]
             }
           }
@@ -1036,6 +1407,84 @@
                 "listTestCaseResults",
                 "listTestCaseResultsStream",
                 "listTestCaseResultsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "Tools": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "ToolsClient",
+          "rpcs": {
+            "CreateTool": {
+              "methods": [
+                "createTool"
+              ]
+            },
+            "GetTool": {
+              "methods": [
+                "getTool"
+              ]
+            },
+            "UpdateTool": {
+              "methods": [
+                "updateTool"
+              ]
+            },
+            "DeleteTool": {
+              "methods": [
+                "deleteTool"
+              ]
+            },
+            "ExportTools": {
+              "methods": [
+                "exportTools"
+              ]
+            },
+            "ListTools": {
+              "methods": [
+                "listTools",
+                "listToolsStream",
+                "listToolsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "ToolsClient",
+          "rpcs": {
+            "CreateTool": {
+              "methods": [
+                "createTool"
+              ]
+            },
+            "GetTool": {
+              "methods": [
+                "getTool"
+              ]
+            },
+            "UpdateTool": {
+              "methods": [
+                "updateTool"
+              ]
+            },
+            "DeleteTool": {
+              "methods": [
+                "deleteTool"
+              ]
+            },
+            "ExportTools": {
+              "methods": [
+                "exportTools"
+              ]
+            },
+            "ListTools": {
+              "methods": [
+                "listTools",
+                "listToolsStream",
+                "listToolsAsync"
               ]
             }
           }

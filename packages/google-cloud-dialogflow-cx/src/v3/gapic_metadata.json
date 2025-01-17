@@ -40,6 +40,16 @@
                 "getAgentValidationResult"
               ]
             },
+            "GetGenerativeSettings": {
+              "methods": [
+                "getGenerativeSettings"
+              ]
+            },
+            "UpdateGenerativeSettings": {
+              "methods": [
+                "updateGenerativeSettings"
+              ]
+            },
             "ExportAgent": {
               "methods": [
                 "exportAgent"
@@ -90,6 +100,16 @@
             "GetAgentValidationResult": {
               "methods": [
                 "getAgentValidationResult"
+              ]
+            },
+            "GetGenerativeSettings": {
+              "methods": [
+                "getGenerativeSettings"
+              ]
+            },
+            "UpdateGenerativeSettings": {
+              "methods": [
+                "updateGenerativeSettings"
               ]
             },
             "ExportAgent": {
@@ -214,6 +234,16 @@
                 "deleteEntityType"
               ]
             },
+            "ExportEntityTypes": {
+              "methods": [
+                "exportEntityTypes"
+              ]
+            },
+            "ImportEntityTypes": {
+              "methods": [
+                "importEntityTypes"
+              ]
+            },
             "ListEntityTypes": {
               "methods": [
                 "listEntityTypes",
@@ -244,6 +274,16 @@
             "DeleteEntityType": {
               "methods": [
                 "deleteEntityType"
+              ]
+            },
+            "ExportEntityTypes": {
+              "methods": [
+                "exportEntityTypes"
+              ]
+            },
+            "ImportEntityTypes": {
+              "methods": [
+                "importEntityTypes"
               ]
             },
             "ListEntityTypes": {
@@ -579,6 +619,74 @@
         }
       }
     },
+    "Generators": {
+      "clients": {
+        "grpc": {
+          "libraryClient": "GeneratorsClient",
+          "rpcs": {
+            "GetGenerator": {
+              "methods": [
+                "getGenerator"
+              ]
+            },
+            "CreateGenerator": {
+              "methods": [
+                "createGenerator"
+              ]
+            },
+            "UpdateGenerator": {
+              "methods": [
+                "updateGenerator"
+              ]
+            },
+            "DeleteGenerator": {
+              "methods": [
+                "deleteGenerator"
+              ]
+            },
+            "ListGenerators": {
+              "methods": [
+                "listGenerators",
+                "listGeneratorsStream",
+                "listGeneratorsAsync"
+              ]
+            }
+          }
+        },
+        "grpc-fallback": {
+          "libraryClient": "GeneratorsClient",
+          "rpcs": {
+            "GetGenerator": {
+              "methods": [
+                "getGenerator"
+              ]
+            },
+            "CreateGenerator": {
+              "methods": [
+                "createGenerator"
+              ]
+            },
+            "UpdateGenerator": {
+              "methods": [
+                "updateGenerator"
+              ]
+            },
+            "DeleteGenerator": {
+              "methods": [
+                "deleteGenerator"
+              ]
+            },
+            "ListGenerators": {
+              "methods": [
+                "listGenerators",
+                "listGeneratorsStream",
+                "listGeneratorsAsync"
+              ]
+            }
+          }
+        }
+      }
+    },
     "Intents": {
       "clients": {
         "grpc": {
@@ -602,6 +710,16 @@
             "DeleteIntent": {
               "methods": [
                 "deleteIntent"
+              ]
+            },
+            "ImportIntents": {
+              "methods": [
+                "importIntents"
+              ]
+            },
+            "ExportIntents": {
+              "methods": [
+                "exportIntents"
               ]
             },
             "ListIntents": {
@@ -634,6 +752,16 @@
             "DeleteIntent": {
               "methods": [
                 "deleteIntent"
+              ]
+            },
+            "ImportIntents": {
+              "methods": [
+                "importIntents"
+              ]
+            },
+            "ExportIntents": {
+              "methods": [
+                "exportIntents"
               ]
             },
             "ListIntents": {
@@ -871,6 +999,16 @@
                 "fulfillIntent"
               ]
             },
+            "SubmitAnswerFeedback": {
+              "methods": [
+                "submitAnswerFeedback"
+              ]
+            },
+            "ServerStreamingDetectIntent": {
+              "methods": [
+                "serverStreamingDetectIntent"
+              ]
+            },
             "StreamingDetectIntent": {
               "methods": [
                 "streamingDetectIntent"
@@ -894,6 +1032,11 @@
             "FulfillIntent": {
               "methods": [
                 "fulfillIntent"
+              ]
+            },
+            "SubmitAnswerFeedback": {
+              "methods": [
+                "submitAnswerFeedback"
               ]
             }
           }

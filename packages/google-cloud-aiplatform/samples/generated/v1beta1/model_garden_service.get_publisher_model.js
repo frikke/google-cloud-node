@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,13 +36,22 @@ function main(name) {
   // const name = 'abc123'
   /**
    *  Optional. The IETF BCP-47 language code representing the language in which
-   *  the publisher model's text information should be written in (see go/bcp47).
+   *  the publisher model's text information should be written in.
    */
   // const languageCode = 'abc123'
   /**
    *  Optional. PublisherModel view specifying which fields to read.
    */
   // const view = {}
+  /**
+   *  Optional. Boolean indicates whether the requested model is a Hugging Face
+   *  model.
+   */
+  // const isHuggingFaceModel = true
+  /**
+   *  Optional. Token used to access Hugging Face gated models.
+   */
+  // const huggingFaceToken = 'abc123'
 
   // Imports the Aiplatform library
   const {ModelGardenServiceClient} = require('@google-cloud/aiplatform').v1beta1;

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function main(instance) {
    *  Nodes to which we should apply the update to. Note all the selected nodes
    *  are updated in parallel.
    */
-  // const nodeIds = 'abc123'
+  // const nodeIds = ['abc','def']
   /**
    *  Whether to apply the update to all nodes. If set to
    *  true, will explicitly restrict users from specifying any nodes, and apply

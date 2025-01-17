@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,11 +40,16 @@ function main(document) {
    */
   // const document = {}
   /**
-   *  If set to true, and the
+   *  If set to `true` and the
    *  Document google.cloud.discoveryengine.v1.Document  is not found, a new
-   *  Document google.cloud.discoveryengine.v1.Document  will be created.
+   *  Document google.cloud.discoveryengine.v1.Document  is be created.
    */
   // const allowMissing = true
+  /**
+   *  Indicates which fields in the provided imported 'document' to update. If
+   *  not set, by default updates all fields.
+   */
+  // const updateMask = {}
 
   // Imports the Discoveryengine library
   const {DocumentServiceClient} = require('@google-cloud/discoveryengine').v1;

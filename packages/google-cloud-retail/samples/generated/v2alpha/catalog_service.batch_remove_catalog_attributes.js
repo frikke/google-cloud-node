@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ function main(attributesConfig, attributeKeys) {
    *  CatalogAttribute google.cloud.retail.v2alpha.CatalogAttribute s to
    *  delete. A maximum of 1000 catalog attributes can be deleted in a batch.
    */
-  // const attributeKeys = 'abc123'
+  // const attributeKeys = ['abc','def']
 
   // Imports the Retail library
   const {CatalogServiceClient} = require('@google-cloud/retail').v2alpha;

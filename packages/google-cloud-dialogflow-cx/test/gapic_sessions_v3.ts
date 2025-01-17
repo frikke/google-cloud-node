@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -66,6 +66,27 @@ function stubSimpleCallWithCallback<ResponseType>(
     : sinon.stub().callsArgWith(2, null, response);
 }
 
+function stubServerStreamingCall<ResponseType>(
+  response?: ResponseType,
+  error?: Error
+) {
+  const transformStub = error
+    ? sinon.stub().callsArgWith(2, error)
+    : sinon.stub().callsArgWith(2, null, response);
+  const mockStream = new PassThrough({
+    objectMode: true,
+    transform: transformStub,
+  });
+  // write something to the stream to trigger transformStub and send the response back to the client
+  setImmediate(() => {
+    mockStream.write({});
+  });
+  setImmediate(() => {
+    mockStream.end();
+  });
+  return sinon.stub().returns(mockStream);
+}
+
 function stubBidiStreamingCall<ResponseType>(
   response?: ResponseType,
   error?: Error
@@ -105,14 +126,92 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v3.SessionsClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath = sessionsModule.v3.SessionsClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new sessionsModule.v3.SessionsClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'dialogflow.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint = sessionsModule.v3.SessionsClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new sessionsModule.v3.SessionsClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath = sessionsModule.v3.SessionsClient.servicePath;
+        assert.strictEqual(servicePath, 'dialogflow.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint = sessionsModule.v3.SessionsClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'dialogflow.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'dialogflow.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'dialogflow.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new sessionsModule.v3.SessionsClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'dialogflow.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new sessionsModule.v3.SessionsClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'dialogflow.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new sessionsModule.v3.SessionsClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -592,6 +691,314 @@ describe('v3.SessionsClient', () => {
       const expectedError = new Error('The client has already been closed.');
       client.close();
       await assert.rejects(client.fulfillIntent(request), expectedError);
+    });
+  });
+
+  describe('submitAnswerFeedback', () => {
+    it('invokes submitAnswerFeedback without error', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedHeaderRequestParams = `session=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.AnswerFeedback()
+      );
+      client.innerApiCalls.submitAnswerFeedback =
+        stubSimpleCall(expectedResponse);
+      const [response] = await client.submitAnswerFeedback(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.submitAnswerFeedback as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.submitAnswerFeedback as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes submitAnswerFeedback without error using callback', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedHeaderRequestParams = `session=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.AnswerFeedback()
+      );
+      client.innerApiCalls.submitAnswerFeedback =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.submitAnswerFeedback(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.dialogflow.cx.v3.IAnswerFeedback | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.submitAnswerFeedback as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.submitAnswerFeedback as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes submitAnswerFeedback with error', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedHeaderRequestParams = `session=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.submitAnswerFeedback = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(client.submitAnswerFeedback(request), expectedError);
+      const actualRequest = (
+        client.innerApiCalls.submitAnswerFeedback as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.submitAnswerFeedback as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes submitAnswerFeedback with closed client', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.SubmitAnswerFeedbackRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(client.submitAnswerFeedback(request), expectedError);
+    });
+  });
+
+  describe('serverStreamingDetectIntent', () => {
+    it('invokes serverStreamingDetectIntent without error', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.DetectIntentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.DetectIntentRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedHeaderRequestParams = `session=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.DetectIntentResponse()
+      );
+      client.innerApiCalls.serverStreamingDetectIntent =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.serverStreamingDetectIntent(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.dialogflow.cx.v3.DetectIntentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.serverStreamingDetectIntent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.serverStreamingDetectIntent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes serverStreamingDetectIntent without error and gaxServerStreamingRetries enabled', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        gaxServerStreamingRetries: true,
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.DetectIntentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.DetectIntentRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedHeaderRequestParams = `session=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.DetectIntentResponse()
+      );
+      client.innerApiCalls.serverStreamingDetectIntent =
+        stubServerStreamingCall(expectedResponse);
+      const stream = client.serverStreamingDetectIntent(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.dialogflow.cx.v3.DetectIntentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.serverStreamingDetectIntent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.serverStreamingDetectIntent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes serverStreamingDetectIntent with error', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.DetectIntentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.DetectIntentRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedHeaderRequestParams = `session=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.serverStreamingDetectIntent =
+        stubServerStreamingCall(undefined, expectedError);
+      const stream = client.serverStreamingDetectIntent(request);
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.dialogflow.cx.v3.DetectIntentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+      const actualRequest = (
+        client.innerApiCalls.serverStreamingDetectIntent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.serverStreamingDetectIntent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes serverStreamingDetectIntent with closed client', async () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.dialogflow.cx.v3.DetectIntentRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.dialogflow.cx.v3.DetectIntentRequest',
+        ['session']
+      );
+      request.session = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      const stream = client.serverStreamingDetectIntent(request, {
+        retryRequestOptions: {noResponseRetries: 0},
+      });
+      const promise = new Promise((resolve, reject) => {
+        stream.on(
+          'data',
+          (
+            response: protos.google.cloud.dialogflow.cx.v3.DetectIntentResponse
+          ) => {
+            resolve(response);
+          }
+        );
+        stream.on('error', (err: Error) => {
+          reject(err);
+        });
+      });
+      await assert.rejects(promise, expectedError);
+    });
+    it('should create a client with gaxServerStreamingRetries enabled', () => {
+      const client = new sessionsModule.v3.SessionsClient({
+        gaxServerStreamingRetries: true,
+      });
+      assert(client);
     });
   });
 
@@ -1247,6 +1654,85 @@ describe('v3.SessionsClient', () => {
         assert.strictEqual(result, 'agentValue');
         assert(
           (client.pathTemplates.agentPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('agentGenerativeSettings', () => {
+      const fakePath = '/rendered/path/agentGenerativeSettings';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+      };
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.agentGenerativeSettingsPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.agentGenerativeSettingsPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('agentGenerativeSettingsPath', () => {
+        const result = client.agentGenerativeSettingsPath(
+          'projectValue',
+          'locationValue',
+          'agentValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromAgentGenerativeSettingsName', () => {
+        const result =
+          client.matchProjectFromAgentGenerativeSettingsName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromAgentGenerativeSettingsName', () => {
+        const result =
+          client.matchLocationFromAgentGenerativeSettingsName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromAgentGenerativeSettingsName', () => {
+        const result =
+          client.matchAgentFromAgentGenerativeSettingsName(fakePath);
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (
+            client.pathTemplates.agentGenerativeSettingsPathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );
@@ -2016,6 +2502,82 @@ describe('v3.SessionsClient', () => {
       });
     });
 
+    describe('generator', () => {
+      const fakePath = '/rendered/path/generator';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+        generator: 'generatorValue',
+      };
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.generatorPathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.generatorPathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('generatorPath', () => {
+        const result = client.generatorPath(
+          'projectValue',
+          'locationValue',
+          'agentValue',
+          'generatorValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (client.pathTemplates.generatorPathTemplate.render as SinonStub)
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromGeneratorName', () => {
+        const result = client.matchProjectFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromGeneratorName', () => {
+        const result = client.matchLocationFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromGeneratorName', () => {
+        const result = client.matchAgentFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchGeneratorFromGeneratorName', () => {
+        const result = client.matchGeneratorFromGeneratorName(fakePath);
+        assert.strictEqual(result, 'generatorValue');
+        assert(
+          (client.pathTemplates.generatorPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('intent', () => {
       const fakePath = '/rendered/path/intent';
       const expectedParameters = {
@@ -2451,6 +3013,132 @@ describe('v3.SessionsClient', () => {
       });
     });
 
+    describe('projectLocationAgentFlowTransitionRouteGroup', () => {
+      const fakePath =
+        '/rendered/path/projectLocationAgentFlowTransitionRouteGroup';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+        flow: 'flowValue',
+        transition_route_group: 'transitionRouteGroupValue',
+      };
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationAgentFlowTransitionRouteGroupPathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationAgentFlowTransitionRouteGroupPath', () => {
+        const result = client.projectLocationAgentFlowTransitionRouteGroupPath(
+          'projectValue',
+          'locationValue',
+          'agentValue',
+          'flowValue',
+          'transitionRouteGroupValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchProjectFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchLocationFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchAgentFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchFlowFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchFlowFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'flowValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTransitionRouteGroupFromProjectLocationAgentFlowTransitionRouteGroupName', () => {
+        const result =
+          client.matchTransitionRouteGroupFromProjectLocationAgentFlowTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'transitionRouteGroupValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentFlowTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
     describe('projectLocationAgentSession', () => {
       const fakePath = '/rendered/path/projectLocationAgentSession';
       const expectedParameters = {
@@ -2662,6 +3350,293 @@ describe('v3.SessionsClient', () => {
           (
             client.pathTemplates
               .projectLocationAgentSessionEntityTypePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationAgentTransitionRouteGroup', () => {
+      const fakePath =
+        '/rendered/path/projectLocationAgentTransitionRouteGroup';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        agent: 'agentValue',
+        transition_route_group: 'transitionRouteGroupValue',
+      };
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationAgentTransitionRouteGroupPathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationAgentTransitionRouteGroupPath', () => {
+        const result = client.projectLocationAgentTransitionRouteGroupPath(
+          'projectValue',
+          'locationValue',
+          'agentValue',
+          'transitionRouteGroupValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchProjectFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchLocationFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchAgentFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchAgentFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'agentValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTransitionRouteGroupFromProjectLocationAgentTransitionRouteGroupName', () => {
+        const result =
+          client.matchTransitionRouteGroupFromProjectLocationAgentTransitionRouteGroupName(
+            fakePath
+          );
+        assert.strictEqual(result, 'transitionRouteGroupValue');
+        assert(
+          (
+            client.pathTemplates
+              .projectLocationAgentTransitionRouteGroupPathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationCollectionDataStore', () => {
+      const fakePath = '/rendered/path/projectLocationCollectionDataStore';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        collection: 'collectionValue',
+        data_store: 'dataStoreValue',
+      };
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationCollectionDataStorePathTemplate.render =
+        sinon.stub().returns(fakePath);
+      client.pathTemplates.projectLocationCollectionDataStorePathTemplate.match =
+        sinon.stub().returns(expectedParameters);
+
+      it('projectLocationCollectionDataStorePath', () => {
+        const result = client.projectLocationCollectionDataStorePath(
+          'projectValue',
+          'locationValue',
+          'collectionValue',
+          'dataStoreValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.projectLocationCollectionDataStorePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationCollectionDataStoreName', () => {
+        const result =
+          client.matchProjectFromProjectLocationCollectionDataStoreName(
+            fakePath
+          );
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationCollectionDataStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationCollectionDataStoreName', () => {
+        const result =
+          client.matchLocationFromProjectLocationCollectionDataStoreName(
+            fakePath
+          );
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationCollectionDataStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchCollectionFromProjectLocationCollectionDataStoreName', () => {
+        const result =
+          client.matchCollectionFromProjectLocationCollectionDataStoreName(
+            fakePath
+          );
+        assert.strictEqual(result, 'collectionValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationCollectionDataStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchDataStoreFromProjectLocationCollectionDataStoreName', () => {
+        const result =
+          client.matchDataStoreFromProjectLocationCollectionDataStoreName(
+            fakePath
+          );
+        assert.strictEqual(result, 'dataStoreValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationCollectionDataStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('projectLocationDataStore', () => {
+      const fakePath = '/rendered/path/projectLocationDataStore';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        data_store: 'dataStoreValue',
+      };
+      const client = new sessionsModule.v3.SessionsClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.projectLocationDataStorePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.projectLocationDataStorePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('projectLocationDataStorePath', () => {
+        const result = client.projectLocationDataStorePath(
+          'projectValue',
+          'locationValue',
+          'dataStoreValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.projectLocationDataStorePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromProjectLocationDataStoreName', () => {
+        const result =
+          client.matchProjectFromProjectLocationDataStoreName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationDataStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromProjectLocationDataStoreName', () => {
+        const result =
+          client.matchLocationFromProjectLocationDataStoreName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationDataStorePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchDataStoreFromProjectLocationDataStoreName', () => {
+        const result =
+          client.matchDataStoreFromProjectLocationDataStoreName(fakePath);
+        assert.strictEqual(result, 'dataStoreValue');
+        assert(
+          (
+            client.pathTemplates.projectLocationDataStorePathTemplate
               .match as SinonStub
           )
             .getCall(-1)
@@ -2896,117 +3871,6 @@ describe('v3.SessionsClient', () => {
         assert.strictEqual(result, 'resultValue');
         assert(
           (client.pathTemplates.testCaseResultPathTemplate.match as SinonStub)
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-    });
-
-    describe('transitionRouteGroup', () => {
-      const fakePath = '/rendered/path/transitionRouteGroup';
-      const expectedParameters = {
-        project: 'projectValue',
-        location: 'locationValue',
-        agent: 'agentValue',
-        flow: 'flowValue',
-        transition_route_group: 'transitionRouteGroupValue',
-      };
-      const client = new sessionsModule.v3.SessionsClient({
-        credentials: {client_email: 'bogus', private_key: 'bogus'},
-        projectId: 'bogus',
-      });
-      client.initialize();
-      client.pathTemplates.transitionRouteGroupPathTemplate.render = sinon
-        .stub()
-        .returns(fakePath);
-      client.pathTemplates.transitionRouteGroupPathTemplate.match = sinon
-        .stub()
-        .returns(expectedParameters);
-
-      it('transitionRouteGroupPath', () => {
-        const result = client.transitionRouteGroupPath(
-          'projectValue',
-          'locationValue',
-          'agentValue',
-          'flowValue',
-          'transitionRouteGroupValue'
-        );
-        assert.strictEqual(result, fakePath);
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .render as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(expectedParameters)
-        );
-      });
-
-      it('matchProjectFromTransitionRouteGroupName', () => {
-        const result =
-          client.matchProjectFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'projectValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchLocationFromTransitionRouteGroupName', () => {
-        const result =
-          client.matchLocationFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'locationValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchAgentFromTransitionRouteGroupName', () => {
-        const result = client.matchAgentFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'agentValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchFlowFromTransitionRouteGroupName', () => {
-        const result = client.matchFlowFromTransitionRouteGroupName(fakePath);
-        assert.strictEqual(result, 'flowValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
-            .getCall(-1)
-            .calledWith(fakePath)
-        );
-      });
-
-      it('matchTransitionRouteGroupFromTransitionRouteGroupName', () => {
-        const result =
-          client.matchTransitionRouteGroupFromTransitionRouteGroupName(
-            fakePath
-          );
-        assert.strictEqual(result, 'transitionRouteGroupValue');
-        assert(
-          (
-            client.pathTemplates.transitionRouteGroupPathTemplate
-              .match as SinonStub
-          )
             .getCall(-1)
             .calledWith(fakePath)
         );

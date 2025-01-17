@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ function main(parent) {
    *  * For schema id, abc123, get the counts for MORTGAGE_TYPE:
    *    count('abc123.MORTGAGE_TYPE')
    */
-  // const histogramQueries = 1234
+  // const histogramQueries = [1,2,3,4]
   /**
    *  Controls if the search document request requires the return of a total size
    *  of matched documents. See
@@ -147,7 +147,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await contentwarehouseClient.searchDocumentsAsync(request);
+    const iterable = contentwarehouseClient.searchDocumentsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

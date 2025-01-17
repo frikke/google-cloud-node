@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v2beta/serving_config_service_client_config.json`.
@@ -53,6 +54,8 @@ export class ServingConfigServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -95,8 +98,7 @@ export class ServingConfigServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -104,7 +106,7 @@ export class ServingConfigServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new ServingConfigServiceClient({fallback: 'rest'}, gax);
+   *     const client = new ServingConfigServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -113,8 +115,27 @@ export class ServingConfigServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof ServingConfigServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'retail.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -129,7 +150,7 @@ export class ServingConfigServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -154,10 +175,10 @@ export class ServingConfigServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.locationsClient = new this._gaxModule.LocationsClient(
@@ -167,14 +188,14 @@ export class ServingConfigServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -187,6 +208,9 @@ export class ServingConfigServiceClient {
     // identifiers to uniquely identify resources within the API.
     // Create useful helper objects for these.
     this.pathTemplates = {
+      alertConfigPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/alertConfig'
+      ),
       attributesConfigPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/catalogs/{catalog}/attributesConfig'
       ),
@@ -229,7 +253,7 @@ export class ServingConfigServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -348,19 +372,50 @@ export class ServingConfigServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'retail.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'retail.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -402,8 +457,8 @@ export class ServingConfigServiceClient {
   /**
    * Creates a ServingConfig.
    *
-   * A maximum of 100 {@link google.cloud.retail.v2beta.ServingConfig|ServingConfig}s
-   * are allowed in a {@link google.cloud.retail.v2beta.Catalog|Catalog}, otherwise
+   * A maximum of 100 {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}s
+   * are allowed in a {@link protos.google.cloud.retail.v2beta.Catalog|Catalog}, otherwise
    * a FAILED_PRECONDITION error is returned.
    *
    * @param {Object} request
@@ -418,13 +473,12 @@ export class ServingConfigServiceClient {
    *   component of the ServingConfig's resource name.
    *
    *   This value should be 4-63 characters, and valid characters
-   *   are /{@link 0-9|a-z}-_/.
+   *   are /{@link protos.0-9|a-z}-_/.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.create_serving_config.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_CreateServingConfig_async
@@ -436,7 +490,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.ICreateServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createServingConfig(
@@ -482,7 +536,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.ICreateServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -516,9 +570,8 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.delete_serving_config.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_DeleteServingConfig_async
@@ -530,7 +583,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.retail.v2beta.IDeleteServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteServingConfig(
@@ -576,7 +629,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.retail.v2beta.IDeleteServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -606,18 +659,17 @@ export class ServingConfigServiceClient {
    *   Required. The ServingConfig to update.
    * @param {google.protobuf.FieldMask} request.updateMask
    *   Indicates which fields in the provided
-   *   {@link google.cloud.retail.v2beta.ServingConfig|ServingConfig} to update. The
+   *   {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig} to update. The
    *   following are NOT supported:
    *
-   *   * {@link google.cloud.retail.v2beta.ServingConfig.name|ServingConfig.name}
+   *   * {@link protos.google.cloud.retail.v2beta.ServingConfig.name|ServingConfig.name}
    *
    *   If not set, all supported fields are updated.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.update_serving_config.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_UpdateServingConfig_async
@@ -629,7 +681,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IUpdateServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateServingConfig(
@@ -675,7 +727,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IUpdateServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -709,9 +761,8 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.get_serving_config.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_GetServingConfig_async
@@ -723,7 +774,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IGetServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getServingConfig(
@@ -769,7 +820,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IGetServingConfigRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -810,9 +861,8 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.add_control.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_AddControl_async
@@ -824,7 +874,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IAddControlRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   addControl(
@@ -864,7 +914,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IAddControlRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -902,9 +952,8 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.remove_control.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_RemoveControl_async
@@ -916,7 +965,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IRemoveControlRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   removeControl(
@@ -962,7 +1011,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig,
       protos.google.cloud.retail.v2beta.IRemoveControlRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1002,14 +1051,13 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}.
+   *   The first element of the array is Array of {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listServingConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServingConfigs(
@@ -1019,7 +1067,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig[],
       protos.google.cloud.retail.v2beta.IListServingConfigsRequest | null,
-      protos.google.cloud.retail.v2beta.IListServingConfigsResponse
+      protos.google.cloud.retail.v2beta.IListServingConfigsResponse,
     ]
   >;
   listServingConfigs(
@@ -1065,7 +1113,7 @@ export class ServingConfigServiceClient {
     [
       protos.google.cloud.retail.v2beta.IServingConfig[],
       protos.google.cloud.retail.v2beta.IListServingConfigsRequest | null,
-      protos.google.cloud.retail.v2beta.IListServingConfigsResponse
+      protos.google.cloud.retail.v2beta.IListServingConfigsResponse,
     ]
   > | void {
     request = request || {};
@@ -1104,13 +1152,12 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listServingConfigsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listServingConfigsStream(
@@ -1154,12 +1201,11 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.retail.v2beta.ServingConfig | ServingConfig}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.retail.v2beta.ServingConfig|ServingConfig}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v2beta/serving_config_service.list_serving_configs.js</caption>
    * region_tag:retail_v2beta_generated_ServingConfigService_ListServingConfigs_async
@@ -1196,8 +1242,7 @@ export class ServingConfigServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1243,12 +1288,11 @@ export class ServingConfigServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -1443,6 +1487,30 @@ export class ServingConfigServiceClient {
   // --------------------
   // -- Path templates --
   // --------------------
+
+  /**
+   * Return a fully-qualified alertConfig resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  alertConfigPath(project: string) {
+    return this.pathTemplates.alertConfigPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from AlertConfig resource.
+   *
+   * @param {string} alertConfigName
+   *   A fully-qualified path representing AlertConfig resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromAlertConfigName(alertConfigName: string) {
+    return this.pathTemplates.alertConfigPathTemplate.match(alertConfigName)
+      .project;
+  }
 
   /**
    * Return a fully-qualified attributesConfig resource name string.

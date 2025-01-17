@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 // ** https://github.com/googleapis/gapic-generator-typescript **
 // ** All changes to this file may be overwritten. **
 
+export {CatalogServiceClient} from './catalog_service_client';
 export {ContentServiceClient} from './content_service_client';
 export {DataplexServiceClient} from './dataplex_service_client';
 export {DataScanServiceClient} from './data_scan_service_client';
+export {DataTaxonomyServiceClient} from './data_taxonomy_service_client';
 export {MetadataServiceClient} from './metadata_service_client';

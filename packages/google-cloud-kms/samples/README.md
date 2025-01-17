@@ -12,6 +12,12 @@
 
 * [Before you begin](#before-you-begin)
 * [Samples](#samples)
+  * [Autokey.create_key_handle](#autokey.create_key_handle)
+  * [Autokey.get_key_handle](#autokey.get_key_handle)
+  * [Autokey.list_key_handles](#autokey.list_key_handles)
+  * [Autokey_admin.get_autokey_config](#autokey_admin.get_autokey_config)
+  * [Autokey_admin.show_effective_autokey_config](#autokey_admin.show_effective_autokey_config)
+  * [Autokey_admin.update_autokey_config](#autokey_admin.update_autokey_config)
   * [Ekm_service.create_ekm_connection](#ekm_service.create_ekm_connection)
   * [Ekm_service.get_ekm_config](#ekm_service.get_ekm_config)
   * [Ekm_service.get_ekm_connection](#ekm_service.get_ekm_connection)
@@ -41,6 +47,8 @@
   * [Key_management_service.list_key_rings](#key_management_service.list_key_rings)
   * [Key_management_service.mac_sign](#key_management_service.mac_sign)
   * [Key_management_service.mac_verify](#key_management_service.mac_verify)
+  * [Key_management_service.raw_decrypt](#key_management_service.raw_decrypt)
+  * [Key_management_service.raw_encrypt](#key_management_service.raw_encrypt)
   * [Key_management_service.restore_crypto_key_version](#key_management_service.restore_crypto_key_version)
   * [Key_management_service.update_crypto_key](#key_management_service.update_crypto_key)
   * [Key_management_service.update_crypto_key_primary_version](#key_management_service.update_crypto_key_primary_version)
@@ -59,6 +67,108 @@ Before running the samples, make sure you've followed the steps outlined in
 `cd ..`
 
 ## Samples
+
+
+
+### Autokey.create_key_handle
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/autokey.create_key_handle.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/autokey.create_key_handle.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/autokey.create_key_handle.js`
+
+
+-----
+
+
+
+
+### Autokey.get_key_handle
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/autokey.get_key_handle.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/autokey.get_key_handle.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/autokey.get_key_handle.js`
+
+
+-----
+
+
+
+
+### Autokey.list_key_handles
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/autokey.list_key_handles.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/autokey.list_key_handles.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/autokey.list_key_handles.js`
+
+
+-----
+
+
+
+
+### Autokey_admin.get_autokey_config
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/autokey_admin.get_autokey_config.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/autokey_admin.get_autokey_config.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/autokey_admin.get_autokey_config.js`
+
+
+-----
+
+
+
+
+### Autokey_admin.show_effective_autokey_config
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/autokey_admin.show_effective_autokey_config.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/autokey_admin.show_effective_autokey_config.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/autokey_admin.show_effective_autokey_config.js`
+
+
+-----
+
+
+
+
+### Autokey_admin.update_autokey_config
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/autokey_admin.update_autokey_config.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/autokey_admin.update_autokey_config.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/autokey_admin.update_autokey_config.js`
+
+
+-----
+
 
 
 
@@ -548,6 +658,40 @@ __Usage:__
 
 
 `node packages/google-cloud-kms/samples/generated/v1/key_management_service.mac_verify.js`
+
+
+-----
+
+
+
+
+### Key_management_service.raw_decrypt
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/key_management_service.raw_decrypt.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/key_management_service.raw_decrypt.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/key_management_service.raw_decrypt.js`
+
+
+-----
+
+
+
+
+### Key_management_service.raw_encrypt
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-kms/samples/generated/v1/key_management_service.raw_encrypt.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-kms/samples/generated/v1/key_management_service.raw_encrypt.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-kms/samples/generated/v1/key_management_service.raw_encrypt.js`
 
 
 -----

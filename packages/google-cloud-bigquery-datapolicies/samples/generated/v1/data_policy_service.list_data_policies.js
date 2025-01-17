@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,9 +49,10 @@ function main(parent) {
    *  are associated with. Currently filter only supports
    *  "policy<span></span>_tag" based filtering and OR based predicates. Sample
    *  filter can be "policy<span></span>_tag:
-   *  `'projects/1/locations/us/taxonomies/2/policyTags/3'`". You may use
-   *  wildcard such as "policy<span></span>_tag:
-   *  `'projects/1/locations/us/taxonomies/2/*'`".
+   *  projects/1/locations/us/taxonomies/2/policyTags/3".
+   *  You may also use wildcard such as "policy<span></span>_tag:
+   *  projects/1/locations/us/taxonomies/2*". Please note that OR predicates
+   *  cannot be used with wildcard filters.
    */
   // const filter = 'abc123'
 
@@ -68,7 +69,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await datapoliciesClient.listDataPoliciesAsync(request);
+    const iterable = datapoliciesClient.listDataPoliciesAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

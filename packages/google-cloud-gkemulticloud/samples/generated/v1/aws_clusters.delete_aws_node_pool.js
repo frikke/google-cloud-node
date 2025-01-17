@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,6 +50,13 @@ function main(name) {
    *  Useful for idempotent deletion.
    */
   // const allowMissing = true
+  /**
+   *  Optional. If set to true, the deletion of
+   *  AwsNodePool google.cloud.gkemulticloud.v1.AwsNodePool  resource will
+   *  succeed even if errors occur during deleting in node pool resources. Using
+   *  this parameter may result in orphaned resources in the node pool.
+   */
+  // const ignoreErrors = true
   /**
    *  The current ETag of the
    *  AwsNodePool google.cloud.gkemulticloud.v1.AwsNodePool.

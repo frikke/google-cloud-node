@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/g_suite_add_ons_client_config.json`.
@@ -77,6 +78,8 @@ export class GSuiteAddOnsClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -117,8 +120,7 @@ export class GSuiteAddOnsClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -126,7 +128,7 @@ export class GSuiteAddOnsClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new GSuiteAddOnsClient({fallback: 'rest'}, gax);
+   *     const client = new GSuiteAddOnsClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -135,8 +137,27 @@ export class GSuiteAddOnsClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof GSuiteAddOnsClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'gsuiteaddons.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -151,7 +172,7 @@ export class GSuiteAddOnsClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -176,23 +197,23 @@ export class GSuiteAddOnsClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -321,19 +342,50 @@ export class GSuiteAddOnsClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'gsuiteaddons.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'gsuiteaddons.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -385,9 +437,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.gsuiteaddons.v1.Authorization | Authorization}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.gsuiteaddons.v1.Authorization|Authorization}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.get_authorization.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_GetAuthorization_async
@@ -399,7 +450,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IAuthorization,
       protos.google.cloud.gsuiteaddons.v1.IGetAuthorizationRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getAuthorization(
@@ -445,7 +496,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IAuthorization,
       protos.google.cloud.gsuiteaddons.v1.IGetAuthorizationRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -483,9 +534,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.gsuiteaddons.v1.Deployment | Deployment}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.gsuiteaddons.v1.Deployment|Deployment}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.create_deployment.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_CreateDeployment_async
@@ -497,7 +547,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment,
       protos.google.cloud.gsuiteaddons.v1.ICreateDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createDeployment(
@@ -543,7 +593,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment,
       protos.google.cloud.gsuiteaddons.v1.ICreateDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -574,9 +624,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.gsuiteaddons.v1.Deployment | Deployment}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.gsuiteaddons.v1.Deployment|Deployment}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.replace_deployment.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_ReplaceDeployment_async
@@ -588,7 +637,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment,
       protos.google.cloud.gsuiteaddons.v1.IReplaceDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   replaceDeployment(
@@ -634,7 +683,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment,
       protos.google.cloud.gsuiteaddons.v1.IReplaceDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -667,9 +716,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.gsuiteaddons.v1.Deployment | Deployment}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.gsuiteaddons.v1.Deployment|Deployment}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.get_deployment.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_GetDeployment_async
@@ -681,7 +729,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment,
       protos.google.cloud.gsuiteaddons.v1.IGetDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getDeployment(
@@ -727,7 +775,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment,
       protos.google.cloud.gsuiteaddons.v1.IGetDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -763,9 +811,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.delete_deployment.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_DeleteDeployment_async
@@ -777,7 +824,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.gsuiteaddons.v1.IDeleteDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteDeployment(
@@ -823,7 +870,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.gsuiteaddons.v1.IDeleteDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -858,9 +905,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.install_deployment.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_InstallDeployment_async
@@ -872,7 +918,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.gsuiteaddons.v1.IInstallDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   installDeployment(
@@ -918,7 +964,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.protobuf.IEmpty,
       protos.google.cloud.gsuiteaddons.v1.IInstallDeploymentRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -953,9 +999,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.uninstall_deployment.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_UninstallDeployment_async
@@ -970,7 +1015,7 @@ export class GSuiteAddOnsClient {
         | protos.google.cloud.gsuiteaddons.v1.IUninstallDeploymentRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   uninstallDeployment(
@@ -1019,7 +1064,7 @@ export class GSuiteAddOnsClient {
         | protos.google.cloud.gsuiteaddons.v1.IUninstallDeploymentRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1052,9 +1097,8 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.gsuiteaddons.v1.InstallStatus | InstallStatus}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.gsuiteaddons.v1.InstallStatus|InstallStatus}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.get_install_status.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_GetInstallStatus_async
@@ -1066,7 +1110,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IInstallStatus,
       protos.google.cloud.gsuiteaddons.v1.IGetInstallStatusRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getInstallStatus(
@@ -1112,7 +1156,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IInstallStatus,
       protos.google.cloud.gsuiteaddons.v1.IGetInstallStatusRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1157,14 +1201,13 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.gsuiteaddons.v1.Deployment | Deployment}.
+   *   The first element of the array is Array of {@link protos.google.cloud.gsuiteaddons.v1.Deployment|Deployment}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listDeploymentsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDeployments(
@@ -1174,7 +1217,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment[],
       protos.google.cloud.gsuiteaddons.v1.IListDeploymentsRequest | null,
-      protos.google.cloud.gsuiteaddons.v1.IListDeploymentsResponse
+      protos.google.cloud.gsuiteaddons.v1.IListDeploymentsResponse,
     ]
   >;
   listDeployments(
@@ -1220,7 +1263,7 @@ export class GSuiteAddOnsClient {
     [
       protos.google.cloud.gsuiteaddons.v1.IDeployment[],
       protos.google.cloud.gsuiteaddons.v1.IListDeploymentsRequest | null,
-      protos.google.cloud.gsuiteaddons.v1.IListDeploymentsResponse
+      protos.google.cloud.gsuiteaddons.v1.IListDeploymentsResponse,
     ]
   > | void {
     request = request || {};
@@ -1264,13 +1307,12 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.gsuiteaddons.v1.Deployment | Deployment} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.gsuiteaddons.v1.Deployment|Deployment} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listDeploymentsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listDeploymentsStream(
@@ -1319,12 +1361,11 @@ export class GSuiteAddOnsClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.gsuiteaddons.v1.Deployment | Deployment}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.gsuiteaddons.v1.Deployment|Deployment}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/g_suite_add_ons.list_deployments.js</caption>
    * region_tag:gsuiteaddons_v1_generated_GSuiteAddOns_ListDeployments_async

@@ -1,5 +1,156 @@
 # Changelog
 
+## [1.15.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.14.0...batch-v1.15.0) (2024-09-13)
+
+
+### Features
+
+* [batch] A new value `CANCELLATION_IN_PROGRESS` is added to enum `State` ([#5670](https://github.com/googleapis/google-cloud-node/issues/5670)) ([ce99894](https://github.com/googleapis/google-cloud-node/commit/ce998945ad320a493c5aef5bc7fdc7474777b21e))
+
+## [1.14.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.13.0...batch-v1.14.0) (2024-09-10)
+
+
+### Features
+
+* **v1:** [batch] promote block_project_ssh_keys support to batch v1 API ([#5653](https://github.com/googleapis/google-cloud-node/issues/5653)) ([de5b8c0](https://github.com/googleapis/google-cloud-node/commit/de5b8c0911b0a4f6e1cd7dfc96602a2c22dee40f))
+
+## [1.13.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.12.0...batch-v1.13.0) (2024-08-09)
+
+
+### Features
+
+* [batch] add block_project_ssh_keys field to the v1alpha job API to block project level ssh keys access to Batch created VMs ([#5604](https://github.com/googleapis/google-cloud-node/issues/5604)) ([238579a](https://github.com/googleapis/google-cloud-node/commit/238579a0a879085d12a6dafdee42fc80a733a269))
+
+## [1.12.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.11.0...batch-v1.12.0) (2024-06-26)
+
+
+### Features
+
+* [batch] add a install_ops_agent field to InstancePolicyOrTemplate for Ops Agent support ([#5500](https://github.com/googleapis/google-cloud-node/issues/5500)) ([f42b77d](https://github.com/googleapis/google-cloud-node/commit/f42b77d76efc700ade152faf7e42b3abf3fb8f44))
+
+## [1.11.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.10.0...batch-v1.11.0) (2024-06-05)
+
+
+### Features
+
+* [batch] add a install_ops_agent field to InstancePolicyOrTemplate for Ops Agent support ([#5426](https://github.com/googleapis/google-cloud-node/issues/5426)) ([6481ff4](https://github.com/googleapis/google-cloud-node/commit/6481ff45908281cbb91d9212918222bcbd1b2981))
+
+## [1.10.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.9.0...batch-v1.10.0) (2024-05-21)
+
+
+### Features
+
+* [batch] update Nodejs generator to send API versions in headers for GAPICs ([#5336](https://github.com/googleapis/google-cloud-node/issues/5336)) ([d89a145](https://github.com/googleapis/google-cloud-node/commit/d89a1456582c1123dc788d064487802917be2564))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [1.9.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.8.0...batch-v1.9.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5022](https://github.com/googleapis/google-cloud-node/issues/5022)) ([b6498d8](https://github.com/googleapis/google-cloud-node/commit/b6498d8580d056817981dedbaa0ea5d82e9dccc2))
+
+## [1.8.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.7.0...batch-v1.8.0) (2024-02-07)
+
+
+### Features
+
+* [batch] Add `run_as_non_root` field to allow user's runnable be executed as non root ([#4982](https://github.com/googleapis/google-cloud-node/issues/4982)) ([4527adf](https://github.com/googleapis/google-cloud-node/commit/4527adfad0856acc0fe27aec36bc16cb845ccc95))
+
+## [1.7.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.6.0...batch-v1.7.0) (2024-01-15)
+
+
+### Features
+
+* [batch] Add `tags` field in Job's AllocationPolicy field in v1alpha ([#4934](https://github.com/googleapis/google-cloud-node/issues/4934)) ([7c5e95c](https://github.com/googleapis/google-cloud-node/commit/7c5e95ca0d44890b35416de97d7b2096eeb16178))
+
+## [1.6.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.5.0...batch-v1.6.0) (2023-11-30)
+
+
+### Features
+
+* [batch] add a CloudLoggingOption and use_generic_task_monitored_resource fields for users to opt out new batch monitored resource in cloud logging ([#4839](https://github.com/googleapis/google-cloud-node/issues/4839)) ([6cc50d9](https://github.com/googleapis/google-cloud-node/commit/6cc50d9b6c1d897f26228ff3e89fcbcc149570c8))
+
+## [1.5.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.4.0...batch-v1.5.0) (2023-11-16)
+
+
+### Features
+
+* [batch] add a CloudLoggingOption and use_generic_task_monitored_resource fields for users to opt out new batch monitored resource in cloud logging ([#4812](https://github.com/googleapis/google-cloud-node/issues/4812)) ([8ab0e5b](https://github.com/googleapis/google-cloud-node/commit/8ab0e5b463557c041415077d61700910579e8c6d))
+
+## [1.4.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.3.0...batch-v1.4.0) (2023-10-24)
+
+
+### Features
+
+* [batch] expose display_name to batch v1 API ([#4742](https://github.com/googleapis/google-cloud-node/issues/4742)) ([d02570b](https://github.com/googleapis/google-cloud-node/commit/d02570b8c4d5c8b99e94f88ef05692b39e21d1d1))
+
+## [1.3.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.2.0...batch-v1.3.0) (2023-10-18)
+
+
+### Features
+
+* [batch] add InstancePolicy.reservation field for restricting jobs to a specific reservation ([#4727](https://github.com/googleapis/google-cloud-node/issues/4727)) ([58e44c9](https://github.com/googleapis/google-cloud-node/commit/58e44c936c28732023cae4e9af539f37587c9a64))
+
+## [1.2.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.1.0...batch-v1.2.0) (2023-09-06)
+
+
+### Features
+
+* [batch] Add more compute resource API descriptions to match with VM's machine type field ([#4564](https://github.com/googleapis/google-cloud-node/issues/4564)) ([dcd8ccf](https://github.com/googleapis/google-cloud-node/commit/dcd8ccf3ca2d19c23e086b7970200f92559aa639))
+* [batch] add stderr_snippet to indicate the real stderr output by runnables to the execution field of status event ([#4570](https://github.com/googleapis/google-cloud-node/issues/4570)) ([fbae423](https://github.com/googleapis/google-cloud-node/commit/fbae42370b68b722949c0aaee6120b9348fe550e))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4583](https://github.com/googleapis/google-cloud-node/issues/4583)) ([c3ddba8](https://github.com/googleapis/google-cloud-node/commit/c3ddba8df9fee6185e36a4e99f7c67b0319f1242))
+
+## [1.1.0](https://github.com/googleapis/google-cloud-node/compare/batch-v1.0.0...batch-v1.1.0) (2023-08-09)
+
+
+### Features
+
+* [batch] Clarify Batch API proto doc about pubsub notifications ([#4503](https://github.com/googleapis/google-cloud-node/issues/4503)) ([ca2296c](https://github.com/googleapis/google-cloud-node/commit/ca2296c5d180e00f41baca3a03fa0f3f4592fbb3))
+* [batch] Clarify Batch API proto doc about pubsub notifications ([#4518](https://github.com/googleapis/google-cloud-node/issues/4518)) ([e3fb6ad](https://github.com/googleapis/google-cloud-node/commit/e3fb6ad7595f85b0e2f06fedeabb18df4364b224))
+
+## [1.0.0](https://github.com/googleapis/google-cloud-node/compare/batch-v0.10.0...batch-v1.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Features
+
+* [batch] Add comment to the unsupported order_by field of ListTasksRequest ([#4477](https://github.com/googleapis/google-cloud-node/issues/4477)) ([368606d](https://github.com/googleapis/google-cloud-node/commit/368606dac9ca2d45603ee424a19af8a55b465ad7))
+
+
+### Bug Fixes
+
+* [batch] fix typings for IAM methods ([#4445](https://github.com/googleapis/google-cloud-node/issues/4445)) ([9f9015b](https://github.com/googleapis/google-cloud-node/commit/9f9015bb42598435bb37cfb6181fff8a0e826f83))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [0.10.0](https://github.com/googleapis/google-cloud-node/compare/batch-v0.9.0...batch-v0.10.0) (2023-07-04)
+
+
+### Features
+
+* [batch] Add gpu driver version field ([#4391](https://github.com/googleapis/google-cloud-node/issues/4391)) ([ec08d08](https://github.com/googleapis/google-cloud-node/commit/ec08d08cd2d8c03b61d9e7a8e7879ecfcb83475f))
+
+## [0.9.0](https://github.com/googleapis/google-cloud-node/compare/batch-v0.8.0...batch-v0.9.0) (2023-06-14)
+
+
+### Features
+
+* [batch] implement minCpuPlatform ([d4d75c6](https://github.com/googleapis/google-cloud-node/commit/d4d75c629a19649256072d29766e2e692c771ee9))
+* Update TaskGroup doc ([d4d75c6](https://github.com/googleapis/google-cloud-node/commit/d4d75c629a19649256072d29766e2e692c771ee9))
+* **v1:** [batch] Add support for scheduling_policy ([#4340](https://github.com/googleapis/google-cloud-node/issues/4340)) ([d4d75c6](https://github.com/googleapis/google-cloud-node/commit/d4d75c629a19649256072d29766e2e692c771ee9))
+
 ## [0.8.0](https://github.com/googleapis/google-cloud-node/compare/batch-v0.7.1...batch-v0.8.0) (2023-05-20)
 
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ function main(name) {
   /**
    *  Optional. The image pull secret content for the registry, if not public.
    */
-  // const imagePullSecretContent = 'Buffer.from('string')'
+  // const imagePullSecretContent = Buffer.from('string')
 
   // Imports the Gkehub library
   const {GkeHubMembershipServiceClient} = require('@google-cloud/gke-hub').v1beta1;

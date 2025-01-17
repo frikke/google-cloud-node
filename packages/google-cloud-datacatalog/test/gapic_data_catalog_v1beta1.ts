@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -129,16 +129,94 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1beta1.DataCatalogClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath =
-        datacatalogModule.v1beta1.DataCatalogClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'datacatalog.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint =
-        datacatalogModule.v1beta1.DataCatalogClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath =
+          datacatalogModule.v1beta1.DataCatalogClient.servicePath;
+        assert.strictEqual(servicePath, 'datacatalog.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint =
+          datacatalogModule.v1beta1.DataCatalogClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'datacatalog.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'datacatalog.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'datacatalog.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new datacatalogModule.v1beta1.DataCatalogClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'datacatalog.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new datacatalogModule.v1beta1.DataCatalogClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'datacatalog.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new datacatalogModule.v1beta1.DataCatalogClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -2290,6 +2368,143 @@ describe('v1beta1.DataCatalogClient', () => {
     });
   });
 
+  describe('renameTagTemplateFieldEnumValue', () => {
+    it('invokes renameTagTemplateFieldEnumValue without error', async () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.datacatalog.v1beta1.TagTemplateField()
+      );
+      client.innerApiCalls.renameTagTemplateFieldEnumValue =
+        stubSimpleCall(expectedResponse);
+      const [response] = await client.renameTagTemplateFieldEnumValue(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.renameTagTemplateFieldEnumValue as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.renameTagTemplateFieldEnumValue as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes renameTagTemplateFieldEnumValue without error using callback', async () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.datacatalog.v1beta1.TagTemplateField()
+      );
+      client.innerApiCalls.renameTagTemplateFieldEnumValue =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.renameTagTemplateFieldEnumValue(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.datacatalog.v1beta1.ITagTemplateField | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.renameTagTemplateFieldEnumValue as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.renameTagTemplateFieldEnumValue as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes renameTagTemplateFieldEnumValue with error', async () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedHeaderRequestParams = `name=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.renameTagTemplateFieldEnumValue = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.renameTagTemplateFieldEnumValue(request),
+        expectedError
+      );
+      const actualRequest = (
+        client.innerApiCalls.renameTagTemplateFieldEnumValue as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.renameTagTemplateFieldEnumValue as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes renameTagTemplateFieldEnumValue with closed client', async () => {
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.v1beta1.RenameTagTemplateFieldEnumValueRequest',
+        ['name']
+      );
+      request.name = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(
+        client.renameTagTemplateFieldEnumValue(request),
+        expectedError
+      );
+    });
+  });
+
   describe('deleteTagTemplateField', () => {
     it('invokes deleteTagTemplateField without error', async () => {
       const client = new datacatalogModule.v1beta1.DataCatalogClient({
@@ -3627,9 +3842,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntryGroups.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3677,9 +3892,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntryGroups.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3727,9 +3942,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntryGroups.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3768,9 +3983,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntryGroups.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -3955,9 +4170,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntries.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4006,9 +4221,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntries.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4055,9 +4270,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntries.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4097,9 +4312,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listEntries.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -4281,9 +4496,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listTags.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4332,9 +4547,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listTags.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4380,9 +4595,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listTags.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -4421,9 +4636,9 @@ describe('v1beta1.DataCatalogClient', () => {
       assert(
         (client.descriptors.page.listTags.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -4958,6 +5173,121 @@ describe('v1beta1.DataCatalogClient', () => {
         assert.strictEqual(result, 'fieldValue');
         assert(
           (client.pathTemplates.tagTemplateFieldPathTemplate.match as SinonStub)
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+    });
+
+    describe('tagTemplateFieldEnumValue', () => {
+      const fakePath = '/rendered/path/tagTemplateFieldEnumValue';
+      const expectedParameters = {
+        project: 'projectValue',
+        location: 'locationValue',
+        tag_template: 'tagTemplateValue',
+        tag_template_field_id: 'tagTemplateFieldIdValue',
+        enum_value_display_name: 'enumValueDisplayNameValue',
+      };
+      const client = new datacatalogModule.v1beta1.DataCatalogClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      client.pathTemplates.tagTemplateFieldEnumValuePathTemplate.render = sinon
+        .stub()
+        .returns(fakePath);
+      client.pathTemplates.tagTemplateFieldEnumValuePathTemplate.match = sinon
+        .stub()
+        .returns(expectedParameters);
+
+      it('tagTemplateFieldEnumValuePath', () => {
+        const result = client.tagTemplateFieldEnumValuePath(
+          'projectValue',
+          'locationValue',
+          'tagTemplateValue',
+          'tagTemplateFieldIdValue',
+          'enumValueDisplayNameValue'
+        );
+        assert.strictEqual(result, fakePath);
+        assert(
+          (
+            client.pathTemplates.tagTemplateFieldEnumValuePathTemplate
+              .render as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(expectedParameters)
+        );
+      });
+
+      it('matchProjectFromTagTemplateFieldEnumValueName', () => {
+        const result =
+          client.matchProjectFromTagTemplateFieldEnumValueName(fakePath);
+        assert.strictEqual(result, 'projectValue');
+        assert(
+          (
+            client.pathTemplates.tagTemplateFieldEnumValuePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchLocationFromTagTemplateFieldEnumValueName', () => {
+        const result =
+          client.matchLocationFromTagTemplateFieldEnumValueName(fakePath);
+        assert.strictEqual(result, 'locationValue');
+        assert(
+          (
+            client.pathTemplates.tagTemplateFieldEnumValuePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTagTemplateFromTagTemplateFieldEnumValueName', () => {
+        const result =
+          client.matchTagTemplateFromTagTemplateFieldEnumValueName(fakePath);
+        assert.strictEqual(result, 'tagTemplateValue');
+        assert(
+          (
+            client.pathTemplates.tagTemplateFieldEnumValuePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchTagTemplateFieldIdFromTagTemplateFieldEnumValueName', () => {
+        const result =
+          client.matchTagTemplateFieldIdFromTagTemplateFieldEnumValueName(
+            fakePath
+          );
+        assert.strictEqual(result, 'tagTemplateFieldIdValue');
+        assert(
+          (
+            client.pathTemplates.tagTemplateFieldEnumValuePathTemplate
+              .match as SinonStub
+          )
+            .getCall(-1)
+            .calledWith(fakePath)
+        );
+      });
+
+      it('matchEnumValueDisplayNameFromTagTemplateFieldEnumValueName', () => {
+        const result =
+          client.matchEnumValueDisplayNameFromTagTemplateFieldEnumValueName(
+            fakePath
+          );
+        assert.strictEqual(result, 'enumValueDisplayNameValue');
+        assert(
+          (
+            client.pathTemplates.tagTemplateFieldEnumValuePathTemplate
+              .match as SinonStub
+          )
             .getCall(-1)
             .calledWith(fakePath)
         );

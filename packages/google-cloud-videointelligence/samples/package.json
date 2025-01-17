@@ -9,14 +9,14 @@
   "author": "Google Inc.",
   "repository": "googleapis/nodejs-video-intelligence",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "scripts": {
     "test": "mocha test --timeout=800000"
   },
   "dependencies": {
-    "@google-cloud/video-intelligence": "^4.2.2",
-    "yargs": "^16.0.0"
+    "@google-cloud/video-intelligence": "^5.3.0",
+    "yargs": "^17.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",

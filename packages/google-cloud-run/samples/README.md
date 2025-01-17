@@ -12,6 +12,8 @@
 
 * [Before you begin](#before-you-begin)
 * [Samples](#samples)
+  * [Builds.submit_build](#builds.submit_build)
+  * [Executions.cancel_execution](#executions.cancel_execution)
   * [Executions.delete_execution](#executions.delete_execution)
   * [Executions.get_execution](#executions.get_execution)
   * [Executions.list_executions](#executions.list_executions)
@@ -38,7 +40,6 @@
   * [Tasks.get_task](#tasks.get_task)
   * [Tasks.list_tasks](#tasks.list_tasks)
   * [Quickstart](#quickstart)
-  * [Quickstart](#quickstart)
 
 ## Before you begin
 
@@ -52,6 +53,40 @@ Before running the samples, make sure you've followed the steps outlined in
 `cd ..`
 
 ## Samples
+
+
+
+### Builds.submit_build
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-run/samples/generated/v2/builds.submit_build.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-run/samples/generated/v2/builds.submit_build.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-run/samples/generated/v2/builds.submit_build.js`
+
+
+-----
+
+
+
+
+### Executions.cancel_execution
+
+View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-run/samples/generated/v2/executions.cancel_execution.js).
+
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-run/samples/generated/v2/executions.cancel_execution.js,samples/README.md)
+
+__Usage:__
+
+
+`node packages/google-cloud-run/samples/generated/v2/executions.cancel_execution.js`
+
+
+-----
+
 
 
 
@@ -490,23 +525,6 @@ __Usage:__
 
 
 `node packages/google-cloud-run/samples/quickstart.js`
-
-
------
-
-
-
-
-### Quickstart
-
-View the [source code](https://github.com/googleapis/google-cloud-node/blob/main/packages/google-cloud-run/samples/test/quickstart.js).
-
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/googleapis/google-cloud-node&page=editor&open_in_editor=packages/google-cloud-run/samples/test/quickstart.js,samples/README.md)
-
-__Usage:__
-
-
-`node packages/google-cloud-run/samples/test/quickstart.js`
 
 
 

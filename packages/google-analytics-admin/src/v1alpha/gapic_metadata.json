@@ -50,46 +50,6 @@
                 "updateProperty"
               ]
             },
-            "GetUserLink": {
-              "methods": [
-                "getUserLink"
-              ]
-            },
-            "BatchGetUserLinks": {
-              "methods": [
-                "batchGetUserLinks"
-              ]
-            },
-            "CreateUserLink": {
-              "methods": [
-                "createUserLink"
-              ]
-            },
-            "BatchCreateUserLinks": {
-              "methods": [
-                "batchCreateUserLinks"
-              ]
-            },
-            "UpdateUserLink": {
-              "methods": [
-                "updateUserLink"
-              ]
-            },
-            "BatchUpdateUserLinks": {
-              "methods": [
-                "batchUpdateUserLinks"
-              ]
-            },
-            "DeleteUserLink": {
-              "methods": [
-                "deleteUserLink"
-              ]
-            },
-            "BatchDeleteUserLinks": {
-              "methods": [
-                "batchDeleteUserLinks"
-              ]
-            },
             "CreateFirebaseLink": {
               "methods": [
                 "createFirebaseLink"
@@ -150,6 +110,26 @@
                 "acknowledgeUserDataCollection"
               ]
             },
+            "GetSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "getSKAdNetworkConversionValueSchema"
+              ]
+            },
+            "CreateSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "createSKAdNetworkConversionValueSchema"
+              ]
+            },
+            "DeleteSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "deleteSKAdNetworkConversionValueSchema"
+              ]
+            },
+            "UpdateSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "updateSKAdNetworkConversionValueSchema"
+              ]
+            },
             "GetGoogleSignalsSettings": {
               "methods": [
                 "getGoogleSignalsSettings"
@@ -165,6 +145,11 @@
                 "createConversionEvent"
               ]
             },
+            "UpdateConversionEvent": {
+              "methods": [
+                "updateConversionEvent"
+              ]
+            },
             "GetConversionEvent": {
               "methods": [
                 "getConversionEvent"
@@ -173,6 +158,26 @@
             "DeleteConversionEvent": {
               "methods": [
                 "deleteConversionEvent"
+              ]
+            },
+            "CreateKeyEvent": {
+              "methods": [
+                "createKeyEvent"
+              ]
+            },
+            "UpdateKeyEvent": {
+              "methods": [
+                "updateKeyEvent"
+              ]
+            },
+            "GetKeyEvent": {
+              "methods": [
+                "getKeyEvent"
+              ]
+            },
+            "DeleteKeyEvent": {
+              "methods": [
+                "deleteKeyEvent"
               ]
             },
             "GetDisplayVideo360AdvertiserLink": {
@@ -435,9 +440,24 @@
                 "fetchAutomatedGa4ConfigurationOptOut"
               ]
             },
+            "CreateBigQueryLink": {
+              "methods": [
+                "createBigQueryLink"
+              ]
+            },
             "GetBigQueryLink": {
               "methods": [
                 "getBigQueryLink"
+              ]
+            },
+            "DeleteBigQueryLink": {
+              "methods": [
+                "deleteBigQueryLink"
+              ]
+            },
+            "UpdateBigQueryLink": {
+              "methods": [
+                "updateBigQueryLink"
               ]
             },
             "GetEnhancedMeasurementSettings": {
@@ -505,6 +525,106 @@
                 "deleteEventCreateRule"
               ]
             },
+            "GetEventEditRule": {
+              "methods": [
+                "getEventEditRule"
+              ]
+            },
+            "CreateEventEditRule": {
+              "methods": [
+                "createEventEditRule"
+              ]
+            },
+            "UpdateEventEditRule": {
+              "methods": [
+                "updateEventEditRule"
+              ]
+            },
+            "DeleteEventEditRule": {
+              "methods": [
+                "deleteEventEditRule"
+              ]
+            },
+            "ReorderEventEditRules": {
+              "methods": [
+                "reorderEventEditRules"
+              ]
+            },
+            "UpdateDataRedactionSettings": {
+              "methods": [
+                "updateDataRedactionSettings"
+              ]
+            },
+            "GetDataRedactionSettings": {
+              "methods": [
+                "getDataRedactionSettings"
+              ]
+            },
+            "GetCalculatedMetric": {
+              "methods": [
+                "getCalculatedMetric"
+              ]
+            },
+            "CreateCalculatedMetric": {
+              "methods": [
+                "createCalculatedMetric"
+              ]
+            },
+            "UpdateCalculatedMetric": {
+              "methods": [
+                "updateCalculatedMetric"
+              ]
+            },
+            "DeleteCalculatedMetric": {
+              "methods": [
+                "deleteCalculatedMetric"
+              ]
+            },
+            "CreateRollupProperty": {
+              "methods": [
+                "createRollupProperty"
+              ]
+            },
+            "GetRollupPropertySourceLink": {
+              "methods": [
+                "getRollupPropertySourceLink"
+              ]
+            },
+            "CreateRollupPropertySourceLink": {
+              "methods": [
+                "createRollupPropertySourceLink"
+              ]
+            },
+            "DeleteRollupPropertySourceLink": {
+              "methods": [
+                "deleteRollupPropertySourceLink"
+              ]
+            },
+            "ProvisionSubproperty": {
+              "methods": [
+                "provisionSubproperty"
+              ]
+            },
+            "CreateSubpropertyEventFilter": {
+              "methods": [
+                "createSubpropertyEventFilter"
+              ]
+            },
+            "GetSubpropertyEventFilter": {
+              "methods": [
+                "getSubpropertyEventFilter"
+              ]
+            },
+            "UpdateSubpropertyEventFilter": {
+              "methods": [
+                "updateSubpropertyEventFilter"
+              ]
+            },
+            "DeleteSubpropertyEventFilter": {
+              "methods": [
+                "deleteSubpropertyEventFilter"
+              ]
+            },
             "ListAccounts": {
               "methods": [
                 "listAccounts",
@@ -524,20 +644,6 @@
                 "listProperties",
                 "listPropertiesStream",
                 "listPropertiesAsync"
-              ]
-            },
-            "ListUserLinks": {
-              "methods": [
-                "listUserLinks",
-                "listUserLinksStream",
-                "listUserLinksAsync"
-              ]
-            },
-            "AuditUserLinks": {
-              "methods": [
-                "auditUserLinks",
-                "auditUserLinksStream",
-                "auditUserLinksAsync"
               ]
             },
             "ListFirebaseLinks": {
@@ -561,6 +667,13 @@
                 "listMeasurementProtocolSecretsAsync"
               ]
             },
+            "ListSKAdNetworkConversionValueSchemas": {
+              "methods": [
+                "listSKAdNetworkConversionValueSchemas",
+                "listSKAdNetworkConversionValueSchemasStream",
+                "listSKAdNetworkConversionValueSchemasAsync"
+              ]
+            },
             "SearchChangeHistoryEvents": {
               "methods": [
                 "searchChangeHistoryEvents",
@@ -573,6 +686,13 @@
                 "listConversionEvents",
                 "listConversionEventsStream",
                 "listConversionEventsAsync"
+              ]
+            },
+            "ListKeyEvents": {
+              "methods": [
+                "listKeyEvents",
+                "listKeyEventsStream",
+                "listKeyEventsAsync"
               ]
             },
             "ListDisplayVideo360AdvertiserLinks": {
@@ -664,6 +784,34 @@
                 "listEventCreateRules",
                 "listEventCreateRulesStream",
                 "listEventCreateRulesAsync"
+              ]
+            },
+            "ListEventEditRules": {
+              "methods": [
+                "listEventEditRules",
+                "listEventEditRulesStream",
+                "listEventEditRulesAsync"
+              ]
+            },
+            "ListCalculatedMetrics": {
+              "methods": [
+                "listCalculatedMetrics",
+                "listCalculatedMetricsStream",
+                "listCalculatedMetricsAsync"
+              ]
+            },
+            "ListRollupPropertySourceLinks": {
+              "methods": [
+                "listRollupPropertySourceLinks",
+                "listRollupPropertySourceLinksStream",
+                "listRollupPropertySourceLinksAsync"
+              ]
+            },
+            "ListSubpropertyEventFilters": {
+              "methods": [
+                "listSubpropertyEventFilters",
+                "listSubpropertyEventFiltersStream",
+                "listSubpropertyEventFiltersAsync"
               ]
             }
           }
@@ -711,46 +859,6 @@
                 "updateProperty"
               ]
             },
-            "GetUserLink": {
-              "methods": [
-                "getUserLink"
-              ]
-            },
-            "BatchGetUserLinks": {
-              "methods": [
-                "batchGetUserLinks"
-              ]
-            },
-            "CreateUserLink": {
-              "methods": [
-                "createUserLink"
-              ]
-            },
-            "BatchCreateUserLinks": {
-              "methods": [
-                "batchCreateUserLinks"
-              ]
-            },
-            "UpdateUserLink": {
-              "methods": [
-                "updateUserLink"
-              ]
-            },
-            "BatchUpdateUserLinks": {
-              "methods": [
-                "batchUpdateUserLinks"
-              ]
-            },
-            "DeleteUserLink": {
-              "methods": [
-                "deleteUserLink"
-              ]
-            },
-            "BatchDeleteUserLinks": {
-              "methods": [
-                "batchDeleteUserLinks"
-              ]
-            },
             "CreateFirebaseLink": {
               "methods": [
                 "createFirebaseLink"
@@ -811,6 +919,26 @@
                 "acknowledgeUserDataCollection"
               ]
             },
+            "GetSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "getSKAdNetworkConversionValueSchema"
+              ]
+            },
+            "CreateSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "createSKAdNetworkConversionValueSchema"
+              ]
+            },
+            "DeleteSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "deleteSKAdNetworkConversionValueSchema"
+              ]
+            },
+            "UpdateSKAdNetworkConversionValueSchema": {
+              "methods": [
+                "updateSKAdNetworkConversionValueSchema"
+              ]
+            },
             "GetGoogleSignalsSettings": {
               "methods": [
                 "getGoogleSignalsSettings"
@@ -826,6 +954,11 @@
                 "createConversionEvent"
               ]
             },
+            "UpdateConversionEvent": {
+              "methods": [
+                "updateConversionEvent"
+              ]
+            },
             "GetConversionEvent": {
               "methods": [
                 "getConversionEvent"
@@ -834,6 +967,26 @@
             "DeleteConversionEvent": {
               "methods": [
                 "deleteConversionEvent"
+              ]
+            },
+            "CreateKeyEvent": {
+              "methods": [
+                "createKeyEvent"
+              ]
+            },
+            "UpdateKeyEvent": {
+              "methods": [
+                "updateKeyEvent"
+              ]
+            },
+            "GetKeyEvent": {
+              "methods": [
+                "getKeyEvent"
+              ]
+            },
+            "DeleteKeyEvent": {
+              "methods": [
+                "deleteKeyEvent"
               ]
             },
             "GetDisplayVideo360AdvertiserLink": {
@@ -1096,9 +1249,24 @@
                 "fetchAutomatedGa4ConfigurationOptOut"
               ]
             },
+            "CreateBigQueryLink": {
+              "methods": [
+                "createBigQueryLink"
+              ]
+            },
             "GetBigQueryLink": {
               "methods": [
                 "getBigQueryLink"
+              ]
+            },
+            "DeleteBigQueryLink": {
+              "methods": [
+                "deleteBigQueryLink"
+              ]
+            },
+            "UpdateBigQueryLink": {
+              "methods": [
+                "updateBigQueryLink"
               ]
             },
             "GetEnhancedMeasurementSettings": {
@@ -1166,6 +1334,106 @@
                 "deleteEventCreateRule"
               ]
             },
+            "GetEventEditRule": {
+              "methods": [
+                "getEventEditRule"
+              ]
+            },
+            "CreateEventEditRule": {
+              "methods": [
+                "createEventEditRule"
+              ]
+            },
+            "UpdateEventEditRule": {
+              "methods": [
+                "updateEventEditRule"
+              ]
+            },
+            "DeleteEventEditRule": {
+              "methods": [
+                "deleteEventEditRule"
+              ]
+            },
+            "ReorderEventEditRules": {
+              "methods": [
+                "reorderEventEditRules"
+              ]
+            },
+            "UpdateDataRedactionSettings": {
+              "methods": [
+                "updateDataRedactionSettings"
+              ]
+            },
+            "GetDataRedactionSettings": {
+              "methods": [
+                "getDataRedactionSettings"
+              ]
+            },
+            "GetCalculatedMetric": {
+              "methods": [
+                "getCalculatedMetric"
+              ]
+            },
+            "CreateCalculatedMetric": {
+              "methods": [
+                "createCalculatedMetric"
+              ]
+            },
+            "UpdateCalculatedMetric": {
+              "methods": [
+                "updateCalculatedMetric"
+              ]
+            },
+            "DeleteCalculatedMetric": {
+              "methods": [
+                "deleteCalculatedMetric"
+              ]
+            },
+            "CreateRollupProperty": {
+              "methods": [
+                "createRollupProperty"
+              ]
+            },
+            "GetRollupPropertySourceLink": {
+              "methods": [
+                "getRollupPropertySourceLink"
+              ]
+            },
+            "CreateRollupPropertySourceLink": {
+              "methods": [
+                "createRollupPropertySourceLink"
+              ]
+            },
+            "DeleteRollupPropertySourceLink": {
+              "methods": [
+                "deleteRollupPropertySourceLink"
+              ]
+            },
+            "ProvisionSubproperty": {
+              "methods": [
+                "provisionSubproperty"
+              ]
+            },
+            "CreateSubpropertyEventFilter": {
+              "methods": [
+                "createSubpropertyEventFilter"
+              ]
+            },
+            "GetSubpropertyEventFilter": {
+              "methods": [
+                "getSubpropertyEventFilter"
+              ]
+            },
+            "UpdateSubpropertyEventFilter": {
+              "methods": [
+                "updateSubpropertyEventFilter"
+              ]
+            },
+            "DeleteSubpropertyEventFilter": {
+              "methods": [
+                "deleteSubpropertyEventFilter"
+              ]
+            },
             "ListAccounts": {
               "methods": [
                 "listAccounts",
@@ -1185,20 +1453,6 @@
                 "listProperties",
                 "listPropertiesStream",
                 "listPropertiesAsync"
-              ]
-            },
-            "ListUserLinks": {
-              "methods": [
-                "listUserLinks",
-                "listUserLinksStream",
-                "listUserLinksAsync"
-              ]
-            },
-            "AuditUserLinks": {
-              "methods": [
-                "auditUserLinks",
-                "auditUserLinksStream",
-                "auditUserLinksAsync"
               ]
             },
             "ListFirebaseLinks": {
@@ -1222,6 +1476,13 @@
                 "listMeasurementProtocolSecretsAsync"
               ]
             },
+            "ListSKAdNetworkConversionValueSchemas": {
+              "methods": [
+                "listSKAdNetworkConversionValueSchemas",
+                "listSKAdNetworkConversionValueSchemasStream",
+                "listSKAdNetworkConversionValueSchemasAsync"
+              ]
+            },
             "SearchChangeHistoryEvents": {
               "methods": [
                 "searchChangeHistoryEvents",
@@ -1234,6 +1495,13 @@
                 "listConversionEvents",
                 "listConversionEventsStream",
                 "listConversionEventsAsync"
+              ]
+            },
+            "ListKeyEvents": {
+              "methods": [
+                "listKeyEvents",
+                "listKeyEventsStream",
+                "listKeyEventsAsync"
               ]
             },
             "ListDisplayVideo360AdvertiserLinks": {
@@ -1325,6 +1593,34 @@
                 "listEventCreateRules",
                 "listEventCreateRulesStream",
                 "listEventCreateRulesAsync"
+              ]
+            },
+            "ListEventEditRules": {
+              "methods": [
+                "listEventEditRules",
+                "listEventEditRulesStream",
+                "listEventEditRulesAsync"
+              ]
+            },
+            "ListCalculatedMetrics": {
+              "methods": [
+                "listCalculatedMetrics",
+                "listCalculatedMetricsStream",
+                "listCalculatedMetricsAsync"
+              ]
+            },
+            "ListRollupPropertySourceLinks": {
+              "methods": [
+                "listRollupPropertySourceLinks",
+                "listRollupPropertySourceLinksStream",
+                "listRollupPropertySourceLinksAsync"
+              ]
+            },
+            "ListSubpropertyEventFilters": {
+              "methods": [
+                "listSubpropertyEventFilters",
+                "listSubpropertyEventFiltersStream",
+                "listSubpropertyEventFiltersAsync"
               ]
             }
           }

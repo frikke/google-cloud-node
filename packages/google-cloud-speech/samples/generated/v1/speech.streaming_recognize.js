@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ function main() {
    *  pure binary representation (not base64). See
    *  content limits (https://cloud.google.com/speech-to-text/quotas#content).
    */
-  // const audioContent = 'Buffer.from('string')'
+  // const audioContent = Buffer.from('string')
 
   // Imports the Speech library
   const {SpeechClient} = require('@google-cloud/speech').v1;
@@ -63,7 +63,7 @@ function main() {
     stream.on('error', (err) => { throw(err) });
     stream.on('end', () => { /* API call completed */ });
     stream.write(request);
-    stream.end(); 
+    stream.end();
   }
 
   callStreamingRecognize();

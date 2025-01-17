@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ function main() {
   /**
    *  The notes to create.
    */
-  // const notes = 1234
+  // const notes = [1,2,3,4]
 
   // Imports the Containeranalysis library
   const {GrafeasV1Beta1Client} = require('@google-cloud/containeranalysis').v1beta1;

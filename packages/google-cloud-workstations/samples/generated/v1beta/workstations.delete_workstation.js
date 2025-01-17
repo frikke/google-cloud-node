@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,12 +33,12 @@ function main(name) {
    */
   // const name = 'abc123'
   /**
-   *  If set, validate the request and preview the review, but do not actually
-   *  apply it.
+   *  Optional. If set, validate the request and preview the review, but do not
+   *  actually apply it.
    */
   // const validateOnly = true
   /**
-   *  If set, the request will be rejected if the latest version of the
+   *  Optional. If set, the request will be rejected if the latest version of the
    *  workstation on the server does not have this ETag.
    */
   // const etag = 'abc123'

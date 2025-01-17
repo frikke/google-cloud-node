@@ -50,9 +50,44 @@
                 "migrateKey"
               ]
             },
+            "AddIpOverride": {
+              "methods": [
+                "addIpOverride"
+              ]
+            },
+            "RemoveIpOverride": {
+              "methods": [
+                "removeIpOverride"
+              ]
+            },
             "GetMetrics": {
               "methods": [
                 "getMetrics"
+              ]
+            },
+            "CreateFirewallPolicy": {
+              "methods": [
+                "createFirewallPolicy"
+              ]
+            },
+            "GetFirewallPolicy": {
+              "methods": [
+                "getFirewallPolicy"
+              ]
+            },
+            "UpdateFirewallPolicy": {
+              "methods": [
+                "updateFirewallPolicy"
+              ]
+            },
+            "DeleteFirewallPolicy": {
+              "methods": [
+                "deleteFirewallPolicy"
+              ]
+            },
+            "ReorderFirewallPolicies": {
+              "methods": [
+                "reorderFirewallPolicies"
               ]
             },
             "ListKeys": {
@@ -60,6 +95,20 @@
                 "listKeys",
                 "listKeysStream",
                 "listKeysAsync"
+              ]
+            },
+            "ListIpOverrides": {
+              "methods": [
+                "listIpOverrides",
+                "listIpOverridesStream",
+                "listIpOverridesAsync"
+              ]
+            },
+            "ListFirewallPolicies": {
+              "methods": [
+                "listFirewallPolicies",
+                "listFirewallPoliciesStream",
+                "listFirewallPoliciesAsync"
               ]
             },
             "ListRelatedAccountGroups": {
@@ -128,9 +177,44 @@
                 "migrateKey"
               ]
             },
+            "AddIpOverride": {
+              "methods": [
+                "addIpOverride"
+              ]
+            },
+            "RemoveIpOverride": {
+              "methods": [
+                "removeIpOverride"
+              ]
+            },
             "GetMetrics": {
               "methods": [
                 "getMetrics"
+              ]
+            },
+            "CreateFirewallPolicy": {
+              "methods": [
+                "createFirewallPolicy"
+              ]
+            },
+            "GetFirewallPolicy": {
+              "methods": [
+                "getFirewallPolicy"
+              ]
+            },
+            "UpdateFirewallPolicy": {
+              "methods": [
+                "updateFirewallPolicy"
+              ]
+            },
+            "DeleteFirewallPolicy": {
+              "methods": [
+                "deleteFirewallPolicy"
+              ]
+            },
+            "ReorderFirewallPolicies": {
+              "methods": [
+                "reorderFirewallPolicies"
               ]
             },
             "ListKeys": {
@@ -138,6 +222,20 @@
                 "listKeys",
                 "listKeysStream",
                 "listKeysAsync"
+              ]
+            },
+            "ListIpOverrides": {
+              "methods": [
+                "listIpOverrides",
+                "listIpOverridesStream",
+                "listIpOverridesAsync"
+              ]
+            },
+            "ListFirewallPolicies": {
+              "methods": [
+                "listFirewallPolicies",
+                "listFirewallPoliciesStream",
+                "listFirewallPoliciesAsync"
               ]
             },
             "ListRelatedAccountGroups": {

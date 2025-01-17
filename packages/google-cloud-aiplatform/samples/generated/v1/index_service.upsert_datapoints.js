@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,15 @@ function main(index) {
   /**
    *  A list of datapoints to be created/updated.
    */
-  // const datapoints = 1234
+  // const datapoints = [1,2,3,4]
+  /**
+   *  Optional. Update mask is used to specify the fields to be overwritten in
+   *  the datapoints by the update. The fields specified in the update_mask are
+   *  relative to each IndexDatapoint inside datapoints, not the full request.
+   *  Updatable fields:
+   *    * Use `all_restricts` to update both restricts and numeric_restricts.
+   */
+  // const updateMask = {}
 
   // Imports the Aiplatform library
   const {IndexServiceClient} = require('@google-cloud/aiplatform').v1;

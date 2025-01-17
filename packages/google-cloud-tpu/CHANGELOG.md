@@ -1,5 +1,84 @@
 # Changelog
 
+## [3.7.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.6.0...tpu-v3.7.0) (2025-01-16)
+
+
+### Features
+
+* [tpu] Promote network_configs field to v2 API ([#5945](https://github.com/googleapis/google-cloud-node/issues/5945)) ([df0d206](https://github.com/googleapis/google-cloud-node/commit/df0d2064ff860da7c2029de9dd3f9a1aab41b5c8))
+
+## [3.6.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.5.0...tpu-v3.6.0) (2025-01-11)
+
+
+### Features
+
+* [tpu] Add UNKNOWN to TPU node state, This state will be used to prevent a node from being marked as READY during diagnose after it has failed repair ([#5941](https://github.com/googleapis/google-cloud-node/issues/5941)) ([e575e15](https://github.com/googleapis/google-cloud-node/commit/e575e15101e34887731c4bab60e81bac504d7683))
+
+## [3.5.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.4.0...tpu-v3.5.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [3.4.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.3.0...tpu-v3.4.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5191](https://github.com/googleapis/google-cloud-node/issues/5191)) ([57567db](https://github.com/googleapis/google-cloud-node/commit/57567db36033ca53ae2f54e6517b8cd12145bb82))
+
+## [3.3.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.2.1...tpu-v3.3.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5028](https://github.com/googleapis/google-cloud-node/issues/5028)) ([852f3eb](https://github.com/googleapis/google-cloud-node/commit/852f3ebf065ee24e910580b9a1fc365acb3a744a))
+
+## [3.2.1](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.2.0...tpu-v3.2.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* [Many APIs] improve retry logic for streaming API calls ([#4968](https://github.com/googleapis/google-cloud-node/issues/4968)) ([7fbf16c](https://github.com/googleapis/google-cloud-node/commit/7fbf16c98d0521a0533ab36a00f6ec932c72a02e))
+
+## [3.2.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.1.0...tpu-v3.2.0) (2023-09-20)
+
+
+### Features
+
+* [tpu] added new WAITING_FOR_RESOURCES state for QueuedResourceState ([#4682](https://github.com/googleapis/google-cloud-node/issues/4682)) ([f8dcd67](https://github.com/googleapis/google-cloud-node/commit/f8dcd673bbc0c28e2b2d08acd1bca1183781951b))
+
+## [3.1.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v3.0.0...tpu-v3.1.0) (2023-09-06)
+
+
+### Features
+
+* [tpu] Add ResetQueueResource to the TPU service ([#4577](https://github.com/googleapis/google-cloud-node/issues/4577)) ([c395570](https://github.com/googleapis/google-cloud-node/commit/c3955701db6a18741ad837668282ab0907009e43))
+* [tpu] publish boot_disk_config to support CHD with KMS ([#4606](https://github.com/googleapis/google-cloud-node/issues/4606)) ([0bf8b21](https://github.com/googleapis/google-cloud-node/commit/0bf8b2169a448f87a8301749f343fd07679a6c08))
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4588](https://github.com/googleapis/google-cloud-node/issues/4588)) ([e5ad564](https://github.com/googleapis/google-cloud-node/commit/e5ad564f74dc7a36c0e8cd8de173428a99f1deae))
+
+## [3.0.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v2.7.0...tpu-v3.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [tpu] fix typings for IAM methods ([#4446](https://github.com/googleapis/google-cloud-node/issues/4446)) ([014e96c](https://github.com/googleapis/google-cloud-node/commit/014e96c19443833177be1f4acd5f2894e02eadd4))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
 ## [2.7.0](https://github.com/googleapis/google-cloud-node/compare/tpu-v2.6.1...tpu-v2.7.0) (2023-06-06)
 
 

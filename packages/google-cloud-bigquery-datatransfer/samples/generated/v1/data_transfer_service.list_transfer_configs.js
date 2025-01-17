@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function main(parent) {
   /**
    *  When specified, only configurations of requested data sources are returned.
    */
-  // const dataSourceIds = 'abc123'
+  // const dataSourceIds = ['abc','def']
   /**
    *  Pagination token, which can be used to request a specific page
    *  of `ListTransfersRequest` list results. For multiple-page
@@ -64,7 +64,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await datatransferClient.listTransferConfigsAsync(request);
+    const iterable = datatransferClient.listTransferConfigsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

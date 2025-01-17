@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ function main(parent) {
    */
   /**
    *  Required. The agent to import the flow into.
-   *  Format: `projects/<Project ID>/locations/<Location ID>/agents/<Agent ID>`.
+   *  Format: `projects/<ProjectID>/locations/<LocationID>/agents/<AgentID>`.
    */
   // const parent = 'abc123'
   /**
@@ -47,11 +47,16 @@ function main(parent) {
   /**
    *  Uncompressed raw byte content for flow.
    */
-  // const flowContent = 'Buffer.from('string')'
+  // const flowContent = Buffer.from('string')
   /**
    *  Flow import mode. If not specified, `KEEP` is assumed.
    */
   // const importOption = {}
+  /**
+   *  Optional. Specifies the import strategy used when resolving resource
+   *  conflicts.
+   */
+  // const flowImportStrategy = {}
 
   // Imports the Cx library
   const {FlowsClient} = require('@google-cloud/dialogflow-cx').v3beta1;

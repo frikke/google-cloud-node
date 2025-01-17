@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1/data_migration_service_client_config.json`.
@@ -56,6 +57,8 @@ export class DataMigrationServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -99,8 +102,7 @@ export class DataMigrationServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -108,7 +110,7 @@ export class DataMigrationServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new DataMigrationServiceClient({fallback: 'rest'}, gax);
+   *     const client = new DataMigrationServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -117,8 +119,27 @@ export class DataMigrationServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof DataMigrationServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'datamigration.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -133,7 +154,7 @@ export class DataMigrationServiceClient {
     opts.numericEnums = true;
 
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -158,10 +179,10 @@ export class DataMigrationServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -173,14 +194,14 @@ export class DataMigrationServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -201,6 +222,9 @@ export class DataMigrationServiceClient {
       ),
       locationPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}'
+      ),
+      mappingRulePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}/mappingRules/{mapping_rule}'
       ),
       migrationJobPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/migrationJobs/{migration_job}'
@@ -237,6 +261,11 @@ export class DataMigrationServiceClient {
         'nextPageToken',
         'conversionWorkspaces'
       ),
+      listMappingRules: new this._gaxModule.PageDescriptor(
+        'pageToken',
+        'nextPageToken',
+        'mappingRules'
+      ),
       describeDatabaseEntities: new this._gaxModule.PageDescriptor(
         'pageToken',
         'nextPageToken',
@@ -257,7 +286,7 @@ export class DataMigrationServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -714,6 +743,7 @@ export class DataMigrationServiceClient {
       'verifyMigrationJob',
       'restartMigrationJob',
       'generateSshScript',
+      'generateTcpProxyScript',
       'listConnectionProfiles',
       'getConnectionProfile',
       'createConnectionProfile',
@@ -728,6 +758,10 @@ export class DataMigrationServiceClient {
       'createConversionWorkspace',
       'updateConversionWorkspace',
       'deleteConversionWorkspace',
+      'createMappingRule',
+      'deleteMappingRule',
+      'listMappingRules',
+      'getMappingRule',
       'seedConversionWorkspace',
       'importMappingRules',
       'convertConversionWorkspace',
@@ -773,19 +807,50 @@ export class DataMigrationServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'datamigration.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'datamigration.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -834,9 +899,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.MigrationJob | MigrationJob}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.MigrationJob|MigrationJob}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.get_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_GetMigrationJob_async
@@ -848,7 +912,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IMigrationJob,
       protos.google.cloud.clouddms.v1.IGetMigrationJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getMigrationJob(
@@ -894,7 +958,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IMigrationJob,
       protos.google.cloud.clouddms.v1.IGetMigrationJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -934,9 +998,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.SshScript | SshScript}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.SshScript|SshScript}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.generate_ssh_script.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_GenerateSshScript_async
@@ -948,7 +1011,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.ISshScript,
       protos.google.cloud.clouddms.v1.IGenerateSshScriptRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   generateSshScript(
@@ -994,7 +1057,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.ISshScript,
       protos.google.cloud.clouddms.v1.IGenerateSshScriptRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1016,6 +1079,121 @@ export class DataMigrationServiceClient {
     return this.innerApiCalls.generateSshScript(request, options, callback);
   }
   /**
+   * Generate a TCP Proxy configuration script to configure a cloud-hosted VM
+   * running a TCP Proxy.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.migrationJob
+   *   Name of the migration job resource to generate the TCP Proxy script.
+   * @param {string} request.vmName
+   *   Required. The name of the Compute instance that will host the proxy.
+   * @param {string} request.vmMachineType
+   *   Required. The type of the Compute instance that will host the proxy.
+   * @param {string} [request.vmZone]
+   *   Optional. The Google Cloud Platform zone to create the VM in. The fully
+   *   qualified name of the zone must be specified, including the region name,
+   *   for example "us-central1-b". If not specified, uses the "-b" zone of the
+   *   destination Connection Profile's region.
+   * @param {string} request.vmSubnet
+   *   Required. The name of the subnet the Compute instance will use for private
+   *   connectivity. Must be supplied in the form of
+   *   projects/{project}/regions/{region}/subnetworks/{subnetwork}.
+   *   Note: the region for the subnet must match the Compute instance region.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.TcpProxyScript|TcpProxyScript}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/data_migration_service.generate_tcp_proxy_script.js</caption>
+   * region_tag:datamigration_v1_generated_DataMigrationService_GenerateTcpProxyScript_async
+   */
+  generateTcpProxyScript(
+    request?: protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.ITcpProxyScript,
+      (
+        | protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  >;
+  generateTcpProxyScript(
+    request: protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.clouddms.v1.ITcpProxyScript,
+      | protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  generateTcpProxyScript(
+    request: protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest,
+    callback: Callback<
+      protos.google.cloud.clouddms.v1.ITcpProxyScript,
+      | protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  generateTcpProxyScript(
+    request?: protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.clouddms.v1.ITcpProxyScript,
+          | protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.clouddms.v1.ITcpProxyScript,
+      | protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.ITcpProxyScript,
+      (
+        | protos.google.cloud.clouddms.v1.IGenerateTcpProxyScriptRequest
+        | undefined
+      ),
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        migration_job: request.migrationJob ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.generateTcpProxyScript(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
    * Gets details of a single connection profile.
    *
    * @param {Object} request
@@ -1025,9 +1203,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.ConnectionProfile | ConnectionProfile}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.ConnectionProfile|ConnectionProfile}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.get_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_GetConnectionProfile_async
@@ -1039,7 +1216,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IConnectionProfile,
       protos.google.cloud.clouddms.v1.IGetConnectionProfileRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getConnectionProfile(
@@ -1085,7 +1262,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IConnectionProfile,
       protos.google.cloud.clouddms.v1.IGetConnectionProfileRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1116,9 +1293,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.PrivateConnection | PrivateConnection}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.PrivateConnection|PrivateConnection}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.get_private_connection.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_GetPrivateConnection_async
@@ -1130,7 +1306,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IPrivateConnection,
       protos.google.cloud.clouddms.v1.IGetPrivateConnectionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getPrivateConnection(
@@ -1176,7 +1352,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IPrivateConnection,
       protos.google.cloud.clouddms.v1.IGetPrivateConnectionRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1207,9 +1383,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.ConversionWorkspace | ConversionWorkspace}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.ConversionWorkspace|ConversionWorkspace}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.get_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_GetConversionWorkspace_async
@@ -1224,7 +1399,7 @@ export class DataMigrationServiceClient {
         | protos.google.cloud.clouddms.v1.IGetConversionWorkspaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getConversionWorkspace(
@@ -1273,7 +1448,7 @@ export class DataMigrationServiceClient {
         | protos.google.cloud.clouddms.v1.IGetConversionWorkspaceRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1297,6 +1472,298 @@ export class DataMigrationServiceClient {
       options,
       callback
     );
+  }
+  /**
+   * Creates a new mapping rule for a given conversion workspace.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The parent which owns this collection of mapping rules.
+   * @param {string} request.mappingRuleId
+   *   Required. The ID of the rule to create.
+   * @param {google.cloud.clouddms.v1.MappingRule} request.mappingRule
+   *   Required. Represents a [mapping rule]
+   *   (https://cloud.google.com/database-migration/reference/rest/v1/projects.locations.mappingRules)
+   *   object.
+   * @param {string} request.requestId
+   *   A unique ID used to identify the request. If the server receives two
+   *   requests with the same ID, then the second request is ignored.
+   *
+   *   It is recommended to always set this value to a UUID.
+   *
+   *   The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores
+   *   (_), and hyphens (-). The maximum length is 40 characters.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.MappingRule|MappingRule}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/data_migration_service.create_mapping_rule.js</caption>
+   * region_tag:datamigration_v1_generated_DataMigrationService_CreateMappingRule_async
+   */
+  createMappingRule(
+    request?: protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  createMappingRule(
+    request: protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      | protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createMappingRule(
+    request: protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest,
+    callback: Callback<
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      | protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  createMappingRule(
+    request?: protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.clouddms.v1.IMappingRule,
+          | protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      | protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.ICreateMappingRuleRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.createMappingRule(request, options, callback);
+  }
+  /**
+   * Deletes a single mapping rule.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the mapping rule resource to delete.
+   * @param {string} [request.requestId]
+   *   Optional. A unique ID used to identify the request. If the server receives
+   *   two requests with the same ID, then the second request is ignored.
+   *
+   *   It is recommended to always set this value to a UUID.
+   *
+   *   The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores
+   *   (_), and hyphens (-). The maximum length is 40 characters.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/data_migration_service.delete_mapping_rule.js</caption>
+   * region_tag:datamigration_v1_generated_DataMigrationService_DeleteMappingRule_async
+   */
+  deleteMappingRule(
+    request?: protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.protobuf.IEmpty,
+      protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  deleteMappingRule(
+    request: protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.protobuf.IEmpty,
+      | protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteMappingRule(
+    request: protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest,
+    callback: Callback<
+      protos.google.protobuf.IEmpty,
+      | protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  deleteMappingRule(
+    request?: protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.protobuf.IEmpty,
+          | protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.protobuf.IEmpty,
+      | protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest
+      | null
+      | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.protobuf.IEmpty,
+      protos.google.cloud.clouddms.v1.IDeleteMappingRuleRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.deleteMappingRule(request, options, callback);
+  }
+  /**
+   * Gets the details of a mapping rule.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.name
+   *   Required. Name of the mapping rule resource to get.
+   *   Example: conversionWorkspaces/123/mappingRules/rule123
+   *
+   *   In order to retrieve a previous revision of the mapping rule, also provide
+   *   the revision ID.
+   *   Example:
+   *   conversionWorkspace/123/mappingRules/rule123@c7cfa2a8c7cfa2a8c7cfa2a8c7cfa2a8
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.MappingRule|MappingRule}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/data_migration_service.get_mapping_rule.js</caption>
+   * region_tag:datamigration_v1_generated_DataMigrationService_GetMappingRule_async
+   */
+  getMappingRule(
+    request?: protos.google.cloud.clouddms.v1.IGetMappingRuleRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.IGetMappingRuleRequest | undefined,
+      {} | undefined,
+    ]
+  >;
+  getMappingRule(
+    request: protos.google.cloud.clouddms.v1.IGetMappingRuleRequest,
+    options: CallOptions,
+    callback: Callback<
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.IGetMappingRuleRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getMappingRule(
+    request: protos.google.cloud.clouddms.v1.IGetMappingRuleRequest,
+    callback: Callback<
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.IGetMappingRuleRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  getMappingRule(
+    request?: protos.google.cloud.clouddms.v1.IGetMappingRuleRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          protos.google.cloud.clouddms.v1.IMappingRule,
+          | protos.google.cloud.clouddms.v1.IGetMappingRuleRequest
+          | null
+          | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.IGetMappingRuleRequest | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.IMappingRule,
+      protos.google.cloud.clouddms.v1.IGetMappingRuleRequest | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        name: request.name ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.getMappingRule(request, options, callback);
   }
   /**
    * Searches/lists the background jobs for a specific
@@ -1325,9 +1792,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.SearchBackgroundJobsResponse | SearchBackgroundJobsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.SearchBackgroundJobsResponse|SearchBackgroundJobsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.search_background_jobs.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_SearchBackgroundJobs_async
@@ -1339,7 +1805,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.ISearchBackgroundJobsResponse,
       protos.google.cloud.clouddms.v1.ISearchBackgroundJobsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   searchBackgroundJobs(
@@ -1385,7 +1851,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.ISearchBackgroundJobsResponse,
       protos.google.cloud.clouddms.v1.ISearchBackgroundJobsRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1421,9 +1887,8 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.clouddms.v1.DescribeConversionWorkspaceRevisionsResponse | DescribeConversionWorkspaceRevisionsResponse}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.clouddms.v1.DescribeConversionWorkspaceRevisionsResponse|DescribeConversionWorkspaceRevisionsResponse}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.describe_conversion_workspace_revisions.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DescribeConversionWorkspaceRevisions_async
@@ -1438,7 +1903,7 @@ export class DataMigrationServiceClient {
         | protos.google.cloud.clouddms.v1.IDescribeConversionWorkspaceRevisionsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   describeConversionWorkspaceRevisions(
@@ -1487,7 +1952,7 @@ export class DataMigrationServiceClient {
         | protos.google.cloud.clouddms.v1.IDescribeConversionWorkspaceRevisionsRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1526,9 +1991,9 @@ export class DataMigrationServiceClient {
    *   Required. Represents a [migration
    *   job](https://cloud.google.com/database-migration/docs/reference/rest/v1/projects.locations.migrationJobs)
    *   object.
-   * @param {string} request.requestId
-   *   A unique ID used to identify the request. If the server receives two
-   *   requests with the same ID, then the second request is ignored.
+   * @param {string} [request.requestId]
+   *   Optional. A unique ID used to identify the request. If the server receives
+   *   two requests with the same ID, then the second request is ignored.
    *
    *   It is recommended to always set this value to a UUID.
    *
@@ -1540,8 +2005,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreateMigrationJob_async
@@ -1556,7 +2020,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createMigrationJob(
@@ -1609,7 +2073,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1636,8 +2100,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreateMigrationJob_async
@@ -1689,8 +2152,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.update_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_UpdateMigrationJob_async
@@ -1705,7 +2167,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateMigrationJob(
@@ -1758,7 +2220,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1785,8 +2247,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.update_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_UpdateMigrationJob_async
@@ -1839,8 +2300,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeleteMigrationJob_async
@@ -1855,7 +2315,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteMigrationJob(
@@ -1908,7 +2368,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1935,8 +2395,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeleteMigrationJob_async
@@ -1971,14 +2430,16 @@ export class DataMigrationServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Name of the migration job resource to start.
+   * @param {boolean} [request.skipValidation]
+   *   Optional. Start the migration job without running prior configuration
+   *   verification. Defaults to `false`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.start_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_StartMigrationJob_async
@@ -1993,7 +2454,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   startMigrationJob(
@@ -2046,7 +2507,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2073,8 +2534,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.start_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_StartMigrationJob_async
@@ -2115,8 +2575,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.stop_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_StopMigrationJob_async
@@ -2131,7 +2590,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   stopMigrationJob(
@@ -2184,7 +2643,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2211,8 +2670,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.stop_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_StopMigrationJob_async
@@ -2254,8 +2712,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.resume_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ResumeMigrationJob_async
@@ -2270,7 +2727,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   resumeMigrationJob(
@@ -2323,7 +2780,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2350,8 +2807,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.resume_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ResumeMigrationJob_async
@@ -2393,8 +2849,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.promote_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_PromoteMigrationJob_async
@@ -2409,7 +2864,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   promoteMigrationJob(
@@ -2462,7 +2917,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2489,8 +2944,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.promote_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_PromoteMigrationJob_async
@@ -2526,14 +2980,19 @@ export class DataMigrationServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Name of the migration job resource to verify.
+   * @param {google.protobuf.FieldMask} [request.updateMask]
+   *   Optional. Field mask is used to specify the changed fields to be verified.
+   *   It will not update the migration job.
+   * @param {google.cloud.clouddms.v1.MigrationJob} [request.migrationJob]
+   *   Optional. The changed migration job parameters to verify.
+   *   It will not update the migration job.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.verify_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_VerifyMigrationJob_async
@@ -2548,7 +3007,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   verifyMigrationJob(
@@ -2601,7 +3060,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2628,8 +3087,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.verify_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_VerifyMigrationJob_async
@@ -2666,14 +3124,16 @@ export class DataMigrationServiceClient {
    *   The request object that will be sent.
    * @param {string} request.name
    *   Name of the migration job resource to restart.
+   * @param {boolean} [request.skipValidation]
+   *   Optional. Restart the migration job without running prior configuration
+   *   verification. Defaults to `false`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.restart_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_RestartMigrationJob_async
@@ -2688,7 +3148,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   restartMigrationJob(
@@ -2741,7 +3201,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2768,8 +3228,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.restart_migration_job.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_RestartMigrationJob_async
@@ -2830,8 +3289,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreateConnectionProfile_async
@@ -2846,7 +3304,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createConnectionProfile(
@@ -2899,7 +3357,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2930,8 +3388,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreateConnectionProfile_async
@@ -2991,8 +3448,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.update_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_UpdateConnectionProfile_async
@@ -3007,7 +3463,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateConnectionProfile(
@@ -3060,7 +3516,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3091,8 +3547,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.update_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_UpdateConnectionProfile_async
@@ -3146,8 +3601,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeleteConnectionProfile_async
@@ -3162,7 +3616,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteConnectionProfile(
@@ -3215,7 +3669,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3246,8 +3700,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_connection_profile.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeleteConnectionProfile_async
@@ -3302,8 +3755,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_private_connection.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreatePrivateConnection_async
@@ -3318,7 +3770,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createPrivateConnection(
@@ -3371,7 +3823,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3402,8 +3854,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_private_connection.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreatePrivateConnection_async
@@ -3452,8 +3903,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_private_connection.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeletePrivateConnection_async
@@ -3468,7 +3918,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deletePrivateConnection(
@@ -3521,7 +3971,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3552,8 +4002,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_private_connection.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeletePrivateConnection_async
@@ -3606,8 +4055,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreateConversionWorkspace_async
@@ -3622,7 +4070,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createConversionWorkspace(
@@ -3675,7 +4123,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3706,8 +4154,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.create_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CreateConversionWorkspace_async
@@ -3759,8 +4206,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.update_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_UpdateConversionWorkspace_async
@@ -3775,7 +4221,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   updateConversionWorkspace(
@@ -3828,7 +4274,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -3859,8 +4305,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.update_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_UpdateConversionWorkspace_async
@@ -3903,14 +4348,16 @@ export class DataMigrationServiceClient {
    *
    *   The ID must contain only letters (a-z, A-Z), numbers (0-9), underscores
    *   (_), and hyphens (-). The maximum length is 40 characters.
+   * @param {boolean} request.force
+   *   Force delete the conversion workspace, even if there's a running migration
+   *   that is using the workspace.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeleteConversionWorkspace_async
@@ -3925,7 +4372,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteConversionWorkspace(
@@ -3978,7 +4425,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4009,8 +4456,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.delete_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DeleteConversionWorkspace_async
@@ -4051,18 +4497,18 @@ export class DataMigrationServiceClient {
    * @param {boolean} request.autoCommit
    *   Should the conversion workspace be committed automatically after the
    *   seed operation.
-   * @param {string} request.sourceConnectionProfile
-   *   Fully qualified (Uri) name of the source connection profile.
-   * @param {string} request.destinationConnectionProfile
-   *   Fully qualified (Uri) name of the destination connection profile.
+   * @param {string} [request.sourceConnectionProfile]
+   *   Optional. Fully qualified (Uri) name of the source connection profile.
+   * @param {string} [request.destinationConnectionProfile]
+   *   Optional. Fully qualified (Uri) name of the destination connection
+   *   profile.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.seed_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_SeedConversionWorkspace_async
@@ -4077,7 +4523,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   seedConversionWorkspace(
@@ -4130,7 +4576,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4161,8 +4607,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.seed_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_SeedConversionWorkspace_async
@@ -4201,20 +4646,19 @@ export class DataMigrationServiceClient {
    *   in the form of:
    *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
    * @param {google.cloud.clouddms.v1.ImportRulesFileFormat} request.rulesFormat
-   *   The format of the rules content file.
+   *   Required. The format of the rules content file.
    * @param {number[]} request.rulesFiles
-   *   One or more rules files.
+   *   Required. One or more rules files.
    * @param {boolean} request.autoCommit
-   *   Should the conversion workspace be committed automatically after the
-   *   import operation.
+   *   Required. Should the conversion workspace be committed automatically after
+   *   the import operation.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.import_mapping_rules.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ImportMappingRules_async
@@ -4229,7 +4673,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   importMappingRules(
@@ -4282,7 +4726,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4309,8 +4753,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.import_mapping_rules.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ImportMappingRules_async
@@ -4346,20 +4789,23 @@ export class DataMigrationServiceClient {
    * @param {string} request.name
    *   Name of the conversion workspace resource to convert in the form of:
    *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
-   * @param {boolean} request.autoCommit
-   *   Specifies whether the conversion workspace is to be committed automatically
-   *   after the conversion.
-   * @param {string} request.filter
-   *   Filter the entities to convert. Leaving this field empty will convert all
-   *   of the entities. Supports Google AIP-160 style filtering.
+   * @param {boolean} [request.autoCommit]
+   *   Optional. Specifies whether the conversion workspace is to be committed
+   *   automatically after the conversion.
+   * @param {string} [request.filter]
+   *   Optional. Filter the entities to convert. Leaving this field empty will
+   *   convert all of the entities. Supports Google AIP-160 style filtering.
+   * @param {boolean} [request.convertFullPath]
+   *   Optional. Automatically convert the full entity path for each entity
+   *   specified by the filter. For example, if the filter specifies a table, that
+   *   table schema (and database if there is one) will also be converted.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.convert_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ConvertConversionWorkspace_async
@@ -4374,7 +4820,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   convertConversionWorkspace(
@@ -4427,7 +4873,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4458,8 +4904,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.convert_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ConvertConversionWorkspace_async
@@ -4502,8 +4947,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.commit_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CommitConversionWorkspace_async
@@ -4518,7 +4962,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   commitConversionWorkspace(
@@ -4571,7 +5015,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4602,8 +5046,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.commit_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_CommitConversionWorkspace_async
@@ -4644,8 +5087,7 @@ export class DataMigrationServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.rollback_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_RollbackConversionWorkspace_async
@@ -4660,7 +5102,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   rollbackConversionWorkspace(
@@ -4713,7 +5155,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4744,8 +5186,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.rollback_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_RollbackConversionWorkspace_async
@@ -4785,16 +5226,23 @@ export class DataMigrationServiceClient {
    * @param {string} request.filter
    *   Filter which entities to apply. Leaving this field empty will apply all of
    *   the entities. Supports Google AIP 160 based filtering.
-   * @param {string} request.connectionProfile
-   *   Fully qualified (Uri) name of the destination connection profile.
+   * @param {boolean} [request.dryRun]
+   *   Optional. Only validates the apply process, but doesn't change the
+   *   destination database. Only works for PostgreSQL destination connection
+   *   profile.
+   * @param {boolean} [request.autoCommit]
+   *   Optional. Specifies whether the conversion workspace is to be committed
+   *   automatically after the apply.
+   * @param {string} [request.connectionProfile]
+   *   Optional. Fully qualified (Uri) name of the destination connection
+   *   profile.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.apply_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ApplyConversionWorkspace_async
@@ -4809,7 +5257,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   applyConversionWorkspace(
@@ -4862,7 +5310,7 @@ export class DataMigrationServiceClient {
         protos.google.cloud.clouddms.v1.IOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -4893,8 +5341,7 @@ export class DataMigrationServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.apply_conversion_workspace.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ApplyConversionWorkspace_async
@@ -4956,14 +5403,13 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.clouddms.v1.MigrationJob | MigrationJob}.
+   *   The first element of the array is Array of {@link protos.google.cloud.clouddms.v1.MigrationJob|MigrationJob}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listMigrationJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMigrationJobs(
@@ -4973,7 +5419,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IMigrationJob[],
       protos.google.cloud.clouddms.v1.IListMigrationJobsRequest | null,
-      protos.google.cloud.clouddms.v1.IListMigrationJobsResponse
+      protos.google.cloud.clouddms.v1.IListMigrationJobsResponse,
     ]
   >;
   listMigrationJobs(
@@ -5019,7 +5465,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IMigrationJob[],
       protos.google.cloud.clouddms.v1.IListMigrationJobsRequest | null,
-      protos.google.cloud.clouddms.v1.IListMigrationJobsResponse
+      protos.google.cloud.clouddms.v1.IListMigrationJobsResponse,
     ]
   > | void {
     request = request || {};
@@ -5074,13 +5520,12 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.clouddms.v1.MigrationJob | MigrationJob} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.clouddms.v1.MigrationJob|MigrationJob} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listMigrationJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listMigrationJobsStream(
@@ -5140,12 +5585,11 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.clouddms.v1.MigrationJob | MigrationJob}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.clouddms.v1.MigrationJob|MigrationJob}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.list_migration_jobs.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ListMigrationJobs_async
@@ -5205,14 +5649,13 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.clouddms.v1.ConnectionProfile | ConnectionProfile}.
+   *   The first element of the array is Array of {@link protos.google.cloud.clouddms.v1.ConnectionProfile|ConnectionProfile}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listConnectionProfilesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConnectionProfiles(
@@ -5222,7 +5665,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IConnectionProfile[],
       protos.google.cloud.clouddms.v1.IListConnectionProfilesRequest | null,
-      protos.google.cloud.clouddms.v1.IListConnectionProfilesResponse
+      protos.google.cloud.clouddms.v1.IListConnectionProfilesResponse,
     ]
   >;
   listConnectionProfiles(
@@ -5268,7 +5711,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IConnectionProfile[],
       protos.google.cloud.clouddms.v1.IListConnectionProfilesRequest | null,
-      protos.google.cloud.clouddms.v1.IListConnectionProfilesResponse
+      protos.google.cloud.clouddms.v1.IListConnectionProfilesResponse,
     ]
   > | void {
     request = request || {};
@@ -5326,13 +5769,12 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.clouddms.v1.ConnectionProfile | ConnectionProfile} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.clouddms.v1.ConnectionProfile|ConnectionProfile} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listConnectionProfilesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConnectionProfilesStream(
@@ -5391,12 +5833,11 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.clouddms.v1.ConnectionProfile | ConnectionProfile}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.clouddms.v1.ConnectionProfile|ConnectionProfile}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.list_connection_profiles.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ListConnectionProfiles_async
@@ -5452,14 +5893,13 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.clouddms.v1.PrivateConnection | PrivateConnection}.
+   *   The first element of the array is Array of {@link protos.google.cloud.clouddms.v1.PrivateConnection|PrivateConnection}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listPrivateConnectionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listPrivateConnections(
@@ -5469,7 +5909,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IPrivateConnection[],
       protos.google.cloud.clouddms.v1.IListPrivateConnectionsRequest | null,
-      protos.google.cloud.clouddms.v1.IListPrivateConnectionsResponse
+      protos.google.cloud.clouddms.v1.IListPrivateConnectionsResponse,
     ]
   >;
   listPrivateConnections(
@@ -5515,7 +5955,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IPrivateConnection[],
       protos.google.cloud.clouddms.v1.IListPrivateConnectionsRequest | null,
-      protos.google.cloud.clouddms.v1.IListPrivateConnectionsResponse
+      protos.google.cloud.clouddms.v1.IListPrivateConnectionsResponse,
     ]
   > | void {
     request = request || {};
@@ -5570,13 +6010,12 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.clouddms.v1.PrivateConnection | PrivateConnection} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.clouddms.v1.PrivateConnection|PrivateConnection} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listPrivateConnectionsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listPrivateConnectionsStream(
@@ -5632,12 +6071,11 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.clouddms.v1.PrivateConnection | PrivateConnection}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.clouddms.v1.PrivateConnection|PrivateConnection}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.list_private_connections.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ListPrivateConnections_async
@@ -5692,14 +6130,13 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.clouddms.v1.ConversionWorkspace | ConversionWorkspace}.
+   *   The first element of the array is Array of {@link protos.google.cloud.clouddms.v1.ConversionWorkspace|ConversionWorkspace}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listConversionWorkspacesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConversionWorkspaces(
@@ -5709,7 +6146,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IConversionWorkspace[],
       protos.google.cloud.clouddms.v1.IListConversionWorkspacesRequest | null,
-      protos.google.cloud.clouddms.v1.IListConversionWorkspacesResponse
+      protos.google.cloud.clouddms.v1.IListConversionWorkspacesResponse,
     ]
   >;
   listConversionWorkspaces(
@@ -5755,7 +6192,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IConversionWorkspace[],
       protos.google.cloud.clouddms.v1.IListConversionWorkspacesRequest | null,
-      protos.google.cloud.clouddms.v1.IListConversionWorkspacesResponse
+      protos.google.cloud.clouddms.v1.IListConversionWorkspacesResponse,
     ]
   > | void {
     request = request || {};
@@ -5809,13 +6246,12 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.clouddms.v1.ConversionWorkspace | ConversionWorkspace} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.clouddms.v1.ConversionWorkspace|ConversionWorkspace} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listConversionWorkspacesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listConversionWorkspacesStream(
@@ -5870,12 +6306,11 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.clouddms.v1.ConversionWorkspace | ConversionWorkspace}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.clouddms.v1.ConversionWorkspace|ConversionWorkspace}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.list_conversion_workspaces.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_ListConversionWorkspaces_async
@@ -5902,6 +6337,213 @@ export class DataMigrationServiceClient {
     ) as AsyncIterable<protos.google.cloud.clouddms.v1.IConversionWorkspace>;
   }
   /**
+   * Lists the mapping rules for a specific conversion workspace.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Name of the conversion workspace resource whose mapping rules are
+   *   listed in the form of:
+   *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
+   * @param {number} request.pageSize
+   *   The maximum number of rules to return. The service may return
+   *   fewer than this value.
+   * @param {string} request.pageToken
+   *   The nextPageToken value received in the previous call to
+   *   mappingRules.list, used in the subsequent request to retrieve the next
+   *   page of results. On first call this should be left blank. When paginating,
+   *   all other parameters provided to mappingRules.list must match the call
+   *   that provided the page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is Array of {@link protos.google.cloud.clouddms.v1.MappingRule|MappingRule}.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed and will merge results from all the pages into this array.
+   *   Note that it can affect your quota.
+   *   We recommend using `listMappingRulesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listMappingRules(
+    request?: protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.IMappingRule[],
+      protos.google.cloud.clouddms.v1.IListMappingRulesRequest | null,
+      protos.google.cloud.clouddms.v1.IListMappingRulesResponse,
+    ]
+  >;
+  listMappingRules(
+    request: protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+    options: CallOptions,
+    callback: PaginationCallback<
+      protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+      | protos.google.cloud.clouddms.v1.IListMappingRulesResponse
+      | null
+      | undefined,
+      protos.google.cloud.clouddms.v1.IMappingRule
+    >
+  ): void;
+  listMappingRules(
+    request: protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+    callback: PaginationCallback<
+      protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+      | protos.google.cloud.clouddms.v1.IListMappingRulesResponse
+      | null
+      | undefined,
+      protos.google.cloud.clouddms.v1.IMappingRule
+    >
+  ): void;
+  listMappingRules(
+    request?: protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | PaginationCallback<
+          protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+          | protos.google.cloud.clouddms.v1.IListMappingRulesResponse
+          | null
+          | undefined,
+          protos.google.cloud.clouddms.v1.IMappingRule
+        >,
+    callback?: PaginationCallback<
+      protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+      | protos.google.cloud.clouddms.v1.IListMappingRulesResponse
+      | null
+      | undefined,
+      protos.google.cloud.clouddms.v1.IMappingRule
+    >
+  ): Promise<
+    [
+      protos.google.cloud.clouddms.v1.IMappingRule[],
+      protos.google.cloud.clouddms.v1.IListMappingRulesRequest | null,
+      protos.google.cloud.clouddms.v1.IListMappingRulesResponse,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.listMappingRules(request, options, callback);
+  }
+
+  /**
+   * Equivalent to `method.name.toCamelCase()`, but returns a NodeJS Stream object.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Name of the conversion workspace resource whose mapping rules are
+   *   listed in the form of:
+   *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
+   * @param {number} request.pageSize
+   *   The maximum number of rules to return. The service may return
+   *   fewer than this value.
+   * @param {string} request.pageToken
+   *   The nextPageToken value received in the previous call to
+   *   mappingRules.list, used in the subsequent request to retrieve the next
+   *   page of results. On first call this should be left blank. When paginating,
+   *   all other parameters provided to mappingRules.list must match the call
+   *   that provided the page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Stream}
+   *   An object stream which emits an object representing {@link protos.google.cloud.clouddms.v1.MappingRule|MappingRule} on 'data' event.
+   *   The client library will perform auto-pagination by default: it will call the API as many
+   *   times as needed. Note that it can affect your quota.
+   *   We recommend using `listMappingRulesAsync()`
+   *   method described below for async iteration which you can stop as needed.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   */
+  listMappingRulesStream(
+    request?: protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+    options?: CallOptions
+  ): Transform {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listMappingRules'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listMappingRules.createStream(
+      this.innerApiCalls.listMappingRules as GaxCall,
+      request,
+      callSettings
+    );
+  }
+
+  /**
+   * Equivalent to `listMappingRules`, but returns an iterable object.
+   *
+   * `for`-`await`-`of` syntax is used with the iterable to get response elements on-demand.
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. Name of the conversion workspace resource whose mapping rules are
+   *   listed in the form of:
+   *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
+   * @param {number} request.pageSize
+   *   The maximum number of rules to return. The service may return
+   *   fewer than this value.
+   * @param {string} request.pageToken
+   *   The nextPageToken value received in the previous call to
+   *   mappingRules.list, used in the subsequent request to retrieve the next
+   *   page of results. On first call this should be left blank. When paginating,
+   *   all other parameters provided to mappingRules.list must match the call
+   *   that provided the page token.
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Object}
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
+   *   When you iterate the returned iterable, each element will be an object representing
+   *   {@link protos.google.cloud.clouddms.v1.MappingRule|MappingRule}. The API will be called under the hood as needed, once per the page,
+   *   so you can stop the iteration when you don't need more results.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1/data_migration_service.list_mapping_rules.js</caption>
+   * region_tag:datamigration_v1_generated_DataMigrationService_ListMappingRules_async
+   */
+  listMappingRulesAsync(
+    request?: protos.google.cloud.clouddms.v1.IListMappingRulesRequest,
+    options?: CallOptions
+  ): AsyncIterable<protos.google.cloud.clouddms.v1.IMappingRule> {
+    request = request || {};
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    const defaultCallSettings = this._defaults['listMappingRules'];
+    const callSettings = defaultCallSettings.merge(options);
+    this.initialize();
+    return this.descriptors.page.listMappingRules.asyncIterate(
+      this.innerApiCalls['listMappingRules'] as GaxCall,
+      request as {},
+      callSettings
+    ) as AsyncIterable<protos.google.cloud.clouddms.v1.IMappingRule>;
+  }
+  /**
    * Describes the database entities tree for a specific conversion workspace
    * and a specific tree type.
    *
@@ -5915,37 +6557,39 @@ export class DataMigrationServiceClient {
    *   Required. Name of the conversion workspace resource whose database entities
    *   are described. Must be in the form of:
    *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
-   * @param {number} request.pageSize
-   *   The maximum number of entities to return. The service may return
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of entities to return. The service may return
    *   fewer entities than the value specifies.
-   * @param {string} request.pageToken
-   *   The nextPageToken value received in the previous call to
+   * @param {string} [request.pageToken]
+   *   Optional. The nextPageToken value received in the previous call to
    *   conversionWorkspace.describeDatabaseEntities, used in the subsequent
    *   request to retrieve the next page of results. On first call this should be
    *   left blank. When paginating, all other parameters provided to
    *   conversionWorkspace.describeDatabaseEntities must match the call that
    *   provided the page token.
    * @param {google.cloud.clouddms.v1.DescribeDatabaseEntitiesRequest.DBTreeType} request.tree
-   *   The tree to fetch.
-   * @param {boolean} request.uncommitted
-   *   Whether to retrieve the latest committed version of the entities or the
-   *   latest version. This field is ignored if a specific commit_id is specified.
-   * @param {string} request.commitId
-   *   Request a specific commit ID. If not specified, the entities from the
-   *   latest commit are returned.
-   * @param {string} request.filter
-   *   Filter the returned entities based on AIP-160 standard.
+   *   Required. The tree to fetch.
+   * @param {boolean} [request.uncommitted]
+   *   Optional. Whether to retrieve the latest committed version of the entities
+   *   or the latest version. This field is ignored if a specific commit_id is
+   *   specified.
+   * @param {string} [request.commitId]
+   *   Optional. Request a specific commit ID. If not specified, the entities from
+   *   the latest commit are returned.
+   * @param {string} [request.filter]
+   *   Optional. Filter the returned entities based on AIP-160 standard.
+   * @param {google.cloud.clouddms.v1.DatabaseEntityView} [request.view]
+   *   Optional. Results view based on AIP-157
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.clouddms.v1.DatabaseEntity | DatabaseEntity}.
+   *   The first element of the array is Array of {@link protos.google.cloud.clouddms.v1.DatabaseEntity|DatabaseEntity}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `describeDatabaseEntitiesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   describeDatabaseEntities(
@@ -5955,7 +6599,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IDatabaseEntity[],
       protos.google.cloud.clouddms.v1.IDescribeDatabaseEntitiesRequest | null,
-      protos.google.cloud.clouddms.v1.IDescribeDatabaseEntitiesResponse
+      protos.google.cloud.clouddms.v1.IDescribeDatabaseEntitiesResponse,
     ]
   >;
   describeDatabaseEntities(
@@ -6001,7 +6645,7 @@ export class DataMigrationServiceClient {
     [
       protos.google.cloud.clouddms.v1.IDatabaseEntity[],
       protos.google.cloud.clouddms.v1.IDescribeDatabaseEntitiesRequest | null,
-      protos.google.cloud.clouddms.v1.IDescribeDatabaseEntitiesResponse
+      protos.google.cloud.clouddms.v1.IDescribeDatabaseEntitiesResponse,
     ]
   > | void {
     request = request || {};
@@ -6035,36 +6679,38 @@ export class DataMigrationServiceClient {
    *   Required. Name of the conversion workspace resource whose database entities
    *   are described. Must be in the form of:
    *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
-   * @param {number} request.pageSize
-   *   The maximum number of entities to return. The service may return
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of entities to return. The service may return
    *   fewer entities than the value specifies.
-   * @param {string} request.pageToken
-   *   The nextPageToken value received in the previous call to
+   * @param {string} [request.pageToken]
+   *   Optional. The nextPageToken value received in the previous call to
    *   conversionWorkspace.describeDatabaseEntities, used in the subsequent
    *   request to retrieve the next page of results. On first call this should be
    *   left blank. When paginating, all other parameters provided to
    *   conversionWorkspace.describeDatabaseEntities must match the call that
    *   provided the page token.
    * @param {google.cloud.clouddms.v1.DescribeDatabaseEntitiesRequest.DBTreeType} request.tree
-   *   The tree to fetch.
-   * @param {boolean} request.uncommitted
-   *   Whether to retrieve the latest committed version of the entities or the
-   *   latest version. This field is ignored if a specific commit_id is specified.
-   * @param {string} request.commitId
-   *   Request a specific commit ID. If not specified, the entities from the
-   *   latest commit are returned.
-   * @param {string} request.filter
-   *   Filter the returned entities based on AIP-160 standard.
+   *   Required. The tree to fetch.
+   * @param {boolean} [request.uncommitted]
+   *   Optional. Whether to retrieve the latest committed version of the entities
+   *   or the latest version. This field is ignored if a specific commit_id is
+   *   specified.
+   * @param {string} [request.commitId]
+   *   Optional. Request a specific commit ID. If not specified, the entities from
+   *   the latest commit are returned.
+   * @param {string} [request.filter]
+   *   Optional. Filter the returned entities based on AIP-160 standard.
+   * @param {google.cloud.clouddms.v1.DatabaseEntityView} [request.view]
+   *   Optional. Results view based on AIP-157
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.clouddms.v1.DatabaseEntity | DatabaseEntity} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.clouddms.v1.DatabaseEntity|DatabaseEntity} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `describeDatabaseEntitiesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   describeDatabaseEntitiesStream(
@@ -6099,35 +6745,37 @@ export class DataMigrationServiceClient {
    *   Required. Name of the conversion workspace resource whose database entities
    *   are described. Must be in the form of:
    *   projects/{project}/locations/{location}/conversionWorkspaces/{conversion_workspace}.
-   * @param {number} request.pageSize
-   *   The maximum number of entities to return. The service may return
+   * @param {number} [request.pageSize]
+   *   Optional. The maximum number of entities to return. The service may return
    *   fewer entities than the value specifies.
-   * @param {string} request.pageToken
-   *   The nextPageToken value received in the previous call to
+   * @param {string} [request.pageToken]
+   *   Optional. The nextPageToken value received in the previous call to
    *   conversionWorkspace.describeDatabaseEntities, used in the subsequent
    *   request to retrieve the next page of results. On first call this should be
    *   left blank. When paginating, all other parameters provided to
    *   conversionWorkspace.describeDatabaseEntities must match the call that
    *   provided the page token.
    * @param {google.cloud.clouddms.v1.DescribeDatabaseEntitiesRequest.DBTreeType} request.tree
-   *   The tree to fetch.
-   * @param {boolean} request.uncommitted
-   *   Whether to retrieve the latest committed version of the entities or the
-   *   latest version. This field is ignored if a specific commit_id is specified.
-   * @param {string} request.commitId
-   *   Request a specific commit ID. If not specified, the entities from the
-   *   latest commit are returned.
-   * @param {string} request.filter
-   *   Filter the returned entities based on AIP-160 standard.
+   *   Required. The tree to fetch.
+   * @param {boolean} [request.uncommitted]
+   *   Optional. Whether to retrieve the latest committed version of the entities
+   *   or the latest version. This field is ignored if a specific commit_id is
+   *   specified.
+   * @param {string} [request.commitId]
+   *   Optional. Request a specific commit ID. If not specified, the entities from
+   *   the latest commit are returned.
+   * @param {string} [request.filter]
+   *   Optional. Filter the returned entities based on AIP-160 standard.
+   * @param {google.cloud.clouddms.v1.DatabaseEntityView} [request.view]
+   *   Optional. Results view based on AIP-157
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.clouddms.v1.DatabaseEntity | DatabaseEntity}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.clouddms.v1.DatabaseEntity|DatabaseEntity}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.describe_database_entities.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_DescribeDatabaseEntities_async
@@ -6175,8 +6823,7 @@ export class DataMigrationServiceClient {
    *   Note that it can affect your quota.
    *   We recommend using `fetchStaticIpsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   fetchStaticIps(
@@ -6186,7 +6833,7 @@ export class DataMigrationServiceClient {
     [
       string[],
       protos.google.cloud.clouddms.v1.IFetchStaticIpsRequest | null,
-      protos.google.cloud.clouddms.v1.IFetchStaticIpsResponse
+      protos.google.cloud.clouddms.v1.IFetchStaticIpsResponse,
     ]
   >;
   fetchStaticIps(
@@ -6232,7 +6879,7 @@ export class DataMigrationServiceClient {
     [
       string[],
       protos.google.cloud.clouddms.v1.IFetchStaticIpsRequest | null,
-      protos.google.cloud.clouddms.v1.IFetchStaticIpsResponse
+      protos.google.cloud.clouddms.v1.IFetchStaticIpsResponse,
     ]
   > | void {
     request = request || {};
@@ -6273,8 +6920,7 @@ export class DataMigrationServiceClient {
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `fetchStaticIpsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   fetchStaticIpsStream(
@@ -6315,12 +6961,11 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   string. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1/data_migration_service.fetch_static_ips.js</caption>
    * region_tag:datamigration_v1_generated_DataMigrationService_FetchStaticIps_async
@@ -6385,7 +7030,7 @@ export class DataMigrationServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -6406,8 +7051,7 @@ export class DataMigrationServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -6433,7 +7077,7 @@ export class DataMigrationServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -6454,8 +7098,7 @@ export class DataMigrationServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -6482,7 +7125,7 @@ export class DataMigrationServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -6497,8 +7140,7 @@ export class DataMigrationServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -6544,12 +7186,11 @@ export class DataMigrationServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -6901,6 +7542,77 @@ export class DataMigrationServiceClient {
    */
   matchLocationFromLocationName(locationName: string) {
     return this.pathTemplates.locationPathTemplate.match(locationName).location;
+  }
+
+  /**
+   * Return a fully-qualified mappingRule resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} conversion_workspace
+   * @param {string} mapping_rule
+   * @returns {string} Resource name string.
+   */
+  mappingRulePath(
+    project: string,
+    location: string,
+    conversionWorkspace: string,
+    mappingRule: string
+  ) {
+    return this.pathTemplates.mappingRulePathTemplate.render({
+      project: project,
+      location: location,
+      conversion_workspace: conversionWorkspace,
+      mapping_rule: mappingRule,
+    });
+  }
+
+  /**
+   * Parse the project from MappingRule resource.
+   *
+   * @param {string} mappingRuleName
+   *   A fully-qualified path representing MappingRule resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromMappingRuleName(mappingRuleName: string) {
+    return this.pathTemplates.mappingRulePathTemplate.match(mappingRuleName)
+      .project;
+  }
+
+  /**
+   * Parse the location from MappingRule resource.
+   *
+   * @param {string} mappingRuleName
+   *   A fully-qualified path representing MappingRule resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromMappingRuleName(mappingRuleName: string) {
+    return this.pathTemplates.mappingRulePathTemplate.match(mappingRuleName)
+      .location;
+  }
+
+  /**
+   * Parse the conversion_workspace from MappingRule resource.
+   *
+   * @param {string} mappingRuleName
+   *   A fully-qualified path representing MappingRule resource.
+   * @returns {string} A string representing the conversion_workspace.
+   */
+  matchConversionWorkspaceFromMappingRuleName(mappingRuleName: string) {
+    return this.pathTemplates.mappingRulePathTemplate.match(mappingRuleName)
+      .conversion_workspace;
+  }
+
+  /**
+   * Parse the mapping_rule from MappingRule resource.
+   *
+   * @param {string} mappingRuleName
+   *   A fully-qualified path representing MappingRule resource.
+   * @returns {string} A string representing the mapping_rule.
+   */
+  matchMappingRuleFromMappingRuleName(mappingRuleName: string) {
+    return this.pathTemplates.mappingRulePathTemplate.match(mappingRuleName)
+      .mapping_rule;
   }
 
   /**

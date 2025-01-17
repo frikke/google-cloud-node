@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,16 +17,40 @@
 // ** All changes to this file may be overwritten. **
 
 import {
+  CacheServiceClient,
   DiscussServiceClient,
+  FileServiceClient,
+  GenerativeServiceClient,
   ModelServiceClient,
+  PermissionServiceClient,
+  PredictionServiceClient,
+  RetrieverServiceClient,
   TextServiceClient,
 } from '@google-ai/generativelanguage';
 
 // check that the client class type name can be used
+function doStuffWithCacheServiceClient(client: CacheServiceClient) {
+  client.close();
+}
 function doStuffWithDiscussServiceClient(client: DiscussServiceClient) {
   client.close();
 }
+function doStuffWithFileServiceClient(client: FileServiceClient) {
+  client.close();
+}
+function doStuffWithGenerativeServiceClient(client: GenerativeServiceClient) {
+  client.close();
+}
 function doStuffWithModelServiceClient(client: ModelServiceClient) {
+  client.close();
+}
+function doStuffWithPermissionServiceClient(client: PermissionServiceClient) {
+  client.close();
+}
+function doStuffWithPredictionServiceClient(client: PredictionServiceClient) {
+  client.close();
+}
+function doStuffWithRetrieverServiceClient(client: RetrieverServiceClient) {
   client.close();
 }
 function doStuffWithTextServiceClient(client: TextServiceClient) {
@@ -35,11 +59,29 @@ function doStuffWithTextServiceClient(client: TextServiceClient) {
 
 function main() {
   // check that the client instance can be created
+  const cacheServiceClient = new CacheServiceClient();
+  doStuffWithCacheServiceClient(cacheServiceClient);
+  // check that the client instance can be created
   const discussServiceClient = new DiscussServiceClient();
   doStuffWithDiscussServiceClient(discussServiceClient);
   // check that the client instance can be created
+  const fileServiceClient = new FileServiceClient();
+  doStuffWithFileServiceClient(fileServiceClient);
+  // check that the client instance can be created
+  const generativeServiceClient = new GenerativeServiceClient();
+  doStuffWithGenerativeServiceClient(generativeServiceClient);
+  // check that the client instance can be created
   const modelServiceClient = new ModelServiceClient();
   doStuffWithModelServiceClient(modelServiceClient);
+  // check that the client instance can be created
+  const permissionServiceClient = new PermissionServiceClient();
+  doStuffWithPermissionServiceClient(permissionServiceClient);
+  // check that the client instance can be created
+  const predictionServiceClient = new PredictionServiceClient();
+  doStuffWithPredictionServiceClient(predictionServiceClient);
+  // check that the client instance can be created
+  const retrieverServiceClient = new RetrieverServiceClient();
+  doStuffWithRetrieverServiceClient(retrieverServiceClient);
   // check that the client instance can be created
   const textServiceClient = new TextServiceClient();
   doStuffWithTextServiceClient(textServiceClient);

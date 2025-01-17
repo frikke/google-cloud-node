@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ function main(parent) {
     };
 
     // Run request
-    const iterable = await aiplatformClient.listModelDeploymentMonitoringJobsAsync(request);
+    const iterable = aiplatformClient.listModelDeploymentMonitoringJobsAsync(request);
     for await (const response of iterable) {
         console.log(response);
     }

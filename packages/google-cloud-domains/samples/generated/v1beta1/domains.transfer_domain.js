@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ function main(parent, registration, yearlyPrice) {
    *  needed here depend on the values specified in
    *  `registration.contact_settings`.
    */
-  // const contactNotices = 1234
+  // const contactNotices = [1,2,3,4]
   /**
    *  Required. Acknowledgement of the price to transfer or renew the domain for one year.
    *  Call `RetrieveTransferParameters` to obtain the price, which you must

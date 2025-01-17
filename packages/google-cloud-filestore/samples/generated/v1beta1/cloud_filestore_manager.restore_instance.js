@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ function main(name, fileShare) {
    */
   // const name = 'abc123'
   /**
-   *  Required. Name of the file share in the Filestore instance that the snapshot
+   *  Required. Name of the file share in the Filestore instance that the backup
    *  is being restored to.
    */
   // const fileShare = 'abc123'

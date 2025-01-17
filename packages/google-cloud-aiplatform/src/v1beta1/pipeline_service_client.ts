@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import type {
 import {Transform} from 'stream';
 import * as protos from '../../protos/protos';
 import jsonProtos = require('../../protos/protos.json');
+
 /**
  * Client JSON configuration object, loaded from
  * `src/v1beta1/pipeline_service_client_config.json`.
@@ -58,6 +59,8 @@ export class PipelineServiceClient {
   private _gaxGrpc: gax.GrpcClient | gax.fallback.GrpcClient;
   private _protos: {};
   private _defaults: {[method: string]: gax.CallSettings};
+  private _universeDomain: string;
+  private _servicePath: string;
   auth: gax.GoogleAuth;
   descriptors: Descriptors = {
     page: {},
@@ -101,8 +104,7 @@ export class PipelineServiceClient {
    *     API remote host.
    * @param {gax.ClientConfig} [options.clientConfig] - Client configuration override.
    *     Follows the structure of {@link gapicConfig}.
-   * @param {boolean | "rest"} [options.fallback] - Use HTTP fallback mode.
-   *     Pass "rest" to use HTTP/1.1 REST API instead of gRPC.
+   * @param {boolean} [options.fallback] - Use HTTP/1.1 REST mode.
    *     For more information, please check the
    *     {@link https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#http11-rest-api-mode documentation}.
    * @param {gax} [gaxInstance]: loaded instance of `google-gax`. Useful if you
@@ -110,7 +112,7 @@ export class PipelineServiceClient {
    *     HTTP implementation. Load only fallback version and pass it to the constructor:
    *     ```
    *     const gax = require('google-gax/build/src/fallback'); // avoids loading google-gax with gRPC
-   *     const client = new PipelineServiceClient({fallback: 'rest'}, gax);
+   *     const client = new PipelineServiceClient({fallback: true}, gax);
    *     ```
    */
   constructor(
@@ -119,8 +121,27 @@ export class PipelineServiceClient {
   ) {
     // Ensure that options include all the required fields.
     const staticMembers = this.constructor as typeof PipelineServiceClient;
+    if (
+      opts?.universe_domain &&
+      opts?.universeDomain &&
+      opts?.universe_domain !== opts?.universeDomain
+    ) {
+      throw new Error(
+        'Please set either universe_domain or universeDomain, but not both.'
+      );
+    }
+    const universeDomainEnvVar =
+      typeof process === 'object' && typeof process.env === 'object'
+        ? process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN']
+        : undefined;
+    this._universeDomain =
+      opts?.universeDomain ??
+      opts?.universe_domain ??
+      universeDomainEnvVar ??
+      'googleapis.com';
+    this._servicePath = 'aiplatform.' + this._universeDomain;
     const servicePath =
-      opts?.servicePath || opts?.apiEndpoint || staticMembers.servicePath;
+      opts?.servicePath || opts?.apiEndpoint || this._servicePath;
     this._providedCustomServicePath = !!(
       opts?.servicePath || opts?.apiEndpoint
     );
@@ -131,8 +152,11 @@ export class PipelineServiceClient {
       (typeof window !== 'undefined' && typeof window?.fetch === 'function');
     opts = Object.assign({servicePath, port, clientConfig, fallback}, opts);
 
+    // Request numeric enum values if REST transport is used.
+    opts.numericEnums = true;
+
     // If scopes are unset in options and we're connecting to a non-default endpoint, set scopes just in case.
-    if (servicePath !== staticMembers.servicePath && !('scopes' in opts)) {
+    if (servicePath !== this._servicePath && !('scopes' in opts)) {
       opts['scopes'] = staticMembers.scopes;
     }
 
@@ -157,10 +181,10 @@ export class PipelineServiceClient {
     this.auth.useJWTAccessWithScope = true;
 
     // Set defaultServicePath on the auth object.
-    this.auth.defaultServicePath = staticMembers.servicePath;
+    this.auth.defaultServicePath = this._servicePath;
 
     // Set the default scopes in auth client if needed.
-    if (servicePath === staticMembers.servicePath) {
+    if (servicePath === this._servicePath) {
       this.auth.defaultScopes = staticMembers.scopes;
     }
     this.iamClient = new this._gaxModule.IamClient(this._gaxGrpc, opts);
@@ -172,14 +196,14 @@ export class PipelineServiceClient {
 
     // Determine the client header string.
     const clientHeader = [`gax/${this._gaxModule.version}`, `gapic/${version}`];
-    if (typeof process !== 'undefined' && 'versions' in process) {
+    if (typeof process === 'object' && 'versions' in process) {
       clientHeader.push(`gl-node/${process.versions.node}`);
     } else {
       clientHeader.push(`gl-web/${this._gaxModule.version}`);
     }
     if (!opts.fallback) {
       clientHeader.push(`grpc/${this._gaxGrpc.grpcVersion}`);
-    } else if (opts.fallback === 'rest') {
+    } else {
       clientHeader.push(`rest/${this._gaxGrpc.grpcVersion}`);
     }
     if (opts.libName && opts.libVersion) {
@@ -204,6 +228,9 @@ export class PipelineServiceClient {
       batchPredictionJobPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/batchPredictionJobs/{batch_prediction_job}'
       ),
+      cachedContentPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/cachedContents/{cached_content}'
+      ),
       contextPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/metadataStores/{metadata_store}/contexts/{context}'
       ),
@@ -219,6 +246,9 @@ export class PipelineServiceClient {
       datasetPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/datasets/{dataset}'
       ),
+      datasetVersionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/datasets/{dataset}/datasetVersions/{dataset_version}'
+      ),
       deploymentResourcePoolPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/deploymentResourcePools/{deployment_resource_pool}'
       ),
@@ -228,8 +258,26 @@ export class PipelineServiceClient {
       executionPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/metadataStores/{metadata_store}/executions/{execution}'
       ),
-      featurePathTemplate: new this._gaxModule.PathTemplate(
-        'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}'
+      extensionPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/extensions/{extension}'
+      ),
+      featureGroupPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureGroups/{feature_group}'
+      ),
+      featureMonitorPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureGroups/{feature_group}/featureMonitors/{feature_monitor}'
+      ),
+      featureMonitorJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureGroups/{feature_group}/featureMonitors/{feature_monitor}/featureMonitorJobs/{feature_monitor_job}'
+      ),
+      featureOnlineStorePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}'
+      ),
+      featureViewPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}/featureViews/{feature_view}'
+      ),
+      featureViewSyncPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store}/featureViews/{feature_view}/featureViewSyncs/feature_view_sync'
       ),
       featurestorePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/featurestores/{featurestore}'
@@ -265,24 +313,62 @@ export class PipelineServiceClient {
       modelEvaluationSlicePathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/models/{model}/evaluations/{evaluation}/slices/{slice}'
       ),
+      modelMonitorPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/modelMonitors/{model_monitor}'
+      ),
+      modelMonitoringJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/modelMonitors/{model_monitor}/modelMonitoringJobs/{model_monitoring_job}'
+      ),
       nasJobPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/nasJobs/{nas_job}'
       ),
       nasTrialDetailPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/nasJobs/{nas_job}/nasTrialDetails/{nas_trial_detail}'
       ),
+      notebookExecutionJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookExecutionJobs/{notebook_execution_job}'
+      ),
+      notebookRuntimePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookRuntimes/{notebook_runtime}'
+      ),
+      notebookRuntimeTemplatePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/notebookRuntimeTemplates/{notebook_runtime_template}'
+      ),
+      persistentResourcePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/persistentResources/{persistent_resource}'
+      ),
       pipelineJobPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/pipelineJobs/{pipeline_job}'
+      ),
+      projectPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}'
       ),
       projectLocationEndpointPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/endpoints/{endpoint}'
       ),
+      projectLocationFeatureGroupFeaturePathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/featureGroups/{feature_group}/features/{feature}'
+        ),
+      projectLocationFeaturestoreEntityTypeFeaturePathTemplate:
+        new this._gaxModule.PathTemplate(
+          'projects/{project}/locations/{location}/featurestores/{featurestore}/entityTypes/{entity_type}/features/{feature}'
+        ),
       projectLocationPublisherModelPathTemplate:
         new this._gaxModule.PathTemplate(
           'projects/{project}/locations/{location}/publishers/{publisher}/models/{model}'
         ),
       publisherModelPathTemplate: new this._gaxModule.PathTemplate(
         'publishers/{publisher}/models/{model}'
+      ),
+      ragCorpusPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/ragCorpora/{rag_corpus}'
+      ),
+      ragFilePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/ragCorpora/{rag_corpus}/ragFiles/{rag_file}'
+      ),
+      reasoningEnginePathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/reasoningEngines/{reasoning_engine}'
       ),
       savedQueryPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/datasets/{dataset}/savedQueries/{saved_query}'
@@ -314,6 +400,9 @@ export class PipelineServiceClient {
       trialPathTemplate: new this._gaxModule.PathTemplate(
         'projects/{project}/locations/{location}/studies/{study}/trials/{trial}'
       ),
+      tuningJobPathTemplate: new this._gaxModule.PathTemplate(
+        'projects/{project}/locations/{location}/tuningJobs/{tuning_job}'
+      ),
     };
 
     // Some of the methods on this service return "paged" results,
@@ -340,7 +429,7 @@ export class PipelineServiceClient {
       auth: this.auth,
       grpc: 'grpc' in this._gaxGrpc ? this._gaxGrpc.grpc : undefined,
     };
-    if (opts.fallback === 'rest') {
+    if (opts.fallback) {
       lroOptions.protoJson = protoFilesRoot;
       lroOptions.httpRules = [
         {
@@ -373,6 +462,15 @@ export class PipelineServiceClient {
               post: '/v1beta1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:getIamPolicy',
             },
             {
+              post: '/v1beta1/{resource=projects/*/locations/*/publishers/*/models/*}:getIamPolicy',
+            },
+            {
+              post: '/v1beta1/{resource=projects/*/locations/*/featureOnlineStores/*}:getIamPolicy',
+            },
+            {
+              post: '/v1beta1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:getIamPolicy',
+            },
+            {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:getIamPolicy',
             },
             {
@@ -386,6 +484,15 @@ export class PipelineServiceClient {
             },
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/publishers/*/models/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:getIamPolicy',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:getIamPolicy',
             },
           ],
         },
@@ -411,6 +518,14 @@ export class PipelineServiceClient {
               body: '*',
             },
             {
+              post: '/v1beta1/{resource=projects/*/locations/*/featureOnlineStores/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/v1beta1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:setIamPolicy',
+              body: '*',
+            },
+            {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:setIamPolicy',
               body: '*',
             },
@@ -428,6 +543,14 @@ export class PipelineServiceClient {
             },
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:setIamPolicy',
+              body: '*',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:setIamPolicy',
               body: '*',
             },
           ],
@@ -450,6 +573,12 @@ export class PipelineServiceClient {
               post: '/v1beta1/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:testIamPermissions',
             },
             {
+              post: '/v1beta1/{resource=projects/*/locations/*/featureOnlineStores/*}:testIamPermissions',
+            },
+            {
+              post: '/v1beta1/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:testIamPermissions',
+            },
+            {
               post: '/ui/{resource=projects/*/locations/*/featurestores/*}:testIamPermissions',
             },
             {
@@ -464,12 +593,24 @@ export class PipelineServiceClient {
             {
               post: '/ui/{resource=projects/*/locations/*/notebookRuntimeTemplates/*}:testIamPermissions',
             },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*}:testIamPermissions',
+            },
+            {
+              post: '/ui/{resource=projects/*/locations/*/featureOnlineStores/*/featureViews/*}:testIamPermissions',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.CancelOperation',
           post: '/ui/{name=projects/*/locations/*/operations/*}:cancel',
           additional_bindings: [
+            {
+              post: '/ui/{name=projects/*/locations/*/agents/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/apps/*/operations/*}:cancel',
+            },
             {
               post: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}:cancel',
             },
@@ -495,6 +636,12 @@ export class PipelineServiceClient {
               post: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}:cancel',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}:cancel',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}:cancel',
             },
             {
@@ -513,10 +660,25 @@ export class PipelineServiceClient {
               post: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:cancel',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}:cancel',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:cancel',
@@ -532,6 +694,18 @@ export class PipelineServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:cancel',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel',
             },
             {
               post: '/ui/{name=projects/*/locations/*/studies/*/operations/*}:cancel',
@@ -567,6 +741,12 @@ export class PipelineServiceClient {
               post: '/v1beta1/{name=projects/*/locations/*/operations/*}:cancel',
             },
             {
+              post: '/v1beta1/{name=projects/*/locations/*/agents/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/apps/*/operations/*}:cancel',
+            },
+            {
               post: '/v1beta1/{name=projects/*/locations/*/datasets/*/operations/*}:cancel',
             },
             {
@@ -589,6 +769,15 @@ export class PipelineServiceClient {
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/endpoints/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/exampleStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/extensionControllers/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/extensions/*/operations/*}:cancel',
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/featurestores/*/operations/*}:cancel',
@@ -615,6 +804,18 @@ export class PipelineServiceClient {
               post: '/v1beta1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:cancel',
             },
             {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:cancel',
+            },
+            {
               post: '/v1beta1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:cancel',
             },
             {
@@ -630,7 +831,22 @@ export class PipelineServiceClient {
               post: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel',
             },
             {
+              post: '/v1beta1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:cancel',
+            },
+            {
               post: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/ragFiles/*/operations/*}:cancel',
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/studies/*/operations/*}:cancel',
@@ -643,6 +859,9 @@ export class PipelineServiceClient {
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:cancel',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/reasoningEngines/*/operations/*}:cancel',
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/schedules/*/operations/*}:cancel',
@@ -668,6 +887,8 @@ export class PipelineServiceClient {
           selector: 'google.longrunning.Operations.DeleteOperation',
           delete: '/ui/{name=projects/*/locations/*/operations/*}',
           additional_bindings: [
+            {delete: '/ui/{name=projects/*/locations/*/agents/*/operations/*}'},
+            {delete: '/ui/{name=projects/*/locations/*/apps/*/operations/*}'},
             {
               delete:
                 '/ui/{name=projects/*/locations/*/datasets/*/operations/*}',
@@ -699,6 +920,14 @@ export class PipelineServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/extensions/*}/operations',
             },
             {
               delete:
@@ -734,6 +963,22 @@ export class PipelineServiceClient {
             },
             {
               delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
+            },
+            {
+              delete:
                 '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
             },
             {
@@ -748,6 +993,22 @@ export class PipelineServiceClient {
             {
               delete:
                 '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}',
             },
             {
               delete:
@@ -789,7 +1050,31 @@ export class PipelineServiceClient {
               delete:
                 '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
             },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
+            {
+              delete:
+                '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
             {delete: '/v1beta1/{name=projects/*/locations/*/operations/*}'},
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/agents/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/apps/*/operations/*}',
+            },
             {
               delete:
                 '/v1beta1/{name=projects/*/locations/*/datasets/*/operations/*}',
@@ -844,6 +1129,22 @@ export class PipelineServiceClient {
             },
             {
               delete:
+                '/v1beta1/{name=projects/*/locations/*/evaluationTasks/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/exampleStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/extensionControllers/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/extensions/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1beta1/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}',
             },
             {
@@ -853,6 +1154,22 @@ export class PipelineServiceClient {
             {
               delete:
                 '/v1beta1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
             },
             {
               delete:
@@ -876,7 +1193,31 @@ export class PipelineServiceClient {
             },
             {
               delete:
+                '/v1beta1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/ragFiles/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/reasoningEngines/*/operations/*}',
             },
             {
               delete:
@@ -928,6 +1269,14 @@ export class PipelineServiceClient {
             },
             {
               delete:
+                '/v1beta1/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              delete:
+                '/v1beta1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
+            {
+              delete:
                 '/v1beta1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
             },
           ],
@@ -936,6 +1285,8 @@ export class PipelineServiceClient {
           selector: 'google.longrunning.Operations.GetOperation',
           get: '/ui/{name=projects/*/locations/*/operations/*}',
           additional_bindings: [
+            {get: '/ui/{name=projects/*/locations/*/agents/*/operations/*}'},
+            {get: '/ui/{name=projects/*/locations/*/apps/*/operations/*}'},
             {get: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/datasets/*/dataItems/*/operations/*}',
@@ -960,6 +1311,12 @@ export class PipelineServiceClient {
             },
             {get: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}'},
             {
+              get: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}',
+            },
+            {
               get: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}',
             },
             {
@@ -977,9 +1334,24 @@ export class PipelineServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}',
+            },
             {get: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
             },
             {
               get: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
@@ -993,6 +1365,18 @@ export class PipelineServiceClient {
             {get: '/ui/{name=projects/*/locations/*/models/*/operations/*}'},
             {
               get: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}',
             },
             {get: '/ui/{name=projects/*/locations/*/studies/*/operations/*}'},
             {
@@ -1020,7 +1404,23 @@ export class PipelineServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
             {get: '/v1beta1/{name=projects/*/locations/*/operations/*}'},
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/agents/*/operations/*}',
+            },
+            {get: '/v1beta1/{name=projects/*/locations/*/apps/*/operations/*}'},
             {
               get: '/v1beta1/{name=projects/*/locations/*/datasets/*/operations/*}',
             },
@@ -1044,6 +1444,18 @@ export class PipelineServiceClient {
             },
             {
               get: '/v1beta1/{name=projects/*/locations/*/endpoints/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/evaluationTasks/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/exampleStores/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/extensionControllers/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/extensions/*/operations/*}',
             },
             {
               get: '/v1beta1/{name=projects/*/locations/*/featurestores/*/operations/*}',
@@ -1070,6 +1482,18 @@ export class PipelineServiceClient {
               get: '/v1beta1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}',
             },
             {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}',
+            },
+            {
               get: '/v1beta1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}',
             },
             {
@@ -1085,7 +1509,25 @@ export class PipelineServiceClient {
               get: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}',
             },
             {
+              get: '/v1beta1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}',
+            },
+            {
               get: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/ragFiles/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/reasoningEngines/*/operations/*}',
             },
             {
               get: '/v1beta1/{name=projects/*/locations/*/solvers/*/operations/*}',
@@ -1126,12 +1568,20 @@ export class PipelineServiceClient {
             {
               get: '/v1beta1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}',
             },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/featureGroups/*/operations/*}',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.ListOperations',
           get: '/ui/{name=projects/*/locations/*}/operations',
           additional_bindings: [
+            {get: '/ui/{name=projects/*/locations/*/agents/*}/operations'},
+            {get: '/ui/{name=projects/*/locations/*/apps/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/datasets/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/datasets/*/dataItems/*}/operations',
@@ -1151,6 +1601,10 @@ export class PipelineServiceClient {
             {get: '/ui/{name=projects/*/locations/*/edgeDevices/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/endpoints/*}/operations'},
             {
+              get: '/ui/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {get: '/ui/{name=projects/*/locations/*/extensions/*}/operations'},
+            {
               get: '/ui/{name=projects/*/locations/*/featurestores/*}/operations',
             },
             {
@@ -1166,9 +1620,22 @@ export class PipelineServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*}/operations',
             },
+            {get: '/ui/{name=projects/*/locations/*/tuningJobs/*}/operations'},
             {get: '/ui/{name=projects/*/locations/*/indexes/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/indexEndpoints/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*}/operations',
@@ -1183,12 +1650,24 @@ export class PipelineServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/models/*/evaluations/*}/operations',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimes/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*}/operations',
+            },
             {get: '/ui/{name=projects/*/locations/*/studies/*}/operations'},
             {
               get: '/ui/{name=projects/*/locations/*/studies/*/trials/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/trainingPipelines/*}/operations',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/persistentResources/*}/operations',
             },
             {
               get: '/ui/{name=projects/*/locations/*/pipelineJobs/*}/operations',
@@ -1209,7 +1688,21 @@ export class PipelineServiceClient {
             {
               get: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*}/operations',
             },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              get: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
+            },
             {get: '/v1beta1/{name=projects/*/locations/*}/operations'},
+            {get: '/v1beta1/{name=projects/*/locations/*/agents/*}/operations'},
+            {get: '/v1beta1/{name=projects/*/locations/*/apps/*}/operations'},
             {
               get: '/v1beta1/{name=projects/*/locations/*/datasets/*}/operations',
             },
@@ -1233,6 +1726,18 @@ export class PipelineServiceClient {
             },
             {
               get: '/v1beta1/{name=projects/*/locations/*/endpoints/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/evaluationTasks/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/exampleStores/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/extensionControllers/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/extensions/*}/operations',
             },
             {
               get: '/v1beta1/{name=projects/*/locations/*/featurestores/*}/operations',
@@ -1259,6 +1764,18 @@ export class PipelineServiceClient {
               get: '/v1beta1/{name=projects/*/locations/*/indexEndpoints/*}/operations',
             },
             {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/artifacts/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/contexts/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/executions/*}/operations',
+            },
+            {
               get: '/v1beta1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*}/operations',
             },
             {
@@ -1272,7 +1789,25 @@ export class PipelineServiceClient {
               get: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*}/operations',
             },
             {
+              get: '/v1beta1/{name=projects/*/locations/*/notebookExecutionJobs/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/notebookRuntimes/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/notebookRuntimeTemplates/*}/operations',
+            },
+            {
               get: '/v1beta1/{name=projects/*/locations/*/persistentResources/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/ragFiles/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/reasoningEngines/*}/operations',
             },
             {
               get: '/v1beta1/{name=projects/*/locations/*/solvers/*}/operations',
@@ -1313,12 +1848,24 @@ export class PipelineServiceClient {
             {
               get: '/v1beta1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*}/operations',
             },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/featureGroups/*}/operations',
+            },
+            {
+              get: '/v1beta1/{name=projects/*/locations/*/featureGroups/*/features/*}/operations',
+            },
           ],
         },
         {
           selector: 'google.longrunning.Operations.WaitOperation',
           post: '/ui/{name=projects/*/locations/*/operations/*}:wait',
           additional_bindings: [
+            {
+              post: '/ui/{name=projects/*/locations/*/agents/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/apps/*/operations/*}:wait',
+            },
             {
               post: '/ui/{name=projects/*/locations/*/datasets/*/operations/*}:wait',
             },
@@ -1344,6 +1891,12 @@ export class PipelineServiceClient {
               post: '/ui/{name=projects/*/locations/*/endpoints/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/extensionControllers/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/extensions/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/featurestores/*/operations/*}:wait',
             },
             {
@@ -1362,10 +1915,25 @@ export class PipelineServiceClient {
               post: '/ui/{name=projects/*/locations/*/hyperparameterTuningJobs/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/tuningJobs/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/indexes/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:wait',
@@ -1383,6 +1951,15 @@ export class PipelineServiceClient {
               post: '/ui/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait',
             },
             {
+              post: '/ui/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:wait',
+            },
+            {
               post: '/ui/{name=projects/*/locations/*/studies/*/operations/*}:wait',
             },
             {
@@ -1390,6 +1967,9 @@ export class PipelineServiceClient {
             },
             {
               post: '/ui/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait',
             },
             {
               post: '/ui/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:wait',
@@ -1412,7 +1992,25 @@ export class PipelineServiceClient {
             {
               post: '/ui/{name=projects/*/locations/*/tensorboards/*/experiments/*/runs/*/timeSeries/*/operations/*}:wait',
             },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              post: '/ui/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
+            },
             {post: '/v1beta1/{name=projects/*/locations/*/operations/*}:wait'},
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/agents/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/apps/*/operations/*}:wait',
+            },
             {
               post: '/v1beta1/{name=projects/*/locations/*/datasets/*/operations/*}:wait',
             },
@@ -1436,6 +2034,18 @@ export class PipelineServiceClient {
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/endpoints/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/evaluationTasks/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/exampleStores/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/extensionControllers/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/extensions/*/operations/*}:wait',
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/featurestores/*/operations/*}:wait',
@@ -1462,6 +2072,18 @@ export class PipelineServiceClient {
               post: '/v1beta1/{name=projects/*/locations/*/indexEndpoints/*/operations/*}:wait',
             },
             {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/artifacts/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/contexts/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/metadataStores/*/executions/*/operations/*}:wait',
+            },
+            {
               post: '/v1beta1/{name=projects/*/locations/*/modelDeploymentMonitoringJobs/*/operations/*}:wait',
             },
             {
@@ -1477,7 +2099,25 @@ export class PipelineServiceClient {
               post: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait',
             },
             {
+              post: '/v1beta1/{name=projects/*/locations/*/notebookExecutionJobs/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/notebookRuntimes/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/notebookRuntimeTemplates/*/operations/*}:wait',
+            },
+            {
               post: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/ragCorpora/*/ragFiles/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/reasoningEngines/*/operations/*}:wait',
             },
             {
               post: '/v1beta1/{name=projects/*/locations/*/studies/*/operations/*}:wait',
@@ -1515,6 +2155,12 @@ export class PipelineServiceClient {
             {
               post: '/v1beta1/{name=projects/*/locations/*/featureOnlineStores/*/featureViews/*/operations/*}:wait',
             },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/featureGroups/*/operations/*}:wait',
+            },
+            {
+              post: '/v1beta1/{name=projects/*/locations/*/featureGroups/*/features/*/operations/*}:wait',
+            },
           ],
         },
       ];
@@ -1534,6 +2180,18 @@ export class PipelineServiceClient {
     const deletePipelineJobMetadata = protoFilesRoot.lookup(
       '.google.cloud.aiplatform.v1beta1.DeleteOperationMetadata'
     ) as gax.protobuf.Type;
+    const batchDeletePipelineJobsResponse = protoFilesRoot.lookup(
+      '.google.cloud.aiplatform.v1beta1.BatchDeletePipelineJobsResponse'
+    ) as gax.protobuf.Type;
+    const batchDeletePipelineJobsMetadata = protoFilesRoot.lookup(
+      '.google.cloud.aiplatform.v1beta1.DeleteOperationMetadata'
+    ) as gax.protobuf.Type;
+    const batchCancelPipelineJobsResponse = protoFilesRoot.lookup(
+      '.google.cloud.aiplatform.v1beta1.BatchCancelPipelineJobsResponse'
+    ) as gax.protobuf.Type;
+    const batchCancelPipelineJobsMetadata = protoFilesRoot.lookup(
+      '.google.cloud.aiplatform.v1beta1.BatchCancelPipelineJobsOperationMetadata'
+    ) as gax.protobuf.Type;
 
     this.descriptors.longrunning = {
       deleteTrainingPipeline: new this._gaxModule.LongrunningDescriptor(
@@ -1549,6 +2207,24 @@ export class PipelineServiceClient {
         this.operationsClient,
         deletePipelineJobResponse.decode.bind(deletePipelineJobResponse),
         deletePipelineJobMetadata.decode.bind(deletePipelineJobMetadata)
+      ),
+      batchDeletePipelineJobs: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        batchDeletePipelineJobsResponse.decode.bind(
+          batchDeletePipelineJobsResponse
+        ),
+        batchDeletePipelineJobsMetadata.decode.bind(
+          batchDeletePipelineJobsMetadata
+        )
+      ),
+      batchCancelPipelineJobs: new this._gaxModule.LongrunningDescriptor(
+        this.operationsClient,
+        batchCancelPipelineJobsResponse.decode.bind(
+          batchCancelPipelineJobsResponse
+        ),
+        batchCancelPipelineJobsMetadata.decode.bind(
+          batchCancelPipelineJobsMetadata
+        )
       ),
     };
 
@@ -1611,7 +2287,9 @@ export class PipelineServiceClient {
       'getPipelineJob',
       'listPipelineJobs',
       'deletePipelineJob',
+      'batchDeletePipelineJobs',
       'cancelPipelineJob',
+      'batchCancelPipelineJobs',
     ];
     for (const methodName of pipelineServiceStubMethods) {
       const callPromise = this.pipelineServiceStub.then(
@@ -1647,19 +2325,50 @@ export class PipelineServiceClient {
 
   /**
    * The DNS address for this API service.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get servicePath() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static servicePath is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'aiplatform.googleapis.com';
   }
 
   /**
-   * The DNS address for this API service - same as servicePath(),
-   * exists for compatibility reasons.
+   * The DNS address for this API service - same as servicePath.
+   * @deprecated Use the apiEndpoint method of the client instance.
    * @returns {string} The DNS address for this service.
    */
   static get apiEndpoint() {
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      process.emitWarning(
+        'Static apiEndpoint is deprecated, please use the instance method instead.',
+        'DeprecationWarning'
+      );
+    }
     return 'aiplatform.googleapis.com';
+  }
+
+  /**
+   * The DNS address for this API service.
+   * @returns {string} The DNS address for this service.
+   */
+  get apiEndpoint() {
+    return this._servicePath;
+  }
+
+  get universeDomain() {
+    return this._universeDomain;
   }
 
   /**
@@ -1712,9 +2421,8 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1beta1.TrainingPipeline | TrainingPipeline}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline|TrainingPipeline}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.create_training_pipeline.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_CreateTrainingPipeline_async
@@ -1729,7 +2437,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICreateTrainingPipelineRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createTrainingPipeline(
@@ -1778,7 +2486,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICreateTrainingPipelineRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1815,9 +2523,8 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1beta1.TrainingPipeline | TrainingPipeline}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline|TrainingPipeline}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.get_training_pipeline.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_GetTrainingPipeline_async
@@ -1832,7 +2539,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.IGetTrainingPipelineRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getTrainingPipeline(
@@ -1881,7 +2588,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.IGetTrainingPipelineRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -1907,15 +2614,15 @@ export class PipelineServiceClient {
    * Starts asynchronous cancellation on the TrainingPipeline. The server
    * makes a best effort to cancel the pipeline, but success is not
    * guaranteed. Clients can use
-   * {@link google.cloud.aiplatform.v1beta1.PipelineService.GetTrainingPipeline|PipelineService.GetTrainingPipeline}
+   * {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.GetTrainingPipeline|PipelineService.GetTrainingPipeline}
    * or other methods to check whether the cancellation succeeded or whether the
    * pipeline completed despite cancellation. On successful cancellation,
    * the TrainingPipeline is not deleted; instead it becomes a pipeline with
    * a
-   * {@link google.cloud.aiplatform.v1beta1.TrainingPipeline.error|TrainingPipeline.error}
-   * value with a {@link google.rpc.Status.code|google.rpc.Status.code} of 1,
+   * {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline.error|TrainingPipeline.error}
+   * value with a {@link protos.google.rpc.Status.code|google.rpc.Status.code} of 1,
    * corresponding to `Code.CANCELLED`, and
-   * {@link google.cloud.aiplatform.v1beta1.TrainingPipeline.state|TrainingPipeline.state}
+   * {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline.state|TrainingPipeline.state}
    * is set to `CANCELLED`.
    *
    * @param {Object} request
@@ -1927,9 +2634,8 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.cancel_training_pipeline.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_CancelTrainingPipeline_async
@@ -1944,7 +2650,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICancelTrainingPipelineRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   cancelTrainingPipeline(
@@ -1993,7 +2699,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICancelTrainingPipelineRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2034,13 +2740,12 @@ export class PipelineServiceClient {
    *   generated.
    *
    *   This value should be less than 128 characters, and valid characters
-   *   are /{@link 0-9|a-z}-/.
+   *   are `/{@link protos.0-9|a-z}-/`.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1beta1.PipelineJob | PipelineJob}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob|PipelineJob}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.create_pipeline_job.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_CreatePipelineJob_async
@@ -2055,7 +2760,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICreatePipelineJobRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   createPipelineJob(
@@ -2104,7 +2809,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICreatePipelineJobRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2137,9 +2842,8 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.cloud.aiplatform.v1beta1.PipelineJob | PipelineJob}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob|PipelineJob}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.get_pipeline_job.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_GetPipelineJob_async
@@ -2151,7 +2855,7 @@ export class PipelineServiceClient {
     [
       protos.google.cloud.aiplatform.v1beta1.IPipelineJob,
       protos.google.cloud.aiplatform.v1beta1.IGetPipelineJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   getPipelineJob(
@@ -2197,7 +2901,7 @@ export class PipelineServiceClient {
     [
       protos.google.cloud.aiplatform.v1beta1.IPipelineJob,
       protos.google.cloud.aiplatform.v1beta1.IGetPipelineJobRequest | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2223,14 +2927,14 @@ export class PipelineServiceClient {
    * Starts asynchronous cancellation on the PipelineJob. The server
    * makes a best effort to cancel the pipeline, but success is not
    * guaranteed. Clients can use
-   * {@link google.cloud.aiplatform.v1beta1.PipelineService.GetPipelineJob|PipelineService.GetPipelineJob}
+   * {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.GetPipelineJob|PipelineService.GetPipelineJob}
    * or other methods to check whether the cancellation succeeded or whether the
    * pipeline completed despite cancellation. On successful cancellation,
    * the PipelineJob is not deleted; instead it becomes a pipeline with
-   * a {@link google.cloud.aiplatform.v1beta1.PipelineJob.error|PipelineJob.error}
-   * value with a {@link google.rpc.Status.code|google.rpc.Status.code} of 1,
+   * a {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob.error|PipelineJob.error}
+   * value with a {@link protos.google.rpc.Status.code|google.rpc.Status.code} of 1,
    * corresponding to `Code.CANCELLED`, and
-   * {@link google.cloud.aiplatform.v1beta1.PipelineJob.state|PipelineJob.state} is
+   * {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob.state|PipelineJob.state} is
    * set to `CANCELLED`.
    *
    * @param {Object} request
@@ -2242,9 +2946,8 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is an object representing {@link google.protobuf.Empty | Empty}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   The first element of the array is an object representing {@link protos.google.protobuf.Empty|Empty}.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.cancel_pipeline_job.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_CancelPipelineJob_async
@@ -2259,7 +2962,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICancelPipelineJobRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   >;
   cancelPipelineJob(
@@ -2308,7 +3011,7 @@ export class PipelineServiceClient {
         | protos.google.cloud.aiplatform.v1beta1.ICancelPipelineJobRequest
         | undefined
       ),
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2345,8 +3048,7 @@ export class PipelineServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.delete_training_pipeline.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_DeleteTrainingPipeline_async
@@ -2361,7 +3063,7 @@ export class PipelineServiceClient {
         protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deleteTrainingPipeline(
@@ -2414,7 +3116,7 @@ export class PipelineServiceClient {
         protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2445,8 +3147,7 @@ export class PipelineServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.delete_training_pipeline.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_DeleteTrainingPipeline_async
@@ -2489,8 +3190,7 @@ export class PipelineServiceClient {
    *   The first element of the array is an object representing
    *   a long running operation. Its `promise()` method returns a promise
    *   you can `await` for.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.delete_pipeline_job.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_DeletePipelineJob_async
@@ -2505,7 +3205,7 @@ export class PipelineServiceClient {
         protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   >;
   deletePipelineJob(
@@ -2558,7 +3258,7 @@ export class PipelineServiceClient {
         protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
       >,
       protos.google.longrunning.IOperation | undefined,
-      {} | undefined
+      {} | undefined,
     ]
   > | void {
     request = request || {};
@@ -2585,8 +3285,7 @@ export class PipelineServiceClient {
    *   The operation name that will be passed.
    * @returns {Promise} - The promise which resolves to an object.
    *   The decoded operation object has result and metadata field to get information from.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.delete_pipeline_job.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_DeletePipelineJob_async
@@ -2612,6 +3311,306 @@ export class PipelineServiceClient {
     return decodeOperation as LROperation<
       protos.google.protobuf.Empty,
       protos.google.cloud.aiplatform.v1beta1.DeleteOperationMetadata
+    >;
+  }
+  /**
+   * Batch deletes PipelineJobs
+   * The Operation is atomic. If it fails, none of the PipelineJobs are deleted.
+   * If it succeeds, all of the PipelineJobs are deleted.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The name of the PipelineJobs' parent resource.
+   *   Format: `projects/{project}/locations/{location}`
+   * @param {string[]} request.names
+   *   Required. The names of the PipelineJobs to delete.
+   *   A maximum of 32 PipelineJobs can be deleted in a batch.
+   *   Format:
+   *   `projects/{project}/locations/{location}/pipelineJobs/{pipelineJob}`
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta1/pipeline_service.batch_delete_pipeline_jobs.js</caption>
+   * region_tag:aiplatform_v1beta1_generated_PipelineService_BatchDeletePipelineJobs_async
+   */
+  batchDeletePipelineJobs(
+    request?: protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  batchDeletePipelineJobs(
+    request: protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  batchDeletePipelineJobs(
+    request: protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  batchDeletePipelineJobs(
+    request?: protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsResponse,
+            protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchDeletePipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IDeleteOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.batchDeletePipelineJobs(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
+   * Check the status of the long running operation returned by `batchDeletePipelineJobs()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta1/pipeline_service.batch_delete_pipeline_jobs.js</caption>
+   * region_tag:aiplatform_v1beta1_generated_PipelineService_BatchDeletePipelineJobs_async
+   */
+  async checkBatchDeletePipelineJobsProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.aiplatform.v1beta1.BatchDeletePipelineJobsResponse,
+      protos.google.cloud.aiplatform.v1beta1.DeleteOperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.batchDeletePipelineJobs,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.aiplatform.v1beta1.BatchDeletePipelineJobsResponse,
+      protos.google.cloud.aiplatform.v1beta1.DeleteOperationMetadata
+    >;
+  }
+  /**
+   * Batch cancel PipelineJobs.
+   * Firstly the server will check if all the jobs are in non-terminal states,
+   * and skip the jobs that are already terminated.
+   * If the operation failed, none of the pipeline jobs are cancelled.
+   * The server will poll the states of all the pipeline jobs periodically
+   * to check the cancellation status.
+   * This operation will return an LRO.
+   *
+   * @param {Object} request
+   *   The request object that will be sent.
+   * @param {string} request.parent
+   *   Required. The name of the PipelineJobs' parent resource.
+   *   Format: `projects/{project}/locations/{location}`
+   * @param {string[]} request.names
+   *   Required. The names of the PipelineJobs to cancel.
+   *   A maximum of 32 PipelineJobs can be cancelled in a batch.
+   *   Format:
+   *   `projects/{project}/locations/{location}/pipelineJobs/{pipelineJob}`
+   * @param {object} [options]
+   *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
+   * @returns {Promise} - The promise which resolves to an array.
+   *   The first element of the array is an object representing
+   *   a long running operation. Its `promise()` method returns a promise
+   *   you can `await` for.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta1/pipeline_service.batch_cancel_pipeline_jobs.js</caption>
+   * region_tag:aiplatform_v1beta1_generated_PipelineService_BatchCancelPipelineJobs_async
+   */
+  batchCancelPipelineJobs(
+    request?: protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsRequest,
+    options?: CallOptions
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  >;
+  batchCancelPipelineJobs(
+    request: protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsRequest,
+    options: CallOptions,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  batchCancelPipelineJobs(
+    request: protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsRequest,
+    callback: Callback<
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): void;
+  batchCancelPipelineJobs(
+    request?: protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsRequest,
+    optionsOrCallback?:
+      | CallOptions
+      | Callback<
+          LROperation<
+            protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsResponse,
+            protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsOperationMetadata
+          >,
+          protos.google.longrunning.IOperation | null | undefined,
+          {} | null | undefined
+        >,
+    callback?: Callback<
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | null | undefined,
+      {} | null | undefined
+    >
+  ): Promise<
+    [
+      LROperation<
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsResponse,
+        protos.google.cloud.aiplatform.v1beta1.IBatchCancelPipelineJobsOperationMetadata
+      >,
+      protos.google.longrunning.IOperation | undefined,
+      {} | undefined,
+    ]
+  > | void {
+    request = request || {};
+    let options: CallOptions;
+    if (typeof optionsOrCallback === 'function' && callback === undefined) {
+      callback = optionsOrCallback;
+      options = {};
+    } else {
+      options = optionsOrCallback as CallOptions;
+    }
+    options = options || {};
+    options.otherArgs = options.otherArgs || {};
+    options.otherArgs.headers = options.otherArgs.headers || {};
+    options.otherArgs.headers['x-goog-request-params'] =
+      this._gaxModule.routingHeader.fromParams({
+        parent: request.parent ?? '',
+      });
+    this.initialize();
+    return this.innerApiCalls.batchCancelPipelineJobs(
+      request,
+      options,
+      callback
+    );
+  }
+  /**
+   * Check the status of the long running operation returned by `batchCancelPipelineJobs()`.
+   * @param {String} name
+   *   The operation name that will be passed.
+   * @returns {Promise} - The promise which resolves to an object.
+   *   The decoded operation object has result and metadata field to get information from.
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#long-running-operations | documentation }
+   *   for more details and examples.
+   * @example <caption>include:samples/generated/v1beta1/pipeline_service.batch_cancel_pipeline_jobs.js</caption>
+   * region_tag:aiplatform_v1beta1_generated_PipelineService_BatchCancelPipelineJobs_async
+   */
+  async checkBatchCancelPipelineJobsProgress(
+    name: string
+  ): Promise<
+    LROperation<
+      protos.google.cloud.aiplatform.v1beta1.BatchCancelPipelineJobsResponse,
+      protos.google.cloud.aiplatform.v1beta1.BatchCancelPipelineJobsOperationMetadata
+    >
+  > {
+    const request =
+      new this._gaxModule.operationsProtos.google.longrunning.GetOperationRequest(
+        {name}
+      );
+    const [operation] = await this.operationsClient.getOperation(request);
+    const decodeOperation = new this._gaxModule.Operation(
+      operation,
+      this.descriptors.longrunning.batchCancelPipelineJobs,
+      this._gaxModule.createDefaultBackoffSettings()
+    );
+    return decodeOperation as LROperation<
+      protos.google.cloud.aiplatform.v1beta1.BatchCancelPipelineJobsResponse,
+      protos.google.cloud.aiplatform.v1beta1.BatchCancelPipelineJobsOperationMetadata
     >;
   }
   /**
@@ -2648,23 +3647,22 @@ export class PipelineServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1beta1.ListTrainingPipelinesResponse.next_page_token|ListTrainingPipelinesResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.ListTrainingPipelinesResponse.next_page_token|ListTrainingPipelinesResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineService.ListTrainingPipelines|PipelineService.ListTrainingPipelines}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.ListTrainingPipelines|PipelineService.ListTrainingPipelines}
    *   call.
    * @param {google.protobuf.FieldMask} request.readMask
    *   Mask specifying which fields to read.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1beta1.TrainingPipeline | TrainingPipeline}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline|TrainingPipeline}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listTrainingPipelinesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTrainingPipelines(
@@ -2674,7 +3672,7 @@ export class PipelineServiceClient {
     [
       protos.google.cloud.aiplatform.v1beta1.ITrainingPipeline[],
       protos.google.cloud.aiplatform.v1beta1.IListTrainingPipelinesRequest | null,
-      protos.google.cloud.aiplatform.v1beta1.IListTrainingPipelinesResponse
+      protos.google.cloud.aiplatform.v1beta1.IListTrainingPipelinesResponse,
     ]
   >;
   listTrainingPipelines(
@@ -2720,7 +3718,7 @@ export class PipelineServiceClient {
     [
       protos.google.cloud.aiplatform.v1beta1.ITrainingPipeline[],
       protos.google.cloud.aiplatform.v1beta1.IListTrainingPipelinesRequest | null,
-      protos.google.cloud.aiplatform.v1beta1.IListTrainingPipelinesResponse
+      protos.google.cloud.aiplatform.v1beta1.IListTrainingPipelinesResponse,
     ]
   > | void {
     request = request || {};
@@ -2775,22 +3773,21 @@ export class PipelineServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1beta1.ListTrainingPipelinesResponse.next_page_token|ListTrainingPipelinesResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.ListTrainingPipelinesResponse.next_page_token|ListTrainingPipelinesResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineService.ListTrainingPipelines|PipelineService.ListTrainingPipelines}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.ListTrainingPipelines|PipelineService.ListTrainingPipelines}
    *   call.
    * @param {google.protobuf.FieldMask} request.readMask
    *   Mask specifying which fields to read.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1beta1.TrainingPipeline | TrainingPipeline} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline|TrainingPipeline} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listTrainingPipelinesAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listTrainingPipelinesStream(
@@ -2850,21 +3847,20 @@ export class PipelineServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1beta1.ListTrainingPipelinesResponse.next_page_token|ListTrainingPipelinesResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.ListTrainingPipelinesResponse.next_page_token|ListTrainingPipelinesResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineService.ListTrainingPipelines|PipelineService.ListTrainingPipelines}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.ListTrainingPipelines|PipelineService.ListTrainingPipelines}
    *   call.
    * @param {google.protobuf.FieldMask} request.readMask
    *   Mask specifying which fields to read.
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1beta1.TrainingPipeline | TrainingPipeline}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1beta1.TrainingPipeline|TrainingPipeline}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.list_training_pipelines.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_ListTrainingPipelines_async
@@ -2938,9 +3934,9 @@ export class PipelineServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1beta1.ListPipelineJobsResponse.next_page_token|ListPipelineJobsResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.ListPipelineJobsResponse.next_page_token|ListPipelineJobsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineService.ListPipelineJobs|PipelineService.ListPipelineJobs}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.ListPipelineJobs|PipelineService.ListPipelineJobs}
    *   call.
    * @param {string} request.orderBy
    *   A comma-separated list of fields to order by. The default sort order is in
@@ -2961,14 +3957,13 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
-   *   The first element of the array is Array of {@link google.cloud.aiplatform.v1beta1.PipelineJob | PipelineJob}.
+   *   The first element of the array is Array of {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob|PipelineJob}.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed and will merge results from all the pages into this array.
    *   Note that it can affect your quota.
    *   We recommend using `listPipelineJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listPipelineJobs(
@@ -2978,7 +3973,7 @@ export class PipelineServiceClient {
     [
       protos.google.cloud.aiplatform.v1beta1.IPipelineJob[],
       protos.google.cloud.aiplatform.v1beta1.IListPipelineJobsRequest | null,
-      protos.google.cloud.aiplatform.v1beta1.IListPipelineJobsResponse
+      protos.google.cloud.aiplatform.v1beta1.IListPipelineJobsResponse,
     ]
   >;
   listPipelineJobs(
@@ -3024,7 +4019,7 @@ export class PipelineServiceClient {
     [
       protos.google.cloud.aiplatform.v1beta1.IPipelineJob[],
       protos.google.cloud.aiplatform.v1beta1.IListPipelineJobsRequest | null,
-      protos.google.cloud.aiplatform.v1beta1.IListPipelineJobsResponse
+      protos.google.cloud.aiplatform.v1beta1.IListPipelineJobsResponse,
     ]
   > | void {
     request = request || {};
@@ -3093,9 +4088,9 @@ export class PipelineServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1beta1.ListPipelineJobsResponse.next_page_token|ListPipelineJobsResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.ListPipelineJobsResponse.next_page_token|ListPipelineJobsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineService.ListPipelineJobs|PipelineService.ListPipelineJobs}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.ListPipelineJobs|PipelineService.ListPipelineJobs}
    *   call.
    * @param {string} request.orderBy
    *   A comma-separated list of fields to order by. The default sort order is in
@@ -3116,13 +4111,12 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Stream}
-   *   An object stream which emits an object representing {@link google.cloud.aiplatform.v1beta1.PipelineJob | PipelineJob} on 'data' event.
+   *   An object stream which emits an object representing {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob|PipelineJob} on 'data' event.
    *   The client library will perform auto-pagination by default: it will call the API as many
    *   times as needed. Note that it can affect your quota.
    *   We recommend using `listPipelineJobsAsync()`
    *   method described below for async iteration which you can stop as needed.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    */
   listPipelineJobsStream(
@@ -3196,9 +4190,9 @@ export class PipelineServiceClient {
    * @param {string} request.pageToken
    *   The standard list page token.
    *   Typically obtained via
-   *   {@link google.cloud.aiplatform.v1beta1.ListPipelineJobsResponse.next_page_token|ListPipelineJobsResponse.next_page_token}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.ListPipelineJobsResponse.next_page_token|ListPipelineJobsResponse.next_page_token}
    *   of the previous
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineService.ListPipelineJobs|PipelineService.ListPipelineJobs}
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineService.ListPipelineJobs|PipelineService.ListPipelineJobs}
    *   call.
    * @param {string} request.orderBy
    *   A comma-separated list of fields to order by. The default sort order is in
@@ -3219,12 +4213,11 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
-   *   {@link google.cloud.aiplatform.v1beta1.PipelineJob | PipelineJob}. The API will be called under the hood as needed, once per the page,
+   *   {@link protos.google.cloud.aiplatform.v1beta1.PipelineJob|PipelineJob}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example <caption>include:samples/generated/v1beta1/pipeline_service.list_pipeline_jobs.js</caption>
    * region_tag:aiplatform_v1beta1_generated_PipelineService_ListPipelineJobs_async
@@ -3289,7 +4282,7 @@ export class PipelineServiceClient {
       IamProtos.google.iam.v1.GetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.getIamPolicy(request, options, callback);
   }
 
@@ -3310,8 +4303,7 @@ export class PipelineServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -3337,7 +4329,7 @@ export class PipelineServiceClient {
       IamProtos.google.iam.v1.SetIamPolicyRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.Policy> {
+  ): Promise<[IamProtos.google.iam.v1.Policy]> {
     return this.iamClient.setIamPolicy(request, options, callback);
   }
 
@@ -3358,8 +4350,7 @@ export class PipelineServiceClient {
    * @param {string[]} request.permissions
    *   The set of permissions to check for the `resource`. Permissions with
    *   wildcards (such as '*' or 'storage.*') are not allowed. For more
-   *   information see
-   *   [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
+   *   information see {@link https://cloud.google.com/iam/docs/overview#permissions | IAM Overview }.
    * @param {Object} [options]
    *   Optional parameters. You can override the default settings for this call, e.g, timeout,
    *   retries, paginations, etc. See {@link https://googleapis.github.io/gax-nodejs/interfaces/CallOptions.html | gax.CallOptions} for the details.
@@ -3386,7 +4377,7 @@ export class PipelineServiceClient {
       IamProtos.google.iam.v1.TestIamPermissionsRequest | null | undefined,
       {} | null | undefined
     >
-  ): Promise<IamProtos.google.iam.v1.TestIamPermissionsResponse> {
+  ): Promise<[IamProtos.google.iam.v1.TestIamPermissionsResponse]> {
     return this.iamClient.testIamPermissions(request, options, callback);
   }
 
@@ -3401,8 +4392,7 @@ export class PipelineServiceClient {
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html | CallOptions} for more details.
    * @returns {Promise} - The promise which resolves to an array.
    *   The first element of the array is an object representing {@link google.cloud.location.Location | Location}.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#regular-methods | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -3448,12 +4438,11 @@ export class PipelineServiceClient {
    * @param {object} [options]
    *   Call options. See {@link https://googleapis.dev/nodejs/google-gax/latest/interfaces/CallOptions.html|CallOptions} for more details.
    * @returns {Object}
-   *   An iterable Object that allows [async iteration](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols).
+   *   An iterable Object that allows {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols | async iteration }.
    *   When you iterate the returned iterable, each element will be an object representing
    *   {@link google.cloud.location.Location | Location}. The API will be called under the hood as needed, once per the page,
    *   so you can stop the iteration when you don't need more results.
-   *   Please see the
-   *   [documentation](https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination)
+   *   Please see the {@link https://github.com/googleapis/gax-nodejs/blob/master/client-libraries.md#auto-pagination | documentation }
    *   for more details and examples.
    * @example
    * ```
@@ -3940,6 +4929,58 @@ export class PipelineServiceClient {
   }
 
   /**
+   * Return a fully-qualified cachedContent resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} cached_content
+   * @returns {string} Resource name string.
+   */
+  cachedContentPath(project: string, location: string, cachedContent: string) {
+    return this.pathTemplates.cachedContentPathTemplate.render({
+      project: project,
+      location: location,
+      cached_content: cachedContent,
+    });
+  }
+
+  /**
+   * Parse the project from CachedContent resource.
+   *
+   * @param {string} cachedContentName
+   *   A fully-qualified path representing CachedContent resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromCachedContentName(cachedContentName: string) {
+    return this.pathTemplates.cachedContentPathTemplate.match(cachedContentName)
+      .project;
+  }
+
+  /**
+   * Parse the location from CachedContent resource.
+   *
+   * @param {string} cachedContentName
+   *   A fully-qualified path representing CachedContent resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromCachedContentName(cachedContentName: string) {
+    return this.pathTemplates.cachedContentPathTemplate.match(cachedContentName)
+      .location;
+  }
+
+  /**
+   * Parse the cached_content from CachedContent resource.
+   *
+   * @param {string} cachedContentName
+   *   A fully-qualified path representing CachedContent resource.
+   * @returns {string} A string representing the cached_content.
+   */
+  matchCachedContentFromCachedContentName(cachedContentName: string) {
+    return this.pathTemplates.cachedContentPathTemplate.match(cachedContentName)
+      .cached_content;
+  }
+
+  /**
    * Return a fully-qualified context resource name string.
    *
    * @param {string} project
@@ -4236,6 +5277,81 @@ export class PipelineServiceClient {
   }
 
   /**
+   * Return a fully-qualified datasetVersion resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} dataset
+   * @param {string} dataset_version
+   * @returns {string} Resource name string.
+   */
+  datasetVersionPath(
+    project: string,
+    location: string,
+    dataset: string,
+    datasetVersion: string
+  ) {
+    return this.pathTemplates.datasetVersionPathTemplate.render({
+      project: project,
+      location: location,
+      dataset: dataset,
+      dataset_version: datasetVersion,
+    });
+  }
+
+  /**
+   * Parse the project from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).project;
+  }
+
+  /**
+   * Parse the location from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).location;
+  }
+
+  /**
+   * Parse the dataset from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the dataset.
+   */
+  matchDatasetFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).dataset;
+  }
+
+  /**
+   * Parse the dataset_version from DatasetVersion resource.
+   *
+   * @param {string} datasetVersionName
+   *   A fully-qualified path representing DatasetVersion resource.
+   * @returns {string} A string representing the dataset_version.
+   */
+  matchDatasetVersionFromDatasetVersionName(datasetVersionName: string) {
+    return this.pathTemplates.datasetVersionPathTemplate.match(
+      datasetVersionName
+    ).dataset_version;
+  }
+
+  /**
    * Return a fully-qualified deploymentResourcePool resource name string.
    *
    * @param {string} project
@@ -4443,86 +5559,482 @@ export class PipelineServiceClient {
   }
 
   /**
-   * Return a fully-qualified feature resource name string.
+   * Return a fully-qualified extension resource name string.
    *
    * @param {string} project
    * @param {string} location
-   * @param {string} featurestore
-   * @param {string} entity_type
-   * @param {string} feature
+   * @param {string} extension
    * @returns {string} Resource name string.
    */
-  featurePath(
-    project: string,
-    location: string,
-    featurestore: string,
-    entityType: string,
-    feature: string
-  ) {
-    return this.pathTemplates.featurePathTemplate.render({
+  extensionPath(project: string, location: string, extension: string) {
+    return this.pathTemplates.extensionPathTemplate.render({
       project: project,
       location: location,
-      featurestore: featurestore,
-      entity_type: entityType,
-      feature: feature,
+      extension: extension,
     });
   }
 
   /**
-   * Parse the project from Feature resource.
+   * Parse the project from Extension resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
+   * @param {string} extensionName
+   *   A fully-qualified path representing Extension resource.
    * @returns {string} A string representing the project.
    */
-  matchProjectFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).project;
+  matchProjectFromExtensionName(extensionName: string) {
+    return this.pathTemplates.extensionPathTemplate.match(extensionName)
+      .project;
   }
 
   /**
-   * Parse the location from Feature resource.
+   * Parse the location from Extension resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
+   * @param {string} extensionName
+   *   A fully-qualified path representing Extension resource.
    * @returns {string} A string representing the location.
    */
-  matchLocationFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).location;
+  matchLocationFromExtensionName(extensionName: string) {
+    return this.pathTemplates.extensionPathTemplate.match(extensionName)
+      .location;
   }
 
   /**
-   * Parse the featurestore from Feature resource.
+   * Parse the extension from Extension resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the featurestore.
+   * @param {string} extensionName
+   *   A fully-qualified path representing Extension resource.
+   * @returns {string} A string representing the extension.
    */
-  matchFeaturestoreFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName)
-      .featurestore;
+  matchExtensionFromExtensionName(extensionName: string) {
+    return this.pathTemplates.extensionPathTemplate.match(extensionName)
+      .extension;
   }
 
   /**
-   * Parse the entity_type from Feature resource.
+   * Return a fully-qualified featureGroup resource name string.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the entity_type.
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_group
+   * @returns {string} Resource name string.
    */
-  matchEntityTypeFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName)
-      .entity_type;
+  featureGroupPath(project: string, location: string, featureGroup: string) {
+    return this.pathTemplates.featureGroupPathTemplate.render({
+      project: project,
+      location: location,
+      feature_group: featureGroup,
+    });
   }
 
   /**
-   * Parse the feature from Feature resource.
+   * Parse the project from FeatureGroup resource.
    *
-   * @param {string} featureName
-   *   A fully-qualified path representing Feature resource.
-   * @returns {string} A string representing the feature.
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
+   * @returns {string} A string representing the project.
    */
-  matchFeatureFromFeatureName(featureName: string) {
-    return this.pathTemplates.featurePathTemplate.match(featureName).feature;
+  matchProjectFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .project;
+  }
+
+  /**
+   * Parse the location from FeatureGroup resource.
+   *
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .location;
+  }
+
+  /**
+   * Parse the feature_group from FeatureGroup resource.
+   *
+   * @param {string} featureGroupName
+   *   A fully-qualified path representing FeatureGroup resource.
+   * @returns {string} A string representing the feature_group.
+   */
+  matchFeatureGroupFromFeatureGroupName(featureGroupName: string) {
+    return this.pathTemplates.featureGroupPathTemplate.match(featureGroupName)
+      .feature_group;
+  }
+
+  /**
+   * Return a fully-qualified featureMonitor resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_group
+   * @param {string} feature_monitor
+   * @returns {string} Resource name string.
+   */
+  featureMonitorPath(
+    project: string,
+    location: string,
+    featureGroup: string,
+    featureMonitor: string
+  ) {
+    return this.pathTemplates.featureMonitorPathTemplate.render({
+      project: project,
+      location: location,
+      feature_group: featureGroup,
+      feature_monitor: featureMonitor,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureMonitor resource.
+   *
+   * @param {string} featureMonitorName
+   *   A fully-qualified path representing FeatureMonitor resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureMonitorName(featureMonitorName: string) {
+    return this.pathTemplates.featureMonitorPathTemplate.match(
+      featureMonitorName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureMonitor resource.
+   *
+   * @param {string} featureMonitorName
+   *   A fully-qualified path representing FeatureMonitor resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureMonitorName(featureMonitorName: string) {
+    return this.pathTemplates.featureMonitorPathTemplate.match(
+      featureMonitorName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_group from FeatureMonitor resource.
+   *
+   * @param {string} featureMonitorName
+   *   A fully-qualified path representing FeatureMonitor resource.
+   * @returns {string} A string representing the feature_group.
+   */
+  matchFeatureGroupFromFeatureMonitorName(featureMonitorName: string) {
+    return this.pathTemplates.featureMonitorPathTemplate.match(
+      featureMonitorName
+    ).feature_group;
+  }
+
+  /**
+   * Parse the feature_monitor from FeatureMonitor resource.
+   *
+   * @param {string} featureMonitorName
+   *   A fully-qualified path representing FeatureMonitor resource.
+   * @returns {string} A string representing the feature_monitor.
+   */
+  matchFeatureMonitorFromFeatureMonitorName(featureMonitorName: string) {
+    return this.pathTemplates.featureMonitorPathTemplate.match(
+      featureMonitorName
+    ).feature_monitor;
+  }
+
+  /**
+   * Return a fully-qualified featureMonitorJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_group
+   * @param {string} feature_monitor
+   * @param {string} feature_monitor_job
+   * @returns {string} Resource name string.
+   */
+  featureMonitorJobPath(
+    project: string,
+    location: string,
+    featureGroup: string,
+    featureMonitor: string,
+    featureMonitorJob: string
+  ) {
+    return this.pathTemplates.featureMonitorJobPathTemplate.render({
+      project: project,
+      location: location,
+      feature_group: featureGroup,
+      feature_monitor: featureMonitor,
+      feature_monitor_job: featureMonitorJob,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureMonitorJob resource.
+   *
+   * @param {string} featureMonitorJobName
+   *   A fully-qualified path representing FeatureMonitorJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureMonitorJobName(featureMonitorJobName: string) {
+    return this.pathTemplates.featureMonitorJobPathTemplate.match(
+      featureMonitorJobName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureMonitorJob resource.
+   *
+   * @param {string} featureMonitorJobName
+   *   A fully-qualified path representing FeatureMonitorJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureMonitorJobName(featureMonitorJobName: string) {
+    return this.pathTemplates.featureMonitorJobPathTemplate.match(
+      featureMonitorJobName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_group from FeatureMonitorJob resource.
+   *
+   * @param {string} featureMonitorJobName
+   *   A fully-qualified path representing FeatureMonitorJob resource.
+   * @returns {string} A string representing the feature_group.
+   */
+  matchFeatureGroupFromFeatureMonitorJobName(featureMonitorJobName: string) {
+    return this.pathTemplates.featureMonitorJobPathTemplate.match(
+      featureMonitorJobName
+    ).feature_group;
+  }
+
+  /**
+   * Parse the feature_monitor from FeatureMonitorJob resource.
+   *
+   * @param {string} featureMonitorJobName
+   *   A fully-qualified path representing FeatureMonitorJob resource.
+   * @returns {string} A string representing the feature_monitor.
+   */
+  matchFeatureMonitorFromFeatureMonitorJobName(featureMonitorJobName: string) {
+    return this.pathTemplates.featureMonitorJobPathTemplate.match(
+      featureMonitorJobName
+    ).feature_monitor;
+  }
+
+  /**
+   * Parse the feature_monitor_job from FeatureMonitorJob resource.
+   *
+   * @param {string} featureMonitorJobName
+   *   A fully-qualified path representing FeatureMonitorJob resource.
+   * @returns {string} A string representing the feature_monitor_job.
+   */
+  matchFeatureMonitorJobFromFeatureMonitorJobName(
+    featureMonitorJobName: string
+  ) {
+    return this.pathTemplates.featureMonitorJobPathTemplate.match(
+      featureMonitorJobName
+    ).feature_monitor_job;
+  }
+
+  /**
+   * Return a fully-qualified featureOnlineStore resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @returns {string} Resource name string.
+   */
+  featureOnlineStorePath(
+    project: string,
+    location: string,
+    featureOnlineStore: string
+  ) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureOnlineStoreName(featureOnlineStoreName: string) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureOnlineStoreName(featureOnlineStoreName: string) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureOnlineStore resource.
+   *
+   * @param {string} featureOnlineStoreName
+   *   A fully-qualified path representing FeatureOnlineStore resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureOnlineStoreName(
+    featureOnlineStoreName: string
+  ) {
+    return this.pathTemplates.featureOnlineStorePathTemplate.match(
+      featureOnlineStoreName
+    ).feature_online_store;
+  }
+
+  /**
+   * Return a fully-qualified featureView resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @param {string} feature_view
+   * @returns {string} Resource name string.
+   */
+  featureViewPath(
+    project: string,
+    location: string,
+    featureOnlineStore: string,
+    featureView: string
+  ) {
+    return this.pathTemplates.featureViewPathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+      feature_view: featureView,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .project;
+  }
+
+  /**
+   * Parse the location from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .feature_online_store;
+  }
+
+  /**
+   * Parse the feature_view from FeatureView resource.
+   *
+   * @param {string} featureViewName
+   *   A fully-qualified path representing FeatureView resource.
+   * @returns {string} A string representing the feature_view.
+   */
+  matchFeatureViewFromFeatureViewName(featureViewName: string) {
+    return this.pathTemplates.featureViewPathTemplate.match(featureViewName)
+      .feature_view;
+  }
+
+  /**
+   * Return a fully-qualified featureViewSync resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_online_store
+   * @param {string} feature_view
+   * @returns {string} Resource name string.
+   */
+  featureViewSyncPath(
+    project: string,
+    location: string,
+    featureOnlineStore: string,
+    featureView: string
+  ) {
+    return this.pathTemplates.featureViewSyncPathTemplate.render({
+      project: project,
+      location: location,
+      feature_online_store: featureOnlineStore,
+      feature_view: featureView,
+    });
+  }
+
+  /**
+   * Parse the project from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).project;
+  }
+
+  /**
+   * Parse the location from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_online_store from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the feature_online_store.
+   */
+  matchFeatureOnlineStoreFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).feature_online_store;
+  }
+
+  /**
+   * Parse the feature_view from FeatureViewSync resource.
+   *
+   * @param {string} featureViewSyncName
+   *   A fully-qualified path representing FeatureViewSync resource.
+   * @returns {string} A string representing the feature_view.
+   */
+  matchFeatureViewFromFeatureViewSyncName(featureViewSyncName: string) {
+    return this.pathTemplates.featureViewSyncPathTemplate.match(
+      featureViewSyncName
+    ).feature_view;
   }
 
   /**
@@ -5189,6 +6701,135 @@ export class PipelineServiceClient {
   }
 
   /**
+   * Return a fully-qualified modelMonitor resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} model_monitor
+   * @returns {string} Resource name string.
+   */
+  modelMonitorPath(project: string, location: string, modelMonitor: string) {
+    return this.pathTemplates.modelMonitorPathTemplate.render({
+      project: project,
+      location: location,
+      model_monitor: modelMonitor,
+    });
+  }
+
+  /**
+   * Parse the project from ModelMonitor resource.
+   *
+   * @param {string} modelMonitorName
+   *   A fully-qualified path representing ModelMonitor resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromModelMonitorName(modelMonitorName: string) {
+    return this.pathTemplates.modelMonitorPathTemplate.match(modelMonitorName)
+      .project;
+  }
+
+  /**
+   * Parse the location from ModelMonitor resource.
+   *
+   * @param {string} modelMonitorName
+   *   A fully-qualified path representing ModelMonitor resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromModelMonitorName(modelMonitorName: string) {
+    return this.pathTemplates.modelMonitorPathTemplate.match(modelMonitorName)
+      .location;
+  }
+
+  /**
+   * Parse the model_monitor from ModelMonitor resource.
+   *
+   * @param {string} modelMonitorName
+   *   A fully-qualified path representing ModelMonitor resource.
+   * @returns {string} A string representing the model_monitor.
+   */
+  matchModelMonitorFromModelMonitorName(modelMonitorName: string) {
+    return this.pathTemplates.modelMonitorPathTemplate.match(modelMonitorName)
+      .model_monitor;
+  }
+
+  /**
+   * Return a fully-qualified modelMonitoringJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} model_monitor
+   * @param {string} model_monitoring_job
+   * @returns {string} Resource name string.
+   */
+  modelMonitoringJobPath(
+    project: string,
+    location: string,
+    modelMonitor: string,
+    modelMonitoringJob: string
+  ) {
+    return this.pathTemplates.modelMonitoringJobPathTemplate.render({
+      project: project,
+      location: location,
+      model_monitor: modelMonitor,
+      model_monitoring_job: modelMonitoringJob,
+    });
+  }
+
+  /**
+   * Parse the project from ModelMonitoringJob resource.
+   *
+   * @param {string} modelMonitoringJobName
+   *   A fully-qualified path representing ModelMonitoringJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromModelMonitoringJobName(modelMonitoringJobName: string) {
+    return this.pathTemplates.modelMonitoringJobPathTemplate.match(
+      modelMonitoringJobName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ModelMonitoringJob resource.
+   *
+   * @param {string} modelMonitoringJobName
+   *   A fully-qualified path representing ModelMonitoringJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromModelMonitoringJobName(modelMonitoringJobName: string) {
+    return this.pathTemplates.modelMonitoringJobPathTemplate.match(
+      modelMonitoringJobName
+    ).location;
+  }
+
+  /**
+   * Parse the model_monitor from ModelMonitoringJob resource.
+   *
+   * @param {string} modelMonitoringJobName
+   *   A fully-qualified path representing ModelMonitoringJob resource.
+   * @returns {string} A string representing the model_monitor.
+   */
+  matchModelMonitorFromModelMonitoringJobName(modelMonitoringJobName: string) {
+    return this.pathTemplates.modelMonitoringJobPathTemplate.match(
+      modelMonitoringJobName
+    ).model_monitor;
+  }
+
+  /**
+   * Parse the model_monitoring_job from ModelMonitoringJob resource.
+   *
+   * @param {string} modelMonitoringJobName
+   *   A fully-qualified path representing ModelMonitoringJob resource.
+   * @returns {string} A string representing the model_monitoring_job.
+   */
+  matchModelMonitoringJobFromModelMonitoringJobName(
+    modelMonitoringJobName: string
+  ) {
+    return this.pathTemplates.modelMonitoringJobPathTemplate.match(
+      modelMonitoringJobName
+    ).model_monitoring_job;
+  }
+
+  /**
    * Return a fully-qualified nasJob resource name string.
    *
    * @param {string} project
@@ -5313,6 +6954,252 @@ export class PipelineServiceClient {
   }
 
   /**
+   * Return a fully-qualified notebookExecutionJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_execution_job
+   * @returns {string} Resource name string.
+   */
+  notebookExecutionJobPath(
+    project: string,
+    location: string,
+    notebookExecutionJob: string
+  ) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.render({
+      project: project,
+      location: location,
+      notebook_execution_job: notebookExecutionJob,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookExecutionJobName(notebookExecutionJobName: string) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookExecutionJobName(notebookExecutionJobName: string) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_execution_job from NotebookExecutionJob resource.
+   *
+   * @param {string} notebookExecutionJobName
+   *   A fully-qualified path representing NotebookExecutionJob resource.
+   * @returns {string} A string representing the notebook_execution_job.
+   */
+  matchNotebookExecutionJobFromNotebookExecutionJobName(
+    notebookExecutionJobName: string
+  ) {
+    return this.pathTemplates.notebookExecutionJobPathTemplate.match(
+      notebookExecutionJobName
+    ).notebook_execution_job;
+  }
+
+  /**
+   * Return a fully-qualified notebookRuntime resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_runtime
+   * @returns {string} Resource name string.
+   */
+  notebookRuntimePath(
+    project: string,
+    location: string,
+    notebookRuntime: string
+  ) {
+    return this.pathTemplates.notebookRuntimePathTemplate.render({
+      project: project,
+      location: location,
+      notebook_runtime: notebookRuntime,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_runtime from NotebookRuntime resource.
+   *
+   * @param {string} notebookRuntimeName
+   *   A fully-qualified path representing NotebookRuntime resource.
+   * @returns {string} A string representing the notebook_runtime.
+   */
+  matchNotebookRuntimeFromNotebookRuntimeName(notebookRuntimeName: string) {
+    return this.pathTemplates.notebookRuntimePathTemplate.match(
+      notebookRuntimeName
+    ).notebook_runtime;
+  }
+
+  /**
+   * Return a fully-qualified notebookRuntimeTemplate resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} notebook_runtime_template
+   * @returns {string} Resource name string.
+   */
+  notebookRuntimeTemplatePath(
+    project: string,
+    location: string,
+    notebookRuntimeTemplate: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.render({
+      project: project,
+      location: location,
+      notebook_runtime_template: notebookRuntimeTemplate,
+    });
+  }
+
+  /**
+   * Parse the project from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).project;
+  }
+
+  /**
+   * Parse the location from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).location;
+  }
+
+  /**
+   * Parse the notebook_runtime_template from NotebookRuntimeTemplate resource.
+   *
+   * @param {string} notebookRuntimeTemplateName
+   *   A fully-qualified path representing NotebookRuntimeTemplate resource.
+   * @returns {string} A string representing the notebook_runtime_template.
+   */
+  matchNotebookRuntimeTemplateFromNotebookRuntimeTemplateName(
+    notebookRuntimeTemplateName: string
+  ) {
+    return this.pathTemplates.notebookRuntimeTemplatePathTemplate.match(
+      notebookRuntimeTemplateName
+    ).notebook_runtime_template;
+  }
+
+  /**
+   * Return a fully-qualified persistentResource resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} persistent_resource
+   * @returns {string} Resource name string.
+   */
+  persistentResourcePath(
+    project: string,
+    location: string,
+    persistentResource: string
+  ) {
+    return this.pathTemplates.persistentResourcePathTemplate.render({
+      project: project,
+      location: location,
+      persistent_resource: persistentResource,
+    });
+  }
+
+  /**
+   * Parse the project from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromPersistentResourceName(persistentResourceName: string) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).project;
+  }
+
+  /**
+   * Parse the location from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromPersistentResourceName(persistentResourceName: string) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).location;
+  }
+
+  /**
+   * Parse the persistent_resource from PersistentResource resource.
+   *
+   * @param {string} persistentResourceName
+   *   A fully-qualified path representing PersistentResource resource.
+   * @returns {string} A string representing the persistent_resource.
+   */
+  matchPersistentResourceFromPersistentResourceName(
+    persistentResourceName: string
+  ) {
+    return this.pathTemplates.persistentResourcePathTemplate.match(
+      persistentResourceName
+    ).persistent_resource;
+  }
+
+  /**
    * Return a fully-qualified pipelineJob resource name string.
    *
    * @param {string} project
@@ -5362,6 +7249,29 @@ export class PipelineServiceClient {
   matchPipelineJobFromPipelineJobName(pipelineJobName: string) {
     return this.pathTemplates.pipelineJobPathTemplate.match(pipelineJobName)
       .pipeline_job;
+  }
+
+  /**
+   * Return a fully-qualified project resource name string.
+   *
+   * @param {string} project
+   * @returns {string} Resource name string.
+   */
+  projectPath(project: string) {
+    return this.pathTemplates.projectPathTemplate.render({
+      project: project,
+    });
+  }
+
+  /**
+   * Parse the project from Project resource.
+   *
+   * @param {string} projectName
+   *   A fully-qualified path representing Project resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectName(projectName: string) {
+    return this.pathTemplates.projectPathTemplate.match(projectName).project;
   }
 
   /**
@@ -5427,6 +7337,194 @@ export class PipelineServiceClient {
     return this.pathTemplates.projectLocationEndpointPathTemplate.match(
       projectLocationEndpointName
     ).endpoint;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationFeatureGroupFeature resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} feature_group
+   * @param {string} feature
+   * @returns {string} Resource name string.
+   */
+  projectLocationFeatureGroupFeaturePath(
+    project: string,
+    location: string,
+    featureGroup: string,
+    feature: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.render(
+      {
+        project: project,
+        location: location,
+        feature_group: featureGroup,
+        feature: feature,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).location;
+  }
+
+  /**
+   * Parse the feature_group from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the feature_group.
+   */
+  matchFeatureGroupFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).feature_group;
+  }
+
+  /**
+   * Parse the feature from ProjectLocationFeatureGroupFeature resource.
+   *
+   * @param {string} projectLocationFeatureGroupFeatureName
+   *   A fully-qualified path representing project_location_feature_group_feature resource.
+   * @returns {string} A string representing the feature.
+   */
+  matchFeatureFromProjectLocationFeatureGroupFeatureName(
+    projectLocationFeatureGroupFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeatureGroupFeaturePathTemplate.match(
+      projectLocationFeatureGroupFeatureName
+    ).feature;
+  }
+
+  /**
+   * Return a fully-qualified projectLocationFeaturestoreEntityTypeFeature resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} featurestore
+   * @param {string} entity_type
+   * @param {string} feature
+   * @returns {string} Resource name string.
+   */
+  projectLocationFeaturestoreEntityTypeFeaturePath(
+    project: string,
+    location: string,
+    featurestore: string,
+    entityType: string,
+    feature: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.render(
+      {
+        project: project,
+        location: location,
+        featurestore: featurestore,
+        entity_type: entityType,
+        feature: feature,
+      }
+    );
+  }
+
+  /**
+   * Parse the project from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).location;
+  }
+
+  /**
+   * Parse the featurestore from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the featurestore.
+   */
+  matchFeaturestoreFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).featurestore;
+  }
+
+  /**
+   * Parse the entity_type from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the entity_type.
+   */
+  matchEntityTypeFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).entity_type;
+  }
+
+  /**
+   * Parse the feature from ProjectLocationFeaturestoreEntityTypeFeature resource.
+   *
+   * @param {string} projectLocationFeaturestoreEntityTypeFeatureName
+   *   A fully-qualified path representing project_location_featurestore_entity_type_feature resource.
+   * @returns {string} A string representing the feature.
+   */
+  matchFeatureFromProjectLocationFeaturestoreEntityTypeFeatureName(
+    projectLocationFeaturestoreEntityTypeFeatureName: string
+  ) {
+    return this.pathTemplates.projectLocationFeaturestoreEntityTypeFeaturePathTemplate.match(
+      projectLocationFeaturestoreEntityTypeFeatureName
+    ).feature;
   }
 
   /**
@@ -5550,6 +7648,184 @@ export class PipelineServiceClient {
     return this.pathTemplates.publisherModelPathTemplate.match(
       publisherModelName
     ).model;
+  }
+
+  /**
+   * Return a fully-qualified ragCorpus resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} rag_corpus
+   * @returns {string} Resource name string.
+   */
+  ragCorpusPath(project: string, location: string, ragCorpus: string) {
+    return this.pathTemplates.ragCorpusPathTemplate.render({
+      project: project,
+      location: location,
+      rag_corpus: ragCorpus,
+    });
+  }
+
+  /**
+   * Parse the project from RagCorpus resource.
+   *
+   * @param {string} ragCorpusName
+   *   A fully-qualified path representing RagCorpus resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromRagCorpusName(ragCorpusName: string) {
+    return this.pathTemplates.ragCorpusPathTemplate.match(ragCorpusName)
+      .project;
+  }
+
+  /**
+   * Parse the location from RagCorpus resource.
+   *
+   * @param {string} ragCorpusName
+   *   A fully-qualified path representing RagCorpus resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromRagCorpusName(ragCorpusName: string) {
+    return this.pathTemplates.ragCorpusPathTemplate.match(ragCorpusName)
+      .location;
+  }
+
+  /**
+   * Parse the rag_corpus from RagCorpus resource.
+   *
+   * @param {string} ragCorpusName
+   *   A fully-qualified path representing RagCorpus resource.
+   * @returns {string} A string representing the rag_corpus.
+   */
+  matchRagCorpusFromRagCorpusName(ragCorpusName: string) {
+    return this.pathTemplates.ragCorpusPathTemplate.match(ragCorpusName)
+      .rag_corpus;
+  }
+
+  /**
+   * Return a fully-qualified ragFile resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} rag_corpus
+   * @param {string} rag_file
+   * @returns {string} Resource name string.
+   */
+  ragFilePath(
+    project: string,
+    location: string,
+    ragCorpus: string,
+    ragFile: string
+  ) {
+    return this.pathTemplates.ragFilePathTemplate.render({
+      project: project,
+      location: location,
+      rag_corpus: ragCorpus,
+      rag_file: ragFile,
+    });
+  }
+
+  /**
+   * Parse the project from RagFile resource.
+   *
+   * @param {string} ragFileName
+   *   A fully-qualified path representing RagFile resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromRagFileName(ragFileName: string) {
+    return this.pathTemplates.ragFilePathTemplate.match(ragFileName).project;
+  }
+
+  /**
+   * Parse the location from RagFile resource.
+   *
+   * @param {string} ragFileName
+   *   A fully-qualified path representing RagFile resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromRagFileName(ragFileName: string) {
+    return this.pathTemplates.ragFilePathTemplate.match(ragFileName).location;
+  }
+
+  /**
+   * Parse the rag_corpus from RagFile resource.
+   *
+   * @param {string} ragFileName
+   *   A fully-qualified path representing RagFile resource.
+   * @returns {string} A string representing the rag_corpus.
+   */
+  matchRagCorpusFromRagFileName(ragFileName: string) {
+    return this.pathTemplates.ragFilePathTemplate.match(ragFileName).rag_corpus;
+  }
+
+  /**
+   * Parse the rag_file from RagFile resource.
+   *
+   * @param {string} ragFileName
+   *   A fully-qualified path representing RagFile resource.
+   * @returns {string} A string representing the rag_file.
+   */
+  matchRagFileFromRagFileName(ragFileName: string) {
+    return this.pathTemplates.ragFilePathTemplate.match(ragFileName).rag_file;
+  }
+
+  /**
+   * Return a fully-qualified reasoningEngine resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} reasoning_engine
+   * @returns {string} Resource name string.
+   */
+  reasoningEnginePath(
+    project: string,
+    location: string,
+    reasoningEngine: string
+  ) {
+    return this.pathTemplates.reasoningEnginePathTemplate.render({
+      project: project,
+      location: location,
+      reasoning_engine: reasoningEngine,
+    });
+  }
+
+  /**
+   * Parse the project from ReasoningEngine resource.
+   *
+   * @param {string} reasoningEngineName
+   *   A fully-qualified path representing ReasoningEngine resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromReasoningEngineName(reasoningEngineName: string) {
+    return this.pathTemplates.reasoningEnginePathTemplate.match(
+      reasoningEngineName
+    ).project;
+  }
+
+  /**
+   * Parse the location from ReasoningEngine resource.
+   *
+   * @param {string} reasoningEngineName
+   *   A fully-qualified path representing ReasoningEngine resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromReasoningEngineName(reasoningEngineName: string) {
+    return this.pathTemplates.reasoningEnginePathTemplate.match(
+      reasoningEngineName
+    ).location;
+  }
+
+  /**
+   * Parse the reasoning_engine from ReasoningEngine resource.
+   *
+   * @param {string} reasoningEngineName
+   *   A fully-qualified path representing ReasoningEngine resource.
+   * @returns {string} A string representing the reasoning_engine.
+   */
+  matchReasoningEngineFromReasoningEngineName(reasoningEngineName: string) {
+    return this.pathTemplates.reasoningEnginePathTemplate.match(
+      reasoningEngineName
+    ).reasoning_engine;
   }
 
   /**
@@ -6238,6 +8514,58 @@ export class PipelineServiceClient {
    */
   matchTrialFromTrialName(trialName: string) {
     return this.pathTemplates.trialPathTemplate.match(trialName).trial;
+  }
+
+  /**
+   * Return a fully-qualified tuningJob resource name string.
+   *
+   * @param {string} project
+   * @param {string} location
+   * @param {string} tuning_job
+   * @returns {string} Resource name string.
+   */
+  tuningJobPath(project: string, location: string, tuningJob: string) {
+    return this.pathTemplates.tuningJobPathTemplate.render({
+      project: project,
+      location: location,
+      tuning_job: tuningJob,
+    });
+  }
+
+  /**
+   * Parse the project from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the project.
+   */
+  matchProjectFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .project;
+  }
+
+  /**
+   * Parse the location from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the location.
+   */
+  matchLocationFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .location;
+  }
+
+  /**
+   * Parse the tuning_job from TuningJob resource.
+   *
+   * @param {string} tuningJobName
+   *   A fully-qualified path representing TuningJob resource.
+   * @returns {string} A string representing the tuning_job.
+   */
+  matchTuningJobFromTuningJobName(tuningJobName: string) {
+    return this.pathTemplates.tuningJobPathTemplate.match(tuningJobName)
+      .tuning_job;
   }
 
   /**

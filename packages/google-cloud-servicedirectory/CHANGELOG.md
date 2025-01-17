@@ -1,5 +1,58 @@
 # Changelog
 
+## [5.3.0](https://github.com/googleapis/google-cloud-node/compare/service-directory-v5.2.0...service-directory-v5.3.0) (2024-05-21)
+
+
+### Features
+
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+* [servicedirectory] update Nodejs generator to send API versions in headers for GAPICs ([#5349](https://github.com/googleapis/google-cloud-node/issues/5349)) ([181871c](https://github.com/googleapis/google-cloud-node/commit/181871cf3a4660f6e4039c7ec3e6bc5a0781bdc8))
+
+## [5.2.0](https://github.com/googleapis/google-cloud-node/compare/service-directory-v5.1.0...service-directory-v5.2.0) (2024-03-29)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5191](https://github.com/googleapis/google-cloud-node/issues/5191)) ([57567db](https://github.com/googleapis/google-cloud-node/commit/57567db36033ca53ae2f54e6517b8cd12145bb82))
+
+## [5.1.0](https://github.com/googleapis/google-cloud-node/compare/service-directory-v5.0.1...service-directory-v5.1.0) (2024-02-09)
+
+
+### Features
+
+* Trusted Private Cloud support, use the universeDomain parameter  ([#5027](https://github.com/googleapis/google-cloud-node/issues/5027)) ([88763bb](https://github.com/googleapis/google-cloud-node/commit/88763bb1b7ce9ff884b9e3f476230d38985b2ff2))
+
+## [5.0.1](https://github.com/googleapis/google-cloud-node/compare/service-directory-v5.0.0...service-directory-v5.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4588](https://github.com/googleapis/google-cloud-node/issues/4588)) ([e5ad564](https://github.com/googleapis/google-cloud-node/commit/e5ad564f74dc7a36c0e8cd8de173428a99f1deae))
+
+## [5.0.0](https://github.com/googleapis/google-cloud-node/compare/service-directory-v4.1.0...service-directory-v5.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [Many APIs] fix typings for IAM methods ([#4463](https://github.com/googleapis/google-cloud-node/issues/4463)) ([64109b0](https://github.com/googleapis/google-cloud-node/commit/64109b007521c418cefe09c18a92cc6eaef0932c))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [4.1.0](https://github.com/googleapis/google-cloud-node/compare/service-directory-v4.0.7...service-directory-v4.1.0) (2023-07-24)
+
+
+### Features
+
+* [servicedirectory] added network and uid fields in Endpoint message ([#4437](https://github.com/googleapis/google-cloud-node/issues/4437)) ([055fad6](https://github.com/googleapis/google-cloud-node/commit/055fad68f4a7ad95989db236f67afb4c1b7e05b7))
+
 ## [4.0.7](https://github.com/googleapis/google-cloud-node/compare/service-directory-v4.0.6...service-directory-v4.0.7) (2023-04-13)
 
 

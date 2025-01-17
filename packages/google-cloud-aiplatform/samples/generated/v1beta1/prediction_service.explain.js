@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ function main(endpoint, instances) {
    *  PredictSchemata's google.cloud.aiplatform.v1beta1.Model.predict_schemata 
    *  instance_schema_uri google.cloud.aiplatform.v1beta1.PredictSchemata.instance_schema_uri.
    */
-  // const instances = 1234
+  // const instances = [1,2,3,4]
   /**
    *  The parameters that govern the prediction. The schema of the parameters may
    *  be specified via Endpoint's DeployedModels' Model's
@@ -66,6 +66,15 @@ function main(endpoint, instances) {
    *   - Using different baselines for explaining the prediction results.
    */
   // const explanationSpecOverride = {}
+  /**
+   *  Optional. This field is the same as the one above, but supports multiple
+   *  explanations to occur in parallel. The key can be any string. Each override
+   *  will be run against the model, then its explanations will be grouped
+   *  together.
+   *  Note - these explanations are run **In Addition** to the default
+   *  Explanation in the deployed model.
+   */
+  // const concurrentExplanationSpecOverride = [1,2,3,4]
   /**
    *  If specified, this ExplainRequest will be served by the chosen
    *  DeployedModel, overriding

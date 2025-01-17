@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2024 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,19 +18,29 @@
 
 import {
   DatasetServiceClient,
+  DeploymentResourcePoolServiceClient,
   EndpointServiceClient,
+  EvaluationServiceClient,
+  FeatureOnlineStoreAdminServiceClient,
+  FeatureOnlineStoreServiceClient,
+  FeatureRegistryServiceClient,
   FeaturestoreOnlineServingServiceClient,
   FeaturestoreServiceClient,
+  GenAiTuningServiceClient,
   IndexEndpointServiceClient,
   IndexServiceClient,
   JobServiceClient,
+  LlmUtilityServiceClient,
   MatchServiceClient,
   MetadataServiceClient,
   MigrationServiceClient,
   ModelGardenServiceClient,
   ModelServiceClient,
+  NotebookServiceClient,
+  PersistentResourceServiceClient,
   PipelineServiceClient,
   PredictionServiceClient,
+  ScheduleServiceClient,
   SpecialistPoolServiceClient,
   TensorboardServiceClient,
   VizierServiceClient,
@@ -40,7 +50,30 @@ import {
 function doStuffWithDatasetServiceClient(client: DatasetServiceClient) {
   client.close();
 }
+function doStuffWithDeploymentResourcePoolServiceClient(
+  client: DeploymentResourcePoolServiceClient
+) {
+  client.close();
+}
 function doStuffWithEndpointServiceClient(client: EndpointServiceClient) {
+  client.close();
+}
+function doStuffWithEvaluationServiceClient(client: EvaluationServiceClient) {
+  client.close();
+}
+function doStuffWithFeatureOnlineStoreAdminServiceClient(
+  client: FeatureOnlineStoreAdminServiceClient
+) {
+  client.close();
+}
+function doStuffWithFeatureOnlineStoreServiceClient(
+  client: FeatureOnlineStoreServiceClient
+) {
+  client.close();
+}
+function doStuffWithFeatureRegistryServiceClient(
+  client: FeatureRegistryServiceClient
+) {
   client.close();
 }
 function doStuffWithFeaturestoreOnlineServingServiceClient(
@@ -53,6 +86,9 @@ function doStuffWithFeaturestoreServiceClient(
 ) {
   client.close();
 }
+function doStuffWithGenAiTuningServiceClient(client: GenAiTuningServiceClient) {
+  client.close();
+}
 function doStuffWithIndexEndpointServiceClient(
   client: IndexEndpointServiceClient
 ) {
@@ -62,6 +98,9 @@ function doStuffWithIndexServiceClient(client: IndexServiceClient) {
   client.close();
 }
 function doStuffWithJobServiceClient(client: JobServiceClient) {
+  client.close();
+}
+function doStuffWithLlmUtilityServiceClient(client: LlmUtilityServiceClient) {
   client.close();
 }
 function doStuffWithMatchServiceClient(client: MatchServiceClient) {
@@ -79,10 +118,21 @@ function doStuffWithModelGardenServiceClient(client: ModelGardenServiceClient) {
 function doStuffWithModelServiceClient(client: ModelServiceClient) {
   client.close();
 }
+function doStuffWithNotebookServiceClient(client: NotebookServiceClient) {
+  client.close();
+}
+function doStuffWithPersistentResourceServiceClient(
+  client: PersistentResourceServiceClient
+) {
+  client.close();
+}
 function doStuffWithPipelineServiceClient(client: PipelineServiceClient) {
   client.close();
 }
 function doStuffWithPredictionServiceClient(client: PredictionServiceClient) {
+  client.close();
+}
+function doStuffWithScheduleServiceClient(client: ScheduleServiceClient) {
   client.close();
 }
 function doStuffWithSpecialistPoolServiceClient(
@@ -102,8 +152,29 @@ function main() {
   const datasetServiceClient = new DatasetServiceClient();
   doStuffWithDatasetServiceClient(datasetServiceClient);
   // check that the client instance can be created
+  const deploymentResourcePoolServiceClient =
+    new DeploymentResourcePoolServiceClient();
+  doStuffWithDeploymentResourcePoolServiceClient(
+    deploymentResourcePoolServiceClient
+  );
+  // check that the client instance can be created
   const endpointServiceClient = new EndpointServiceClient();
   doStuffWithEndpointServiceClient(endpointServiceClient);
+  // check that the client instance can be created
+  const evaluationServiceClient = new EvaluationServiceClient();
+  doStuffWithEvaluationServiceClient(evaluationServiceClient);
+  // check that the client instance can be created
+  const featureOnlineStoreAdminServiceClient =
+    new FeatureOnlineStoreAdminServiceClient();
+  doStuffWithFeatureOnlineStoreAdminServiceClient(
+    featureOnlineStoreAdminServiceClient
+  );
+  // check that the client instance can be created
+  const featureOnlineStoreServiceClient = new FeatureOnlineStoreServiceClient();
+  doStuffWithFeatureOnlineStoreServiceClient(featureOnlineStoreServiceClient);
+  // check that the client instance can be created
+  const featureRegistryServiceClient = new FeatureRegistryServiceClient();
+  doStuffWithFeatureRegistryServiceClient(featureRegistryServiceClient);
   // check that the client instance can be created
   const featurestoreOnlineServingServiceClient =
     new FeaturestoreOnlineServingServiceClient();
@@ -114,6 +185,9 @@ function main() {
   const featurestoreServiceClient = new FeaturestoreServiceClient();
   doStuffWithFeaturestoreServiceClient(featurestoreServiceClient);
   // check that the client instance can be created
+  const genAiTuningServiceClient = new GenAiTuningServiceClient();
+  doStuffWithGenAiTuningServiceClient(genAiTuningServiceClient);
+  // check that the client instance can be created
   const indexEndpointServiceClient = new IndexEndpointServiceClient();
   doStuffWithIndexEndpointServiceClient(indexEndpointServiceClient);
   // check that the client instance can be created
@@ -122,6 +196,9 @@ function main() {
   // check that the client instance can be created
   const jobServiceClient = new JobServiceClient();
   doStuffWithJobServiceClient(jobServiceClient);
+  // check that the client instance can be created
+  const llmUtilityServiceClient = new LlmUtilityServiceClient();
+  doStuffWithLlmUtilityServiceClient(llmUtilityServiceClient);
   // check that the client instance can be created
   const matchServiceClient = new MatchServiceClient();
   doStuffWithMatchServiceClient(matchServiceClient);
@@ -138,11 +215,20 @@ function main() {
   const modelServiceClient = new ModelServiceClient();
   doStuffWithModelServiceClient(modelServiceClient);
   // check that the client instance can be created
+  const notebookServiceClient = new NotebookServiceClient();
+  doStuffWithNotebookServiceClient(notebookServiceClient);
+  // check that the client instance can be created
+  const persistentResourceServiceClient = new PersistentResourceServiceClient();
+  doStuffWithPersistentResourceServiceClient(persistentResourceServiceClient);
+  // check that the client instance can be created
   const pipelineServiceClient = new PipelineServiceClient();
   doStuffWithPipelineServiceClient(pipelineServiceClient);
   // check that the client instance can be created
   const predictionServiceClient = new PredictionServiceClient();
   doStuffWithPredictionServiceClient(predictionServiceClient);
+  // check that the client instance can be created
+  const scheduleServiceClient = new ScheduleServiceClient();
+  doStuffWithScheduleServiceClient(scheduleServiceClient);
   // check that the client instance can be created
   const specialistPoolServiceClient = new SpecialistPoolServiceClient();
   doStuffWithSpecialistPoolServiceClient(specialistPoolServiceClient);

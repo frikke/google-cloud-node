@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ function main(contacts, resource, notificationCategory) {
    *  folders/{folder_id}/contacts/{contact_id} or
    *  projects/{project_id}/contacts/{contact_id}
    */
-  // const contacts = 'abc123'
+  // const contacts = ['abc','def']
   /**
    *  Required. The name of the resource to send the test message for. All
    *  contacts must either be set directly on this resource or inherited from

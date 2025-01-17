@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ function main(parent, jobs) {
   /**
    *  Required. The jobs to be updated.
    */
-  // const jobs = 1234
+  // const jobs = [1,2,3,4]
   /**
    *  Strongly recommended for the best service experience. Be aware that it will
    *  also increase latency when checking the status of a batch operation.

@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ function main(parent, intents) {
    *  Required. The collection of intents to delete. Only intent `name` must be
    *  filled in.
    */
-  // const intents = 1234
+  // const intents = [1,2,3,4]
 
   // Imports the Dialogflow library
   const {IntentsClient} = require('@google-cloud/dialogflow').v2;

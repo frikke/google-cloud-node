@@ -1,5 +1,142 @@
 # Changelog
 
+## [8.12.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.11.0...documentai-v8.12.0) (2024-10-30)
+
+
+### Features
+
+* [documentai] Updated the exponential backoff settings for the Document AI ProcessDocument and BatchProcessDocuments methods ([#5762](https://github.com/googleapis/google-cloud-node/issues/5762)) ([267abc2](https://github.com/googleapis/google-cloud-node/commit/267abc23759c33654e12a9cc57d62abab8642480))
+
+## [8.11.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.10.0...documentai-v8.11.0) (2024-10-10)
+
+
+### Features
+
+* [documentai] Removed deprecated api versions ([#5735](https://github.com/googleapis/google-cloud-node/issues/5735)) ([05a5acf](https://github.com/googleapis/google-cloud-node/commit/05a5acff50e5fe8cf9d1806dee652d522c88a206))
+
+## [8.10.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.9.0...documentai-v8.10.0) (2024-09-13)
+
+
+### Features
+
+* [documentai] Add API fields for the descriptions of entity type and property in the document schema ([#5662](https://github.com/googleapis/google-cloud-node/issues/5662)) ([c0995a2](https://github.com/googleapis/google-cloud-node/commit/c0995a2e4866012d19ce21a3b98c514c8640a5e3))
+
+## [8.9.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.8.0...documentai-v8.9.0) (2024-08-09)
+
+
+### Features
+
+* [documentai] A new field `imageless_mode` is added to message `.google.cloud.documentai.v1.ProcessRequest` ([#5593](https://github.com/googleapis/google-cloud-node/issues/5593)) ([2393568](https://github.com/googleapis/google-cloud-node/commit/239356840a3f296f59c4b71c7028b071f3e6653a))
+
+## [8.8.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.7.0...documentai-v8.8.0) (2024-06-03)
+
+
+### Features
+
+* [documentai] Make Layout Parser generally available in V1 ([#5393](https://github.com/googleapis/google-cloud-node/issues/5393)) ([b6b04db](https://github.com/googleapis/google-cloud-node/commit/b6b04dbfa0a014b559d7093f5400187a2f7b192b))
+* [documentai] Make Layout Parser generally available in V1 ([#5411](https://github.com/googleapis/google-cloud-node/issues/5411)) ([750a6ac](https://github.com/googleapis/google-cloud-node/commit/750a6ac920aa0fd3f468dc64bee5acd1b619d543))
+
+## [8.7.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.6.0...documentai-v8.7.0) (2024-05-21)
+
+
+### Features
+
+* [documentai] update Nodejs generator to send API versions in headers for GAPICs ([#5334](https://github.com/googleapis/google-cloud-node/issues/5334)) ([62922e2](https://github.com/googleapis/google-cloud-node/commit/62922e2c19d2c78cc123900f3b1788fd9eba403c))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5351](https://github.com/googleapis/google-cloud-node/issues/5351)) ([01f48fc](https://github.com/googleapis/google-cloud-node/commit/01f48fce63ec4ddf801d59ee2b8c0db9f6fb8372))
+* [Many APIs] update Nodejs generator to send API versions in headers for GAPICs ([#5354](https://github.com/googleapis/google-cloud-node/issues/5354)) ([a9784ed](https://github.com/googleapis/google-cloud-node/commit/a9784ed3db6ee96d171762308bbbcd57390b6866))
+
+## [8.6.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.5.0...documentai-v8.6.0) (2024-04-23)
+
+
+### Features
+
+* [documentai] Support Chunk header and footer in Doc AI external proto ([#5275](https://github.com/googleapis/google-cloud-node/issues/5275)) ([b7ce5da](https://github.com/googleapis/google-cloud-node/commit/b7ce5da5f70503bccc08a8d8051afff521749fd0))
+
+## [8.5.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.4.0...documentai-v8.5.0) (2024-04-18)
+
+
+### Features
+
+* [documentai] A new message `FoundationModelTuningOptions` is added ([#5242](https://github.com/googleapis/google-cloud-node/issues/5242)) ([71b7139](https://github.com/googleapis/google-cloud-node/commit/71b713900dbb596d42fe6f3dd9a9f328612fa955))
+
+## [8.4.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.3.0...documentai-v8.4.0) (2024-04-16)
+
+
+### Features
+
+* [Many APIs] add several fields to manage state of database encryption update ([#5188](https://github.com/googleapis/google-cloud-node/issues/5188)) ([c5ccdf9](https://github.com/googleapis/google-cloud-node/commit/c5ccdf93641e7bb6d0e5c636168fad0feafab6e3))
+
+## [8.3.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.2.0...documentai-v8.3.0) (2024-04-05)
+
+
+### Features
+
+* [documentai] Support a new Layout Processor in Document AI ([#5213](https://github.com/googleapis/google-cloud-node/issues/5213)) ([ab38a59](https://github.com/googleapis/google-cloud-node/commit/ab38a590d9dba7d7b1f97de8c278fa408606003f))
+
+## [8.2.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.1.2...documentai-v8.2.0) (2024-02-07)
+
+
+### Features
+
+* [documentai] expose model_type in v1 processor, so that user can see the model_type after get or list processor version ([#5004](https://github.com/googleapis/google-cloud-node/issues/5004)) ([83e2e5c](https://github.com/googleapis/google-cloud-node/commit/83e2e5cb7fa5c781580cb07d48e00b3908d730c4))
+
+## [8.1.2](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.1.1...documentai-v8.1.2) (2024-01-05)
+
+
+### Bug Fixes
+
+* [documentai] correct long audio synthesis HTTP binding ([#4884](https://github.com/googleapis/google-cloud-node/issues/4884)) ([cca21ed](https://github.com/googleapis/google-cloud-node/commit/cca21ed5e5ac57397c77b23e5f310561f4b27102))
+
+## [8.1.1](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.1.0...documentai-v8.1.1) (2023-12-11)
+
+
+### Bug Fixes
+
+* **deps:** Update dependency p-queue to v8 ([#4877](https://github.com/googleapis/google-cloud-node/issues/4877)) ([17cd102](https://github.com/googleapis/google-cloud-node/commit/17cd1021fdc31e8077456a7f0f822287877f4f61))
+
+## [8.1.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.0.1...documentai-v8.1.0) (2023-10-18)
+
+
+### Features
+
+* [documentai] added field Processor.processor_version_aliases ([#4689](https://github.com/googleapis/google-cloud-node/issues/4689)) ([effcc26](https://github.com/googleapis/google-cloud-node/commit/effcc26ef80ba3d7fd982d1d3860c147a9046f15))
+* [documentai] Added SummaryOptions to ProcessOptions for the Summarizer processor ([#4696](https://github.com/googleapis/google-cloud-node/issues/4696)) ([d02e044](https://github.com/googleapis/google-cloud-node/commit/d02e04450fbbe047238f2d0d8b20355ec9855832))
+
+## [8.0.1](https://github.com/googleapis/google-cloud-node/compare/documentai-v8.0.0...documentai-v8.0.1) (2023-09-06)
+
+
+### Bug Fixes
+
+* [Many APIs] simplify logic for HTTP/1.1 REST fallback option ([#4585](https://github.com/googleapis/google-cloud-node/issues/4585)) ([b6cea45](https://github.com/googleapis/google-cloud-node/commit/b6cea45d03faaa7bd6e5daa36ebd0063a1e1f251))
+
+## [8.0.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v7.4.0...documentai-v8.0.0) (2023-08-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443))
+
+### Bug Fixes
+
+* [documentai] fix typings for IAM methods ([#4423](https://github.com/googleapis/google-cloud-node/issues/4423)) ([963accc](https://github.com/googleapis/google-cloud-node/commit/963accc64a2273b6d287d15c631de1ab12fcd8b0))
+
+
+### Miscellaneous Chores
+
+* Migrate to Node 14 ([#4443](https://github.com/googleapis/google-cloud-node/issues/4443)) ([2260f12](https://github.com/googleapis/google-cloud-node/commit/2260f12543d171bda95345e53475f5f0fdc45770))
+
+## [7.4.0](https://github.com/googleapis/google-cloud-node/compare/documentai-v7.3.1...documentai-v7.4.0) (2023-06-28)
+
+
+### Features
+
+* [documentai] add StyleInfo to document.proto ([512ef37](https://github.com/googleapis/google-cloud-node/commit/512ef37b330c16029bd0a2721efe07ce9a31f90b))
+* [documentai] add StyleInfo to document.proto ([#4352](https://github.com/googleapis/google-cloud-node/issues/4352)) ([512ef37](https://github.com/googleapis/google-cloud-node/commit/512ef37b330c16029bd0a2721efe07ce9a31f90b))
+* Add IMPORTING enum to State in processor.proto ([512ef37](https://github.com/googleapis/google-cloud-node/commit/512ef37b330c16029bd0a2721efe07ce9a31f90b))
+* Add IMPORTING enum to State in processor.proto ([512ef37](https://github.com/googleapis/google-cloud-node/commit/512ef37b330c16029bd0a2721efe07ce9a31f90b))
+* Add PropertyMetadata and EntityTypeMetadata to document_schema.proto ([512ef37](https://github.com/googleapis/google-cloud-node/commit/512ef37b330c16029bd0a2721efe07ce9a31f90b))
+* Add REPLACE enum to OperationType in document.proto ([512ef37](https://github.com/googleapis/google-cloud-node/commit/512ef37b330c16029bd0a2721efe07ce9a31f90b))
+
 ## [7.3.1](https://github.com/googleapis/google-cloud-node/compare/documentai-v7.3.0...documentai-v7.3.1) (2023-04-13)
 
 

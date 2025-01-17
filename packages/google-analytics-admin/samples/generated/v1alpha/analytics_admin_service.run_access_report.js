@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,12 +42,12 @@ function main() {
    *  The dimensions requested and displayed in the response. Requests are
    *  allowed up to 9 dimensions.
    */
-  // const dimensions = 1234
+  // const dimensions = [1,2,3,4]
   /**
    *  The metrics requested and displayed in the response. Requests are allowed
    *  up to 10 metrics.
    */
-  // const metrics = 1234
+  // const metrics = [1,2,3,4]
   /**
    *  Date ranges of access records to read. If multiple date ranges are
    *  requested, each response row will contain a zero based date range index. If
@@ -55,7 +55,7 @@ function main() {
    *  included in the response rows for both date ranges. Requests are allowed up
    *  to 2 date ranges.
    */
-  // const dateRanges = 1234
+  // const dateRanges = [1,2,3,4]
   /**
    *  Dimension filters let you restrict report response to specific
    *  dimension values which match the filter. For example, filtering on access
@@ -104,13 +104,28 @@ function main() {
   /**
    *  Specifies how rows are ordered in the response.
    */
-  // const orderBys = 1234
+  // const orderBys = [1,2,3,4]
   /**
    *  Toggles whether to return the current state of this Analytics Property's
    *  quota. Quota is returned in AccessQuota (#AccessQuota). For account-level
    *  requests, this field must be false.
    */
   // const returnEntityQuota = true
+  /**
+   *  Optional. Determines whether to include users who have never made an API
+   *  call in the response. If true, all users with access to the specified
+   *  property or account are included in the response, regardless of whether
+   *  they have made an API call or not. If false, only the users who have made
+   *  an API call will be included.
+   */
+  // const includeAllUsers = true
+  /**
+   *  Optional. Decides whether to return the users within user groups. This
+   *  field works only when include_all_users is set to true. If true, it will
+   *  return all users with access to the specified property or account.
+   *  If false, only the users with direct access will be returned.
+   */
+  // const expandGroups = true
 
   // Imports the Admin library
   const {AnalyticsAdminServiceClient} = require('@google-analytics/admin').v1alpha;

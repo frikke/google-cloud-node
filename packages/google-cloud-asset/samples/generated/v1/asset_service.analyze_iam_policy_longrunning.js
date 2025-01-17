@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ function main(analysisQuery, outputConfig) {
    *  If both `analysis_query` and `saved_analysis_query` are provided, they
    *  will be merged together with the `saved_analysis_query` as base and
    *  the `analysis_query` as overrides. For more details of the merge behavior,
-   *  please refer to the
+   *  refer to the
    *  MergeFrom (https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message#Message.MergeFrom.details)
    *  doc.
    *  Note that you cannot override primitive fields with default value, such as

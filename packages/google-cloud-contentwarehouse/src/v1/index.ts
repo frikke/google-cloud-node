@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,5 +19,6 @@
 export {DocumentLinkServiceClient} from './document_link_service_client';
 export {DocumentSchemaServiceClient} from './document_schema_service_client';
 export {DocumentServiceClient} from './document_service_client';
+export {PipelineServiceClient} from './pipeline_service_client';
 export {RuleSetServiceClient} from './rule_set_service_client';
 export {SynonymSetServiceClient} from './synonym_set_service_client';

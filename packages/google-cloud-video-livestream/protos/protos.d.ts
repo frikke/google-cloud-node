@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -288,6 +288,9 @@ export namespace google {
 
                         /** Manifest useTimecodeAsTimeline */
                         useTimecodeAsTimeline?: (boolean|null);
+
+                        /** Manifest key */
+                        key?: (string|null);
                     }
 
                     /** Represents a Manifest. */
@@ -316,6 +319,9 @@ export namespace google {
 
                         /** Manifest useTimecodeAsTimeline. */
                         public useTimecodeAsTimeline: boolean;
+
+                        /** Manifest key. */
+                        public key: string;
 
                         /**
                          * Creates a new Manifest instance using the specified properties.
@@ -2162,6 +2168,12 @@ export namespace google {
 
                         /** Channel inputConfig */
                         inputConfig?: (google.cloud.video.livestream.v1.IInputConfig|null);
+
+                        /** Channel retentionConfig */
+                        retentionConfig?: (google.cloud.video.livestream.v1.IRetentionConfig|null);
+
+                        /** Channel staticOverlays */
+                        staticOverlays?: (google.cloud.video.livestream.v1.IStaticOverlay[]|null);
                     }
 
                     /** Represents a Channel. */
@@ -2223,6 +2235,12 @@ export namespace google {
 
                         /** Channel inputConfig. */
                         public inputConfig?: (google.cloud.video.livestream.v1.IInputConfig|null);
+
+                        /** Channel retentionConfig. */
+                        public retentionConfig?: (google.cloud.video.livestream.v1.IRetentionConfig|null);
+
+                        /** Channel staticOverlays. */
+                        public staticOverlays: google.cloud.video.livestream.v1.IStaticOverlay[];
 
                         /**
                          * Creates a new Channel instance using the specified properties.
@@ -2412,6 +2430,327 @@ export namespace google {
                             STARTING = 7,
                             STOPPING = 8
                         }
+                    }
+
+                    /** Properties of a NormalizedCoordinate. */
+                    interface INormalizedCoordinate {
+
+                        /** NormalizedCoordinate x */
+                        x?: (number|null);
+
+                        /** NormalizedCoordinate y */
+                        y?: (number|null);
+                    }
+
+                    /** Represents a NormalizedCoordinate. */
+                    class NormalizedCoordinate implements INormalizedCoordinate {
+
+                        /**
+                         * Constructs a new NormalizedCoordinate.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.INormalizedCoordinate);
+
+                        /** NormalizedCoordinate x. */
+                        public x: number;
+
+                        /** NormalizedCoordinate y. */
+                        public y: number;
+
+                        /**
+                         * Creates a new NormalizedCoordinate instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns NormalizedCoordinate instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.INormalizedCoordinate): google.cloud.video.livestream.v1.NormalizedCoordinate;
+
+                        /**
+                         * Encodes the specified NormalizedCoordinate message. Does not implicitly {@link google.cloud.video.livestream.v1.NormalizedCoordinate.verify|verify} messages.
+                         * @param message NormalizedCoordinate message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.INormalizedCoordinate, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified NormalizedCoordinate message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.NormalizedCoordinate.verify|verify} messages.
+                         * @param message NormalizedCoordinate message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.INormalizedCoordinate, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a NormalizedCoordinate message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns NormalizedCoordinate
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.NormalizedCoordinate;
+
+                        /**
+                         * Decodes a NormalizedCoordinate message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns NormalizedCoordinate
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.NormalizedCoordinate;
+
+                        /**
+                         * Verifies a NormalizedCoordinate message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a NormalizedCoordinate message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns NormalizedCoordinate
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.NormalizedCoordinate;
+
+                        /**
+                         * Creates a plain object from a NormalizedCoordinate message. Also converts values to other types if specified.
+                         * @param message NormalizedCoordinate
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.NormalizedCoordinate, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this NormalizedCoordinate to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for NormalizedCoordinate
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a NormalizedResolution. */
+                    interface INormalizedResolution {
+
+                        /** NormalizedResolution w */
+                        w?: (number|null);
+
+                        /** NormalizedResolution h */
+                        h?: (number|null);
+                    }
+
+                    /** Represents a NormalizedResolution. */
+                    class NormalizedResolution implements INormalizedResolution {
+
+                        /**
+                         * Constructs a new NormalizedResolution.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.INormalizedResolution);
+
+                        /** NormalizedResolution w. */
+                        public w: number;
+
+                        /** NormalizedResolution h. */
+                        public h: number;
+
+                        /**
+                         * Creates a new NormalizedResolution instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns NormalizedResolution instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.INormalizedResolution): google.cloud.video.livestream.v1.NormalizedResolution;
+
+                        /**
+                         * Encodes the specified NormalizedResolution message. Does not implicitly {@link google.cloud.video.livestream.v1.NormalizedResolution.verify|verify} messages.
+                         * @param message NormalizedResolution message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.INormalizedResolution, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified NormalizedResolution message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.NormalizedResolution.verify|verify} messages.
+                         * @param message NormalizedResolution message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.INormalizedResolution, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a NormalizedResolution message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns NormalizedResolution
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.NormalizedResolution;
+
+                        /**
+                         * Decodes a NormalizedResolution message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns NormalizedResolution
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.NormalizedResolution;
+
+                        /**
+                         * Verifies a NormalizedResolution message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a NormalizedResolution message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns NormalizedResolution
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.NormalizedResolution;
+
+                        /**
+                         * Creates a plain object from a NormalizedResolution message. Also converts values to other types if specified.
+                         * @param message NormalizedResolution
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.NormalizedResolution, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this NormalizedResolution to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for NormalizedResolution
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a StaticOverlay. */
+                    interface IStaticOverlay {
+
+                        /** StaticOverlay asset */
+                        asset?: (string|null);
+
+                        /** StaticOverlay resolution */
+                        resolution?: (google.cloud.video.livestream.v1.INormalizedResolution|null);
+
+                        /** StaticOverlay position */
+                        position?: (google.cloud.video.livestream.v1.INormalizedCoordinate|null);
+
+                        /** StaticOverlay opacity */
+                        opacity?: (number|null);
+                    }
+
+                    /** Represents a StaticOverlay. */
+                    class StaticOverlay implements IStaticOverlay {
+
+                        /**
+                         * Constructs a new StaticOverlay.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IStaticOverlay);
+
+                        /** StaticOverlay asset. */
+                        public asset: string;
+
+                        /** StaticOverlay resolution. */
+                        public resolution?: (google.cloud.video.livestream.v1.INormalizedResolution|null);
+
+                        /** StaticOverlay position. */
+                        public position?: (google.cloud.video.livestream.v1.INormalizedCoordinate|null);
+
+                        /** StaticOverlay opacity. */
+                        public opacity: number;
+
+                        /**
+                         * Creates a new StaticOverlay instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns StaticOverlay instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IStaticOverlay): google.cloud.video.livestream.v1.StaticOverlay;
+
+                        /**
+                         * Encodes the specified StaticOverlay message. Does not implicitly {@link google.cloud.video.livestream.v1.StaticOverlay.verify|verify} messages.
+                         * @param message StaticOverlay message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IStaticOverlay, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified StaticOverlay message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.StaticOverlay.verify|verify} messages.
+                         * @param message StaticOverlay message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IStaticOverlay, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a StaticOverlay message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns StaticOverlay
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.StaticOverlay;
+
+                        /**
+                         * Decodes a StaticOverlay message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns StaticOverlay
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.StaticOverlay;
+
+                        /**
+                         * Verifies a StaticOverlay message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a StaticOverlay message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns StaticOverlay
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.StaticOverlay;
+
+                        /**
+                         * Creates a plain object from a StaticOverlay message. Also converts values to other types if specified.
+                         * @param message StaticOverlay
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.StaticOverlay, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this StaticOverlay to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for StaticOverlay
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     /** Properties of an InputConfig. */
@@ -2629,6 +2968,103 @@ export namespace google {
                             WARNING = 400,
                             ERROR = 500
                         }
+                    }
+
+                    /** Properties of a RetentionConfig. */
+                    interface IRetentionConfig {
+
+                        /** RetentionConfig retentionWindowDuration */
+                        retentionWindowDuration?: (google.protobuf.IDuration|null);
+                    }
+
+                    /** Represents a RetentionConfig. */
+                    class RetentionConfig implements IRetentionConfig {
+
+                        /**
+                         * Constructs a new RetentionConfig.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IRetentionConfig);
+
+                        /** RetentionConfig retentionWindowDuration. */
+                        public retentionWindowDuration?: (google.protobuf.IDuration|null);
+
+                        /**
+                         * Creates a new RetentionConfig instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns RetentionConfig instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IRetentionConfig): google.cloud.video.livestream.v1.RetentionConfig;
+
+                        /**
+                         * Encodes the specified RetentionConfig message. Does not implicitly {@link google.cloud.video.livestream.v1.RetentionConfig.verify|verify} messages.
+                         * @param message RetentionConfig message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IRetentionConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified RetentionConfig message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.RetentionConfig.verify|verify} messages.
+                         * @param message RetentionConfig message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IRetentionConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a RetentionConfig message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns RetentionConfig
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.RetentionConfig;
+
+                        /**
+                         * Decodes a RetentionConfig message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns RetentionConfig
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.RetentionConfig;
+
+                        /**
+                         * Verifies a RetentionConfig message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a RetentionConfig message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns RetentionConfig
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.RetentionConfig;
+
+                        /**
+                         * Creates a plain object from a RetentionConfig message. Also converts values to other types if specified.
+                         * @param message RetentionConfig
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.RetentionConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this RetentionConfig to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for RetentionConfig
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     /** Properties of an InputStreamProperty. */
@@ -3403,6 +3839,9 @@ export namespace google {
                         /** Event returnToProgram */
                         returnToProgram?: (google.cloud.video.livestream.v1.Event.IReturnToProgramTask|null);
 
+                        /** Event slate */
+                        slate?: (google.cloud.video.livestream.v1.Event.ISlateTask|null);
+
                         /** Event mute */
                         mute?: (google.cloud.video.livestream.v1.Event.IMuteTask|null);
 
@@ -3452,6 +3891,9 @@ export namespace google {
                         /** Event returnToProgram. */
                         public returnToProgram?: (google.cloud.video.livestream.v1.Event.IReturnToProgramTask|null);
 
+                        /** Event slate. */
+                        public slate?: (google.cloud.video.livestream.v1.Event.ISlateTask|null);
+
                         /** Event mute. */
                         public mute?: (google.cloud.video.livestream.v1.Event.IMuteTask|null);
 
@@ -3471,7 +3913,7 @@ export namespace google {
                         public error?: (google.rpc.IStatus|null);
 
                         /** Event task. */
-                        public task?: ("inputSwitch"|"adBreak"|"returnToProgram"|"mute"|"unmute");
+                        public task?: ("inputSwitch"|"adBreak"|"returnToProgram"|"slate"|"mute"|"unmute");
 
                         /**
                          * Creates a new Event instance using the specified properties.
@@ -3741,6 +4183,109 @@ export namespace google {
 
                             /**
                              * Gets the default type url for AdBreakTask
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+
+                        /** Properties of a SlateTask. */
+                        interface ISlateTask {
+
+                            /** SlateTask duration */
+                            duration?: (google.protobuf.IDuration|null);
+
+                            /** SlateTask asset */
+                            asset?: (string|null);
+                        }
+
+                        /** Represents a SlateTask. */
+                        class SlateTask implements ISlateTask {
+
+                            /**
+                             * Constructs a new SlateTask.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Event.ISlateTask);
+
+                            /** SlateTask duration. */
+                            public duration?: (google.protobuf.IDuration|null);
+
+                            /** SlateTask asset. */
+                            public asset: string;
+
+                            /**
+                             * Creates a new SlateTask instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns SlateTask instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Event.ISlateTask): google.cloud.video.livestream.v1.Event.SlateTask;
+
+                            /**
+                             * Encodes the specified SlateTask message. Does not implicitly {@link google.cloud.video.livestream.v1.Event.SlateTask.verify|verify} messages.
+                             * @param message SlateTask message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Event.ISlateTask, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified SlateTask message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Event.SlateTask.verify|verify} messages.
+                             * @param message SlateTask message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Event.ISlateTask, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes a SlateTask message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns SlateTask
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Event.SlateTask;
+
+                            /**
+                             * Decodes a SlateTask message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns SlateTask
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Event.SlateTask;
+
+                            /**
+                             * Verifies a SlateTask message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates a SlateTask message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns SlateTask
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Event.SlateTask;
+
+                            /**
+                             * Creates a plain object from a SlateTask message. Also converts values to other types if specified.
+                             * @param message SlateTask
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Event.SlateTask, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this SlateTask to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for SlateTask
                              * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                              * @returns The default type url
                              */
@@ -4035,6 +4580,829 @@ export namespace google {
                             FAILED = 4,
                             PENDING = 5,
                             STOPPED = 6
+                        }
+                    }
+
+                    /** Properties of a Clip. */
+                    interface IClip {
+
+                        /** Clip name */
+                        name?: (string|null);
+
+                        /** Clip createTime */
+                        createTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Clip startTime */
+                        startTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Clip updateTime */
+                        updateTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Clip labels */
+                        labels?: ({ [k: string]: string }|null);
+
+                        /** Clip state */
+                        state?: (google.cloud.video.livestream.v1.Clip.State|keyof typeof google.cloud.video.livestream.v1.Clip.State|null);
+
+                        /** Clip outputUri */
+                        outputUri?: (string|null);
+
+                        /** Clip error */
+                        error?: (google.rpc.IStatus|null);
+
+                        /** Clip slices */
+                        slices?: (google.cloud.video.livestream.v1.Clip.ISlice[]|null);
+
+                        /** Clip clipManifests */
+                        clipManifests?: (google.cloud.video.livestream.v1.Clip.IClipManifest[]|null);
+                    }
+
+                    /** Represents a Clip. */
+                    class Clip implements IClip {
+
+                        /**
+                         * Constructs a new Clip.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IClip);
+
+                        /** Clip name. */
+                        public name: string;
+
+                        /** Clip createTime. */
+                        public createTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Clip startTime. */
+                        public startTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Clip updateTime. */
+                        public updateTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Clip labels. */
+                        public labels: { [k: string]: string };
+
+                        /** Clip state. */
+                        public state: (google.cloud.video.livestream.v1.Clip.State|keyof typeof google.cloud.video.livestream.v1.Clip.State);
+
+                        /** Clip outputUri. */
+                        public outputUri: string;
+
+                        /** Clip error. */
+                        public error?: (google.rpc.IStatus|null);
+
+                        /** Clip slices. */
+                        public slices: google.cloud.video.livestream.v1.Clip.ISlice[];
+
+                        /** Clip clipManifests. */
+                        public clipManifests: google.cloud.video.livestream.v1.Clip.IClipManifest[];
+
+                        /**
+                         * Creates a new Clip instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns Clip instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IClip): google.cloud.video.livestream.v1.Clip;
+
+                        /**
+                         * Encodes the specified Clip message. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.verify|verify} messages.
+                         * @param message Clip message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IClip, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified Clip message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.verify|verify} messages.
+                         * @param message Clip message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IClip, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a Clip message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns Clip
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Clip;
+
+                        /**
+                         * Decodes a Clip message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Clip
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Clip;
+
+                        /**
+                         * Verifies a Clip message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a Clip message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns Clip
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Clip;
+
+                        /**
+                         * Creates a plain object from a Clip message. Also converts values to other types if specified.
+                         * @param message Clip
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.Clip, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this Clip to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for Clip
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    namespace Clip {
+
+                        /** State enum. */
+                        enum State {
+                            STATE_UNSPECIFIED = 0,
+                            PENDING = 1,
+                            CREATING = 2,
+                            SUCCEEDED = 3,
+                            FAILED = 4
+                        }
+
+                        /** Properties of a TimeSlice. */
+                        interface ITimeSlice {
+
+                            /** TimeSlice markinTime */
+                            markinTime?: (google.protobuf.ITimestamp|null);
+
+                            /** TimeSlice markoutTime */
+                            markoutTime?: (google.protobuf.ITimestamp|null);
+                        }
+
+                        /** Represents a TimeSlice. */
+                        class TimeSlice implements ITimeSlice {
+
+                            /**
+                             * Constructs a new TimeSlice.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Clip.ITimeSlice);
+
+                            /** TimeSlice markinTime. */
+                            public markinTime?: (google.protobuf.ITimestamp|null);
+
+                            /** TimeSlice markoutTime. */
+                            public markoutTime?: (google.protobuf.ITimestamp|null);
+
+                            /**
+                             * Creates a new TimeSlice instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns TimeSlice instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Clip.ITimeSlice): google.cloud.video.livestream.v1.Clip.TimeSlice;
+
+                            /**
+                             * Encodes the specified TimeSlice message. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.TimeSlice.verify|verify} messages.
+                             * @param message TimeSlice message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Clip.ITimeSlice, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified TimeSlice message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.TimeSlice.verify|verify} messages.
+                             * @param message TimeSlice message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Clip.ITimeSlice, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes a TimeSlice message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns TimeSlice
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Clip.TimeSlice;
+
+                            /**
+                             * Decodes a TimeSlice message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns TimeSlice
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Clip.TimeSlice;
+
+                            /**
+                             * Verifies a TimeSlice message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates a TimeSlice message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns TimeSlice
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Clip.TimeSlice;
+
+                            /**
+                             * Creates a plain object from a TimeSlice message. Also converts values to other types if specified.
+                             * @param message TimeSlice
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Clip.TimeSlice, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this TimeSlice to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for TimeSlice
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+
+                        /** Properties of a Slice. */
+                        interface ISlice {
+
+                            /** Slice timeSlice */
+                            timeSlice?: (google.cloud.video.livestream.v1.Clip.ITimeSlice|null);
+                        }
+
+                        /** Represents a Slice. */
+                        class Slice implements ISlice {
+
+                            /**
+                             * Constructs a new Slice.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Clip.ISlice);
+
+                            /** Slice timeSlice. */
+                            public timeSlice?: (google.cloud.video.livestream.v1.Clip.ITimeSlice|null);
+
+                            /** Slice kind. */
+                            public kind?: "timeSlice";
+
+                            /**
+                             * Creates a new Slice instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns Slice instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Clip.ISlice): google.cloud.video.livestream.v1.Clip.Slice;
+
+                            /**
+                             * Encodes the specified Slice message. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.Slice.verify|verify} messages.
+                             * @param message Slice message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Clip.ISlice, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified Slice message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.Slice.verify|verify} messages.
+                             * @param message Slice message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Clip.ISlice, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes a Slice message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns Slice
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Clip.Slice;
+
+                            /**
+                             * Decodes a Slice message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns Slice
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Clip.Slice;
+
+                            /**
+                             * Verifies a Slice message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates a Slice message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns Slice
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Clip.Slice;
+
+                            /**
+                             * Creates a plain object from a Slice message. Also converts values to other types if specified.
+                             * @param message Slice
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Clip.Slice, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this Slice to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for Slice
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+
+                        /** Properties of a ClipManifest. */
+                        interface IClipManifest {
+
+                            /** ClipManifest manifestKey */
+                            manifestKey?: (string|null);
+
+                            /** ClipManifest outputUri */
+                            outputUri?: (string|null);
+                        }
+
+                        /** Represents a ClipManifest. */
+                        class ClipManifest implements IClipManifest {
+
+                            /**
+                             * Constructs a new ClipManifest.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Clip.IClipManifest);
+
+                            /** ClipManifest manifestKey. */
+                            public manifestKey: string;
+
+                            /** ClipManifest outputUri. */
+                            public outputUri: string;
+
+                            /**
+                             * Creates a new ClipManifest instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns ClipManifest instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Clip.IClipManifest): google.cloud.video.livestream.v1.Clip.ClipManifest;
+
+                            /**
+                             * Encodes the specified ClipManifest message. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.ClipManifest.verify|verify} messages.
+                             * @param message ClipManifest message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Clip.IClipManifest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified ClipManifest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Clip.ClipManifest.verify|verify} messages.
+                             * @param message ClipManifest message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Clip.IClipManifest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes a ClipManifest message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns ClipManifest
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Clip.ClipManifest;
+
+                            /**
+                             * Decodes a ClipManifest message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns ClipManifest
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Clip.ClipManifest;
+
+                            /**
+                             * Verifies a ClipManifest message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates a ClipManifest message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns ClipManifest
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Clip.ClipManifest;
+
+                            /**
+                             * Creates a plain object from a ClipManifest message. Also converts values to other types if specified.
+                             * @param message ClipManifest
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Clip.ClipManifest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this ClipManifest to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for ClipManifest
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+                    }
+
+                    /** Properties of an Asset. */
+                    interface IAsset {
+
+                        /** Asset name */
+                        name?: (string|null);
+
+                        /** Asset createTime */
+                        createTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Asset updateTime */
+                        updateTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Asset labels */
+                        labels?: ({ [k: string]: string }|null);
+
+                        /** Asset video */
+                        video?: (google.cloud.video.livestream.v1.Asset.IVideoAsset|null);
+
+                        /** Asset image */
+                        image?: (google.cloud.video.livestream.v1.Asset.IImageAsset|null);
+
+                        /** Asset crc32c */
+                        crc32c?: (string|null);
+
+                        /** Asset state */
+                        state?: (google.cloud.video.livestream.v1.Asset.State|keyof typeof google.cloud.video.livestream.v1.Asset.State|null);
+
+                        /** Asset error */
+                        error?: (google.rpc.IStatus|null);
+                    }
+
+                    /** Represents an Asset. */
+                    class Asset implements IAsset {
+
+                        /**
+                         * Constructs a new Asset.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IAsset);
+
+                        /** Asset name. */
+                        public name: string;
+
+                        /** Asset createTime. */
+                        public createTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Asset updateTime. */
+                        public updateTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Asset labels. */
+                        public labels: { [k: string]: string };
+
+                        /** Asset video. */
+                        public video?: (google.cloud.video.livestream.v1.Asset.IVideoAsset|null);
+
+                        /** Asset image. */
+                        public image?: (google.cloud.video.livestream.v1.Asset.IImageAsset|null);
+
+                        /** Asset crc32c. */
+                        public crc32c: string;
+
+                        /** Asset state. */
+                        public state: (google.cloud.video.livestream.v1.Asset.State|keyof typeof google.cloud.video.livestream.v1.Asset.State);
+
+                        /** Asset error. */
+                        public error?: (google.rpc.IStatus|null);
+
+                        /** Asset resource. */
+                        public resource?: ("video"|"image");
+
+                        /**
+                         * Creates a new Asset instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns Asset instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IAsset): google.cloud.video.livestream.v1.Asset;
+
+                        /**
+                         * Encodes the specified Asset message. Does not implicitly {@link google.cloud.video.livestream.v1.Asset.verify|verify} messages.
+                         * @param message Asset message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IAsset, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified Asset message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Asset.verify|verify} messages.
+                         * @param message Asset message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IAsset, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an Asset message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns Asset
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Asset;
+
+                        /**
+                         * Decodes an Asset message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Asset
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Asset;
+
+                        /**
+                         * Verifies an Asset message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an Asset message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns Asset
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Asset;
+
+                        /**
+                         * Creates a plain object from an Asset message. Also converts values to other types if specified.
+                         * @param message Asset
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.Asset, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this Asset to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for Asset
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    namespace Asset {
+
+                        /** Properties of a VideoAsset. */
+                        interface IVideoAsset {
+
+                            /** VideoAsset uri */
+                            uri?: (string|null);
+                        }
+
+                        /** Represents a VideoAsset. */
+                        class VideoAsset implements IVideoAsset {
+
+                            /**
+                             * Constructs a new VideoAsset.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Asset.IVideoAsset);
+
+                            /** VideoAsset uri. */
+                            public uri: string;
+
+                            /**
+                             * Creates a new VideoAsset instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns VideoAsset instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Asset.IVideoAsset): google.cloud.video.livestream.v1.Asset.VideoAsset;
+
+                            /**
+                             * Encodes the specified VideoAsset message. Does not implicitly {@link google.cloud.video.livestream.v1.Asset.VideoAsset.verify|verify} messages.
+                             * @param message VideoAsset message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Asset.IVideoAsset, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified VideoAsset message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Asset.VideoAsset.verify|verify} messages.
+                             * @param message VideoAsset message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Asset.IVideoAsset, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes a VideoAsset message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns VideoAsset
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Asset.VideoAsset;
+
+                            /**
+                             * Decodes a VideoAsset message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns VideoAsset
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Asset.VideoAsset;
+
+                            /**
+                             * Verifies a VideoAsset message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates a VideoAsset message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns VideoAsset
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Asset.VideoAsset;
+
+                            /**
+                             * Creates a plain object from a VideoAsset message. Also converts values to other types if specified.
+                             * @param message VideoAsset
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Asset.VideoAsset, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this VideoAsset to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for VideoAsset
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+
+                        /** Properties of an ImageAsset. */
+                        interface IImageAsset {
+
+                            /** ImageAsset uri */
+                            uri?: (string|null);
+                        }
+
+                        /** Represents an ImageAsset. */
+                        class ImageAsset implements IImageAsset {
+
+                            /**
+                             * Constructs a new ImageAsset.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Asset.IImageAsset);
+
+                            /** ImageAsset uri. */
+                            public uri: string;
+
+                            /**
+                             * Creates a new ImageAsset instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns ImageAsset instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Asset.IImageAsset): google.cloud.video.livestream.v1.Asset.ImageAsset;
+
+                            /**
+                             * Encodes the specified ImageAsset message. Does not implicitly {@link google.cloud.video.livestream.v1.Asset.ImageAsset.verify|verify} messages.
+                             * @param message ImageAsset message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Asset.IImageAsset, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified ImageAsset message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Asset.ImageAsset.verify|verify} messages.
+                             * @param message ImageAsset message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Asset.IImageAsset, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes an ImageAsset message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns ImageAsset
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Asset.ImageAsset;
+
+                            /**
+                             * Decodes an ImageAsset message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns ImageAsset
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Asset.ImageAsset;
+
+                            /**
+                             * Verifies an ImageAsset message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates an ImageAsset message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns ImageAsset
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Asset.ImageAsset;
+
+                            /**
+                             * Creates a plain object from an ImageAsset message. Also converts values to other types if specified.
+                             * @param message ImageAsset
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Asset.ImageAsset, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this ImageAsset to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for ImageAsset
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+
+                        /** State enum. */
+                        enum State {
+                            STATE_UNSPECIFIED = 0,
+                            CREATING = 1,
+                            ACTIVE = 2,
+                            DELETING = 3,
+                            ERROR = 4
                         }
                     }
 
@@ -5029,6 +6397,227 @@ export namespace google {
                         }
                     }
 
+                    /** Properties of a Pool. */
+                    interface IPool {
+
+                        /** Pool name */
+                        name?: (string|null);
+
+                        /** Pool createTime */
+                        createTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Pool updateTime */
+                        updateTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Pool labels */
+                        labels?: ({ [k: string]: string }|null);
+
+                        /** Pool networkConfig */
+                        networkConfig?: (google.cloud.video.livestream.v1.Pool.INetworkConfig|null);
+                    }
+
+                    /** Represents a Pool. */
+                    class Pool implements IPool {
+
+                        /**
+                         * Constructs a new Pool.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IPool);
+
+                        /** Pool name. */
+                        public name: string;
+
+                        /** Pool createTime. */
+                        public createTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Pool updateTime. */
+                        public updateTime?: (google.protobuf.ITimestamp|null);
+
+                        /** Pool labels. */
+                        public labels: { [k: string]: string };
+
+                        /** Pool networkConfig. */
+                        public networkConfig?: (google.cloud.video.livestream.v1.Pool.INetworkConfig|null);
+
+                        /**
+                         * Creates a new Pool instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns Pool instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IPool): google.cloud.video.livestream.v1.Pool;
+
+                        /**
+                         * Encodes the specified Pool message. Does not implicitly {@link google.cloud.video.livestream.v1.Pool.verify|verify} messages.
+                         * @param message Pool message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IPool, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified Pool message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Pool.verify|verify} messages.
+                         * @param message Pool message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IPool, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a Pool message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns Pool
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Pool;
+
+                        /**
+                         * Decodes a Pool message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns Pool
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Pool;
+
+                        /**
+                         * Verifies a Pool message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a Pool message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns Pool
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Pool;
+
+                        /**
+                         * Creates a plain object from a Pool message. Also converts values to other types if specified.
+                         * @param message Pool
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.Pool, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this Pool to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for Pool
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    namespace Pool {
+
+                        /** Properties of a NetworkConfig. */
+                        interface INetworkConfig {
+
+                            /** NetworkConfig peeredNetwork */
+                            peeredNetwork?: (string|null);
+                        }
+
+                        /** Represents a NetworkConfig. */
+                        class NetworkConfig implements INetworkConfig {
+
+                            /**
+                             * Constructs a new NetworkConfig.
+                             * @param [properties] Properties to set
+                             */
+                            constructor(properties?: google.cloud.video.livestream.v1.Pool.INetworkConfig);
+
+                            /** NetworkConfig peeredNetwork. */
+                            public peeredNetwork: string;
+
+                            /**
+                             * Creates a new NetworkConfig instance using the specified properties.
+                             * @param [properties] Properties to set
+                             * @returns NetworkConfig instance
+                             */
+                            public static create(properties?: google.cloud.video.livestream.v1.Pool.INetworkConfig): google.cloud.video.livestream.v1.Pool.NetworkConfig;
+
+                            /**
+                             * Encodes the specified NetworkConfig message. Does not implicitly {@link google.cloud.video.livestream.v1.Pool.NetworkConfig.verify|verify} messages.
+                             * @param message NetworkConfig message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encode(message: google.cloud.video.livestream.v1.Pool.INetworkConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Encodes the specified NetworkConfig message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.Pool.NetworkConfig.verify|verify} messages.
+                             * @param message NetworkConfig message or plain object to encode
+                             * @param [writer] Writer to encode to
+                             * @returns Writer
+                             */
+                            public static encodeDelimited(message: google.cloud.video.livestream.v1.Pool.INetworkConfig, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                            /**
+                             * Decodes a NetworkConfig message from the specified reader or buffer.
+                             * @param reader Reader or buffer to decode from
+                             * @param [length] Message length if known beforehand
+                             * @returns NetworkConfig
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.Pool.NetworkConfig;
+
+                            /**
+                             * Decodes a NetworkConfig message from the specified reader or buffer, length delimited.
+                             * @param reader Reader or buffer to decode from
+                             * @returns NetworkConfig
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.Pool.NetworkConfig;
+
+                            /**
+                             * Verifies a NetworkConfig message.
+                             * @param message Plain object to verify
+                             * @returns `null` if valid, otherwise the reason why it is not
+                             */
+                            public static verify(message: { [k: string]: any }): (string|null);
+
+                            /**
+                             * Creates a NetworkConfig message from a plain object. Also converts values to their respective internal types.
+                             * @param object Plain object
+                             * @returns NetworkConfig
+                             */
+                            public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.Pool.NetworkConfig;
+
+                            /**
+                             * Creates a plain object from a NetworkConfig message. Also converts values to other types if specified.
+                             * @param message NetworkConfig
+                             * @param [options] Conversion options
+                             * @returns Plain object
+                             */
+                            public static toObject(message: google.cloud.video.livestream.v1.Pool.NetworkConfig, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                            /**
+                             * Converts this NetworkConfig to JSON.
+                             * @returns JSON object
+                             */
+                            public toJSON(): { [k: string]: any };
+
+                            /**
+                             * Gets the default type url for NetworkConfig
+                             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns The default type url
+                             */
+                            public static getTypeUrl(typeUrlPrefix?: string): string;
+                        }
+                    }
+
                     /** Represents a LivestreamService */
                     class LivestreamService extends $protobuf.rpc.Service {
 
@@ -5272,6 +6861,146 @@ export namespace google {
                          * @returns Promise
                          */
                         public deleteEvent(request: google.cloud.video.livestream.v1.IDeleteEventRequest): Promise<google.protobuf.Empty>;
+
+                        /**
+                         * Calls ListClips.
+                         * @param request ListClipsRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and ListClipsResponse
+                         */
+                        public listClips(request: google.cloud.video.livestream.v1.IListClipsRequest, callback: google.cloud.video.livestream.v1.LivestreamService.ListClipsCallback): void;
+
+                        /**
+                         * Calls ListClips.
+                         * @param request ListClipsRequest message or plain object
+                         * @returns Promise
+                         */
+                        public listClips(request: google.cloud.video.livestream.v1.IListClipsRequest): Promise<google.cloud.video.livestream.v1.ListClipsResponse>;
+
+                        /**
+                         * Calls GetClip.
+                         * @param request GetClipRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Clip
+                         */
+                        public getClip(request: google.cloud.video.livestream.v1.IGetClipRequest, callback: google.cloud.video.livestream.v1.LivestreamService.GetClipCallback): void;
+
+                        /**
+                         * Calls GetClip.
+                         * @param request GetClipRequest message or plain object
+                         * @returns Promise
+                         */
+                        public getClip(request: google.cloud.video.livestream.v1.IGetClipRequest): Promise<google.cloud.video.livestream.v1.Clip>;
+
+                        /**
+                         * Calls CreateClip.
+                         * @param request CreateClipRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Operation
+                         */
+                        public createClip(request: google.cloud.video.livestream.v1.ICreateClipRequest, callback: google.cloud.video.livestream.v1.LivestreamService.CreateClipCallback): void;
+
+                        /**
+                         * Calls CreateClip.
+                         * @param request CreateClipRequest message or plain object
+                         * @returns Promise
+                         */
+                        public createClip(request: google.cloud.video.livestream.v1.ICreateClipRequest): Promise<google.longrunning.Operation>;
+
+                        /**
+                         * Calls DeleteClip.
+                         * @param request DeleteClipRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Operation
+                         */
+                        public deleteClip(request: google.cloud.video.livestream.v1.IDeleteClipRequest, callback: google.cloud.video.livestream.v1.LivestreamService.DeleteClipCallback): void;
+
+                        /**
+                         * Calls DeleteClip.
+                         * @param request DeleteClipRequest message or plain object
+                         * @returns Promise
+                         */
+                        public deleteClip(request: google.cloud.video.livestream.v1.IDeleteClipRequest): Promise<google.longrunning.Operation>;
+
+                        /**
+                         * Calls CreateAsset.
+                         * @param request CreateAssetRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Operation
+                         */
+                        public createAsset(request: google.cloud.video.livestream.v1.ICreateAssetRequest, callback: google.cloud.video.livestream.v1.LivestreamService.CreateAssetCallback): void;
+
+                        /**
+                         * Calls CreateAsset.
+                         * @param request CreateAssetRequest message or plain object
+                         * @returns Promise
+                         */
+                        public createAsset(request: google.cloud.video.livestream.v1.ICreateAssetRequest): Promise<google.longrunning.Operation>;
+
+                        /**
+                         * Calls DeleteAsset.
+                         * @param request DeleteAssetRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Operation
+                         */
+                        public deleteAsset(request: google.cloud.video.livestream.v1.IDeleteAssetRequest, callback: google.cloud.video.livestream.v1.LivestreamService.DeleteAssetCallback): void;
+
+                        /**
+                         * Calls DeleteAsset.
+                         * @param request DeleteAssetRequest message or plain object
+                         * @returns Promise
+                         */
+                        public deleteAsset(request: google.cloud.video.livestream.v1.IDeleteAssetRequest): Promise<google.longrunning.Operation>;
+
+                        /**
+                         * Calls GetAsset.
+                         * @param request GetAssetRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Asset
+                         */
+                        public getAsset(request: google.cloud.video.livestream.v1.IGetAssetRequest, callback: google.cloud.video.livestream.v1.LivestreamService.GetAssetCallback): void;
+
+                        /**
+                         * Calls GetAsset.
+                         * @param request GetAssetRequest message or plain object
+                         * @returns Promise
+                         */
+                        public getAsset(request: google.cloud.video.livestream.v1.IGetAssetRequest): Promise<google.cloud.video.livestream.v1.Asset>;
+
+                        /**
+                         * Calls ListAssets.
+                         * @param request ListAssetsRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and ListAssetsResponse
+                         */
+                        public listAssets(request: google.cloud.video.livestream.v1.IListAssetsRequest, callback: google.cloud.video.livestream.v1.LivestreamService.ListAssetsCallback): void;
+
+                        /**
+                         * Calls ListAssets.
+                         * @param request ListAssetsRequest message or plain object
+                         * @returns Promise
+                         */
+                        public listAssets(request: google.cloud.video.livestream.v1.IListAssetsRequest): Promise<google.cloud.video.livestream.v1.ListAssetsResponse>;
+
+                        /**
+                         * Calls GetPool.
+                         * @param request GetPoolRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Pool
+                         */
+                        public getPool(request: google.cloud.video.livestream.v1.IGetPoolRequest, callback: google.cloud.video.livestream.v1.LivestreamService.GetPoolCallback): void;
+
+                        /**
+                         * Calls GetPool.
+                         * @param request GetPoolRequest message or plain object
+                         * @returns Promise
+                         */
+                        public getPool(request: google.cloud.video.livestream.v1.IGetPoolRequest): Promise<google.cloud.video.livestream.v1.Pool>;
+
+                        /**
+                         * Calls UpdatePool.
+                         * @param request UpdatePoolRequest message or plain object
+                         * @param callback Node-style callback called with the error, if any, and Operation
+                         */
+                        public updatePool(request: google.cloud.video.livestream.v1.IUpdatePoolRequest, callback: google.cloud.video.livestream.v1.LivestreamService.UpdatePoolCallback): void;
+
+                        /**
+                         * Calls UpdatePool.
+                         * @param request UpdatePoolRequest message or plain object
+                         * @returns Promise
+                         */
+                        public updatePool(request: google.cloud.video.livestream.v1.IUpdatePoolRequest): Promise<google.longrunning.Operation>;
                     }
 
                     namespace LivestreamService {
@@ -5387,6 +7116,621 @@ export namespace google {
                          * @param [response] Empty
                          */
                         type DeleteEventCallback = (error: (Error|null), response?: google.protobuf.Empty) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|listClips}.
+                         * @param error Error, if any
+                         * @param [response] ListClipsResponse
+                         */
+                        type ListClipsCallback = (error: (Error|null), response?: google.cloud.video.livestream.v1.ListClipsResponse) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|getClip}.
+                         * @param error Error, if any
+                         * @param [response] Clip
+                         */
+                        type GetClipCallback = (error: (Error|null), response?: google.cloud.video.livestream.v1.Clip) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|createClip}.
+                         * @param error Error, if any
+                         * @param [response] Operation
+                         */
+                        type CreateClipCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|deleteClip}.
+                         * @param error Error, if any
+                         * @param [response] Operation
+                         */
+                        type DeleteClipCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|createAsset}.
+                         * @param error Error, if any
+                         * @param [response] Operation
+                         */
+                        type CreateAssetCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|deleteAsset}.
+                         * @param error Error, if any
+                         * @param [response] Operation
+                         */
+                        type DeleteAssetCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|getAsset}.
+                         * @param error Error, if any
+                         * @param [response] Asset
+                         */
+                        type GetAssetCallback = (error: (Error|null), response?: google.cloud.video.livestream.v1.Asset) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|listAssets}.
+                         * @param error Error, if any
+                         * @param [response] ListAssetsResponse
+                         */
+                        type ListAssetsCallback = (error: (Error|null), response?: google.cloud.video.livestream.v1.ListAssetsResponse) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|getPool}.
+                         * @param error Error, if any
+                         * @param [response] Pool
+                         */
+                        type GetPoolCallback = (error: (Error|null), response?: google.cloud.video.livestream.v1.Pool) => void;
+
+                        /**
+                         * Callback as used by {@link google.cloud.video.livestream.v1.LivestreamService|updatePool}.
+                         * @param error Error, if any
+                         * @param [response] Operation
+                         */
+                        type UpdatePoolCallback = (error: (Error|null), response?: google.longrunning.Operation) => void;
+                    }
+
+                    /** Properties of a CreateAssetRequest. */
+                    interface ICreateAssetRequest {
+
+                        /** CreateAssetRequest parent */
+                        parent?: (string|null);
+
+                        /** CreateAssetRequest asset */
+                        asset?: (google.cloud.video.livestream.v1.IAsset|null);
+
+                        /** CreateAssetRequest assetId */
+                        assetId?: (string|null);
+
+                        /** CreateAssetRequest requestId */
+                        requestId?: (string|null);
+                    }
+
+                    /** Represents a CreateAssetRequest. */
+                    class CreateAssetRequest implements ICreateAssetRequest {
+
+                        /**
+                         * Constructs a new CreateAssetRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.ICreateAssetRequest);
+
+                        /** CreateAssetRequest parent. */
+                        public parent: string;
+
+                        /** CreateAssetRequest asset. */
+                        public asset?: (google.cloud.video.livestream.v1.IAsset|null);
+
+                        /** CreateAssetRequest assetId. */
+                        public assetId: string;
+
+                        /** CreateAssetRequest requestId. */
+                        public requestId: string;
+
+                        /**
+                         * Creates a new CreateAssetRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns CreateAssetRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.ICreateAssetRequest): google.cloud.video.livestream.v1.CreateAssetRequest;
+
+                        /**
+                         * Encodes the specified CreateAssetRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.CreateAssetRequest.verify|verify} messages.
+                         * @param message CreateAssetRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.ICreateAssetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified CreateAssetRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.CreateAssetRequest.verify|verify} messages.
+                         * @param message CreateAssetRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.ICreateAssetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a CreateAssetRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns CreateAssetRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.CreateAssetRequest;
+
+                        /**
+                         * Decodes a CreateAssetRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns CreateAssetRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.CreateAssetRequest;
+
+                        /**
+                         * Verifies a CreateAssetRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a CreateAssetRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns CreateAssetRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.CreateAssetRequest;
+
+                        /**
+                         * Creates a plain object from a CreateAssetRequest message. Also converts values to other types if specified.
+                         * @param message CreateAssetRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.CreateAssetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this CreateAssetRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for CreateAssetRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a DeleteAssetRequest. */
+                    interface IDeleteAssetRequest {
+
+                        /** DeleteAssetRequest name */
+                        name?: (string|null);
+
+                        /** DeleteAssetRequest requestId */
+                        requestId?: (string|null);
+                    }
+
+                    /** Represents a DeleteAssetRequest. */
+                    class DeleteAssetRequest implements IDeleteAssetRequest {
+
+                        /**
+                         * Constructs a new DeleteAssetRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IDeleteAssetRequest);
+
+                        /** DeleteAssetRequest name. */
+                        public name: string;
+
+                        /** DeleteAssetRequest requestId. */
+                        public requestId: string;
+
+                        /**
+                         * Creates a new DeleteAssetRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns DeleteAssetRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IDeleteAssetRequest): google.cloud.video.livestream.v1.DeleteAssetRequest;
+
+                        /**
+                         * Encodes the specified DeleteAssetRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.DeleteAssetRequest.verify|verify} messages.
+                         * @param message DeleteAssetRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IDeleteAssetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified DeleteAssetRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.DeleteAssetRequest.verify|verify} messages.
+                         * @param message DeleteAssetRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IDeleteAssetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a DeleteAssetRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns DeleteAssetRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.DeleteAssetRequest;
+
+                        /**
+                         * Decodes a DeleteAssetRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns DeleteAssetRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.DeleteAssetRequest;
+
+                        /**
+                         * Verifies a DeleteAssetRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a DeleteAssetRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns DeleteAssetRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.DeleteAssetRequest;
+
+                        /**
+                         * Creates a plain object from a DeleteAssetRequest message. Also converts values to other types if specified.
+                         * @param message DeleteAssetRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.DeleteAssetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this DeleteAssetRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for DeleteAssetRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a ListAssetsRequest. */
+                    interface IListAssetsRequest {
+
+                        /** ListAssetsRequest parent */
+                        parent?: (string|null);
+
+                        /** ListAssetsRequest pageSize */
+                        pageSize?: (number|null);
+
+                        /** ListAssetsRequest pageToken */
+                        pageToken?: (string|null);
+
+                        /** ListAssetsRequest filter */
+                        filter?: (string|null);
+
+                        /** ListAssetsRequest orderBy */
+                        orderBy?: (string|null);
+                    }
+
+                    /** Represents a ListAssetsRequest. */
+                    class ListAssetsRequest implements IListAssetsRequest {
+
+                        /**
+                         * Constructs a new ListAssetsRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IListAssetsRequest);
+
+                        /** ListAssetsRequest parent. */
+                        public parent: string;
+
+                        /** ListAssetsRequest pageSize. */
+                        public pageSize: number;
+
+                        /** ListAssetsRequest pageToken. */
+                        public pageToken: string;
+
+                        /** ListAssetsRequest filter. */
+                        public filter: string;
+
+                        /** ListAssetsRequest orderBy. */
+                        public orderBy: string;
+
+                        /**
+                         * Creates a new ListAssetsRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ListAssetsRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IListAssetsRequest): google.cloud.video.livestream.v1.ListAssetsRequest;
+
+                        /**
+                         * Encodes the specified ListAssetsRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.ListAssetsRequest.verify|verify} messages.
+                         * @param message ListAssetsRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IListAssetsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ListAssetsRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.ListAssetsRequest.verify|verify} messages.
+                         * @param message ListAssetsRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IListAssetsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ListAssetsRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ListAssetsRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.ListAssetsRequest;
+
+                        /**
+                         * Decodes a ListAssetsRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ListAssetsRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.ListAssetsRequest;
+
+                        /**
+                         * Verifies a ListAssetsRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ListAssetsRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ListAssetsRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.ListAssetsRequest;
+
+                        /**
+                         * Creates a plain object from a ListAssetsRequest message. Also converts values to other types if specified.
+                         * @param message ListAssetsRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.ListAssetsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ListAssetsRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ListAssetsRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a ListAssetsResponse. */
+                    interface IListAssetsResponse {
+
+                        /** ListAssetsResponse assets */
+                        assets?: (google.cloud.video.livestream.v1.IAsset[]|null);
+
+                        /** ListAssetsResponse nextPageToken */
+                        nextPageToken?: (string|null);
+
+                        /** ListAssetsResponse unreachable */
+                        unreachable?: (string[]|null);
+                    }
+
+                    /** Represents a ListAssetsResponse. */
+                    class ListAssetsResponse implements IListAssetsResponse {
+
+                        /**
+                         * Constructs a new ListAssetsResponse.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IListAssetsResponse);
+
+                        /** ListAssetsResponse assets. */
+                        public assets: google.cloud.video.livestream.v1.IAsset[];
+
+                        /** ListAssetsResponse nextPageToken. */
+                        public nextPageToken: string;
+
+                        /** ListAssetsResponse unreachable. */
+                        public unreachable: string[];
+
+                        /**
+                         * Creates a new ListAssetsResponse instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ListAssetsResponse instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IListAssetsResponse): google.cloud.video.livestream.v1.ListAssetsResponse;
+
+                        /**
+                         * Encodes the specified ListAssetsResponse message. Does not implicitly {@link google.cloud.video.livestream.v1.ListAssetsResponse.verify|verify} messages.
+                         * @param message ListAssetsResponse message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IListAssetsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ListAssetsResponse message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.ListAssetsResponse.verify|verify} messages.
+                         * @param message ListAssetsResponse message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IListAssetsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ListAssetsResponse message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ListAssetsResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.ListAssetsResponse;
+
+                        /**
+                         * Decodes a ListAssetsResponse message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ListAssetsResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.ListAssetsResponse;
+
+                        /**
+                         * Verifies a ListAssetsResponse message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ListAssetsResponse message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ListAssetsResponse
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.ListAssetsResponse;
+
+                        /**
+                         * Creates a plain object from a ListAssetsResponse message. Also converts values to other types if specified.
+                         * @param message ListAssetsResponse
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.ListAssetsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ListAssetsResponse to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ListAssetsResponse
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a GetAssetRequest. */
+                    interface IGetAssetRequest {
+
+                        /** GetAssetRequest name */
+                        name?: (string|null);
+                    }
+
+                    /** Represents a GetAssetRequest. */
+                    class GetAssetRequest implements IGetAssetRequest {
+
+                        /**
+                         * Constructs a new GetAssetRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IGetAssetRequest);
+
+                        /** GetAssetRequest name. */
+                        public name: string;
+
+                        /**
+                         * Creates a new GetAssetRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns GetAssetRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IGetAssetRequest): google.cloud.video.livestream.v1.GetAssetRequest;
+
+                        /**
+                         * Encodes the specified GetAssetRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.GetAssetRequest.verify|verify} messages.
+                         * @param message GetAssetRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IGetAssetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified GetAssetRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.GetAssetRequest.verify|verify} messages.
+                         * @param message GetAssetRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IGetAssetRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a GetAssetRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns GetAssetRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.GetAssetRequest;
+
+                        /**
+                         * Decodes a GetAssetRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns GetAssetRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.GetAssetRequest;
+
+                        /**
+                         * Verifies a GetAssetRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a GetAssetRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns GetAssetRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.GetAssetRequest;
+
+                        /**
+                         * Creates a plain object from a GetAssetRequest message. Also converts values to other types if specified.
+                         * @param message GetAssetRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.GetAssetRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this GetAssetRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for GetAssetRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
                     /** Properties of a CreateChannelRequest. */
@@ -7545,6 +9889,551 @@ export namespace google {
                         public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
 
+                    /** Properties of a ListClipsRequest. */
+                    interface IListClipsRequest {
+
+                        /** ListClipsRequest parent */
+                        parent?: (string|null);
+
+                        /** ListClipsRequest pageSize */
+                        pageSize?: (number|null);
+
+                        /** ListClipsRequest pageToken */
+                        pageToken?: (string|null);
+
+                        /** ListClipsRequest filter */
+                        filter?: (string|null);
+
+                        /** ListClipsRequest orderBy */
+                        orderBy?: (string|null);
+                    }
+
+                    /** Represents a ListClipsRequest. */
+                    class ListClipsRequest implements IListClipsRequest {
+
+                        /**
+                         * Constructs a new ListClipsRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IListClipsRequest);
+
+                        /** ListClipsRequest parent. */
+                        public parent: string;
+
+                        /** ListClipsRequest pageSize. */
+                        public pageSize: number;
+
+                        /** ListClipsRequest pageToken. */
+                        public pageToken: string;
+
+                        /** ListClipsRequest filter. */
+                        public filter: string;
+
+                        /** ListClipsRequest orderBy. */
+                        public orderBy: string;
+
+                        /**
+                         * Creates a new ListClipsRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ListClipsRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IListClipsRequest): google.cloud.video.livestream.v1.ListClipsRequest;
+
+                        /**
+                         * Encodes the specified ListClipsRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.ListClipsRequest.verify|verify} messages.
+                         * @param message ListClipsRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IListClipsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ListClipsRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.ListClipsRequest.verify|verify} messages.
+                         * @param message ListClipsRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IListClipsRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ListClipsRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ListClipsRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.ListClipsRequest;
+
+                        /**
+                         * Decodes a ListClipsRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ListClipsRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.ListClipsRequest;
+
+                        /**
+                         * Verifies a ListClipsRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ListClipsRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ListClipsRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.ListClipsRequest;
+
+                        /**
+                         * Creates a plain object from a ListClipsRequest message. Also converts values to other types if specified.
+                         * @param message ListClipsRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.ListClipsRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ListClipsRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ListClipsRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a ListClipsResponse. */
+                    interface IListClipsResponse {
+
+                        /** ListClipsResponse clips */
+                        clips?: (google.cloud.video.livestream.v1.IClip[]|null);
+
+                        /** ListClipsResponse nextPageToken */
+                        nextPageToken?: (string|null);
+
+                        /** ListClipsResponse unreachable */
+                        unreachable?: (string[]|null);
+                    }
+
+                    /** Represents a ListClipsResponse. */
+                    class ListClipsResponse implements IListClipsResponse {
+
+                        /**
+                         * Constructs a new ListClipsResponse.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IListClipsResponse);
+
+                        /** ListClipsResponse clips. */
+                        public clips: google.cloud.video.livestream.v1.IClip[];
+
+                        /** ListClipsResponse nextPageToken. */
+                        public nextPageToken: string;
+
+                        /** ListClipsResponse unreachable. */
+                        public unreachable: string[];
+
+                        /**
+                         * Creates a new ListClipsResponse instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns ListClipsResponse instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IListClipsResponse): google.cloud.video.livestream.v1.ListClipsResponse;
+
+                        /**
+                         * Encodes the specified ListClipsResponse message. Does not implicitly {@link google.cloud.video.livestream.v1.ListClipsResponse.verify|verify} messages.
+                         * @param message ListClipsResponse message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IListClipsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified ListClipsResponse message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.ListClipsResponse.verify|verify} messages.
+                         * @param message ListClipsResponse message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IListClipsResponse, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a ListClipsResponse message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns ListClipsResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.ListClipsResponse;
+
+                        /**
+                         * Decodes a ListClipsResponse message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns ListClipsResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.ListClipsResponse;
+
+                        /**
+                         * Verifies a ListClipsResponse message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a ListClipsResponse message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns ListClipsResponse
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.ListClipsResponse;
+
+                        /**
+                         * Creates a plain object from a ListClipsResponse message. Also converts values to other types if specified.
+                         * @param message ListClipsResponse
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.ListClipsResponse, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this ListClipsResponse to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for ListClipsResponse
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a GetClipRequest. */
+                    interface IGetClipRequest {
+
+                        /** GetClipRequest name */
+                        name?: (string|null);
+                    }
+
+                    /** Represents a GetClipRequest. */
+                    class GetClipRequest implements IGetClipRequest {
+
+                        /**
+                         * Constructs a new GetClipRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IGetClipRequest);
+
+                        /** GetClipRequest name. */
+                        public name: string;
+
+                        /**
+                         * Creates a new GetClipRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns GetClipRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IGetClipRequest): google.cloud.video.livestream.v1.GetClipRequest;
+
+                        /**
+                         * Encodes the specified GetClipRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.GetClipRequest.verify|verify} messages.
+                         * @param message GetClipRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IGetClipRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified GetClipRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.GetClipRequest.verify|verify} messages.
+                         * @param message GetClipRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IGetClipRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a GetClipRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns GetClipRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.GetClipRequest;
+
+                        /**
+                         * Decodes a GetClipRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns GetClipRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.GetClipRequest;
+
+                        /**
+                         * Verifies a GetClipRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a GetClipRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns GetClipRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.GetClipRequest;
+
+                        /**
+                         * Creates a plain object from a GetClipRequest message. Also converts values to other types if specified.
+                         * @param message GetClipRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.GetClipRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this GetClipRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for GetClipRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a CreateClipRequest. */
+                    interface ICreateClipRequest {
+
+                        /** CreateClipRequest parent */
+                        parent?: (string|null);
+
+                        /** CreateClipRequest clipId */
+                        clipId?: (string|null);
+
+                        /** CreateClipRequest clip */
+                        clip?: (google.cloud.video.livestream.v1.IClip|null);
+
+                        /** CreateClipRequest requestId */
+                        requestId?: (string|null);
+                    }
+
+                    /** Represents a CreateClipRequest. */
+                    class CreateClipRequest implements ICreateClipRequest {
+
+                        /**
+                         * Constructs a new CreateClipRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.ICreateClipRequest);
+
+                        /** CreateClipRequest parent. */
+                        public parent: string;
+
+                        /** CreateClipRequest clipId. */
+                        public clipId: string;
+
+                        /** CreateClipRequest clip. */
+                        public clip?: (google.cloud.video.livestream.v1.IClip|null);
+
+                        /** CreateClipRequest requestId. */
+                        public requestId: string;
+
+                        /**
+                         * Creates a new CreateClipRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns CreateClipRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.ICreateClipRequest): google.cloud.video.livestream.v1.CreateClipRequest;
+
+                        /**
+                         * Encodes the specified CreateClipRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.CreateClipRequest.verify|verify} messages.
+                         * @param message CreateClipRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.ICreateClipRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified CreateClipRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.CreateClipRequest.verify|verify} messages.
+                         * @param message CreateClipRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.ICreateClipRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a CreateClipRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns CreateClipRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.CreateClipRequest;
+
+                        /**
+                         * Decodes a CreateClipRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns CreateClipRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.CreateClipRequest;
+
+                        /**
+                         * Verifies a CreateClipRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a CreateClipRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns CreateClipRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.CreateClipRequest;
+
+                        /**
+                         * Creates a plain object from a CreateClipRequest message. Also converts values to other types if specified.
+                         * @param message CreateClipRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.CreateClipRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this CreateClipRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for CreateClipRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of a DeleteClipRequest. */
+                    interface IDeleteClipRequest {
+
+                        /** DeleteClipRequest name */
+                        name?: (string|null);
+
+                        /** DeleteClipRequest requestId */
+                        requestId?: (string|null);
+                    }
+
+                    /** Represents a DeleteClipRequest. */
+                    class DeleteClipRequest implements IDeleteClipRequest {
+
+                        /**
+                         * Constructs a new DeleteClipRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IDeleteClipRequest);
+
+                        /** DeleteClipRequest name. */
+                        public name: string;
+
+                        /** DeleteClipRequest requestId. */
+                        public requestId: string;
+
+                        /**
+                         * Creates a new DeleteClipRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns DeleteClipRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IDeleteClipRequest): google.cloud.video.livestream.v1.DeleteClipRequest;
+
+                        /**
+                         * Encodes the specified DeleteClipRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.DeleteClipRequest.verify|verify} messages.
+                         * @param message DeleteClipRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IDeleteClipRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified DeleteClipRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.DeleteClipRequest.verify|verify} messages.
+                         * @param message DeleteClipRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IDeleteClipRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a DeleteClipRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns DeleteClipRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.DeleteClipRequest;
+
+                        /**
+                         * Decodes a DeleteClipRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns DeleteClipRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.DeleteClipRequest;
+
+                        /**
+                         * Verifies a DeleteClipRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a DeleteClipRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns DeleteClipRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.DeleteClipRequest;
+
+                        /**
+                         * Creates a plain object from a DeleteClipRequest message. Also converts values to other types if specified.
+                         * @param message DeleteClipRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.DeleteClipRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this DeleteClipRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for DeleteClipRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
                     /** Properties of an OperationMetadata. */
                     interface IOperationMetadata {
 
@@ -7671,6 +10560,212 @@ export namespace google {
                          */
                         public static getTypeUrl(typeUrlPrefix?: string): string;
                     }
+
+                    /** Properties of a GetPoolRequest. */
+                    interface IGetPoolRequest {
+
+                        /** GetPoolRequest name */
+                        name?: (string|null);
+                    }
+
+                    /** Represents a GetPoolRequest. */
+                    class GetPoolRequest implements IGetPoolRequest {
+
+                        /**
+                         * Constructs a new GetPoolRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IGetPoolRequest);
+
+                        /** GetPoolRequest name. */
+                        public name: string;
+
+                        /**
+                         * Creates a new GetPoolRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns GetPoolRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IGetPoolRequest): google.cloud.video.livestream.v1.GetPoolRequest;
+
+                        /**
+                         * Encodes the specified GetPoolRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.GetPoolRequest.verify|verify} messages.
+                         * @param message GetPoolRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IGetPoolRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified GetPoolRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.GetPoolRequest.verify|verify} messages.
+                         * @param message GetPoolRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IGetPoolRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes a GetPoolRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns GetPoolRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.GetPoolRequest;
+
+                        /**
+                         * Decodes a GetPoolRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns GetPoolRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.GetPoolRequest;
+
+                        /**
+                         * Verifies a GetPoolRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates a GetPoolRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns GetPoolRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.GetPoolRequest;
+
+                        /**
+                         * Creates a plain object from a GetPoolRequest message. Also converts values to other types if specified.
+                         * @param message GetPoolRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.GetPoolRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this GetPoolRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for GetPoolRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
+
+                    /** Properties of an UpdatePoolRequest. */
+                    interface IUpdatePoolRequest {
+
+                        /** UpdatePoolRequest updateMask */
+                        updateMask?: (google.protobuf.IFieldMask|null);
+
+                        /** UpdatePoolRequest pool */
+                        pool?: (google.cloud.video.livestream.v1.IPool|null);
+
+                        /** UpdatePoolRequest requestId */
+                        requestId?: (string|null);
+                    }
+
+                    /** Represents an UpdatePoolRequest. */
+                    class UpdatePoolRequest implements IUpdatePoolRequest {
+
+                        /**
+                         * Constructs a new UpdatePoolRequest.
+                         * @param [properties] Properties to set
+                         */
+                        constructor(properties?: google.cloud.video.livestream.v1.IUpdatePoolRequest);
+
+                        /** UpdatePoolRequest updateMask. */
+                        public updateMask?: (google.protobuf.IFieldMask|null);
+
+                        /** UpdatePoolRequest pool. */
+                        public pool?: (google.cloud.video.livestream.v1.IPool|null);
+
+                        /** UpdatePoolRequest requestId. */
+                        public requestId: string;
+
+                        /**
+                         * Creates a new UpdatePoolRequest instance using the specified properties.
+                         * @param [properties] Properties to set
+                         * @returns UpdatePoolRequest instance
+                         */
+                        public static create(properties?: google.cloud.video.livestream.v1.IUpdatePoolRequest): google.cloud.video.livestream.v1.UpdatePoolRequest;
+
+                        /**
+                         * Encodes the specified UpdatePoolRequest message. Does not implicitly {@link google.cloud.video.livestream.v1.UpdatePoolRequest.verify|verify} messages.
+                         * @param message UpdatePoolRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encode(message: google.cloud.video.livestream.v1.IUpdatePoolRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Encodes the specified UpdatePoolRequest message, length delimited. Does not implicitly {@link google.cloud.video.livestream.v1.UpdatePoolRequest.verify|verify} messages.
+                         * @param message UpdatePoolRequest message or plain object to encode
+                         * @param [writer] Writer to encode to
+                         * @returns Writer
+                         */
+                        public static encodeDelimited(message: google.cloud.video.livestream.v1.IUpdatePoolRequest, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                        /**
+                         * Decodes an UpdatePoolRequest message from the specified reader or buffer.
+                         * @param reader Reader or buffer to decode from
+                         * @param [length] Message length if known beforehand
+                         * @returns UpdatePoolRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.cloud.video.livestream.v1.UpdatePoolRequest;
+
+                        /**
+                         * Decodes an UpdatePoolRequest message from the specified reader or buffer, length delimited.
+                         * @param reader Reader or buffer to decode from
+                         * @returns UpdatePoolRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.cloud.video.livestream.v1.UpdatePoolRequest;
+
+                        /**
+                         * Verifies an UpdatePoolRequest message.
+                         * @param message Plain object to verify
+                         * @returns `null` if valid, otherwise the reason why it is not
+                         */
+                        public static verify(message: { [k: string]: any }): (string|null);
+
+                        /**
+                         * Creates an UpdatePoolRequest message from a plain object. Also converts values to their respective internal types.
+                         * @param object Plain object
+                         * @returns UpdatePoolRequest
+                         */
+                        public static fromObject(object: { [k: string]: any }): google.cloud.video.livestream.v1.UpdatePoolRequest;
+
+                        /**
+                         * Creates a plain object from an UpdatePoolRequest message. Also converts values to other types if specified.
+                         * @param message UpdatePoolRequest
+                         * @param [options] Conversion options
+                         * @returns Plain object
+                         */
+                        public static toObject(message: google.cloud.video.livestream.v1.UpdatePoolRequest, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                        /**
+                         * Converts this UpdatePoolRequest to JSON.
+                         * @returns JSON object
+                         */
+                        public toJSON(): { [k: string]: any };
+
+                        /**
+                         * Gets the default type url for UpdatePoolRequest
+                         * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns The default type url
+                         */
+                        public static getTypeUrl(typeUrlPrefix?: string): string;
+                    }
                 }
             }
         }
@@ -7688,7 +10783,8 @@ export namespace google {
             INPUT_ONLY = 4,
             IMMUTABLE = 5,
             UNORDERED_LIST = 6,
-            NON_EMPTY_DEFAULT = 7
+            NON_EMPTY_DEFAULT = 7,
+            IDENTIFIER = 8
         }
 
         /** Properties of a ResourceDescriptor. */
@@ -8302,6 +11398,1602 @@ export namespace google {
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
+
+        /** Properties of a CommonLanguageSettings. */
+        interface ICommonLanguageSettings {
+
+            /** CommonLanguageSettings referenceDocsUri */
+            referenceDocsUri?: (string|null);
+
+            /** CommonLanguageSettings destinations */
+            destinations?: (google.api.ClientLibraryDestination[]|null);
+        }
+
+        /** Represents a CommonLanguageSettings. */
+        class CommonLanguageSettings implements ICommonLanguageSettings {
+
+            /**
+             * Constructs a new CommonLanguageSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICommonLanguageSettings);
+
+            /** CommonLanguageSettings referenceDocsUri. */
+            public referenceDocsUri: string;
+
+            /** CommonLanguageSettings destinations. */
+            public destinations: google.api.ClientLibraryDestination[];
+
+            /**
+             * Creates a new CommonLanguageSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CommonLanguageSettings instance
+             */
+            public static create(properties?: google.api.ICommonLanguageSettings): google.api.CommonLanguageSettings;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CommonLanguageSettings message, length delimited. Does not implicitly {@link google.api.CommonLanguageSettings.verify|verify} messages.
+             * @param message CommonLanguageSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICommonLanguageSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CommonLanguageSettings;
+
+            /**
+             * Decodes a CommonLanguageSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CommonLanguageSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CommonLanguageSettings;
+
+            /**
+             * Verifies a CommonLanguageSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CommonLanguageSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CommonLanguageSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CommonLanguageSettings;
+
+            /**
+             * Creates a plain object from a CommonLanguageSettings message. Also converts values to other types if specified.
+             * @param message CommonLanguageSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CommonLanguageSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CommonLanguageSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CommonLanguageSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a ClientLibrarySettings. */
+        interface IClientLibrarySettings {
+
+            /** ClientLibrarySettings version */
+            version?: (string|null);
+
+            /** ClientLibrarySettings launchStage */
+            launchStage?: (google.api.LaunchStage|keyof typeof google.api.LaunchStage|null);
+
+            /** ClientLibrarySettings restNumericEnums */
+            restNumericEnums?: (boolean|null);
+
+            /** ClientLibrarySettings javaSettings */
+            javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings */
+            cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings */
+            phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings */
+            pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings */
+            nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings */
+            dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings */
+            rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings */
+            goSettings?: (google.api.IGoSettings|null);
+        }
+
+        /** Represents a ClientLibrarySettings. */
+        class ClientLibrarySettings implements IClientLibrarySettings {
+
+            /**
+             * Constructs a new ClientLibrarySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IClientLibrarySettings);
+
+            /** ClientLibrarySettings version. */
+            public version: string;
+
+            /** ClientLibrarySettings launchStage. */
+            public launchStage: (google.api.LaunchStage|keyof typeof google.api.LaunchStage);
+
+            /** ClientLibrarySettings restNumericEnums. */
+            public restNumericEnums: boolean;
+
+            /** ClientLibrarySettings javaSettings. */
+            public javaSettings?: (google.api.IJavaSettings|null);
+
+            /** ClientLibrarySettings cppSettings. */
+            public cppSettings?: (google.api.ICppSettings|null);
+
+            /** ClientLibrarySettings phpSettings. */
+            public phpSettings?: (google.api.IPhpSettings|null);
+
+            /** ClientLibrarySettings pythonSettings. */
+            public pythonSettings?: (google.api.IPythonSettings|null);
+
+            /** ClientLibrarySettings nodeSettings. */
+            public nodeSettings?: (google.api.INodeSettings|null);
+
+            /** ClientLibrarySettings dotnetSettings. */
+            public dotnetSettings?: (google.api.IDotnetSettings|null);
+
+            /** ClientLibrarySettings rubySettings. */
+            public rubySettings?: (google.api.IRubySettings|null);
+
+            /** ClientLibrarySettings goSettings. */
+            public goSettings?: (google.api.IGoSettings|null);
+
+            /**
+             * Creates a new ClientLibrarySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ClientLibrarySettings instance
+             */
+            public static create(properties?: google.api.IClientLibrarySettings): google.api.ClientLibrarySettings;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ClientLibrarySettings message, length delimited. Does not implicitly {@link google.api.ClientLibrarySettings.verify|verify} messages.
+             * @param message ClientLibrarySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IClientLibrarySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.ClientLibrarySettings;
+
+            /**
+             * Decodes a ClientLibrarySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ClientLibrarySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.ClientLibrarySettings;
+
+            /**
+             * Verifies a ClientLibrarySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ClientLibrarySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ClientLibrarySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.ClientLibrarySettings;
+
+            /**
+             * Creates a plain object from a ClientLibrarySettings message. Also converts values to other types if specified.
+             * @param message ClientLibrarySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.ClientLibrarySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ClientLibrarySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for ClientLibrarySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a Publishing. */
+        interface IPublishing {
+
+            /** Publishing methodSettings */
+            methodSettings?: (google.api.IMethodSettings[]|null);
+
+            /** Publishing newIssueUri */
+            newIssueUri?: (string|null);
+
+            /** Publishing documentationUri */
+            documentationUri?: (string|null);
+
+            /** Publishing apiShortName */
+            apiShortName?: (string|null);
+
+            /** Publishing githubLabel */
+            githubLabel?: (string|null);
+
+            /** Publishing codeownerGithubTeams */
+            codeownerGithubTeams?: (string[]|null);
+
+            /** Publishing docTagPrefix */
+            docTagPrefix?: (string|null);
+
+            /** Publishing organization */
+            organization?: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization|null);
+
+            /** Publishing librarySettings */
+            librarySettings?: (google.api.IClientLibrarySettings[]|null);
+
+            /** Publishing protoReferenceDocumentationUri */
+            protoReferenceDocumentationUri?: (string|null);
+        }
+
+        /** Represents a Publishing. */
+        class Publishing implements IPublishing {
+
+            /**
+             * Constructs a new Publishing.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPublishing);
+
+            /** Publishing methodSettings. */
+            public methodSettings: google.api.IMethodSettings[];
+
+            /** Publishing newIssueUri. */
+            public newIssueUri: string;
+
+            /** Publishing documentationUri. */
+            public documentationUri: string;
+
+            /** Publishing apiShortName. */
+            public apiShortName: string;
+
+            /** Publishing githubLabel. */
+            public githubLabel: string;
+
+            /** Publishing codeownerGithubTeams. */
+            public codeownerGithubTeams: string[];
+
+            /** Publishing docTagPrefix. */
+            public docTagPrefix: string;
+
+            /** Publishing organization. */
+            public organization: (google.api.ClientLibraryOrganization|keyof typeof google.api.ClientLibraryOrganization);
+
+            /** Publishing librarySettings. */
+            public librarySettings: google.api.IClientLibrarySettings[];
+
+            /** Publishing protoReferenceDocumentationUri. */
+            public protoReferenceDocumentationUri: string;
+
+            /**
+             * Creates a new Publishing instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Publishing instance
+             */
+            public static create(properties?: google.api.IPublishing): google.api.Publishing;
+
+            /**
+             * Encodes the specified Publishing message. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Publishing message, length delimited. Does not implicitly {@link google.api.Publishing.verify|verify} messages.
+             * @param message Publishing message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPublishing, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.Publishing;
+
+            /**
+             * Decodes a Publishing message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Publishing
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.Publishing;
+
+            /**
+             * Verifies a Publishing message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a Publishing message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Publishing
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.Publishing;
+
+            /**
+             * Creates a plain object from a Publishing message. Also converts values to other types if specified.
+             * @param message Publishing
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.Publishing, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Publishing to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for Publishing
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a JavaSettings. */
+        interface IJavaSettings {
+
+            /** JavaSettings libraryPackage */
+            libraryPackage?: (string|null);
+
+            /** JavaSettings serviceClassNames */
+            serviceClassNames?: ({ [k: string]: string }|null);
+
+            /** JavaSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a JavaSettings. */
+        class JavaSettings implements IJavaSettings {
+
+            /**
+             * Constructs a new JavaSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IJavaSettings);
+
+            /** JavaSettings libraryPackage. */
+            public libraryPackage: string;
+
+            /** JavaSettings serviceClassNames. */
+            public serviceClassNames: { [k: string]: string };
+
+            /** JavaSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new JavaSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns JavaSettings instance
+             */
+            public static create(properties?: google.api.IJavaSettings): google.api.JavaSettings;
+
+            /**
+             * Encodes the specified JavaSettings message. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified JavaSettings message, length delimited. Does not implicitly {@link google.api.JavaSettings.verify|verify} messages.
+             * @param message JavaSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IJavaSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.JavaSettings;
+
+            /**
+             * Decodes a JavaSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns JavaSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.JavaSettings;
+
+            /**
+             * Verifies a JavaSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a JavaSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns JavaSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.JavaSettings;
+
+            /**
+             * Creates a plain object from a JavaSettings message. Also converts values to other types if specified.
+             * @param message JavaSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.JavaSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this JavaSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for JavaSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a CppSettings. */
+        interface ICppSettings {
+
+            /** CppSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a CppSettings. */
+        class CppSettings implements ICppSettings {
+
+            /**
+             * Constructs a new CppSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.ICppSettings);
+
+            /** CppSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new CppSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns CppSettings instance
+             */
+            public static create(properties?: google.api.ICppSettings): google.api.CppSettings;
+
+            /**
+             * Encodes the specified CppSettings message. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified CppSettings message, length delimited. Does not implicitly {@link google.api.CppSettings.verify|verify} messages.
+             * @param message CppSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.ICppSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.CppSettings;
+
+            /**
+             * Decodes a CppSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns CppSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.CppSettings;
+
+            /**
+             * Verifies a CppSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a CppSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns CppSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.CppSettings;
+
+            /**
+             * Creates a plain object from a CppSettings message. Also converts values to other types if specified.
+             * @param message CppSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.CppSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this CppSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for CppSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PhpSettings. */
+        interface IPhpSettings {
+
+            /** PhpSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PhpSettings. */
+        class PhpSettings implements IPhpSettings {
+
+            /**
+             * Constructs a new PhpSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPhpSettings);
+
+            /** PhpSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PhpSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PhpSettings instance
+             */
+            public static create(properties?: google.api.IPhpSettings): google.api.PhpSettings;
+
+            /**
+             * Encodes the specified PhpSettings message. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PhpSettings message, length delimited. Does not implicitly {@link google.api.PhpSettings.verify|verify} messages.
+             * @param message PhpSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPhpSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PhpSettings;
+
+            /**
+             * Decodes a PhpSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PhpSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PhpSettings;
+
+            /**
+             * Verifies a PhpSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PhpSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PhpSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PhpSettings;
+
+            /**
+             * Creates a plain object from a PhpSettings message. Also converts values to other types if specified.
+             * @param message PhpSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PhpSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PhpSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PhpSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a PythonSettings. */
+        interface IPythonSettings {
+
+            /** PythonSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a PythonSettings. */
+        class PythonSettings implements IPythonSettings {
+
+            /**
+             * Constructs a new PythonSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IPythonSettings);
+
+            /** PythonSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new PythonSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns PythonSettings instance
+             */
+            public static create(properties?: google.api.IPythonSettings): google.api.PythonSettings;
+
+            /**
+             * Encodes the specified PythonSettings message. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified PythonSettings message, length delimited. Does not implicitly {@link google.api.PythonSettings.verify|verify} messages.
+             * @param message PythonSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IPythonSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.PythonSettings;
+
+            /**
+             * Decodes a PythonSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns PythonSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.PythonSettings;
+
+            /**
+             * Verifies a PythonSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a PythonSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns PythonSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.PythonSettings;
+
+            /**
+             * Creates a plain object from a PythonSettings message. Also converts values to other types if specified.
+             * @param message PythonSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.PythonSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this PythonSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for PythonSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a NodeSettings. */
+        interface INodeSettings {
+
+            /** NodeSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a NodeSettings. */
+        class NodeSettings implements INodeSettings {
+
+            /**
+             * Constructs a new NodeSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.INodeSettings);
+
+            /** NodeSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new NodeSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns NodeSettings instance
+             */
+            public static create(properties?: google.api.INodeSettings): google.api.NodeSettings;
+
+            /**
+             * Encodes the specified NodeSettings message. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified NodeSettings message, length delimited. Does not implicitly {@link google.api.NodeSettings.verify|verify} messages.
+             * @param message NodeSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.INodeSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.NodeSettings;
+
+            /**
+             * Decodes a NodeSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns NodeSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.NodeSettings;
+
+            /**
+             * Verifies a NodeSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a NodeSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns NodeSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.NodeSettings;
+
+            /**
+             * Creates a plain object from a NodeSettings message. Also converts values to other types if specified.
+             * @param message NodeSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.NodeSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this NodeSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for NodeSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a DotnetSettings. */
+        interface IDotnetSettings {
+
+            /** DotnetSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices */
+            renamedServices?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings renamedResources */
+            renamedResources?: ({ [k: string]: string }|null);
+
+            /** DotnetSettings ignoredResources */
+            ignoredResources?: (string[]|null);
+
+            /** DotnetSettings forcedNamespaceAliases */
+            forcedNamespaceAliases?: (string[]|null);
+
+            /** DotnetSettings handwrittenSignatures */
+            handwrittenSignatures?: (string[]|null);
+        }
+
+        /** Represents a DotnetSettings. */
+        class DotnetSettings implements IDotnetSettings {
+
+            /**
+             * Constructs a new DotnetSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IDotnetSettings);
+
+            /** DotnetSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /** DotnetSettings renamedServices. */
+            public renamedServices: { [k: string]: string };
+
+            /** DotnetSettings renamedResources. */
+            public renamedResources: { [k: string]: string };
+
+            /** DotnetSettings ignoredResources. */
+            public ignoredResources: string[];
+
+            /** DotnetSettings forcedNamespaceAliases. */
+            public forcedNamespaceAliases: string[];
+
+            /** DotnetSettings handwrittenSignatures. */
+            public handwrittenSignatures: string[];
+
+            /**
+             * Creates a new DotnetSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns DotnetSettings instance
+             */
+            public static create(properties?: google.api.IDotnetSettings): google.api.DotnetSettings;
+
+            /**
+             * Encodes the specified DotnetSettings message. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified DotnetSettings message, length delimited. Does not implicitly {@link google.api.DotnetSettings.verify|verify} messages.
+             * @param message DotnetSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IDotnetSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.DotnetSettings;
+
+            /**
+             * Decodes a DotnetSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns DotnetSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.DotnetSettings;
+
+            /**
+             * Verifies a DotnetSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a DotnetSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns DotnetSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.DotnetSettings;
+
+            /**
+             * Creates a plain object from a DotnetSettings message. Also converts values to other types if specified.
+             * @param message DotnetSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.DotnetSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this DotnetSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for DotnetSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a RubySettings. */
+        interface IRubySettings {
+
+            /** RubySettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a RubySettings. */
+        class RubySettings implements IRubySettings {
+
+            /**
+             * Constructs a new RubySettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IRubySettings);
+
+            /** RubySettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new RubySettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns RubySettings instance
+             */
+            public static create(properties?: google.api.IRubySettings): google.api.RubySettings;
+
+            /**
+             * Encodes the specified RubySettings message. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified RubySettings message, length delimited. Does not implicitly {@link google.api.RubySettings.verify|verify} messages.
+             * @param message RubySettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IRubySettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.RubySettings;
+
+            /**
+             * Decodes a RubySettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns RubySettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.RubySettings;
+
+            /**
+             * Verifies a RubySettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a RubySettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns RubySettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.RubySettings;
+
+            /**
+             * Creates a plain object from a RubySettings message. Also converts values to other types if specified.
+             * @param message RubySettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.RubySettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this RubySettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for RubySettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a GoSettings. */
+        interface IGoSettings {
+
+            /** GoSettings common */
+            common?: (google.api.ICommonLanguageSettings|null);
+        }
+
+        /** Represents a GoSettings. */
+        class GoSettings implements IGoSettings {
+
+            /**
+             * Constructs a new GoSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IGoSettings);
+
+            /** GoSettings common. */
+            public common?: (google.api.ICommonLanguageSettings|null);
+
+            /**
+             * Creates a new GoSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns GoSettings instance
+             */
+            public static create(properties?: google.api.IGoSettings): google.api.GoSettings;
+
+            /**
+             * Encodes the specified GoSettings message. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified GoSettings message, length delimited. Does not implicitly {@link google.api.GoSettings.verify|verify} messages.
+             * @param message GoSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IGoSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.GoSettings;
+
+            /**
+             * Decodes a GoSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns GoSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.GoSettings;
+
+            /**
+             * Verifies a GoSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a GoSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns GoSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.GoSettings;
+
+            /**
+             * Creates a plain object from a GoSettings message. Also converts values to other types if specified.
+             * @param message GoSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.GoSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this GoSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for GoSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        /** Properties of a MethodSettings. */
+        interface IMethodSettings {
+
+            /** MethodSettings selector */
+            selector?: (string|null);
+
+            /** MethodSettings longRunning */
+            longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields */
+            autoPopulatedFields?: (string[]|null);
+        }
+
+        /** Represents a MethodSettings. */
+        class MethodSettings implements IMethodSettings {
+
+            /**
+             * Constructs a new MethodSettings.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IMethodSettings);
+
+            /** MethodSettings selector. */
+            public selector: string;
+
+            /** MethodSettings longRunning. */
+            public longRunning?: (google.api.MethodSettings.ILongRunning|null);
+
+            /** MethodSettings autoPopulatedFields. */
+            public autoPopulatedFields: string[];
+
+            /**
+             * Creates a new MethodSettings instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns MethodSettings instance
+             */
+            public static create(properties?: google.api.IMethodSettings): google.api.MethodSettings;
+
+            /**
+             * Encodes the specified MethodSettings message. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified MethodSettings message, length delimited. Does not implicitly {@link google.api.MethodSettings.verify|verify} messages.
+             * @param message MethodSettings message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IMethodSettings, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings;
+
+            /**
+             * Decodes a MethodSettings message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns MethodSettings
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings;
+
+            /**
+             * Verifies a MethodSettings message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a MethodSettings message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns MethodSettings
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.MethodSettings;
+
+            /**
+             * Creates a plain object from a MethodSettings message. Also converts values to other types if specified.
+             * @param message MethodSettings
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.MethodSettings, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this MethodSettings to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for MethodSettings
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace MethodSettings {
+
+            /** Properties of a LongRunning. */
+            interface ILongRunning {
+
+                /** LongRunning initialPollDelay */
+                initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier */
+                pollDelayMultiplier?: (number|null);
+
+                /** LongRunning maxPollDelay */
+                maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout */
+                totalPollTimeout?: (google.protobuf.IDuration|null);
+            }
+
+            /** Represents a LongRunning. */
+            class LongRunning implements ILongRunning {
+
+                /**
+                 * Constructs a new LongRunning.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.api.MethodSettings.ILongRunning);
+
+                /** LongRunning initialPollDelay. */
+                public initialPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning pollDelayMultiplier. */
+                public pollDelayMultiplier: number;
+
+                /** LongRunning maxPollDelay. */
+                public maxPollDelay?: (google.protobuf.IDuration|null);
+
+                /** LongRunning totalPollTimeout. */
+                public totalPollTimeout?: (google.protobuf.IDuration|null);
+
+                /**
+                 * Creates a new LongRunning instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns LongRunning instance
+                 */
+                public static create(properties?: google.api.MethodSettings.ILongRunning): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Encodes the specified LongRunning message. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified LongRunning message, length delimited. Does not implicitly {@link google.api.MethodSettings.LongRunning.verify|verify} messages.
+                 * @param message LongRunning message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.api.MethodSettings.ILongRunning, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Decodes a LongRunning message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns LongRunning
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Verifies a LongRunning message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a LongRunning message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns LongRunning
+                 */
+                public static fromObject(object: { [k: string]: any }): google.api.MethodSettings.LongRunning;
+
+                /**
+                 * Creates a plain object from a LongRunning message. Also converts values to other types if specified.
+                 * @param message LongRunning
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.api.MethodSettings.LongRunning, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this LongRunning to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for LongRunning
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** ClientLibraryOrganization enum. */
+        enum ClientLibraryOrganization {
+            CLIENT_LIBRARY_ORGANIZATION_UNSPECIFIED = 0,
+            CLOUD = 1,
+            ADS = 2,
+            PHOTOS = 3,
+            STREET_VIEW = 4,
+            SHOPPING = 5,
+            GEO = 6,
+            GENERATIVE_AI = 7
+        }
+
+        /** ClientLibraryDestination enum. */
+        enum ClientLibraryDestination {
+            CLIENT_LIBRARY_DESTINATION_UNSPECIFIED = 0,
+            GITHUB = 10,
+            PACKAGE_MANAGER = 20
+        }
+
+        /** LaunchStage enum. */
+        enum LaunchStage {
+            LAUNCH_STAGE_UNSPECIFIED = 0,
+            UNIMPLEMENTED = 6,
+            PRELAUNCH = 7,
+            EARLY_ACCESS = 1,
+            ALPHA = 2,
+            BETA = 3,
+            GA = 4,
+            DEPRECATED = 5
+        }
+
+        /** Properties of a FieldInfo. */
+        interface IFieldInfo {
+
+            /** FieldInfo format */
+            format?: (google.api.FieldInfo.Format|keyof typeof google.api.FieldInfo.Format|null);
+        }
+
+        /** Represents a FieldInfo. */
+        class FieldInfo implements IFieldInfo {
+
+            /**
+             * Constructs a new FieldInfo.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.api.IFieldInfo);
+
+            /** FieldInfo format. */
+            public format: (google.api.FieldInfo.Format|keyof typeof google.api.FieldInfo.Format);
+
+            /**
+             * Creates a new FieldInfo instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FieldInfo instance
+             */
+            public static create(properties?: google.api.IFieldInfo): google.api.FieldInfo;
+
+            /**
+             * Encodes the specified FieldInfo message. Does not implicitly {@link google.api.FieldInfo.verify|verify} messages.
+             * @param message FieldInfo message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.api.IFieldInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FieldInfo message, length delimited. Does not implicitly {@link google.api.FieldInfo.verify|verify} messages.
+             * @param message FieldInfo message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.api.IFieldInfo, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FieldInfo message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FieldInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.api.FieldInfo;
+
+            /**
+             * Decodes a FieldInfo message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FieldInfo
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.api.FieldInfo;
+
+            /**
+             * Verifies a FieldInfo message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FieldInfo message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FieldInfo
+             */
+            public static fromObject(object: { [k: string]: any }): google.api.FieldInfo;
+
+            /**
+             * Creates a plain object from a FieldInfo message. Also converts values to other types if specified.
+             * @param message FieldInfo
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.api.FieldInfo, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FieldInfo to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FieldInfo
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FieldInfo {
+
+            /** Format enum. */
+            enum Format {
+                FORMAT_UNSPECIFIED = 0,
+                UUID4 = 1,
+                IPV4 = 2,
+                IPV6 = 3,
+                IPV4_OR_IPV6 = 4
+            }
+        }
     }
 
     /** Namespace protobuf. */
@@ -8404,6 +13096,21 @@ export namespace google {
             public static getTypeUrl(typeUrlPrefix?: string): string;
         }
 
+        /** Edition enum. */
+        enum Edition {
+            EDITION_UNKNOWN = 0,
+            EDITION_PROTO2 = 998,
+            EDITION_PROTO3 = 999,
+            EDITION_2023 = 1000,
+            EDITION_2024 = 1001,
+            EDITION_1_TEST_ONLY = 1,
+            EDITION_2_TEST_ONLY = 2,
+            EDITION_99997_TEST_ONLY = 99997,
+            EDITION_99998_TEST_ONLY = 99998,
+            EDITION_99999_TEST_ONLY = 99999,
+            EDITION_MAX = 2147483647
+        }
+
         /** Properties of a FileDescriptorProto. */
         interface IFileDescriptorProto {
 
@@ -8444,7 +13151,7 @@ export namespace google {
             syntax?: (string|null);
 
             /** FileDescriptorProto edition */
-            edition?: (string|null);
+            edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
         }
 
         /** Represents a FileDescriptorProto. */
@@ -8493,7 +13200,7 @@ export namespace google {
             public syntax: string;
 
             /** FileDescriptorProto edition. */
-            public edition: string;
+            public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
 
             /**
              * Creates a new FileDescriptorProto instance using the specified properties.
@@ -8944,6 +13651,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
+
+            /** ExtensionRangeOptions declaration */
+            declaration?: (google.protobuf.ExtensionRangeOptions.IDeclaration[]|null);
+
+            /** ExtensionRangeOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification */
+            verification?: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState|null);
         }
 
         /** Represents an ExtensionRangeOptions. */
@@ -8957,6 +13673,15 @@ export namespace google {
 
             /** ExtensionRangeOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
+
+            /** ExtensionRangeOptions declaration. */
+            public declaration: google.protobuf.ExtensionRangeOptions.IDeclaration[];
+
+            /** ExtensionRangeOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** ExtensionRangeOptions verification. */
+            public verification: (google.protobuf.ExtensionRangeOptions.VerificationState|keyof typeof google.protobuf.ExtensionRangeOptions.VerificationState);
 
             /**
              * Creates a new ExtensionRangeOptions instance using the specified properties.
@@ -9034,6 +13759,136 @@ export namespace google {
              * @returns The default type url
              */
             public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace ExtensionRangeOptions {
+
+            /** Properties of a Declaration. */
+            interface IDeclaration {
+
+                /** Declaration number */
+                number?: (number|null);
+
+                /** Declaration fullName */
+                fullName?: (string|null);
+
+                /** Declaration type */
+                type?: (string|null);
+
+                /** Declaration reserved */
+                reserved?: (boolean|null);
+
+                /** Declaration repeated */
+                repeated?: (boolean|null);
+            }
+
+            /** Represents a Declaration. */
+            class Declaration implements IDeclaration {
+
+                /**
+                 * Constructs a new Declaration.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration);
+
+                /** Declaration number. */
+                public number: number;
+
+                /** Declaration fullName. */
+                public fullName: string;
+
+                /** Declaration type. */
+                public type: string;
+
+                /** Declaration reserved. */
+                public reserved: boolean;
+
+                /** Declaration repeated. */
+                public repeated: boolean;
+
+                /**
+                 * Creates a new Declaration instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns Declaration instance
+                 */
+                public static create(properties?: google.protobuf.ExtensionRangeOptions.IDeclaration): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Encodes the specified Declaration message. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified Declaration message, length delimited. Does not implicitly {@link google.protobuf.ExtensionRangeOptions.Declaration.verify|verify} messages.
+                 * @param message Declaration message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.ExtensionRangeOptions.IDeclaration, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Decodes a Declaration message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns Declaration
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Verifies a Declaration message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a Declaration message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns Declaration
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.ExtensionRangeOptions.Declaration;
+
+                /**
+                 * Creates a plain object from a Declaration message. Also converts values to other types if specified.
+                 * @param message Declaration
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.ExtensionRangeOptions.Declaration, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this Declaration to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for Declaration
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+
+            /** VerificationState enum. */
+            enum VerificationState {
+                DECLARATION = 0,
+                UNVERIFIED = 1
+            }
         }
 
         /** Properties of a FieldDescriptorProto. */
@@ -9220,8 +14075,8 @@ export namespace google {
             /** Label enum. */
             enum Label {
                 LABEL_OPTIONAL = 1,
-                LABEL_REQUIRED = 2,
-                LABEL_REPEATED = 3
+                LABEL_REPEATED = 3,
+                LABEL_REQUIRED = 2
             }
         }
 
@@ -9933,9 +14788,6 @@ export namespace google {
             /** FileOptions pyGenericServices */
             pyGenericServices?: (boolean|null);
 
-            /** FileOptions phpGenericServices */
-            phpGenericServices?: (boolean|null);
-
             /** FileOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -9962,6 +14814,9 @@ export namespace google {
 
             /** FileOptions rubyPackage */
             rubyPackage?: (string|null);
+
+            /** FileOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -10009,9 +14864,6 @@ export namespace google {
             /** FileOptions pyGenericServices. */
             public pyGenericServices: boolean;
 
-            /** FileOptions phpGenericServices. */
-            public phpGenericServices: boolean;
-
             /** FileOptions deprecated. */
             public deprecated: boolean;
 
@@ -10038,6 +14890,9 @@ export namespace google {
 
             /** FileOptions rubyPackage. */
             public rubyPackage: string;
+
+            /** FileOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FileOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -10145,6 +15000,12 @@ export namespace google {
             /** MessageOptions mapEntry */
             mapEntry?: (boolean|null);
 
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** MessageOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MessageOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -10172,6 +15033,12 @@ export namespace google {
 
             /** MessageOptions mapEntry. */
             public mapEntry: boolean;
+
+            /** MessageOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** MessageOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MessageOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -10278,6 +15145,21 @@ export namespace google {
             /** FieldOptions weak */
             weak?: (boolean|null);
 
+            /** FieldOptions debugRedact */
+            debugRedact?: (boolean|null);
+
+            /** FieldOptions retention */
+            retention?: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention|null);
+
+            /** FieldOptions targets */
+            targets?: (google.protobuf.FieldOptions.OptionTargetType[]|null);
+
+            /** FieldOptions editionDefaults */
+            editionDefaults?: (google.protobuf.FieldOptions.IEditionDefault[]|null);
+
+            /** FieldOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** FieldOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -10286,6 +15168,9 @@ export namespace google {
 
             /** FieldOptions .google.api.resourceReference */
             ".google.api.resourceReference"?: (google.api.IResourceReference|null);
+
+            /** FieldOptions .google.api.fieldInfo */
+            ".google.api.fieldInfo"?: (google.api.IFieldInfo|null);
         }
 
         /** Represents a FieldOptions. */
@@ -10317,6 +15202,21 @@ export namespace google {
 
             /** FieldOptions weak. */
             public weak: boolean;
+
+            /** FieldOptions debugRedact. */
+            public debugRedact: boolean;
+
+            /** FieldOptions retention. */
+            public retention: (google.protobuf.FieldOptions.OptionRetention|keyof typeof google.protobuf.FieldOptions.OptionRetention);
+
+            /** FieldOptions targets. */
+            public targets: google.protobuf.FieldOptions.OptionTargetType[];
+
+            /** FieldOptions editionDefaults. */
+            public editionDefaults: google.protobuf.FieldOptions.IEditionDefault[];
+
+            /** FieldOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** FieldOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -10414,10 +15314,137 @@ export namespace google {
                 JS_STRING = 1,
                 JS_NUMBER = 2
             }
+
+            /** OptionRetention enum. */
+            enum OptionRetention {
+                RETENTION_UNKNOWN = 0,
+                RETENTION_RUNTIME = 1,
+                RETENTION_SOURCE = 2
+            }
+
+            /** OptionTargetType enum. */
+            enum OptionTargetType {
+                TARGET_TYPE_UNKNOWN = 0,
+                TARGET_TYPE_FILE = 1,
+                TARGET_TYPE_EXTENSION_RANGE = 2,
+                TARGET_TYPE_MESSAGE = 3,
+                TARGET_TYPE_FIELD = 4,
+                TARGET_TYPE_ONEOF = 5,
+                TARGET_TYPE_ENUM = 6,
+                TARGET_TYPE_ENUM_ENTRY = 7,
+                TARGET_TYPE_SERVICE = 8,
+                TARGET_TYPE_METHOD = 9
+            }
+
+            /** Properties of an EditionDefault. */
+            interface IEditionDefault {
+
+                /** EditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** EditionDefault value */
+                value?: (string|null);
+            }
+
+            /** Represents an EditionDefault. */
+            class EditionDefault implements IEditionDefault {
+
+                /**
+                 * Constructs a new EditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FieldOptions.IEditionDefault);
+
+                /** EditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** EditionDefault value. */
+                public value: string;
+
+                /**
+                 * Creates a new EditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns EditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FieldOptions.IEditionDefault): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Encodes the specified EditionDefault message. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified EditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FieldOptions.EditionDefault.verify|verify} messages.
+                 * @param message EditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FieldOptions.IEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Decodes an EditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns EditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Verifies an EditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates an EditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns EditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FieldOptions.EditionDefault;
+
+                /**
+                 * Creates a plain object from an EditionDefault message. Also converts values to other types if specified.
+                 * @param message EditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FieldOptions.EditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this EditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for EditionDefault
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
         }
 
         /** Properties of an OneofOptions. */
         interface IOneofOptions {
+
+            /** OneofOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
@@ -10431,6 +15458,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IOneofOptions);
+
+            /** OneofOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** OneofOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -10522,6 +15552,12 @@ export namespace google {
             /** EnumOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts */
+            deprecatedLegacyJsonFieldConflicts?: (boolean|null);
+
+            /** EnumOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** EnumOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -10540,6 +15576,12 @@ export namespace google {
 
             /** EnumOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumOptions deprecatedLegacyJsonFieldConflicts. */
+            public deprecatedLegacyJsonFieldConflicts: boolean;
+
+            /** EnumOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** EnumOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -10628,6 +15670,12 @@ export namespace google {
             /** EnumValueOptions deprecated */
             deprecated?: (boolean|null);
 
+            /** EnumValueOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact */
+            debugRedact?: (boolean|null);
+
             /** EnumValueOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
         }
@@ -10643,6 +15691,12 @@ export namespace google {
 
             /** EnumValueOptions deprecated. */
             public deprecated: boolean;
+
+            /** EnumValueOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
+
+            /** EnumValueOptions debugRedact. */
+            public debugRedact: boolean;
 
             /** EnumValueOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -10728,6 +15782,9 @@ export namespace google {
         /** Properties of a ServiceOptions. */
         interface IServiceOptions {
 
+            /** ServiceOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** ServiceOptions deprecated */
             deprecated?: (boolean|null);
 
@@ -10749,6 +15806,9 @@ export namespace google {
              * @param [properties] Properties to set
              */
             constructor(properties?: google.protobuf.IServiceOptions);
+
+            /** ServiceOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** ServiceOptions deprecated. */
             public deprecated: boolean;
@@ -10843,6 +15903,9 @@ export namespace google {
             /** MethodOptions idempotencyLevel */
             idempotencyLevel?: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel|null);
 
+            /** MethodOptions features */
+            features?: (google.protobuf.IFeatureSet|null);
+
             /** MethodOptions uninterpretedOption */
             uninterpretedOption?: (google.protobuf.IUninterpretedOption[]|null);
 
@@ -10870,6 +15933,9 @@ export namespace google {
 
             /** MethodOptions idempotencyLevel. */
             public idempotencyLevel: (google.protobuf.MethodOptions.IdempotencyLevel|keyof typeof google.protobuf.MethodOptions.IdempotencyLevel);
+
+            /** MethodOptions features. */
+            public features?: (google.protobuf.IFeatureSet|null);
 
             /** MethodOptions uninterpretedOption. */
             public uninterpretedOption: google.protobuf.IUninterpretedOption[];
@@ -11194,6 +16260,394 @@ export namespace google {
 
                 /**
                  * Gets the default type url for NamePart
+                 * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                 * @returns The default type url
+                 */
+                public static getTypeUrl(typeUrlPrefix?: string): string;
+            }
+        }
+
+        /** Properties of a FeatureSet. */
+        interface IFeatureSet {
+
+            /** FeatureSet fieldPresence */
+            fieldPresence?: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence|null);
+
+            /** FeatureSet enumType */
+            enumType?: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType|null);
+
+            /** FeatureSet repeatedFieldEncoding */
+            repeatedFieldEncoding?: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding|null);
+
+            /** FeatureSet utf8Validation */
+            utf8Validation?: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation|null);
+
+            /** FeatureSet messageEncoding */
+            messageEncoding?: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding|null);
+
+            /** FeatureSet jsonFormat */
+            jsonFormat?: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat|null);
+        }
+
+        /** Represents a FeatureSet. */
+        class FeatureSet implements IFeatureSet {
+
+            /**
+             * Constructs a new FeatureSet.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSet);
+
+            /** FeatureSet fieldPresence. */
+            public fieldPresence: (google.protobuf.FeatureSet.FieldPresence|keyof typeof google.protobuf.FeatureSet.FieldPresence);
+
+            /** FeatureSet enumType. */
+            public enumType: (google.protobuf.FeatureSet.EnumType|keyof typeof google.protobuf.FeatureSet.EnumType);
+
+            /** FeatureSet repeatedFieldEncoding. */
+            public repeatedFieldEncoding: (google.protobuf.FeatureSet.RepeatedFieldEncoding|keyof typeof google.protobuf.FeatureSet.RepeatedFieldEncoding);
+
+            /** FeatureSet utf8Validation. */
+            public utf8Validation: (google.protobuf.FeatureSet.Utf8Validation|keyof typeof google.protobuf.FeatureSet.Utf8Validation);
+
+            /** FeatureSet messageEncoding. */
+            public messageEncoding: (google.protobuf.FeatureSet.MessageEncoding|keyof typeof google.protobuf.FeatureSet.MessageEncoding);
+
+            /** FeatureSet jsonFormat. */
+            public jsonFormat: (google.protobuf.FeatureSet.JsonFormat|keyof typeof google.protobuf.FeatureSet.JsonFormat);
+
+            /**
+             * Creates a new FeatureSet instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSet instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSet): google.protobuf.FeatureSet;
+
+            /**
+             * Encodes the specified FeatureSet message. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSet message, length delimited. Does not implicitly {@link google.protobuf.FeatureSet.verify|verify} messages.
+             * @param message FeatureSet message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSet, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSet;
+
+            /**
+             * Decodes a FeatureSet message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSet
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSet;
+
+            /**
+             * Verifies a FeatureSet message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSet message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSet
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSet;
+
+            /**
+             * Creates a plain object from a FeatureSet message. Also converts values to other types if specified.
+             * @param message FeatureSet
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSet, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSet to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSet
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSet {
+
+            /** FieldPresence enum. */
+            enum FieldPresence {
+                FIELD_PRESENCE_UNKNOWN = 0,
+                EXPLICIT = 1,
+                IMPLICIT = 2,
+                LEGACY_REQUIRED = 3
+            }
+
+            /** EnumType enum. */
+            enum EnumType {
+                ENUM_TYPE_UNKNOWN = 0,
+                OPEN = 1,
+                CLOSED = 2
+            }
+
+            /** RepeatedFieldEncoding enum. */
+            enum RepeatedFieldEncoding {
+                REPEATED_FIELD_ENCODING_UNKNOWN = 0,
+                PACKED = 1,
+                EXPANDED = 2
+            }
+
+            /** Utf8Validation enum. */
+            enum Utf8Validation {
+                UTF8_VALIDATION_UNKNOWN = 0,
+                VERIFY = 2,
+                NONE = 3
+            }
+
+            /** MessageEncoding enum. */
+            enum MessageEncoding {
+                MESSAGE_ENCODING_UNKNOWN = 0,
+                LENGTH_PREFIXED = 1,
+                DELIMITED = 2
+            }
+
+            /** JsonFormat enum. */
+            enum JsonFormat {
+                JSON_FORMAT_UNKNOWN = 0,
+                ALLOW = 1,
+                LEGACY_BEST_EFFORT = 2
+            }
+        }
+
+        /** Properties of a FeatureSetDefaults. */
+        interface IFeatureSetDefaults {
+
+            /** FeatureSetDefaults defaults */
+            defaults?: (google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[]|null);
+
+            /** FeatureSetDefaults minimumEdition */
+            minimumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+            /** FeatureSetDefaults maximumEdition */
+            maximumEdition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+        }
+
+        /** Represents a FeatureSetDefaults. */
+        class FeatureSetDefaults implements IFeatureSetDefaults {
+
+            /**
+             * Constructs a new FeatureSetDefaults.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: google.protobuf.IFeatureSetDefaults);
+
+            /** FeatureSetDefaults defaults. */
+            public defaults: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault[];
+
+            /** FeatureSetDefaults minimumEdition. */
+            public minimumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /** FeatureSetDefaults maximumEdition. */
+            public maximumEdition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+            /**
+             * Creates a new FeatureSetDefaults instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns FeatureSetDefaults instance
+             */
+            public static create(properties?: google.protobuf.IFeatureSetDefaults): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified FeatureSetDefaults message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.verify|verify} messages.
+             * @param message FeatureSetDefaults message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: google.protobuf.IFeatureSetDefaults, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Decodes a FeatureSetDefaults message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns FeatureSetDefaults
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Verifies a FeatureSetDefaults message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a FeatureSetDefaults message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns FeatureSetDefaults
+             */
+            public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults;
+
+            /**
+             * Creates a plain object from a FeatureSetDefaults message. Also converts values to other types if specified.
+             * @param message FeatureSetDefaults
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: google.protobuf.FeatureSetDefaults, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this FeatureSetDefaults to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+
+            /**
+             * Gets the default type url for FeatureSetDefaults
+             * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+             * @returns The default type url
+             */
+            public static getTypeUrl(typeUrlPrefix?: string): string;
+        }
+
+        namespace FeatureSetDefaults {
+
+            /** Properties of a FeatureSetEditionDefault. */
+            interface IFeatureSetEditionDefault {
+
+                /** FeatureSetEditionDefault edition */
+                edition?: (google.protobuf.Edition|keyof typeof google.protobuf.Edition|null);
+
+                /** FeatureSetEditionDefault features */
+                features?: (google.protobuf.IFeatureSet|null);
+            }
+
+            /** Represents a FeatureSetEditionDefault. */
+            class FeatureSetEditionDefault implements IFeatureSetEditionDefault {
+
+                /**
+                 * Constructs a new FeatureSetEditionDefault.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault);
+
+                /** FeatureSetEditionDefault edition. */
+                public edition: (google.protobuf.Edition|keyof typeof google.protobuf.Edition);
+
+                /** FeatureSetEditionDefault features. */
+                public features?: (google.protobuf.IFeatureSet|null);
+
+                /**
+                 * Creates a new FeatureSetEditionDefault instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns FeatureSetEditionDefault instance
+                 */
+                public static create(properties?: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified FeatureSetEditionDefault message, length delimited. Does not implicitly {@link google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault.verify|verify} messages.
+                 * @param message FeatureSetEditionDefault message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: google.protobuf.FeatureSetDefaults.IFeatureSetEditionDefault, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Decodes a FeatureSetEditionDefault message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns FeatureSetEditionDefault
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Verifies a FeatureSetEditionDefault message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a FeatureSetEditionDefault message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns FeatureSetEditionDefault
+                 */
+                public static fromObject(object: { [k: string]: any }): google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault;
+
+                /**
+                 * Creates a plain object from a FeatureSetEditionDefault message. Also converts values to other types if specified.
+                 * @param message FeatureSetEditionDefault
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this FeatureSetEditionDefault to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+
+                /**
+                 * Gets the default type url for FeatureSetEditionDefault
                  * @param [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
                  * @returns The default type url
                  */

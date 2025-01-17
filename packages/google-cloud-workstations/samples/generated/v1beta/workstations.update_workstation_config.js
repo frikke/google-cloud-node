@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,12 +38,12 @@ function main(workstationConfig, updateMask) {
    */
   // const updateMask = {}
   /**
-   *  If set, validate the request and preview the review, but do not actually
-   *  apply it.
+   *  Optional. If set, validate the request and preview the review, but do not
+   *  actually apply it.
    */
   // const validateOnly = true
   /**
-   *  If set and the workstation configuration is not found, a new
+   *  Optional. If set and the workstation configuration is not found, a new
    *  workstation configuration will be created. In this situation,
    *  update_mask is ignored.
    */

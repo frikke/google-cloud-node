@@ -1,4 +1,4 @@
-// Copyright 2023 Google LLC
+// Copyright 2025 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -161,14 +161,92 @@ function stubAsyncIterationCall<ResponseType>(
 
 describe('v1.LineageClient', () => {
   describe('Common methods', () => {
-    it('has servicePath', () => {
-      const servicePath = lineageModule.v1.LineageClient.servicePath;
-      assert(servicePath);
+    it('has apiEndpoint', () => {
+      const client = new lineageModule.v1.LineageClient();
+      const apiEndpoint = client.apiEndpoint;
+      assert.strictEqual(apiEndpoint, 'datalineage.googleapis.com');
     });
 
-    it('has apiEndpoint', () => {
-      const apiEndpoint = lineageModule.v1.LineageClient.apiEndpoint;
-      assert(apiEndpoint);
+    it('has universeDomain', () => {
+      const client = new lineageModule.v1.LineageClient();
+      const universeDomain = client.universeDomain;
+      assert.strictEqual(universeDomain, 'googleapis.com');
+    });
+
+    if (
+      typeof process === 'object' &&
+      typeof process.emitWarning === 'function'
+    ) {
+      it('throws DeprecationWarning if static servicePath is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const servicePath = lineageModule.v1.LineageClient.servicePath;
+        assert.strictEqual(servicePath, 'datalineage.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+
+      it('throws DeprecationWarning if static apiEndpoint is used', () => {
+        const stub = sinon.stub(process, 'emitWarning');
+        const apiEndpoint = lineageModule.v1.LineageClient.apiEndpoint;
+        assert.strictEqual(apiEndpoint, 'datalineage.googleapis.com');
+        assert(stub.called);
+        stub.restore();
+      });
+    }
+    it('sets apiEndpoint according to universe domain camelCase', () => {
+      const client = new lineageModule.v1.LineageClient({
+        universeDomain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'datalineage.example.com');
+    });
+
+    it('sets apiEndpoint according to universe domain snakeCase', () => {
+      const client = new lineageModule.v1.LineageClient({
+        universe_domain: 'example.com',
+      });
+      const servicePath = client.apiEndpoint;
+      assert.strictEqual(servicePath, 'datalineage.example.com');
+    });
+
+    if (typeof process === 'object' && 'env' in process) {
+      describe('GOOGLE_CLOUD_UNIVERSE_DOMAIN environment variable', () => {
+        it('sets apiEndpoint from environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new lineageModule.v1.LineageClient();
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'datalineage.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+
+        it('value configured in code has priority over environment variable', () => {
+          const saved = process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = 'example.com';
+          const client = new lineageModule.v1.LineageClient({
+            universeDomain: 'configured.example.com',
+          });
+          const servicePath = client.apiEndpoint;
+          assert.strictEqual(servicePath, 'datalineage.configured.example.com');
+          if (saved) {
+            process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'] = saved;
+          } else {
+            delete process.env['GOOGLE_CLOUD_UNIVERSE_DOMAIN'];
+          }
+        });
+      });
+    }
+    it('does not allow setting both universeDomain and universe_domain', () => {
+      assert.throws(() => {
+        new lineageModule.v1.LineageClient({
+          universe_domain: 'example.com',
+          universeDomain: 'example.net',
+        });
+      });
     });
 
     it('has port', () => {
@@ -254,6 +332,143 @@ describe('v1.LineageClient', () => {
       });
       const result = await promise;
       assert.strictEqual(result, fakeProjectId);
+    });
+  });
+
+  describe('processOpenLineageRunEvent', () => {
+    it('invokes processOpenLineageRunEvent without error', async () => {
+      const client = new lineageModule.v1.LineageClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventResponse()
+      );
+      client.innerApiCalls.processOpenLineageRunEvent =
+        stubSimpleCall(expectedResponse);
+      const [response] = await client.processOpenLineageRunEvent(request);
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.processOpenLineageRunEvent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.processOpenLineageRunEvent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes processOpenLineageRunEvent without error using callback', async () => {
+      const client = new lineageModule.v1.LineageClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedResponse = generateSampleMessage(
+        new protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventResponse()
+      );
+      client.innerApiCalls.processOpenLineageRunEvent =
+        stubSimpleCallWithCallback(expectedResponse);
+      const promise = new Promise((resolve, reject) => {
+        client.processOpenLineageRunEvent(
+          request,
+          (
+            err?: Error | null,
+            result?: protos.google.cloud.datacatalog.lineage.v1.IProcessOpenLineageRunEventResponse | null
+          ) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+      });
+      const response = await promise;
+      assert.deepStrictEqual(response, expectedResponse);
+      const actualRequest = (
+        client.innerApiCalls.processOpenLineageRunEvent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.processOpenLineageRunEvent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes processOpenLineageRunEvent with error', async () => {
+      const client = new lineageModule.v1.LineageClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedHeaderRequestParams = `parent=${defaultValue1}`;
+      const expectedError = new Error('expected');
+      client.innerApiCalls.processOpenLineageRunEvent = stubSimpleCall(
+        undefined,
+        expectedError
+      );
+      await assert.rejects(
+        client.processOpenLineageRunEvent(request),
+        expectedError
+      );
+      const actualRequest = (
+        client.innerApiCalls.processOpenLineageRunEvent as SinonStub
+      ).getCall(0).args[0];
+      assert.deepStrictEqual(actualRequest, request);
+      const actualHeaderRequestParams = (
+        client.innerApiCalls.processOpenLineageRunEvent as SinonStub
+      ).getCall(0).args[1].otherArgs.headers['x-goog-request-params'];
+      assert(actualHeaderRequestParams.includes(expectedHeaderRequestParams));
+    });
+
+    it('invokes processOpenLineageRunEvent with closed client', async () => {
+      const client = new lineageModule.v1.LineageClient({
+        credentials: {client_email: 'bogus', private_key: 'bogus'},
+        projectId: 'bogus',
+      });
+      client.initialize();
+      const request = generateSampleMessage(
+        new protos.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest()
+      );
+      const defaultValue1 = getTypeDefaultValue(
+        '.google.cloud.datacatalog.lineage.v1.ProcessOpenLineageRunEventRequest',
+        ['parent']
+      );
+      request.parent = defaultValue1;
+      const expectedError = new Error('The client has already been closed.');
+      client.close();
+      await assert.rejects(
+        client.processOpenLineageRunEvent(request),
+        expectedError
+      );
     });
   });
 
@@ -1995,9 +2210,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listProcesses.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2045,9 +2260,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listProcesses.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2095,9 +2310,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listProcesses.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2136,9 +2351,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listProcesses.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -2320,9 +2535,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listRuns.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2371,9 +2586,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listRuns.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2419,9 +2634,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listRuns.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2460,9 +2675,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listRuns.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -2652,9 +2867,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listLineageEvents.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2704,9 +2919,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listLineageEvents.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2754,9 +2969,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listLineageEvents.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -2795,9 +3010,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.listLineageEvents.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
@@ -2982,9 +3197,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.searchLinks.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3033,9 +3248,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.searchLinks.createStream as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3082,9 +3297,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.searchLinks.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
 
@@ -3125,9 +3340,9 @@ describe('v1.LineageClient', () => {
       assert(
         (client.descriptors.page.searchLinks.asyncIterate as SinonStub)
           .getCall(0)
-          .args[2].otherArgs.headers['x-goog-request-params'].includes(
-            expectedHeaderRequestParams
-          )
+          .args[2].otherArgs.headers[
+            'x-goog-request-params'
+          ].includes(expectedHeaderRequestParams)
       );
     });
   });
